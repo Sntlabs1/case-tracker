@@ -22,7 +22,35 @@ export const KB_CASES = [
     leadCounsel: "Seeger Weiss, Levin Sedran & Berman",
     keyPrecedent: "In re Zyprexa Prods. Liab. Litig.",
     tags: ["FDA recall", "CPAP", "medical device", "foam", "toxic", "MDL", "respiratory"],
-    notes: "MDL 3014. Bellwether trials scheduled 2025. Philips agreed to $479M for device replacements. Personal injury claims ongoing. Classic MDL structure."
+    notes: "MDL 3014. Bellwether trials scheduled 2025. Philips agreed to $479M for device replacements. Personal injury claims ongoing. Classic MDL structure.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$87,000 est. (personal injury); ~$100 (device replacement only)",
+      litigationYears: 4,
+      whyItWorked: "Uniform manufacturing defect (polyester-based foam degradation) across every device created textbook commonality. FDA Class I recall (highest severity) validated the defect before trial. Philips' own internal testing showed foam degradation — making suppression of knowledge the centerpiece liability argument.",
+      challenges: "Massive scale (5.5M devices) complicated individual causation for respiratory/cancer injury claims. Defendants argued injury requires proof of actual foam exposure and dosage. Personal injury sub-class individualization issues slowed global resolution.",
+      strategiesWon: [
+        "Leveraged FDA Class I recall as prima facie evidence of defect",
+        "Bifurcated economic loss (device replacement) from personal injury — got fast $479M on economic track",
+        "Built bellwether pool representing full injury spectrum to pressure global settlement"
+      ],
+      strategiesFailed: [
+        "Attempting to certify personal injury sub-class — individualized exposure/causation issues created resistance",
+        "Early media pressure campaign underestimated Philips' willingness to litigate personal injury claims"
+      ],
+      demographics: "Primarily adults 40–80 with sleep apnea or respiratory conditions requiring CPAP/BiPAP therapy. Disproportionately male (sleep apnea skews male). Many had pre-existing respiratory conditions making causation complex. Geographic spread nationwide.",
+      injuryTypes: ["Respiratory tract cancer (suspected)", "Chemical exposure from degraded foam off-gassing", "Respiratory irritation", "Systemic toxicity from VOCs"],
+      keyEvidence: "Philips internal testing documents showing foam degradation and off-gassing. FDA inspection records. Philips' own FMEA (failure mode and effects analysis) flagging foam risk years before recall. Independent lab testing confirming VOC release at elevated temperatures.",
+      corporateMisconduct: "Philips received consumer complaints about foam degradation and black particles in airways as early as 2015 but delayed recall notification until 2021. Internal documents showed awareness of design risk. FDA inspections found Philips had failed to report MDR (medical device reports) timely.",
+      regulatoryActions: "FDA Class I recall June 2021 (highest risk). FDA issued Warning Letter to Philips. DOJ investigation into recall delay. Philips CEO resigned 2022. Philips Respironics consent decree with FDA.",
+      settlementStructure: "$479M for device replacement/recall remediation paid to U.S. regulators and consumers. Personal injury fund pending bellwether trials. Medical monitoring component being negotiated. Claims administrator oversees device replacement program.",
+      bellwetherOutcome: "Bellwether selection process ongoing as of 2025. First trials scheduled to address cancer/injury causation. Early science hearings focused on VOC exposure levels and carcinogenicity.",
+      attorneyFees: "Estimated 33% of personal injury recoveries; $479M economic fund has separate fee structure (~15%)",
+      replicationModel: "A — excellent template for any FDA Class I recall + personal injury MDL with uniform manufacturing defect",
+      clientAcquisitionStrategy: "CPAP/BiPAP device serial number database cross-referenced with affected model list. Sleep clinics and pulmonologists. Veterans (high sleep apnea prevalence). Diabetes + obesity comorbidity populations. Sleep disorder forums/communities.",
+      watchOut: "Causation complexity for cancer claims — must prove foam off-gassing caused specific cancers vs. pre-existing respiratory disease. Philips financial weakness post-recall may limit ultimate personal injury recovery. Multiple defendants (Philips Respironics only, not parent Philips N.V.) limits reach."
+    }
   },
 
   {
@@ -37,7 +65,37 @@ export const KB_CASES = [
     leadCounsel: "Beasley Allen, Motley Rice",
     keyPrecedent: "In re Diet Drugs Prods. Liab. Litig.",
     tags: ["talc", "asbestos", "ovarian cancer", "consumer products", "failure to warn", "MDL", "bankruptcy"],
-    notes: "Landmark case. J&J spun off subsidiary LTL Management to seek bankruptcy. Third Circuit initially rejected. Supreme Court denied cert. ~38,000 claims resolved via $6.475B fund."
+    notes: "Landmark case. J&J spun off subsidiary LTL Management to seek bankruptcy. Third Circuit initially rejected. Supreme Court denied cert. ~38,000 claims resolved via $6.475B fund.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$170,000 est. average (varies enormously by injury severity)",
+      litigationYears: 9,
+      whyItWorked: "Internal J&J documents (including 1971 memos referencing asbestos in talc) created devastating evidence of corporate concealment. IARC classification of talc as 'possibly carcinogenic.' Individual trial verdicts (including $2.1B punitive award) created enormous settlement pressure. Scientific consensus on asbestos contamination solidified over time.",
+      challenges: "J&J's LTL Management divisive merger bankruptcy strategy (2022, 2023) twice attempted to move claims to bankruptcy court and cap liability — nearly succeeded. Causation science for ovarian cancer vs. talc remained disputed by defense experts. Some plaintiffs had mesothelioma (asbestos) vs. ovarian cancer — different causation standards.",
+      strategiesWon: [
+        "Obtained and publicized devastating internal J&J documents through discovery showing knowledge of asbestos contamination",
+        "Secured massive individual trial verdicts ($2.1B in Ingham case) that forced global settlement pressure",
+        "Third Circuit rejection of first LTL bankruptcy preserved litigation track and precedent",
+        "Multi-jurisdiction litigation (NJ, MO, CA) prevented J&J from obtaining favorable single-court rulings"
+      ],
+      strategiesFailed: [
+        "Initial class certification failed — too many individualized injury issues for a single nationwide class",
+        "First LTL bankruptcy opposition was ultimately only temporarily successful — J&J persisted",
+        "Overly aggressive damages theories in some trials led to large punitive awards being reduced on appeal"
+      ],
+      demographics: "Overwhelmingly female plaintiffs, primarily women aged 40–70 who used Baby Powder for perineal hygiene over decades. Mesothelioma plaintiffs include male construction workers exposed to talc dust occupationally. Predominantly working to middle-class women. Minority communities disproportionately used talc products per market research.",
+      injuryTypes: ["Ovarian cancer (primary)", "Fallopian tube cancer", "Peritoneal mesothelioma", "Pleural mesothelioma (occupational talc dust)"],
+      keyEvidence: "1971 internal J&J memo noting asbestos fibers in talc mines. Internal testing results showing asbestos in finished products. Marketing documents targeting women of color. Expert testimony from industrial hygienists on asbestos contamination levels. FDA testing (2019) confirming asbestos in Baby Powder.",
+      corporateMisconduct: "J&J knew since 1970s that talc could contain asbestos but did not disclose to consumers or regulators. Marketed product specifically to Black women. Used divisive merger to attempt to limit liability to $8.9B through bankruptcy vehicle (LTL Management) without full J&J assets available to creditors.",
+      regulatoryActions: "FDA found asbestos in Baby Powder samples (2019). J&J voluntarily withdrew Baby Powder from U.S./Canadian market 2020 (global 2023). No criminal charges. DOJ investigated divisive merger strategy.",
+      settlementStructure: "$6.475B into LTL trust (third bankruptcy attempt). Claims matrix based on injury type, duration of use, age at diagnosis. Ovarian cancer highest tier; mesothelioma separate schedule. Lump-sum payments without admission of liability.",
+      bellwetherOutcome: "Ingham v. J&J (MO): $4.69B verdict (2018) — reduced to $2.1B on appeal. Multiple individual MO verdicts for plaintiffs before global settlement. NJ trial verdicts mixed.",
+      attorneyFees: "Estimated $1.3B+ in aggregate attorney fees across all firms from $6.475B fund (~20%)",
+      replicationModel: "A — textbook example of using internal corporate documents + individual trials to force global MDL resolution",
+      clientAcquisitionStrategy: "Gynecologic oncology practices. OB/GYN offices. Women diagnosed with ovarian cancer who used talc products 5+ years. Social media targeting women 50+ with ovarian cancer history. Partner with oncology social workers.",
+      watchOut: "J&J's bankruptcy strategy (now successful in third attempt) should be expected in any future large corporate mass tort — prepare for divisive merger defense. Causation science still contested even at settlement — weaker cases may not qualify for claims."
+    }
   },
 
   {
@@ -52,7 +110,36 @@ export const KB_CASES = [
     leadCounsel: "Baron & Budd, Weitz & Luxenberg",
     keyPrecedent: "In re W.R. Grace",
     tags: ["PFAS", "forever chemicals", "firefighting foam", "water contamination", "toxic tort", "MDL", "environmental"],
-    notes: "Largest environmental MDL in U.S. history by number of plaintiffs. 3M settled public water system claims for $10.3B. DuPont/Chemours settled for $1.185B. Individual cancer claims continue."
+    notes: "Largest environmental MDL in U.S. history by number of plaintiffs. 3M settled public water system claims for $10.3B. DuPont/Chemours settled for $1.185B. Individual cancer claims continue.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Highly variable: ~$2.5M per water system (public) vs. $50K-$500K per individual cancer claimant",
+      litigationYears: 6,
+      whyItWorked: "Split strategy — certifying public water systems as uniform class (easy predominance) while preserving individual cancer claims — was genius. 3M's own documents showed awareness of PFAS bioaccumulation since 1950s. EPA's Maximum Contaminant Level (MCL) rulemaking in 2024 created regulatory urgency forcing settlement. PFAS detection is highly measurable via blood serum testing.",
+      challenges: "Individual cancer claims require proving specific PFAS compound → specific cancer causation (contested for some cancers). Split circuits on medical monitoring class cert. Some PFAS manufacturers argued military contractor defense (government specification). Statute of limitations issues for contamination known for decades.",
+      strategiesWon: [
+        "Bifurcated public water system class (uniform economic harm) from individual cancer cases — enabled fast $10.3B settlement",
+        "Used 3M's internal science documents (PFAS health effects studies going back to 1970s) to destroy credibility",
+        "Coordinated with state AGs for parallel state enforcement pressure",
+        "EPA MCL rulemaking (2024) created independent regulatory pressure to settle quickly"
+      ],
+      strategiesFailed: [
+        "Comprehensive individual cancer class certification was not achieved — personal injury claims must be litigated individually or in smaller sub-groups",
+        "Military contractor defense delayed some settlements involving DoD-purchased AFFF"
+      ],
+      demographics: "Two populations: (1) Water utilities and municipalities — institutional plaintiffs representing tens of millions of residents; (2) Individual claimants — military veterans (AFFF at bases), firefighters, airport workers, industrial workers near AFFF use sites. High military/first-responder component.",
+      injuryTypes: ["Kidney cancer", "Testicular cancer", "Thyroid disease", "Ulcerative colitis", "Hypercholesterolemia", "Pregnancy-induced hypertension", "Bladder cancer", "Non-Hodgkin's lymphoma"],
+      keyEvidence: "3M internal research from 1950s-1980s documenting PFAS bioaccumulation and toxicity concerns. EPA blood serum studies showing PFAS in 99% of Americans. PFAS concentration measurements in drinking water systems. Epidemiological studies linking specific PFAS to specific cancers. C8 Science Panel (DuPont precedent) establishing 'probable links.'",
+      corporateMisconduct: "3M manufactured PFAS knowing of health risks since at least the 1960s. Suppressed internal health studies. Continued manufacturing until 2002 only after EPA pressure. 3M's own scientists documented bioaccumulation concerns in the 1970s. DuPont/Chemours knew of C8 contamination at Parkersburg for decades (see Case #74).",
+      regulatoryActions: "EPA PFAS National Primary Drinking Water Regulation (2024) set first MCL for PFAS. EPA Superfund designations for PFAS. DOD is largest AFFF user — federal government liability issues. ATSDR (CDC) issued health advisory. Multiple state-level bans on PFAS in products.",
+      settlementStructure: "$10.3B (3M) paid over 13 years to water utilities. $1.185B (DuPont/Chemours) to water systems. Individual cancer claims resolved separately — tiered by cancer type and PFAS exposure level. Claims administrator (Archer Systems) oversees distribution.",
+      bellwetherOutcome: "Several bellwether individual cancer trials were in preparation when 3M settled. No bellwether verdicts reached — settlement came before first trial.",
+      attorneyFees: "Estimated $1.5B+ aggregate fees from public water system settlements alone. Individual claims carry 33% contingency.",
+      replicationModel: "A+ — gold standard template for environmental contamination MDL: bifurcate institutional from individual claims, use regulatory action as catalyst, document corporate knowledge",
+      clientAcquisitionStrategy: "Blood serum PFAS testing as screening tool. Municipal water utility litigation. Military bases communities (Camp Lejeune overlap). Firefighters union partnerships — International Association of Fire Fighters. Industrial site workers near known AFFF use locations. ATSDR exposure registry.",
+      watchOut: "Ongoing individual cancer claims face causation challenges for some cancers (liver, pancreatic) where PFAS link is weaker than kidney/testicular. Military contractor defense (GFCF) still live for some DoD-related claims. Some defendants near bankruptcy due to scale of liability."
+    }
   },
 
   {
@@ -67,7 +154,35 @@ export const KB_CASES = [
     leadCounsel: "Chimicles Schwartz Kriner & Donaldson-Smith",
     keyPrecedent: "Amchem Products v. Windsor",
     tags: ["CPSC recall", "appliance", "consumer fraud", "warranty", "product defect", "economic loss"],
-    notes: "Clean consumer fraud class cert. No personal injury = no individualized damages issues. Economic loss only made commonality and predominance straightforward."
+    notes: "Clean consumer fraud class cert. No personal injury = no individualized damages issues. Economic loss only made commonality and predominance straightforward.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$12 cash or $24 product voucher",
+      litigationYears: 2,
+      whyItWorked: "Pure economic loss class — no personal injury means no individualized causation issues. CPSC recall provided per se negligence basis. Single manufacturing defect (lid detachment geometry) affected every unit identically. Clean consumer fraud and breach of implied warranty theory required no individual reliance proof.",
+      challenges: "Limited damages per claimant reduced leverage for large settlement. Samsung's Korean corporate structure complicated discovery. CPSC recall remedy (rebate + lid reinforcement) partly mooted the case.",
+      strategiesWon: [
+        "Filed immediately after CPSC recall announcement — recall creates liability presumption and class is already defined",
+        "Focused on economic loss (purchase price + overpayment) to avoid personal injury individualization problems",
+        "Used NJ consumer fraud statute allowing treble damages to increase leverage"
+      ],
+      strategiesFailed: [
+        "Attempting to include personal injury claimants in the same class complicated certification (ultimately separated)",
+        "Cy pres component in early settlement drafts drew judicial scrutiny"
+      ],
+      demographics: "U.S. households with top-load Samsung washing machines manufactured 2011–2016. Middle-income households. No significant demographic skew beyond typical appliance ownership demographics. Geographic spread matches Samsung market penetration.",
+      injuryTypes: ["Property damage from lid detachment", "Potential physical injury from violently detaching lids", "Economic loss — purchase price overpayment"],
+      keyEvidence: "CPSC recall notice specifying exact defect. CPSC complaint database (consumer incident reports). Samsung engineering specifications showing lid retention failure. Expert mechanical engineering testimony on torque forces causing lid detachment.",
+      corporateMisconduct: "Samsung received consumer complaints about lid detachment before CPSC recall. Delayed reporting CPSC-required incident data. Continued selling affected models during recall period. Internal Samsung testing showed lid detachment issue at high spin speeds.",
+      regulatoryActions: "CPSC voluntary recall November 2016 (~2.8M units). Samsung paid $1.4M CPSC civil penalty for delayed incident reporting.",
+      settlementStructure: "$33.3M consumer fund. Cash payment (~$12) or product voucher (~$24) per unit. No-proof-of-purchase required for units registered with Samsung. Claims administrator handled distribution.",
+      bellwetherOutcome: "No bellwether trials — settled prior to trial.",
+      attorneyFees: "~$11M attorney fees (33% of settlement fund)",
+      replicationModel: "A — excellent template for consumer appliance recall class: file on recall, economic loss only, NJ or CA consumer fraud statute",
+      clientAcquisitionStrategy: "Samsung product registration database. CPSC recall notice mailing list. Major appliance retailers (Lowe's, Home Depot, Best Buy) customer databases. Social media targeting Samsung washer owners.",
+      watchOut: "Small per-claimant recovery ($12) means high cy pres risk — courts scrutinize whether class actually benefits. CPSC recall may have partially mooted economic harm argument if Samsung provided free repair kits."
+    }
   },
 
   {
@@ -82,7 +197,35 @@ export const KB_CASES = [
     leadCounsel: "Reese LLP",
     keyPrecedent: "Ebin v. Kangadis Food Inc.",
     tags: ["false advertising", "consumer fraud", "energy drink", "food & beverage", "economic loss", "class cert"],
-    notes: "Textbook consumer fraud class. $13M settlement. Shows power of consumer protection classes — small individual harm ($10-15/purchase) aggregated over millions. No reliance requirement under NY GBL."
+    notes: "Textbook consumer fraud class. $13M settlement. Shows power of consumer protection classes — small individual harm ($10-15/purchase) aggregated over millions. No reliance requirement under NY GBL.",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "~$15 cash or $20 product",
+      litigationYears: 1,
+      whyItWorked: "NY GBL §§349-350 does not require individual reliance — just that the deceptive act was 'materially misleading.' Price premium damages are easily calculable at class level. Massive class (millions of purchasers) made even small per-person damages economically viable to litigate. Slogan 'gives you wings' was objectively false advertising.",
+      challenges: "Red Bull argued slogan is obvious puffery not actionable as false advertising. Damages model required showing consumers paid a 'price premium' attributable to the false claim — difficult with heavily marketed consumer product. Very small per-claimant recovery.",
+      strategiesWon: [
+        "NY GBL chosen as governing law — no individual reliance requirement eliminates biggest class cert hurdle",
+        "Focus on 'false advertising' not 'defective product' — avoids any causation/injury science issues",
+        "Hammered that Red Bull energy drinks contain no more caffeine than coffee — objective basis for false claims"
+      ],
+      strategiesFailed: [
+        "Puffery defense was close — 'wings' slogan may well have been legally acceptable puffery in other jurisdictions",
+        "Limited damages made this case primarily a leverage play rather than genuine recovery"
+      ],
+      demographics: "18-35 year old male-skewing energy drink consumers. College students, young professionals, athletes, gamers. Urban and suburban geographic concentration matching Red Bull's heaviest marketing areas.",
+      injuryTypes: ["Economic loss only — paid premium price based on false advertising"],
+      keyEvidence: "Red Bull marketing materials claiming superior energy enhancement vs. coffee. Scientific studies showing comparable caffeine content. Expert marketing testimony on consumer reliance on advertising claims.",
+      corporateMisconduct: "Red Bull spent $2B+ annually on marketing claiming unique energy benefits that were not scientifically supported vs. comparable caffeine sources. Marketing targeted impressionable young demographic.",
+      regulatoryActions: "No FDA enforcement action on energy drink labeling at time. FTC had issued general guidance on energy drink marketing.",
+      settlementStructure: "$13M fund. Class members receive $15 cash or $20 product without proof of purchase (up to $10 with receipt showing 3+ cans). Cy pres component to nutrition/health nonprofits.",
+      bellwetherOutcome: "No trial — settled early.",
+      attorneyFees: "~$4.75M attorney fees (36% of fund — at the high end)",
+      replicationModel: "B — works for false advertising cases in NY/CA with clear measurable false claims and no reliance requirement under state statute",
+      clientAcquisitionStrategy: "Nearly impossible to identify individual class members — rely on advertising campaign (social media, magazines targeting 18-35 demographic). Self-identification via claims website. Partner with college campuses.",
+      watchOut: "Small recoveries invite cy pres challenges and frivolous suit accusations (see Subway Footlong). Puffery defense is genuinely close for lifestyle advertising claims. Settlement costs including notice/administration often eat much of the fund."
+    }
   },
 
   // ─── PHARMACEUTICAL MDLs ───────────────────────────────────────────────────
@@ -99,7 +242,37 @@ export const KB_CASES = [
     leadCounsel: "Wisner Baum, Levin Papantonio (plaintiffs failed)",
     keyPrecedent: "In re Zantac (Ranitidine) Products Liability Litigation, 644 F.Supp.3d 1089",
     tags: ["Zantac", "ranitidine", "Daubert failure", "causation", "pharmaceutical", "dismissed", "warning lesson"],
-    notes: "THE key warning case. Never file mass tort without bulletproof causation science. NDMA degradation theory was scientifically contested. Daubert rulings are existential for pharmaceutical MDLs. $0 recovery."
+    notes: "THE key warning case. Never file mass tort without bulletproof causation science. NDMA degradation theory was scientifically contested. Daubert rulings are existential for pharmaceutical MDLs. $0 recovery.",
+    analysis: {
+      rating: "F",
+      strengthScore: 2,
+      payoutPerClaimant: "$0",
+      litigationYears: 5,
+      whyItWorked: "NOTHING worked. This is the definitive failure case. Filed on a compelling theory (ranitidine degrades to NDMA, a known carcinogen) that ultimately could not survive rigorous scientific scrutiny.",
+      challenges: "Judge Rosenberg excluded every single general causation expert plaintiffs presented at Daubert hearing. The core scientific theory — that NDMA from ranitidine degradation at body temperature causes cancer at real-world exposure levels — was found scientifically unreliable. Without general causation, the entire case fails before reaching individual plaintiffs.",
+      strategiesWon: [
+        "Initial media attention was effective — created massive plaintiff intake",
+        "NDMA contamination story was compelling and resonated with public after separate NDMA contamination in Valsartan/Losartan"
+      ],
+      strategiesFailed: [
+        "Filed MDL before general causation science was bulletproof — CRITICAL ERROR",
+        "Expert models relied on novel chromatography methods that defense experts effectively challenged as scientifically unreliable",
+        "Failed to secure respected institutional epidemiology (e.g., NIH, NCI) to support the degradation-to-cancer link",
+        "Over-relied on plaintiffs' retained experts vs. peer-reviewed independent science",
+        "70,000 clients taken in based on unproven science — reputation and client harm enormous"
+      ],
+      demographics: "Primarily adults 40-70 who took Zantac/ranitidine for acid reflux and heartburn over extended periods (years). Both sexes. High prevalence of other cancer risk factors (smoking, obesity) in target population complicated causation.",
+      injuryTypes: ["Alleged stomach cancer", "Alleged bladder cancer", "Alleged esophageal cancer", "Alleged colorectal cancer"],
+      keyEvidence: "Valisure pharmacy testing (2019) found high NDMA levels — but using unrealistic heating conditions. Defense experts showed real-world NDMA exposure levels from Zantac were negligible. FDA independent testing showed NDMA in Zantac at levels similar to food.",
+      corporateMisconduct: "Manufacturers had not hidden any knowledge — ranitidine's degradation to NDMA was a legitimate newly-discovered concern. This was not a suppressed-knowledge case but a contested science case.",
+      regulatoryActions: "FDA recalled all Zantac products (April 2020). But FDA's own analysis showed NDMA at levels comparable to food sources — undercutting plaintiffs' case. FDA stated 'no evidence that NDMA in ranitidine causes cancer in humans.'",
+      settlementStructure: "No class settlement. Mass dismissals 2022. Some individual cases in non-federal courts (CA, NJ) proceeded — a few individual settlements reported but no meaningful class recovery.",
+      bellwetherOutcome: "No bellwether trials reached — all dismissed at Daubert stage. MDL ended with mass dismissal order.",
+      attorneyFees: "Effectively zero for MDL track. Significant sunk costs for all plaintiff firms who invested in science, discovery, MDL infrastructure.",
+      replicationModel: "F — DO NOT USE. This is the template for what NOT to do.",
+      clientAcquisitionStrategy: "N/A — lesson: do NOT accept clients until general causation science is independently validated",
+      watchOut: "THE CRITICAL LESSON: Daubert is an existential threat in pharmaceutical MDLs. Before filing or accepting a single client, require: (1) peer-reviewed epidemiological studies, (2) independent (not just retained) expert support, (3) regulatory agency acknowledgment of the risk. 'Compelling theory' ≠ 'legally viable theory.' Valisure's testing methods proved to be flawed under scientific scrutiny."
+    }
   },
 
   {
@@ -114,7 +287,37 @@ export const KB_CASES = [
     leadCounsel: "Seeger Weiss, Herman Herman & Katz",
     keyPrecedent: "Daubert v. Merrell Dow Pharmaceuticals",
     tags: ["Vioxx", "rofecoxib", "cardiovascular", "heart attack", "pharmaceutical", "suppressed data", "MDL"],
-    notes: "$4.85B settlement — one of largest pharma MDLs. Merck withdrew Vioxx from market 2004. VIGOR and APPROVe trial data were central. Classic failure-to-warn MDL with strong causation."
+    notes: "$4.85B settlement — one of largest pharma MDLs. Merck withdrew Vioxx from market 2004. VIGOR and APPROVe trial data were central. Classic failure-to-warn MDL with strong causation.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$103,000 est. average (range $30K–$400K based on injury severity matrix)",
+      litigationYears: 7,
+      whyItWorked: "VIGOR clinical trial data (published in NEJM) showed 5x increased MI risk vs. naproxen — published, peer-reviewed, impossible to discredit. Merck's own APPROVe trial confirmed cardiovascular risk. Internal Merck documents ('Vioxx Survivor Game' email — suggesting tracking and neutralizing scientists raising concerns) were devastating. Merck voluntarily withdrew the drug — equivalent to a recall, creating an admission of risk.",
+      challenges: "Merck aggressively litigated individual cases, winning early bellwether trials. Plaintiffs with pre-existing heart disease faced causation battles — Vioxx increased risk but didn't necessarily cause any individual MI. 47,000 claims required sophisticated claims administrator matrix.",
+      strategiesWon: [
+        "Lead with published VIGOR/APPROVe clinical trial data — peer-reviewed science that defense could not credibly attack",
+        "Obtained and publicized devastating 'Vioxx Survivor' internal email suggesting company tracked critics",
+        "Won early jury trials despite Merck's aggressive defense — particularly New Jersey 2005 ($4.5M verdict) reversed defendant narrative",
+        "Bellwether trial selection: chose cases with short drug use (easier causation) + clear MI timing post-Vioxx"
+      ],
+      strategiesFailed: [
+        "Initial round of bellwether trials was mixed — Merck won several, signaling litigation risk that led to eventual settlement",
+        "Attempting to certify nationwide class failed — personal injury individualization too complex",
+        "Overestimating early verdicts — Merck won 11 of 20 trials before settlement, showing cases were not slam dunks"
+      ],
+      demographics: "Adults 40-75 with chronic pain conditions (osteoarthritis, rheumatoid arthritis) who were prescribed Vioxx as 'safer' NSAID. Disproportionately elderly women (arthritis skews female). Middle-class patients with insurance. Many had pre-existing cardiovascular risk factors.",
+      injuryTypes: ["Myocardial infarction (heart attack)", "Ischemic stroke", "Sudden cardiac death", "Deep vein thrombosis / pulmonary embolism"],
+      keyEvidence: "VIGOR trial results (NEJM 2000) — 5x higher MI rate vs. naproxen. APPROVe trial data showing dose-dependent cardiovascular risk. Merck internal emails discussing how to 'neutralize' physician critics. FDA's failure to require label warning despite internal discussions.",
+      corporateMisconduct: "Merck conducted VIGOR trial and saw cardiovascular signal in 2001 but rationalized results as naproxen being 'cardioprotective' rather than Vioxx being dangerous. Internal communications show scientists raising safety concerns were marginalized. Sales force trained to avoid discussing cardiovascular risks.",
+      regulatoryActions: "Merck voluntary market withdrawal September 2004. FDA subsequently required COX-2 class black box warnings. DOJ criminal investigation → $950M guilty plea (2011) for misbranding and failing to report safety data.",
+      settlementStructure: "$4.85B settlement fund with tiered payment matrix: Gate 1 (IS events — $75K avg), Gate 2 (death — $200K+ avg). Required passing medical criteria plus 30-day Vioxx use window before event. Sophisticated fund with special master (Ken Feinberg declined; Garretson Resolution Group administered).",
+      bellwetherOutcome: "Mixed before settlement: NJ Ernst trial — $253M verdict (2005, later reduced). Texas trial — $51M (reversed). NJ Humeston — defense verdict. Merck won ~11 of 20 pre-settlement trials. Mixed outcomes drove compromise settlement.",
+      attorneyFees: "Estimated $1B+ aggregate across 250+ plaintiff firms from $4.85B fund (~21%)",
+      replicationModel: "A+ — gold standard for pharmaceutical MDL: peer-reviewed science + internal documents + voluntary withdrawal + clinical trial data",
+      clientAcquisitionStrategy: "CVD (cardiovascular disease) patients with Vioxx prescription history 1999-2004. Cardiologists, ER physicians treating post-MI patients. Social media targeting arthritis/pain communities. Medical records screening services. Pharmacy prescription databases.",
+      watchOut: "Need cardiac event occurring during or within 30 days of Vioxx use — strict temporal requirement. Pre-existing cardiovascular disease creates causation defense (was it Vioxx or underlying disease?). Matrix payments rewarded speed of filing — late claims got less."
+    }
   },
 
   {
@@ -129,7 +332,37 @@ export const KB_CASES = [
     leadCounsel: "Arnold & Itkin, Motley Rice",
     keyPrecedent: "In re Diet Drugs Products Liability Litigation",
     tags: ["fen-phen", "diet drug", "valvular heart disease", "pharmaceutical", "FDA withdrawal", "MDL"],
-    notes: "Created AHP Nationwide Class Action Settlement Trust. One of first major pharmaceutical MDL settlements. Defined the template for medical monitoring classes in drug cases."
+    notes: "Created AHP Nationwide Class Action Settlement Trust. One of first major pharmaceutical MDL settlements. Defined the template for medical monitoring classes in drug cases.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$62,500 est. average (varied widely by injury tier — PPH and VHD had different scales)",
+      litigationYears: 8,
+      whyItWorked: "FDA withdrawal of both drugs (1997) served as explicit government admission of serious risk. Two distinct injury types (valvular heart disease + pulmonary hypertension) were reliably diagnosed via echocardiogram — creating an objective, standardized screening test. Medical monitoring class (b(2)) was novel and effective for the millions who used the drugs without serious injury.",
+      challenges: "Distinguishing true fen-phen valvular disease from background valvulopathy in the general population was scientifically contested. Defining the right echocardiogram cut-offs for injury eligibility was litigated extensively. Long-tail liability — new VHD cases continue emerging years after exposure. AHP Trust had to deal with fraudulent claims filed by some attorneys.",
+      strategiesWon: [
+        "Medical monitoring class (b(2)) for millions without manifest injury was groundbreaking — provided immediate value to class",
+        "Echocardiogram screening as objective injury criterion cut through individualized injury determination",
+        "Obtained FDA withdrawal as litigation catalyst — timing of filing immediately after withdrawal was critical",
+        "Secured quick preliminary class settlement that provided immediate relief and cemented MDL structure"
+      ],
+      strategiesFailed: [
+        "Trust defrauded by some claiming attorneys who filed fraudulent echocardiograms — required costly fraud investigation protocol",
+        "Long-tail liability underestimated: Trust required multiple supplemental payments as new cases emerged",
+        "Opt-out option created parallel litigation that complicated global resolution"
+      ],
+      demographics: "Predominantly overweight/obese women 25-55 who used fen-phen for weight loss prescribed by diet clinics. Higher concentration among women seeking quick weight loss solutions. Disproportionately from states with aggressive diet clinic marketing (TX, FL, OH). Many users had underlying cardiac risk factors.",
+      injuryTypes: ["Cardiac valvular disease (VHD) — aortic and mitral valve regurgitation", "Primary pulmonary hypertension (PPH) — life-threatening", "Combination VHD + PPH"],
+      keyEvidence: "Mayo Clinic study (1997) reporting 24 cases of unusual valvular disease in fen-phen users. FDA's market withdrawal letter. Echocardiographic evidence of regurgitation. Expert cardiology testimony. Epidemiological studies showing 10x PPH risk with 3+ months use.",
+      corporateMisconduct: "American Home Products had received pre-withdrawal reports of cardiac valvular disease but continued marketing aggressively. Diet clinics were prescribing the combination off-label without adequate cardiac monitoring. AHP had foreign post-marketing data suggesting cardiac risks.",
+      regulatoryActions: "FDA market withdrawal September 1997. FDA required echocardiogram recommendations for all users. DEA scheduling of phentermine remained. Congressional hearings on diet drug industry.",
+      settlementStructure: "AHP Nationwide Class Action Settlement Trust. Tiered payment matrix: Intermediate plus (moderate VHD) → Level I (moderate VHD + symptoms) → Level II (severe VHD requiring surgery) → Level III (PPH). Medical monitoring fund for echocardiogram screening for all users. Trust remains active 25+ years after settlement.",
+      bellwetherOutcome: "No significant bellwether trials — case settled quickly via class. Individual opt-out cases resulted in significant verdicts driving supplemental trust payments.",
+      attorneyFees: "~$750M aggregate attorney fees from $3.75B trust (~20%)",
+      replicationModel: "A — pioneered medical monitoring class as vehicle to provide value to millions of users without manifest injury; echocardiogram screening model replicable for any drug with objective diagnostic test",
+      clientAcquisitionStrategy: "Diet clinics (prescribers). Bariatric medicine practices. Obesity medicine specialists. Women's health magazines of the era. Pharmacy prescription records (fen-phen was widely prescribed 1994-1997). Weight loss program participants.",
+      watchOut: "Medical monitoring classes require ongoing administration for decades — budget accordingly. Fraud prevention critical in large pharmaceutical funds where injury proof can be manipulated (require independent echocardiogram reading). Trust long-tail liability: budget for 20+ year exposure."
+    }
   },
 
   {
@@ -144,7 +377,37 @@ export const KB_CASES = [
     leadCounsel: "Barrack Rodos & Bacine",
     keyPrecedent: "In re Paxil Litigation",
     tags: ["Paxil", "paroxetine", "birth defect", "cardiac", "pharmaceutical", "prenatal", "failure to warn"],
-    notes: "GSK paid $1B+ in individual and class settlements. Key lesson: birth defect cases have strong causation (clear temporal relationship) and sympathetic plaintiffs. Label deficiency was central."
+    notes: "GSK paid $1B+ in individual and class settlements. Key lesson: birth defect cases have strong causation (clear temporal relationship) and sympathetic plaintiffs. Label deficiency was central.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$125,000 est. average per birth defect case",
+      litigationYears: 6,
+      whyItWorked: "Clear temporal exposure-outcome relationship (first trimester Paxil → cardiac birth defect at birth) makes causation compelling and intuitive. GSK's own clinical trial data (Study 329) showed cardiovascular birth defect signal that was not included in labeling. Birth defect cases are uniquely sympathetic — infant plaintiff with lifelong injury. Failure-to-warn theory was clean.",
+      challenges: "Background rate of cardiac birth defects (~1%) required robust epidemiology to show Paxil-specific elevation. Defense challenged whether relative risk increase was clinically meaningful. Some defects resolved spontaneously, complicating damages. GSK's Study 329 data suppression took years to obtain through discovery.",
+      strategiesWon: [
+        "Obtained GSK internal Study 329 data showing cardiac defect signal — suppressed from FDA submission",
+        "Focused on first-trimester exposure (critical developmental window) to tighten causation",
+        "Expert epidemiology showed dose-dependent relationship supporting causation",
+        "Sympathetic plaintiff presentation: infant with open heart surgery, parents who took drug only on prescription"
+      ],
+      strategiesFailed: [
+        "Nationwide class certification never achieved — individual cases litigated",
+        "Some cases weakened by alternative causes (genetic factors, maternal diabetes)",
+        "Early statute of limitations issues for cases filed more than 2 years after birth"
+      ],
+      demographics: "Mothers who took paroxetine during first trimester of pregnancy, typically prescribed for depression or anxiety. Predominantly women 18-40 who did not know pregnancy risk. Infants born with septal defects (VSD/ASD) or other cardiac abnormalities. Middle-class patients with mental health treatment access.",
+      injuryTypes: ["Ventricular septal defect (VSD)", "Atrial septal defect (ASD)", "Coarctation of the aorta", "Tetralogy of Fallot", "Other congenital cardiac anomalies"],
+      keyEvidence: "GSK's own internal Study 329 showing cardiac birth defect signal. Epidemiological studies (Berard 2007, Pedersen 2009) showing 1.5-2x elevated risk. FDA public health advisory 2005. GSK's failure to include cardiac warning in labeling despite internal data. Expert teratology testimony.",
+      corporateMisconduct: "GSK's Study 329 showed antidepressant inefficacy in adolescents AND potential cardiac signals but was published with misleading conclusions. GSK pleaded guilty to criminal charges including illegal off-label promotion of Paxil (2012, $3B total fine). Failure to update pregnancy warning despite internal studies.",
+      regulatoryActions: "FDA Category D pregnancy warning for Paxil (2006). FDA Public Health Advisory 2005. GSK $3B DOJ settlement (2012) included off-label promotion of Paxil. FDA PDUFA safety reviews required updates.",
+      settlementStructure: "Individual case settlements, not a global class settlement. ~$1B paid in hundreds of individual settlements. Settlement amounts range $50K (minor defects, resolved) to $500K+ (major cardiac surgery, ongoing treatment). Settlements under confidentiality agreements.",
+      bellwetherOutcome: "No formal bellwether process — individual cases settled as filed. Several significant multi-million dollar verdicts in state court drove settlement pressure.",
+      attorneyFees: "33-40% contingency in individual cases — aggregate well over $300M across all firms",
+      replicationModel: "A — excellent model for pharmaceutical birth defect cases: clinical trial data + teratology expert + specific trimester exposure window",
+      clientAcquisitionStrategy: "OB/GYN practices and maternal-fetal medicine (MFM) specialists. Pediatric cardiologists (diagnose septal defects). Neonatal ICUs. Birth defect registries. Mental health communities (psychiatrists prescribing SSRIs to women of childbearing age).",
+      watchOut: "Background cardiac birth defect rate requires careful epidemiology — relative risk of 1.5-2x sounds alarming but means most defects were not caused by the drug. Statute of limitations runs from birth (or discovery of defect) — identify cases quickly. Alternative causation (genetic, maternal diabetes, other drugs) is standard defense."
+    }
   },
 
   {
@@ -159,7 +422,36 @@ export const KB_CASES = [
     leadCounsel: "Wisner Baum, McGartland Law Firm",
     keyPrecedent: "Zantac MDL (cautionary)",
     tags: ["Tylenol", "acetaminophen", "autism", "ADHD", "prenatal", "pharmaceutical", "Daubert risk", "MDL"],
-    notes: "MDL 3043. Critical watch: if causation science fails Daubert (as in Zantac), entire MDL collapses. Retailers (CVS, Walmart, Target) also named. Science is contested — NEJM published cautionary review."
+    notes: "MDL 3043. Critical watch: if causation science fails Daubert (as in Zantac), entire MDL collapses. Retailers (CVS, Walmart, Target) also named. Science is contested — NEJM published cautionary review.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "Unknown — pending. Zero if Daubert fails.",
+      litigationYears: "Ongoing (filed 2022)",
+      whyItWorked: "NOT YET RESOLVED. The theory is compelling: acetaminophen is the most-used OTC pain medication in pregnancy (FDA-approved), and multiple epidemiological studies suggest elevated autism/ADHD risk. Large class of highly sympathetic plaintiffs (children with autism/ADHD). Retailers named as defendants add deep pockets.",
+      challenges: "The Zantac parallel is haunting — complex causation science that may not survive Daubert. NEJM published consensus statement by 17 scientists urging caution about the epidemiological evidence. Confounding variables (women who take more pain medication during pregnancy may have underlying conditions that themselves cause autism). Defense will challenge every epidemiological study as methodologically flawed.",
+      strategiesWon: [
+        "Consolidated multiple studies into a coherent epidemiological narrative",
+        "Naming retailers as defendants increases settlement leverage and deep pockets",
+        "Filed before Daubert clock ran — established MDL while evidence is being assembled"
+      ],
+      strategiesFailed: [
+        "NEJM consensus letter (2021) by leading scientists questioning the association was a major credibility blow",
+        "ACOG (OB/GYN society) continues to recommend acetaminophen as safe in pregnancy — contradicts plaintiffs' theory",
+        "2024 Daubert hearings: judge has raised serious skepticism about plaintiffs' expert methodology"
+      ],
+      demographics: "Mothers who used acetaminophen during pregnancy. Children diagnosed with autism spectrum disorder or ADHD. Predominantly middle-class families navigating autism/ADHD diagnosis and treatment. Geographic concentration in states with higher ASD diagnosis rates.",
+      injuryTypes: ["Autism Spectrum Disorder (ASD)", "Attention Deficit Hyperactivity Disorder (ADHD)", "Combination ASD + ADHD"],
+      keyEvidence: "Epidemiological studies (Danish Cohort, JAMA Pediatrics 2021) showing dose-dependent association. Biological plausibility theory (acetaminophen disrupts endocannabinoid signaling, hormonal development). Product labeling without pregnancy neurodevelopment warnings.",
+      corporateMisconduct: "No suppressed safety data alleged — this is a 'failure to study' + 'failure to warn' case. Manufacturers relied on long history of OTC use rather than conducting targeted neurodevelopmental studies. FDA never required neurodevelopment-specific pregnancy studies.",
+      regulatoryActions: "FDA has not issued warnings linking acetaminophen to autism/ADHD. FDA Advisory Panel voted against adding warning based on insufficient evidence. No FDA enforcement action. EU's EMA issued a 'use with caution' recommendation.",
+      settlementStructure: "No settlement — pending. If Daubert fails, $0. If Daubert succeeds, potential for massive settlement given ubiquitous drug use.",
+      bellwetherOutcome: "Daubert hearings in progress 2024-2025. No trials yet.",
+      attorneyFees: "N/A — pending. Significant sunk investment at risk.",
+      replicationModel: "C — high-risk template. DO NOT use unless Daubert outcome is known. Parallel to Zantac failure pattern.",
+      clientAcquisitionStrategy: "Autism/ASD parent support communities. ADHD diagnosis networks. Pediatric neurology practices. Special education networks. Prescription databases for prenatal patients. Caution: do not over-recruit before Daubert outcome confirmed.",
+      watchOut: "WATCH CLOSELY: This case is one Daubert ruling away from total collapse (Zantac precedent). The scientific community is divided. Accepting massive client intake before Daubert ruling is extremely high-risk. Wait for Daubert decision before building plaintiff inventory."
+    }
   },
 
   {
@@ -174,7 +466,37 @@ export const KB_CASES = [
     leadCounsel: "Motley Rice, Levin Papantonio, state AGs",
     keyPrecedent: "In re National Prescription Opiate Litigation",
     tags: ["opioid", "opioid epidemic", "Purdue Pharma", "OxyContin", "pharmaceutical", "public nuisance", "RICO", "MDL"],
-    notes: "Most complex MDL in history. 3,000+ cases. J&J paid $5B. Distributors paid $21B. Purdue filed bankruptcy; SCOTUS reversed plan that shielded Sacklers. State AG cases also massive."
+    notes: "Most complex MDL in history. 3,000+ cases. J&J paid $5B. Distributors paid $21B. Purdue filed bankruptcy; SCOTUS reversed plan that shielded Sacklers. State AG cases also massive.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Government entity recovery varies enormously ($30M-$1B+ per county/state); individual overdose death claims: est. $300K-$500K",
+      litigationYears: 8,
+      whyItWorked: "Multiple independently catastrophic theories all converged: (1) Public nuisance (state law) against manufacturers for creating the epidemic; (2) Distributor liability for ignoring suspicious order monitoring (DEA obligations); (3) RICO claims against Purdue for fraudulent marketing enterprise; (4) ARCOS DEA database revealed precise shipment data showing distributors knew opioid quantities were medically impossible. Government plaintiffs (states, counties) had standing to sue on behalf of populations — bypassed individual causation issues entirely.",
+      challenges: "Individual personal injury/wrongful death cases face massive causation problems — proving specific prescription caused specific addiction/overdose is very difficult. Government entity nuisance theory rejected in several state courts (AZ, FL), requiring Ohio Track 1 bellwether approach. Purdue's bankruptcy created complex trust structure. SCOTUS reversed Sackler non-debtor release (2024), reopening significant Purdue liability.",
+      strategiesWon: [
+        "ARCOS database (DEA prescription tracking) revealed the full supply chain — distributors shipped impossibly large quantities to small-town pharmacies knowingly",
+        "Government entity (county/city) plaintiffs sidestepped individual causation issues by seeking abatement costs",
+        "Public nuisance theory under state law (Ohio) allowed liability without traditional product liability causation",
+        "Multi-front litigation: federal MDL + state AG cases + local government suits created massive coordinated pressure"
+      ],
+      strategiesFailed: [
+        "Individual personal injury class certification failed — addiction/overdose causation is highly individualized",
+        "Public nuisance theory rejected in multiple states (Oklahoma J&J: $465M verdict reversed on appeal)",
+        "Purdue bankruptcy created years-long delay and Sackler non-debtor release was almost secured before SCOTUS reversal"
+      ],
+      demographics: "Opioid epidemic disproportionately devastated rural white communities (Appalachia, Midwest, rural New England) initially, then spread urban. Government entity plaintiffs represent entire municipalities. Individual plaintiffs: overdose survivors, families of overdose deaths — all socioeconomic levels. Affected populations skew younger adults 18-50.",
+      injuryTypes: ["Opioid addiction/dependence", "Overdose death (fentanyl/oxycodone)", "Neonatal opioid withdrawal syndrome (NOWS)", "Societal costs (emergency services, foster care, incarceration)"],
+      keyEvidence: "DEA ARCOS database showing exact pill shipments to each pharmacy. Internal Purdue marketing documents (OxyContin sales force training — suppress addiction concerns). Sackler family email communications showing knowledge. McKesson/Cardinal/AmerisourceBergen internal emails showing suspicious order monitoring failures. Expert economists calculating societal cost of epidemic.",
+      corporateMisconduct: "Purdue Pharma spent $200M/year marketing OxyContin as 'less addictive' using demonstrably false claims about the 'sealed' extended-release formulation. Sacklers extracted $10B+ from Purdue while it incurred opioid liability. Distributors received internal DEA subpoenas about suspicious orders and continued shipping. J&J grew poppy plants in Tasmania for opioid raw material supply.",
+      regulatoryActions: "DOJ $8.3B criminal/civil resolution against Purdue (2020). DEA Immediate Suspension Orders against McKesson, Cardinal Health, AmerisourceBergen. OxyContin reformulation (abuse-deterrent, 2010 — too late). Congressional investigations. DEA suspicious order monitoring rule (21 USC 842).",
+      settlementStructure: "J&J: $5B over 9 years. Distributors (McKesson $7.4B, Cardinal $6.4B, AmerisourceBergen $6.1B): $21B over 18 years to states/subdivisions. Purdue bankruptcy trust: $10B+ ongoing. Teva: $4.25B. Endo: $450M bankruptcy. Payments allocated: treatment (42%), prevention (36%), law enforcement (22%). Opioid Abatement Councils administer.",
+      bellwetherOutcome: "Ohio Track 1 bellwether (Cabell County) went to trial 2021 — judge found for defendants on public nuisance (damages calculation inadequate). This pushed parties to national settlement. Oklahoma $465M J&J verdict reversed. West Virginia distributors trial — mixed. Strategic: settle before more adverse public nuisance rulings.",
+      attorneyFees: "Contingency fees on government entity cases negotiated at 15-25%. Aggregate attorney fees from $50B+ recovery: estimated $8-12B+. Plaintiff firms (Motley Rice, Levin Papantonio) earned $500M+ each.",
+      replicationModel: "A+ — but unique in scale. Government entity plaintiff approach is highly replicable for any industry-caused public health crisis (tobacco 2.0 model)",
+      clientAcquisitionStrategy: "County/city governments: approach elected officials, county administrators, public health departments. State AG offices coordinate. Individual injury: addiction treatment centers, naloxone distribution sites, county coroners (overdose families), recovery community organizations.",
+      watchOut: "Public nuisance theory for abatement damages is NOT uniformly accepted — requires state-by-state legal research. Individual personal injury claims extremely difficult without prescription-to-overdose causation chain. Purdue SCOTUS ruling (2024) means Sackler individual liability reopened — track new developments. Bankruptcy distribution process for Purdue claims is complex and slow."
+    }
   },
 
   {
@@ -189,7 +511,37 @@ export const KB_CASES = [
     leadCounsel: "Beasley Allen",
     keyPrecedent: "In re Actos (Pioglitazone) Products Liability Litigation",
     tags: ["Actos", "pioglitazone", "bladder cancer", "pharmaceutical", "suppressed data", "failure to warn"],
-    notes: "$2.37B settlement. Trial verdict initially $9B punitive damages (Beasley Allen). Shows pharmaceutical companies hiding their own safety data creates massive punitive exposure."
+    notes: "$2.37B settlement. Trial verdict initially $9B punitive damages (Beasley Allen). Shows pharmaceutical companies hiding their own safety data creates massive punitive exposure.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$237,000 est. average",
+      litigationYears: 8,
+      whyItWorked: "Takeda's own internal 3-year clinical study (PPIAD) showed bladder cancer signal — and the company hid it from the FDA. A company concealing its own safety research creates the ideal factual predicate for both liability and massive punitive damages. Bladder cancer has clean diagnostic criteria and known risk factors, making differential diagnosis achievable. The $9B punitive verdict (later reduced) shows what jury sentiment looks like when company hides cancer data.",
+      challenges: "Actos is prescribed to Type 2 diabetics — a population with significantly elevated baseline bladder cancer risk due to diabetes itself. Defense argued every case as 'would have gotten bladder cancer anyway due to diabetes.' Causation required expert epidemiology showing Actos risk above diabetic baseline. Settlement value reduction from $9B to $2.37B shows punitive damages are not reliable settlement drivers alone.",
+      strategiesWon: [
+        "Obtained Takeda's suppressed internal PPIAD study through discovery — showed bladder cancer signal Takeda hid from FDA",
+        "Trial verdict ($9B punitive, Beasley Allen) created enormous settlement pressure even though reduced on appeal",
+        "Focused on long-term users (2+ years) where dose-dependent risk was strongest",
+        "European regulatory action (France, Germany: Actos suspended 2011) added pressure before U.S. cases resolved"
+      ],
+      strategiesFailed: [
+        "Diabetic baseline risk was difficult to control for — some cases had clear alternative causation",
+        "Punitive verdict reduction from $9B to $37M shows courts will not sustain extreme punitive awards — overshooting creates appeal risk",
+        "Settlement distribution required sophisticated claims matrix for diabetic vs. non-diabetic-attributable cancer risk"
+      ],
+      demographics: "Type 2 diabetic patients 40-75, predominantly prescribed Actos for glucose control. Both sexes. Higher prevalence in obesity-associated populations. Significant minority representation (diabetes disproportionately affects Black, Hispanic, and Native American populations). Long-term Actos users (2+ years) are primary target.",
+      injuryTypes: ["Bladder cancer", "Bladder cancer requiring cystectomy (bladder removal)", "Metastatic bladder cancer"],
+      keyEvidence: "Takeda's PPIAD internal 3-year study showing bladder cancer signal. Eli Lilly's (co-manufacturer) internal communications acknowledging risk. FDA 2011 safety communication confirming elevated risk. Meta-analyses of pooled clinical trial data. Expert oncology/epidemiology testimony on dose-response relationship.",
+      corporateMisconduct: "Takeda conducted PPIAD study showing bladder cancer risk but failed to disclose to FDA in timely manner. Continued aggressively marketing Actos as safe. Eli Lilly, co-promoter, also aware of signal. FDA 2011 communication acknowledged the risk Takeda should have disclosed years earlier.",
+      regulatoryActions: "FDA Safety Communication (2011): Actos use >1 year associated with increased bladder cancer risk. France/Germany: Actos suspended market 2011. FDA label update required. Takeda and Eli Lilly $2.37B DOJ settlement for failure to timely report safety data (FCA component).",
+      settlementStructure: "$2.37B settlement fund. Claims matrix based on: duration of use (>1 year required), bladder cancer severity (low-grade vs. invasive vs. metastatic), age at diagnosis. Differential for plaintiffs who smoked (known bladder cancer risk factor — reduces award). Claims administrator: Broadspire.",
+      bellwetherOutcome: "Allen v. Takeda (W.D. La.): $9B punitive + $1.5M compensatory. Reduced to $37M punitive on appeal. Second trial: $36.8M. These verdicts drove $2.37B global settlement.",
+      attorneyFees: "~$590M aggregate fees from $2.37B settlement (~25%). Beasley Allen earned substantial portion as lead bellwether trial firm.",
+      replicationModel: "A+ — suppressed internal safety study is the most powerful evidence in pharmaceutical litigation. Any case with company-hidden clinical trial data has similar structure.",
+      clientAcquisitionStrategy: "Endocrinology and internal medicine practices (T2D management). Urology practices (bladder cancer diagnosis and treatment). Pharmacy prescription databases for Actos use 2000-2012. Diabetic patient advocacy organizations. VA system (high diabetes prevalence).",
+      watchOut: "Diabetic baseline bladder cancer risk is 40-60% higher than general population — every case needs careful pre-existing risk factor analysis. Smoking history (another major risk factor) significantly reduces case value. Must show 2+ year continuous Actos use to establish adequate dose-dependent exposure."
+    }
   },
 
   {
@@ -204,7 +556,36 @@ export const KB_CASES = [
     leadCounsel: "Tom Kline (Kline & Specter)",
     keyPrecedent: "In re Risperdal Litigation (Philadelphia CCP)",
     tags: ["Risperdal", "risperidone", "gynecomastia", "off-label", "children", "pharmaceutical", "J&J"],
-    notes: "Philadelphia mass tort. Off-label marketing to children created massive liability. $800M+ in settlements. Shows off-label promotion as a powerful common liability theory."
+    notes: "Philadelphia mass tort. Off-label marketing to children created massive liability. $800M+ in settlements. Shows off-label promotion as a powerful common liability theory.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "$80,000 est. average (range $25K–$500K based on gynecomastia severity + surgery)",
+      litigationYears: 7,
+      whyItWorked: "Gynecomastia (male breast tissue growth) in boys is a highly visible, undeniable physical manifestation of the drug's hormonal effects — making causation visually demonstrable. The link between risperidone, elevated prolactin, and gynecomastia is pharmacologically well-established (not disputed science). J&J's off-label marketing to pediatric patients was documented in sales force training materials. Philadelphia CCP mass tort venue was plaintiff-friendly.",
+      challenges: "J&J argued gynecomastia in adolescent males is common (background rate exists). Cases required documentation of Risperdal use during growth period. Some plaintiffs had psychiatric conditions (schizophrenia, autism) requiring Risperdal — making harm vs. benefit calculations complex. Individual settlement amounts varied enormously by severity.",
+      strategiesWon: [
+        "Tom Kline's PA CCP mass tort approach — Philadelphia venue with plaintiff-friendly judges was strategic choice",
+        "Documented J&J's off-label promotion to pediatricians and child psychiatrists through sales rep testimony",
+        "Expert endocrinology testimony on prolactin mechanism was unassailable — clean pharmacological causation",
+        "$8B punitive verdict against J&J (Austin Pledger case, PA) created massive settlement pressure"
+      ],
+      strategiesFailed: [
+        "Federal MDL consolidation never achieved — J&J fought successfully to keep cases in state courts",
+        "Very large punitive awards in individual trials were disproportionate and reduced on appeal, creating uncertainty"
+      ],
+      demographics: "Predominantly adolescent and young adult males (13-25) treated for autism spectrum disorder, schizophrenia, bipolar disorder, or ADHD. A significant percentage were children in foster care or institutional settings. Disproportionate minority representation (ASD diagnosis rates have socioeconomic dimensions). Parents filed on behalf of minor children.",
+      injuryTypes: ["Gynecomastia Grade I-III (minor to requiring mastectomy)", "Lactation (galactorrhea)", "Sexual dysfunction", "Emotional/psychological harm from breast growth in males"],
+      keyEvidence: "J&J sales force training materials showing off-label promotion strategies. Risperdal prescribing data for pediatric patients (pre-FDA approval). FDA 2006 approval letter for pediatric use highlighting J&J's years of off-label marketing. Expert endocrinology testimony on prolactin-mediated gynecomastia mechanism. $8B punitive verdict testimony regarding J&J's knowledge and concealment.",
+      corporateMisconduct: "J&J marketed Risperdal to pediatricians, child psychiatrists, and nursing homes for dementia (all off-label) from 1999 until 2006 FDA approval for some uses. Internal J&J 'Project Overkill' aimed to suppress physicians raising concerns. J&J pleaded guilty to misdemeanor misbranding; paid $2.2B DOJ fine (2013) covering off-label promotion.",
+      regulatoryActions: "FDA approved Risperdal for pediatric schizophrenia only in 2006 — J&J was promoting off-label for years before. DOJ $2.2B settlement (2013) included guilty plea for off-label marketing of Risperdal. PA DOH monitoring of psychiatric medication use in foster care children.",
+      settlementStructure: "Individual settlements in PA CCP mass tort — no global class settlement. Settlements confidential. Range: $25K (mild gynecomastia, no surgery) to $2.5M+ (severe, multiple surgeries, significant psychosocial harm). J&J also paid $8B punitive in Austin Pledger case (later reduced to $6.8M).",
+      bellwetherOutcome: "PA CCP individual trials. Notable: Austin v. J&J — $8B punitive verdict (2019). Multiple seven-figure verdicts drove settlements. PA Judge assigned a special coordinating judge for all Risperdal cases — streamlined litigation.",
+      attorneyFees: "33% contingency on individual settlements. Tom Kline (Kline & Specter) earned enormous fees from individual verdicts and settlements. Aggregate estimated $200M+ across all firms.",
+      replicationModel: "A — off-label pediatric pharmaceutical promotion + pharmacologically proven harm mechanism + visible/undeniable injury = strongest possible liability combination",
+      clientAcquisitionStrategy: "Child psychiatry practices. Autism treatment centers. Pediatric neurology. Foster care system (children on psych medications). Group homes for developmentally disabled. CASA (Court Appointed Special Advocates). Advocacy organizations for autistic individuals.",
+      watchOut: "Background gynecomastia in adolescent males (~15-20% of teens have transient gynecomastia during puberty) requires careful differential diagnosis. Cases require proof of Risperdal use specifically during growth period. Severe psychiatric conditions in plaintiff population can complicate damages and jury sympathy."
+    }
   },
 
   // ─── MEDICAL DEVICE MDLs ─────────────────────────────────────────────────
@@ -221,7 +602,37 @@ export const KB_CASES = [
     leadCounsel: "Aylstock Witkin Kreis & Overholtz",
     keyPrecedent: "In re 3M Combat Arms Earplug Products Liability Litigation",
     tags: ["3M", "earplugs", "hearing loss", "military", "veterans", "medical device", "design defect", "MDL"],
-    notes: "Largest MDL in U.S. history by number of claimants (~300K). $6.01B settlement 2023. Trial phase had 16 bellwether verdicts before settlement. 3M initially filed for earplug subsidiary bankruptcy (rejected)."
+    notes: "Largest MDL in U.S. history by number of claimants (~300K). $6.01B settlement 2023. Trial phase had 16 bellwether verdicts before settlement. 3M initially filed for earplug subsidiary bankruptcy (rejected).",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "$20,000 est. average (small due to massive class size; severe tinnitus/deafness cases: $100K+)",
+      litigationYears: 6,
+      whyItWorked: "Perfect storm of liability: 3M's own internal testing (Moldex whistleblower qui tam) showed the earplugs were defective — too short to be properly seated, allowing low-frequency noise past the plug. The government had deployed these to every service member in combat zones 2003-2015. 300,000 claimants = scale leverage of unprecedented magnitude. 3M's qui tam settlement ($9.1M DOJ) pre-validated the defect.",
+      challenges: "Hearing loss in veterans has multiple causes (weapons fire, aircraft, combat vehicles) — proving this earplug specifically caused hearing damage vs. other noise exposures was contested. 3M's attempt to use subsidiary bankruptcy (Aearo Technologies) to limit liability was rejected by 7th Circuit — 3M had to face full liability. Settlement of $6.01B — large in aggregate but only ~$20K avg per claimant — may have undervalued severe cases.",
+      strategiesWon: [
+        "Qui tam whistleblower (Moldex-Metric) and DOJ settlement pre-established that 3M knew of defect and sold to government anyway",
+        "Aylstock Witkin's Florida venue selection and MDL consolidation was exceptional",
+        "16 bellwether trials created data on damages range — some $7.1M verdicts, some defense verdicts, establishing realistic range",
+        "Successfully defeated 3M's Aearo subsidiary bankruptcy gambit — preserved direct 3M parent liability"
+      ],
+      strategiesFailed: [
+        "Average $20K per claimant is low for permanent hearing damage — mass filing may have diluted individual case values",
+        "Many claimants had weak cases (normal hearing tests, no audiologist records) that reduced overall settlement value",
+        "3M's bankruptcy attempt delayed settlement by 18+ months"
+      ],
+      demographics: "300,000+ U.S. military service members deployed to Iraq and Afghanistan 2003-2015. Overwhelming majority male. Combat arms (infantry, armor, artillery) and aviation (highest noise exposure). Veterans 25-50 at time of settlement. High representation of lower-income military communities, Veterans of Foreign Wars, American Legion.",
+      injuryTypes: ["Bilateral sensorineural hearing loss", "Tinnitus (ringing in ears, often permanent)", "Combined hearing loss + tinnitus", "High-frequency hearing loss affecting speech comprehension"],
+      keyEvidence: "Moldex-Metric qui tam complaint (2016) detailing Aearo/3M's internal testing showing earplug defect. 3M's own test results showing CAEv2 did not meet testing standards. Military procurement records showing mass deployment to combat troops. Veterans' audiology records pre/post deployment. Expert audiological testimony on noise-induced hearing loss.",
+      corporateMisconduct: "3M (via Aearo Technologies) sold Combat Arms Earplugs Version 2 (CAEv2) to military knowing they failed their own testing standard. Aearo engineers folded back the plug flanges to achieve testing success — without informing military or users. 3M paid $9.1M DOJ FCA settlement acknowledging the defect in 2018 — then denied liability in the MDL.",
+      regulatoryActions: "DOJ False Claims Act settlement $9.1M (2018) — 3M admitted selling defective earplugs to military under contract. Military stopped using CAEv2. Congressional hearings on VA hearing care for veterans. VA disability claims for hearing loss are the largest single category of VA disability.",
+      settlementStructure: "$6.01B settlement. Claims matrix based on severity: Category A (hearing loss + tinnitus requiring hearing aids): ~$50K; Category B (tinnitus only): ~$15K; Category C (hearing loss, milder): ~$10K. Claims administered through Broadspire. Substantial portion reserved for late-manifesting claims.",
+      bellwetherOutcome: "17 bellwether trials before settlement. Results: 12 plaintiff verdicts ($1.7M–$7.1M), 5 defense verdicts. Mixed but plaintiff-weighted verdicts drove $6.01B settlement. Key verdict: Beal v. 3M — $1.7M; Hacker v. 3M — $2.2M.",
+      attorneyFees: "Aylstock Witkin: reported $1.5B+ in fees from the MDL. Aggregate estimated $2B+ across all firms from $6.01B recovery (~33%).",
+      replicationModel: "A+ — veteran/military plaintiff + government contract fraud (qui tam) + design defect = extraordinary leverage. Model for any consumer product with government contract + defect the company knew about",
+      clientAcquisitionStrategy: "Veterans service organizations (VFW, American Legion, DAV). VA hearing clinics. Military base communities. VA disability claims attorneys (co-counsel). Active duty hearing conservation programs. Military social media (Facebook groups, Reddit r/Veterans).",
+      watchOut: "Hearing loss in veterans has multiple competing causes — weaker cases (only mild tinnitus, no audiogram) were filing hazards that diluted average recovery. Strong cases require pre/post deployment audiograms showing hearing threshold shift. Avoid claimants with only subjective tinnitus claims without audiological documentation."
+    }
   },
 
   {
@@ -236,7 +647,37 @@ export const KB_CASES = [
     leadCounsel: "Marc Lipton, Paul Weiss (defense), trial lawyers nationwide",
     keyPrecedent: "In re C.R. Bard, Inc. Pelvic Repair Systems Products Liability",
     tags: ["hernia mesh", "pelvic mesh", "polypropylene", "medical device", "design defect", "MDL", "chronic pain"],
-    notes: "Multiple overlapping MDLs. Bard, Ethicon, Covidien, Endo International all defendants. Polypropylene mesh degradation was common defect theory. Shows how one defective material = multiple MDLs."
+    notes: "Multiple overlapping MDLs. Bard, Ethicon, Covidien, Endo International all defendants. Polypropylene mesh degradation was common defect theory. Shows how one defective material = multiple MDLs.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$125,000 est. average for revision surgery cases; range $30K–$1M+",
+      litigationYears: 10,
+      whyItWorked: "Polypropylene mesh degradation was documentable via removed mesh samples subjected to lab analysis — objective physical evidence. Multiple manufacturers used the same defective material (polypropylene) for the same indication — enabling parallel MDLs with a common theory. FDA's 2011 Safety Communication and 2016 reclassification as Class III PMA device (highest oversight) provided regulatory validation. Physician expert testimony on mesh erosion was uncontested by any independent science.",
+      challenges: "Hernia mesh cases involve some residual legitimate mesh failure (not all failures are defective design — some are surgical error). Differentiating design defect from implantation error required complex surgical expert testimony. Multiple MDL tracks (different manufacturers) required navigating different defense strategies. Long latency — complications can emerge years after implantation.",
+      strategiesWon: [
+        "Bellwether trial strategy in S.D. WV (transvaginal) and S.D. OH (hernia) created plaintiff-favorable venue advantage",
+        "Used removed mesh specimens analyzed by polymer chemists to prove in vivo degradation",
+        "FDA reclassification (Class III) mid-litigation increased regulatory pressure on manufacturers",
+        "Expert biomechanical engineering testimony showed mesh contraction and degradation caused complications"
+      ],
+      strategiesFailed: [
+        "Difficulty separating design defect from surgical error complicated many cases",
+        "Endo International bankruptcy (2022) for Davol/Bard hernia mesh reduced recovery for those claimants",
+        "Some manufacturers settled early at low values, setting unfavorable precedent for remaining defendants"
+      ],
+      demographics: "For hernia mesh: predominantly male (75%), ages 30-70, post-inguinal or ventral hernia repair. For pelvic mesh (transvaginal): exclusively female, ages 40-70, post-pelvic organ prolapse or stress urinary incontinence surgery. Both populations required revision surgery — significantly impacting quality of life.",
+      injuryTypes: ["Mesh erosion/migration into surrounding tissue", "Chronic pelvic/abdominal pain", "Dyspareunia (painful intercourse, pelvic mesh)", "Bowel obstruction/fistula", "Nerve entrapment/injury", "Recurrent hernia after mesh failure"],
+      keyEvidence: "Retrieved mesh specimens showing degradation, oxidation, and polypropylene embrittlement. Manufacturer internal testing showing degradation concerns. FDA 522 post-market study data showing high complication rates. Expert materials science testimony. Surgical records documenting complications and revision procedures.",
+      corporateMisconduct: "Multiple manufacturers knew of polypropylene degradation concerns dating to animal studies but did not conduct adequate human studies. Bard internal documents showed awareness of mesh complications. FDA 510(k) clearance pathway (device similar to earlier mesh) allowed avoidance of rigorous clinical trials. Some manufacturers destroyed adverse event reports.",
+      regulatoryActions: "FDA Safety Communication 2011 (transvaginal mesh) and 2012 (hernia mesh). FDA reclassification of surgical mesh for pelvic organ prolapse to Class III (2016). FDA ordered mandatory PMA studies. Consent decrees for Bard, Ethicon, Covidien requiring post-market studies. Endo International bankruptcy 2022.",
+      settlementStructure: "Multiple separate MDL settlements: Bard ~$375M; Ethicon ~$1B+; Covidien ~$120M; AMS (Boston Scientific) ~$1.6B. Pelvic mesh (transvaginal) generally settled first at higher values. Hernia mesh settlements ongoing. Individual case amounts based on injury severity and revision surgery costs.",
+      bellwetherOutcome: "S.D. WV (transvaginal, Judge Goodwin): first Ethicon trial $3.35M (2014). Multiple verdicts $1M-$7.76M for plaintiffs. S.D. OH (hernia, Judge Watson): Bard bellwether trials gave mixed results, driving negotiated settlement.",
+      attorneyFees: "Aggregate estimated $400M+ from all hernia/pelvic mesh MDL settlements. Leading firms: Motley Rice, Aylstock Witkin.",
+      replicationModel: "A — polypropylene mesh model: single defective material + multiple manufacturers + FDA regulatory validation + objective specimen evidence = replicable template",
+      clientAcquisitionStrategy: "Hernia repair surgeons (general surgery, colorectal). Gynecologists (pelvic floor specialists). Urogynecologists. Patients with recurring hernia or post-mesh complications. Patient advocacy groups (Mesh Medical Device News Desk). VA surgical centers.",
+      watchOut: "Litigation largely wound down — most manufacturers settled or bankrupt. Endo bankruptcy limited recovery. Statute of limitations may bar claims filed more than 2-3 years after injury discovery. Some courts applying learned intermediary doctrine to reduce manufacturer liability (surgeon knew of risks)."
+    }
   },
 
   {
@@ -251,7 +692,36 @@ export const KB_CASES = [
     leadCounsel: "Lopez McHugh LLP, Gallagher & Kennedy",
     keyPrecedent: "In re Bard IVC Filters Products Liability Litigation",
     tags: ["IVC filter", "medical device", "fracture", "migration", "design defect", "MDL", "Bard"],
-    notes: "Bellwether trials established damages framework. Internal Bard documents showing known failure rates were key. Classic design defect MDL."
+    notes: "Bellwether trials established damages framework. Internal Bard documents showing known failure rates were key. Classic design defect MDL.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$150,000 est. average (range $75K–$500K for cardiac complications)",
+      litigationYears: 7,
+      whyItWorked: "IVC filter fracture and migration causing cardiac perforation is a catastrophic, undeniable injury with clear device causation — the broken filter fragment is visible on imaging. Bard's own internal testing showed elevated fracture rates vs. competitors that Bard concealed. Bard's Recovery and G2 filter models had documented fracture rates 4-5x higher than reported to FDA. Clear design defect theory — insufficient nitinol strut thickness and weld design.",
+      challenges: "IVC filters are intended to be temporary but often left permanently (physicians claimed patient re-intervention risk). Defense argued filter failure was unforeseeable or caused by individual anatomy. Some plaintiffs were asymptomatic despite fractured/migrated filters — reducing damages. Proving IVC filter specifically caused the cardiac perforation vs. underlying cardiovascular disease was contested in some cases.",
+      strategiesWon: [
+        "Obtained Bard internal performance surveillance data (MAUDE database) showing Recovery filter had 4-5x higher adverse event rate vs. competitors",
+        "Expert biomechanical engineering testimony on nitinol fatigue and strut failure was compelling and well-received",
+        "Filter fragment imaging (fluoroscopy, CT) provided undeniable physical evidence of device failure",
+        "Bellwether trial results established $1M+ damages framework for cardiac injury cases"
+      ],
+      strategiesFailed: [
+        "Asymptomatic fractured filter cases had very low settlement values — should be screened out early",
+        "Defense 'complication not defect' argument was effective in some cases where patient anatomy was unusual"
+      ],
+      demographics: "Adults 30-75 who had IVC filters placed after DVT/PE risk events (major surgery, trauma, cancer). Roughly equal sexes. Higher prevalence in cancer patients (who have elevated clotting risk). Surgical patients post-orthopedic, abdominal, or cardiac surgery. Many had limited life expectancy due to underlying conditions — complicating damages.",
+      injuryTypes: ["IVC filter strut fracture", "Filter migration into heart/pulmonary artery", "Cardiac perforation", "Pulmonary embolism from filter failure", "Chronic pain from filter components"],
+      keyEvidence: "Bard internal MAUDE adverse event database showing high fracture rates. Bard internal emails discussing 'Capture Rate' (how many fractures were retrievable) rather than fixing the design. Expert metallurgical analysis of retrieved fractured struts showing fatigue failure. Bard's own 522 post-market study data (mandated by FDA) confirming elevated risks.",
+      corporateMisconduct: "Bard had internal data showing Recovery filter fracture rates were 12-25% at 5 years — far above competitor rates and well above FDA reporting thresholds. Bard continued marketing and selling filters while internal discussions focused on how to limit liability rather than fix the design. FDA 522 study data was selectively reported.",
+      regulatoryActions: "FDA Safety Communication 2010 (IVC filter risks). FDA 522 post-market study mandated for all IVC filter manufacturers. FDA device reclassification considerations. No criminal charges. Bard continued selling filters despite advisory.",
+      settlementStructure: "Confidential individual case settlements. Bellwether verdicts of $1-3M per cardiac injury case. Estimated aggregate $300M+ in confidential settlements. Claims still being resolved as of 2025. No global class settlement achieved.",
+      bellwetherOutcome: "Multiple bellwether trials resulted in plaintiff verdicts ranging $1M-$3.6M for cardiac perforation cases. Some defense verdicts in asymptomatic fracture cases. Verdicts drove substantial individual settlements.",
+      attorneyFees: "33-40% contingency on individual cases. Leading firms: Lopez McHugh, Gallagher & Kennedy. Aggregate $100M+ estimated.",
+      replicationModel: "A — template for any medical device with documented fracture/failure rates in FDA MAUDE database that company knew about and minimized",
+      clientAcquisitionStrategy: "Radiology practices (who retrieve failed filters and have imaging records). Vascular surgery practices. Interventional cardiology (cardiac perforations). FDA MAUDE database search for IVC filter adverse events. Hospital quality departments.",
+      watchOut: "Statute of limitations issues for older filter placements (Recovery filter recalls 2005-2010 era). Asymptomatic fracture cases have very limited damages — screen carefully. Plaintiff life expectancy issues (cancer patients with filters) complicate future damages modeling."
+    }
   },
 
   {
@@ -266,7 +736,36 @@ export const KB_CASES = [
     leadCounsel: "Levin Papantonio, Weitz & Luxenberg",
     keyPrecedent: "In re DePuy Orthopaedics, Inc. ASR Hip Implant Products Liability",
     tags: ["hip implant", "metal-on-metal", "DePuy", "cobalt", "chromium", "metallosis", "recall", "MDL"],
-    notes: "$2.5B initial settlement + additional for late manifesters. Shows medical device MDLs can succeed where recall confirms defect. Metallosis evidence was compelling."
+    notes: "$2.5B initial settlement + additional for late manifesters. Shows medical device MDLs can succeed where recall confirms defect. Metallosis evidence was compelling.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$270,000 est. average (range $100K–$1M+ for complex cases with cobalt toxicity)",
+      litigationYears: 7,
+      whyItWorked: "Blood cobalt/chromium ion levels provided an objective, measurable biomarker of metal release from the implant — you could test patients' blood and see the evidence of harm directly. DePuy recalled the ASR voluntarily in 2010 after FDA reported 12-18% failure rate within 5 years (vs. industry standard of <1%). Recall was equivalent to manufacturer admission of defect. Metal-on-metal tribology (how bearing surfaces interact) was well-understood engineering — design defect was provable through biomechanics.",
+      challenges: "Cases required proof that metallosis (metal-on-metal tissue reaction) caused the specific injury vs. normal implant wear or surgical factors. Some patients needed revision even with well-functioning implants (prophylactic revision adding to class). International litigation coordination (UK recall preceded U.S.) complicated timing. Defense argued some failures were due to patient factors (BMI, activity level, acetabular cup placement).",
+      strategiesWon: [
+        "Blood cobalt/chromium testing as objective injury criterion — quantified exact harm in a measurable way",
+        "Australian Orthopaedic Association National Joint Replacement Registry data showed elevated failure rates years before U.S. recall — used to establish DePuy's knowledge",
+        "Bellwether trials established damages range; Strum v. DePuy ($8M) was pivotal",
+        "MDL structure (N.D. Ohio, Judge Katz) was highly organized — bellwether selection process was rigorous and created realistic settlement range"
+      ],
+      strategiesFailed: [
+        "Long latency of cobalt toxicity complications (neurological effects) created case identification challenges",
+        "Some bilateral ASR cases (both hips revised) created issues about apportionment between first and second revision"
+      ],
+      demographics: "Adults 50-75 who underwent total hip arthroplasty for osteoarthritis or hip dysplasia. Equal sex distribution (osteoarthritis affects men and women equally). Active patients who needed total hip revision sooner than expected. Higher proportion of younger hip replacement patients (50-65) who were promised longer-lasting metal-on-metal alternative.",
+      injuryTypes: ["Pseudotumors (ALTR — adverse local tissue reaction)", "Metallosis (cobalt/chromium deposits in tissue)", "Elevated blood cobalt/chromium levels", "Premature implant failure requiring revision surgery", "Bone and tissue destruction", "Cobalt toxicity — cardiovascular, neurological effects"],
+      keyEvidence: "Australian registry data showing 12% failure rate at 5 years. DePuy's own surveillance data. Blood serum cobalt/chromium testing. MRI/ultrasound imaging of pseudotumors. Biomechanical expert testimony on metal-on-metal tribocorrosion. Patient treatment records for revision surgery.",
+      corporateMisconduct: "DePuy received Australian registry data showing elevated failure rates before U.S. recall but delayed recall notification. Internal DePuy documents showed awareness of metal-on-metal risks in development. DePuy marketed ASR as premium, longer-lasting product at higher cost — specifically to younger, more active patients.",
+      regulatoryActions: "FDA Medical Device Safety Communication 2010. DePuy voluntary global recall August 2010. FDA 522 post-market study mandated. MoM hip registry established. UK NHS recall preceded U.S. action by months.",
+      settlementStructure: "$2.5B initial settlement fund (November 2013). Settlement criteria: must have had revision surgery or blood cobalt >7 ppb. Payment matrix: 8 tiers based on injury severity ($125K base → $1M+ for severe metallosis). Additional claims allowed for late-manifesting injuries. Special master (Ken Feinberg declined; Broadspire administered). Additional $22M paid to counsel fees from fund.",
+      bellwetherOutcome: "No U.S. bellwether trials before settlement. UK trials provided blueprint. Lehr v. DePuy (OH, 2012) — $8.3M verdict. Global settlement followed. International: UK group litigation resulted in settlements.",
+      attorneyFees: "~$600M aggregate attorney fees from $2.5B fund (~24%). Levin Papantonio and Weitz & Luxenberg received large MDL leadership fees.",
+      replicationModel: "A+ — recall-based MDL with objective biomarker (blood metal levels): excellent template for any implanted device with measurable biological marker of harm",
+      clientAcquisitionStrategy: "Orthopedic surgeons (hip revision surgery). Hospitals with high-volume joint replacement programs. Radiology practices (MRI pseudotumor diagnosis). VA orthopedic departments. Patient support groups for failed hip replacements. DePuy recall registry.",
+      watchOut: "Statute of limitations may bar pre-2010 recall cases filed late. Blood metal level testing required — clients with low cobalt/chromium levels have weaker cases. Alternative causation (surgical positioning, BMI >35) is standard defense. Beware cases with significant pre-existing hip pathology."
+    }
   },
 
   {
@@ -281,7 +780,37 @@ export const KB_CASES = [
     leadCounsel: "Motley Rice, Aylstock Witkin",
     keyPrecedent: "In re Ethicon, Inc. Pelvic Repair System Products Liability Litigation",
     tags: ["transvaginal mesh", "pelvic mesh", "Ethicon", "J&J", "medical device", "women", "MDL"],
-    notes: "One of largest device MDLs. Multiple consolidated in S.D. WV (Judge Goodwin). Shows women's health device defects have enormous litigation potential."
+    notes: "One of largest device MDLs. Multiple consolidated in S.D. WV (Judge Goodwin). Shows women's health device defects have enormous litigation potential.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$35,000 est. average (range $15K–$500K; high-value cases involve removal surgery and nerve damage)",
+      litigationYears: 12,
+      whyItWorked: "Judge Joseph Goodwin (S.D. WV) managed the consolidated pelvic mesh MDLs with extraordinary efficiency — becoming the leading MDL judge in the U.S. for this litigation. FDA's safety communications (2011, 2012, 2016 Class III reclassification) provided successive waves of regulatory validation. Polypropylene mesh erosion into vaginal tissue is a horrific, undeniable injury. Female plaintiff population and intimate injury type made juries particularly sympathetic. Multiple manufacturers meant multiple settlement opportunities.",
+      challenges: "100,000+ claims required extensive case management infrastructure. Many plaintiffs had similar symptoms from different manufacturers — sorting responsibility was complex. Defense claimed complications were known risks disclosed in consent forms. Some cases involved multiple mesh products from different manufacturers, complicating apportionment. Attorneys general in multiple states sued manufacturers separately.",
+      strategiesWon: [
+        "S.D. WV venue — Judge Goodwin was experienced, efficient, and plaintiff-sympathetic; correct venue choice was critical",
+        "FDA reclassification to Class III (2016) mid-litigation proved Ethicon/Bard knew devices needed more rigorous testing",
+        "Multiple coordinated MDLs (by manufacturer) allowed comprehensive pressure campaign",
+        "Emotional testimony from women about loss of intimate function resonated powerfully with juries"
+      ],
+      strategiesFailed: [
+        "Some manufacturers tried to settle early at low values — undermined value of stronger cases",
+        "Endo International/AMS bankruptcy reduced ultimate recovery for those claimants",
+        "Individual case value varied widely, making global settlement complicated"
+      ],
+      demographics: "Exclusively female plaintiffs. Ages 40-70. Post-pelvic organ prolapse (POP) or stress urinary incontinence (SUI) surgery. Many were middle-class women seeking minimally invasive solution to common gynecological problems. Significant proportion were sexually active — intimate harm was a critical damages element.",
+      injuryTypes: ["Mesh erosion into vaginal wall", "Mesh erosion into bladder/urethra/rectum", "Chronic pelvic pain", "Dyspareunia (painful intercourse)", "Urinary incontinence (recurrence/worsening)", "Pelvic floor nerve damage"],
+      keyEvidence: "FDA safety communications. Removed mesh specimens showing degradation and oxidation. Expert urogynecology testimony. Internal manufacturer testing showing complications. Manufacturer instructions for use failing to adequately describe erosion risks. Patient treatment records showing multiple revision surgeries.",
+      corporateMisconduct: "Ethicon, Bard, and Covidien marketed transvaginal mesh as safe and effective for POP/SUI without adequate clinical studies (relying on 510(k) clearance). Internal documents showed awareness of mesh erosion concerns. 510(k) pathway allowed bypassing clinical trials by claiming similarity to previous devices. Surgeons were inadequately trained in implantation techniques.",
+      regulatoryActions: "FDA Public Health Notification 2008. FDA Safety Communication 2011 (transvaginal mesh for POP). FDA 522 post-market study orders. FDA reclassification: surgical mesh for POP to Class III (2016). FDA ordered Ethicon, Bard, and others to cease marketing PMA applications. Ethicon and Covidien withdrew transvaginal mesh from U.S. market 2012-2013.",
+      settlementStructure: "Separate MDL settlements by manufacturer: Ethicon ~$1B+ (multiple waves); Bard ~$375M; AMS (Boston Scientific) ~$1.6B; C.R. Bard ~$200M+; Covidien/Sofradim ~$120M+. Payment tiers based on: injury type (erosion vs. pain), need for revision surgery, parity of sexual dysfunction. Settlements under confidentiality.",
+      bellwetherOutcome: "Multiple Ethicon bellwether trials. First Ethicon trial: Huskey v. Ethicon — $3.27M (2014). Multiple $1-5M verdicts for plaintiffs. AMS: Hammons v. AMS — $3.35M (2014). Verdicts drove multi-billion dollar manufacturer settlements.",
+      attorneyFees: "Motley Rice and Aylstock Witkin earned hundreds of millions. Aggregate estimated $600M+ across all firms. Judge Goodwin carefully reviewed fee requests.",
+      replicationModel: "A+ — women's health device defect with intimate injury damages and FDA regulatory failures is extraordinarily powerful litigation template",
+      clientAcquisitionStrategy: "Urogynecology practices. Female pelvic medicine specialists. Gynecologists who perform POP/SUI repairs. Patient support groups (Mesh Medical Device News Desk, Mesh Sisters). VA women's health programs. Nursing networks.",
+      watchOut: "Litigation largely resolved — most manufacturers settled, withdrew products, or went bankrupt. Late-discovered erosion cases may still be viable. Statute of limitations varies by state — discover date vs. surgery date is contested. Some claims time-barred by 2025."
+    }
   },
 
   {
@@ -296,7 +825,35 @@ export const KB_CASES = [
     leadCounsel: "Multiple firms",
     keyPrecedent: "In re Exactech Polyethylene Orthopedic Products Liability Litigation",
     tags: ["Exactech", "orthopedic", "bone cement", "recall", "polyethylene", "medical device", "MDL"],
-    notes: "Emerging MDL. Class I recall in 2022. Packaging defect uniform across all devices — strong commonality. Exactech filed for bankruptcy 2023. Monitoring closely."
+    notes: "Emerging MDL. Class I recall in 2022. Packaging defect uniform across all devices — strong commonality. Exactech filed for bankruptcy 2023. Monitoring closely.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "$75,000–$200,000 est. (revision surgery + pain and suffering); reduced by bankruptcy",
+      litigationYears: "Ongoing (filed 2022)",
+      whyItWorked: "FDA Class I recall (highest severity) establishes defect prima facie. Packaging defect is the same across all 170,000 recalled devices — perfect commonality. Objective failure criterion: premature polyethylene degradation visible on imaging and upon device retrieval. Same theory as prior successful orthopedic MDLs (DePuy ASR).",
+      challenges: "Exactech filed for bankruptcy 2023, fundamentally limiting recovery. Polyethylene degradation occurs gradually — differentiating packaging-caused vs. normal wear vs. surgical factors requires expert biomechanics. Pending Daubert ruling on causation timeline. Bankruptcy creates trust structure with limited assets.",
+      strategiesWon: [
+        "Immediate MDL filing on FDA Class I recall — recall defines the class and establishes defect",
+        "Polymer chemistry experts to prove oxygen-induced polyethylene degradation from defective packaging",
+        "Coordinated multi-firm plaintiff leadership that accelerated discovery of internal Exactech testing data"
+      ],
+      strategiesFailed: [
+        "Exactech bankruptcy forced pivot from traditional MDL to bankruptcy claims process — reduces leverage and recovery",
+        "Belated recall (devices implanted for years before recall) creates statute of limitations complications in some states"
+      ],
+      demographics: "Adults 50-80 who underwent knee, hip, or ankle replacement with Exactech components manufactured with defective oxygen-barrier packaging (2004-2022). Orthopaedic patients with osteoarthritis or joint trauma. Equal sex distribution. Requires revision surgery to address degraded components.",
+      injuryTypes: ["Premature polyethylene insert degradation", "Accelerated joint wear", "Osteolysis (bone loss from debris)", "Pain and reduced mobility requiring revision surgery"],
+      keyEvidence: "FDA Class I recall notice. Internal Exactech packaging specifications showing oxygen-barrier failure. Retrieved component analysis showing oxidation. Polymer chemistry expert testimony. Revision surgery records.",
+      corporateMisconduct: "Exactech used out-of-specification packaging bags lacking adequate oxygen barrier from 2004 onward. Internal quality control records showed deviations from specification. FDA identified the issue during inspection. Exactech continued distributing affected devices despite internal quality flags.",
+      regulatoryActions: "FDA Class I recall announced August 2022 for knee, hip, and ankle replacement systems. Exactech recall covers ~170,000 devices globally. FDA inspection of manufacturing facility triggered recall. Exactech Chapter 11 bankruptcy filed July 2023.",
+      settlementStructure: "Bankruptcy claims process. Exactech established a claims trust through bankruptcy reorganization. Claims prioritized by injury severity — revision surgery cases first. Total trust value significantly less than projected MDL recovery. Claims administrator appointed.",
+      bellwetherOutcome: "No bellwether trials — bankruptcy stayed litigation. Claims resolution through bankruptcy trust.",
+      attorneyFees: "Significantly reduced from bankruptcy recovery. Firms invested substantially in MDL infrastructure before bankruptcy pivot.",
+      replicationModel: "B — FDA Class I recall = strong liability base, but orthopedic device bankruptcy is a recurring pattern (Endo/AMS, Exactech) — litigation risk of defendant insolvency must be priced in",
+      clientAcquisitionStrategy: "Orthopedic surgeons who implanted Exactech devices. Revision surgery patients (hospital surgical records). Exactech recall registry contact list. Orthopedic patient support groups. Hospitals with high joint replacement volume.",
+      watchOut: "Exactech bankruptcy is the dominant issue — recovery will be cents on the dollar compared to pre-bankruptcy projections. Any new orthopaedic device MDL must now account for defendant insolvency risk. Verify recall model numbers exactly — not all Exactech devices recalled."
+    }
   },
 
   // ─── ENVIRONMENTAL / TOXIC TORT ──────────────────────────────────────────
@@ -313,7 +870,37 @@ export const KB_CASES = [
     leadCounsel: "Wisner Baum, Baum Hedlund Aristei & Goldman",
     keyPrecedent: "Hardeman v. Monsanto Co., 997 F.3d 941 (9th Cir. 2021)",
     tags: ["Roundup", "glyphosate", "Monsanto", "Bayer", "NHL", "cancer", "IARC", "herbicide", "toxic tort"],
-    notes: "Shows mass tort can succeed without formal class cert via bellwether trials. $10.9B settlement fund. Key: IARC classification was essential to establish general causation at Daubert."
+    notes: "Shows mass tort can succeed without formal class cert via bellwether trials. $10.9B settlement fund. Key: IARC classification was essential to establish general causation at Daubert.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$87,000 est. average (range $25K–$2M depending on cancer type, exposure duration)",
+      litigationYears: 7,
+      whyItWorked: "IARC's 2015 classification of glyphosate as 'Group 2A — probably carcinogenic to humans' provided the regulatory anchor needed to pass Daubert. Three early bellwether verdicts all went to plaintiffs (Johnson $289M; Hardeman $80M; Pilliod $87M each), creating enormous settlement pressure before Bayer inherited the case. Non-Hodgkin's lymphoma has a relatively clean differential diagnosis, reducing individual causation disputes. Bayer's $63B acquisition of Monsanto in 2018 brought the full liability into focus.",
+      challenges: "Federal class certification denied — individualized exposure duration, product use frequency, and NHL subtype differences prevented Rule 23(b)(3) predominance. Many agricultural workers are immigrants with limited English and documentation concerns. Bayer continues to contest causation in new cases filed after the $10.9B settlement. Future-use litigation (ongoing for cases after the settlement date) is actively contested.",
+      strategiesWon: [
+        "IARC 2015 classification anchored general causation at Daubert — independent international agency, not just retained experts",
+        "Three successive plaintiff bellwether verdicts ($289M, $80M, $87M each) overwhelmed Bayer's defenses",
+        "Internal Monsanto documents ('ghostwriting' of scientific papers to influence literature) devastated credibility",
+        "State court trials (CA) bypassed federal MDL cert denial — litigated as individual cases with all advantages of state tort law"
+      ],
+      strategiesFailed: [
+        "Federal class cert denied — individual causation differences (exposure duration, product used, NHL subtype) prevented class",
+        "Bayer's ongoing dispute of causation science means future cases must still prove causation individually",
+        "Some settlements were criticized as too low for the severity of NHL claims"
+      ],
+      demographics: "Primarily farmers, agricultural workers, groundskeepers, and landscapers with repeated multi-year herbicide exposure. Significant Hispanic/Latino migrant farmworker population. Adults 45-75 at diagnosis. Higher representation in agricultural states (CA, IA, MN, WA). Many low-income agricultural workers with limited legal resources.",
+      injuryTypes: ["Non-Hodgkin's lymphoma (all subtypes)", "Diffuse large B-cell lymphoma (DLBCL)", "Follicular lymphoma", "Mantle cell lymphoma"],
+      keyEvidence: "IARC 2015 Group 2A classification. Internal Monsanto documents showing ghostwriting of scientific papers to influence peer-reviewed literature. Epidemiological studies (NAPP, EPLIM, CNAP). Animal carcinogenicity data from EPA/IARC review. Bellwether plaintiff exposure histories and NHL diagnoses.",
+      corporateMisconduct: "Monsanto orchestrated a multi-decade campaign to suppress evidence of glyphosate carcinogenicity, including ghostwriting scientific papers to create misleading literature, cultivating EPA relationships, and suppressing internal toxicology studies. 'Monsanto Papers' (released in discovery) showed systematic effort to shape scientific consensus.",
+      regulatoryActions: "IARC Group 2A 'probable human carcinogen' (2015). EPA: glyphosate 'not likely to be carcinogenic' — but EPA assessment was found to have been improperly influenced. California OEHHA listed glyphosate as Prop 65 carcinogen. EU controversially renewed glyphosate approval (2023) despite scientific debate.",
+      settlementStructure: "$10.9B settlement fund for approximately 125,000 claims. Average payout: $87K for eligible claims. Tiered by cancer severity: Grade 1-2 NHL (~$50K); Grade 3-4 NHL (~$150K); NHL death (~$200K+). Claims administrator: Brown Greer. Ongoing cases for new plaintiffs filed after settlement date still active.",
+      bellwetherOutcome: "Johnson v. Monsanto (CA Superior): $289M jury verdict (2018), reduced to $78.5M. Hardeman v. Monsanto (N.D. Cal.): $80M (2019), affirmed 9th Cir. 2021. Pilliod v. Monsanto (CA Superior): $2B punitive (2019), reduced to $87M each. All three plaintiff verdicts drove $10.9B resolution.",
+      attorneyFees: "Wisner Baum, Baum Hedlund earned $300M+ each. Aggregate estimated $2.7B+ in attorney fees from $10.9B fund (~25%).",
+      replicationModel: "A — IARC classification + internal corporate misconduct documents + bellwether trial pressure strategy is replicable for any agricultural/environmental carcinogen",
+      clientAcquisitionStrategy: "Agricultural extension offices and farm bureaus. Migrant farmworker health clinics. Landscaping company workers' comp databases. Golf course superintendents (heavy glyphosate users). Cancer registries in agricultural counties. Hispanic community health centers.",
+      watchOut: "Federal class cert denied — must be litigated as individual cases or sub-group settlements. Bayer continues to dispute causation for all cases outside the $10.9B fund. Occupational exposure documentation is critical — recreational users (homeowners) have much weaker cases. NHL subtype matters — some subtypes have stronger vs. weaker glyphosate associations."
+    }
   },
 
   {
@@ -328,7 +915,37 @@ export const KB_CASES = [
     leadCounsel: "Levin Papantonio, Cossich Sumich Parsiola & Taylor",
     keyPrecedent: "PACT Act, 38 U.S.C. § 3733",
     tags: ["Camp Lejeune", "TCE", "PCE", "benzene", "military", "veterans", "water contamination", "PACT Act", "government"],
-    notes: "MDL 3049. Congress specifically created cause of action. Largest mass tort against U.S. government in history. ATSDR mortality study confirms exposure-disease link."
+    notes: "MDL 3049. Congress specifically created cause of action. Largest mass tort against U.S. government in history. ATSDR mortality study confirms exposure-disease link.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending; DOJ administrative settlements est. $100K–$500K per qualifying disease",
+      litigationYears: "Ongoing (CLJA enacted 2022)",
+      whyItWorked: "The Camp Lejeune Justice Act (2022) is extraordinary — Congress specifically passed legislation waiving the U.S. government's sovereign immunity for Camp Lejeune claims. This is the clearest possible admission of government liability. ATSDR's comprehensive health studies (published 2014-2017) scientifically established exposure-disease links for 15+ conditions. TCE/PCE contamination levels at Lejeune were 280-340x safe limits. The causation science was confirmed by multiple independent agencies.",
+      challenges: "Suing the U.S. government under the CLJA requires first filing an administrative claim with the Navy JAG — only after denial/no response can you file in federal court (E.D.N.C.). The administrative bottleneck has created a massive backlog. DOJ is offering structured settlements at below-jury-verdict values. Proving individual exposure duration (who was there, when, and for how long) for claims 30-70 years old is challenging. Military records are incomplete for many claimants.",
+      strategiesWon: [
+        "Congressional advocacy (Jerry Ensminger campaign) over 20 years was the primary strategic victory — legislative solution to sovereign immunity",
+        "ATSDR health studies published before CLJA meant causation science was established before litigation began",
+        "Coordinated plaintiff attorney groups filing administrative claims simultaneously created processing pressure on Navy JAG",
+        "Water exposure records (base housing assignments, military service records) provided objective exposure evidence"
+      ],
+      strategiesFailed: [
+        "DOJ administrative settlement offers are low — many attorneys advising clients to reject and pursue federal court",
+        "Navy JAG administrative process has become severely backlogged with 500K+ claims — creating years-long wait",
+        "Some qualifying disease criteria are narrowly defined, excluding some plaintiffs with real exposure-related illness"
+      ],
+      demographics: "U.S. Marines and Navy personnel stationed at Camp Lejeune 1953-1987. Their family members (spouses, children) who lived on base. Children born to service members stationed there. Disproportionately male (Marine Corps demographics), but spouses/children add significant female and pediatric plaintiffs. Many are now 60-80 years old with cancer or other serious conditions.",
+      injuryTypes: ["Non-Hodgkin's lymphoma", "Bladder cancer", "Kidney cancer", "Liver cancer", "Parkinson's disease", "ALS (Lou Gehrig's disease)", "Scleroderma", "Neurobehavioral effects (children)", "Cardiac defects (children born on base)", "Multiple myeloma", "Leukemia (adult and childhood)"],
+      keyEvidence: "ATSDR health studies (2014-2017) documenting 15 disease associations. Water sampling data showing contamination levels (TCE 280x, PCE 340x EPA limits). Military base housing records. Service records confirming presence dates. TCE/PCE industrial source identification (dry cleaning on-base, motor pool). Congressional testimony from affected veterans.",
+      corporateMisconduct: "U.S. Marine Corps and Navy failed to test or treat base water supply despite evidence of contamination. Government knew of contamination by 1982 but did not notify families or close the wells until 1985. VA for decades denied benefits to affected veterans. Government suppressed ATSDR studies for years.",
+      regulatoryActions: "PACT Act (2022, 38 U.S.C. § 3733) — legislative cause of action against U.S. government. ATSDR comprehensive health studies ordered by Congress (Superfund Act). VA disability benefits for Camp Lejeune veterans established separately. EPA Camp Lejeune designated as Superfund site.",
+      settlementStructure: "Two-track: (1) Administrative: Navy JAG offers settlements; many below-market values ($100K–$300K). (2) Litigation: Federal court (E.D.N.C.) after administrative claim denial — trials expected 2025-2026. Claims matrix by disease: Tier 1 (established link) → highest value; Tier 2 (limited evidence) → lower value. DOJ managing claims.",
+      bellwetherOutcome: "No trials yet — bellwether case selection ongoing. First trials expected late 2025. DOJ has settled some individual administrative claims.",
+      attorneyFees: "33% contingency standard. Aggregate estimated $7B+ in potential attorney fees from $21B+ projected recovery. Major firms: Levin Papantonio, Morgan & Morgan, Brown Greer (claims admin).",
+      replicationModel: "A+ — but unique: requires congressional legislation. However, the template of government-caused contamination + ATSDR/EPA science + class action is directly replicable for other government toxic exposures (military burn pits, Fort McClellan, etc.)",
+      clientAcquisitionStrategy: "Marine Corps veterans' organizations (MCL — Marine Corps League). Veterans of Foreign Wars. American Legion. VA health system contacts. Military-focused legal advertising. USMC retiree networks. Spouse organizations (Marine Corps Spouses Clubs). Social media targeting military communities.",
+      watchOut: "Administrative claim filing is mandatory FIRST (Navy JAG) before federal court access — do not skip this step. Two-year statute of limitations under CLJA began August 2022 — claims filed after August 2024 may be time-barred unless tolled. Disease must be one of the 15 ATSDR-recognized Camp Lejeune conditions. Government will vigorously contest cases without clear diagnosis-exposure documentation."
+    }
   },
 
   {
@@ -343,7 +960,37 @@ export const KB_CASES = [
     leadCounsel: "Baron & Budd (plaintiffs); Drinker Biddle (defense)",
     keyPrecedent: "Amchem Products, Inc. v. Windsor, 521 U.S. 591 (1997); Ortiz v. Fibreboard, 527 U.S. 815 (1999)",
     tags: ["asbestos", "mesothelioma", "lung cancer", "Amchem", "Ortiz", "settlement class", "SCOTUS", "bankruptcy trust"],
-    notes: "The foundational cases. SCOTUS Amchem and Ortiz define outer limits of Rule 23. Led to 60+ asbestos bankruptcy trusts paying $70B+. Mesothelioma cases remain among highest-value individual tort claims."
+    notes: "The foundational cases. SCOTUS Amchem and Ortiz define outer limits of Rule 23. Led to 60+ asbestos bankruptcy trusts paying $70B+. Mesothelioma cases remain among highest-value individual tort claims.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Mesothelioma: $1M–$3M individual settlement; lung cancer: $100K–$500K; non-malignant: $10K–$75K",
+      litigationYears: 50,
+      whyItWorked: "Asbestos litigation is the most consequential mass tort in U.S. legal history — $70B+ paid over 50 years. The underlying science (asbestos → mesothelioma) is incontrovertible. Mesothelioma is virtually always caused by asbestos, eliminating the causation defense. The bankruptcy trust system (60+ trusts) arose specifically because SCOTUS rejected class actions in Amchem/Ortiz, leading to a more functional per-case resolution mechanism. Individual mesothelioma cases remain among the highest-value tort claims in the U.S.",
+      challenges: "SCOTUS in Amchem (1997) and Ortiz (1999) rejected settlement class actions for asbestos — the adequacy requirement could not be met when future claimants (not yet sick) had different interests from current claimants. This forced the pivot to bankruptcy trusts and individual litigation. Defendants routinely filed Chapter 11 to manage liability (60+ asbestos bankruptcies). Silica fraud litigation (Doctor Shopping MDL 926) revealed widespread fraudulent diagnoses by plaintiff-hired mobile screening clinics.",
+      strategiesWon: [
+        "Industrial hygiene expert testimony establishing historical asbestos exposure at specific job sites was key",
+        "Codefendant cross-claims ('empty chair' defense) proved extremely effective — blame whoever is not in the room",
+        "Mesothelioma latency (20-50 years) means very elderly plaintiffs with sympathetic presentations",
+        "60+ bankruptcy trusts means claimants can file against multiple trusts from the same exposure history — maximizing recovery"
+      ],
+      strategiesFailed: [
+        "Amchem and Ortiz class certification failed — Rule 23 cannot accommodate the diversity of asbestos claimants",
+        "Mass screening clinics (Silica MDL) led to fraudulent diagnoses that undermined the entire litigation and resulted in sanctions",
+        "Some defendants used 'empty chair' to bankruptcy trust defendants — shifting liability to insolvent parties"
+      ],
+      demographics: "Workers with occupational asbestos exposure: shipbuilders (Navy/commercial), pipefitters, insulators, boilermakers, electricians, automotive workers (brake pads), construction workers (especially 1940s-1980s). Overwhelmingly male. Working-class and blue-collar. Mesothelioma affects 3,000 Americans annually. Many plaintiffs are elderly veterans (Navy shipyard exposure).",
+      injuryTypes: ["Pleural mesothelioma (most lethal)", "Peritoneal mesothelioma", "Lung cancer (with smoking contributing)", "Asbestosis (non-malignant pulmonary fibrosis)", "Pleural plaques", "Laryngeal cancer"],
+      keyEvidence: "Decades of industrial hygiene studies on asbestos exposure levels at specific job sites. Medical records and pathology showing asbestos fibers in tumor tissue. Defense contractor and employer records showing asbestos-containing products used at job sites. Social security work history records. Coworker testimony.",
+      corporateMisconduct: "Johns Manville (and others) knew of asbestos health risks from 1930s/1940s internal studies. The 'Sumner Simpson Letters' showed that industry executives conspired to suppress publication of the Lanza asbestos health study in the 1930s. Continued manufacturing and selling asbestos products while knowing of risks for decades.",
+      regulatoryActions: "OSHA permissible exposure limits progressively tightened (1972, 1986, 1994). EPA ban on most asbestos uses (1989 — partially reversed by 5th Circuit 1991). Asbestos Information Act. IARC Group 1 human carcinogen classification. EPA NESHAP asbestos standards. No criminal charges for industry despite documented knowledge.",
+      settlementStructure: "60+ asbestos bankruptcy trusts with $30B+ in assets. Each trust has a Trust Distribution Procedures (TDP) document specifying disease categories and payment values. Claimants can file against multiple trusts simultaneously (FIFO vs. matrix payment). Individual litigation for non-bankrupt defendants resolved case-by-case. Current major active trusts: Manville Personal Injury Settlement Trust, Armstrong World Industries Trust, Owens Corning, W.R. Grace.",
+      bellwetherOutcome: "No formal bellwether process — individual trials historically. Recent innovations: MDL wave trials, consolidated trials in favorable venues (Baltimore, Philadelphia). Individual verdicts vary widely: $1-50M for mesothelioma cases.",
+      attorneyFees: "40% contingency standard in many mesothelioma cases. Baron & Budd, Kazan McClain, Simmons Hanly Conroy, Waters Kraus earned $100M+ each over decades. Aggregate fees: $15B+ over 50 years.",
+      replicationModel: "A+ — the foundational model for all mass toxic tort litigation. However: avoid class certification for diverse long-tail claims. Individual trust/bankruptcy resolution is the mature model.",
+      clientAcquisitionStrategy: "Mesothelioma patient navigator organizations. Asbestos Disease Awareness Organization (ADAO). Veterans service organizations (shipyard workers). Trade union member databases (boilermakers, pipefitters, electricians). Oncology practices (thoracic surgery, pulmonology). Pathology labs (mesothelioma diagnoses).",
+      watchOut: "Asbestos litigation in late stage for most defendants — most solvent defendants are exhausted. Focus on remaining active defendants and trust claims. Silica fraud scandal (MDL 926) created judicial scrutiny of mass screening diagnoses — require independent radiological review for B-reading findings. Mesothelioma still viable but non-malignant cases have very low values."
+    }
   },
 
   {
@@ -359,7 +1006,36 @@ export const KB_CASES = [
     leadCounsel: "Motley Rice",
     keyPrecedent: "People v. ConAgra Grocery Products Co. (2017 CA reversal)",
     tags: ["lead paint", "public nuisance", "children", "toxic tort", "government entity", "abatement"],
-    notes: "Important because public nuisance theory is risky — CA Court of Appeal reversed $305M judgment. Shows limits of public nuisance in product liability context. Compare to opioid nuisance theory failures."
+    notes: "Important because public nuisance theory is risky — CA Court of Appeal reversed $305M judgment. Shows limits of public nuisance in product liability context. Compare to opioid nuisance theory failures.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "$0 on public nuisance theory (reversed); Individual child neurological injury cases: $500K–$2M",
+      litigationYears: 17,
+      whyItWorked: "The litigation generated enormous public attention and political pressure on manufacturers. Rhode Island and initial lower courts accepted public nuisance theory. California's trial court (Judge Bonnie Sabraw) issued $305M judgment. The theory was legally innovative and challenged the industry significantly.",
+      challenges: "California Court of Appeal reversed the $305M judgment in 2017 — held that public nuisance requires proof that defendants created or assisted a public nuisance by their OWN conduct, not by lawful manufacturing of a product later misused by consumers. This is the core limitation: selling a legal product that was lawful at the time is not public nuisance. Rhode Island Supreme Court also reversed earlier favorable ruling.",
+      strategiesWon: [
+        "Rhode Island's government entity plaintiff approach (Attorney General) avoided individual causation issues",
+        "Expert proof of lead paint hazard in specific housing stock was compelling",
+        "Public health framing resonated politically and forced corporate attention"
+      ],
+      strategiesFailed: [
+        "Public nuisance theory for product liability — courts held manufacturers cannot be liable for how consumers used their product",
+        "Attempting to hold companies liable for conduct that was legal when it occurred",
+        "Overreliance on novel legal theory without appellate precedent backing it up"
+      ],
+      demographics: "Government entity plaintiffs (State of Rhode Island, City of Santa Clara, et al.) on behalf of children 0-6 living in pre-1978 housing with lead paint. Victims are predominantly low-income, minority children in urban housing. Individual child plaintiffs in personal injury cases have stronger direct claims than public nuisance theories.",
+      injuryTypes: ["Lead poisoning — neurological damage", "Cognitive impairment / reduced IQ", "Learning disabilities", "Behavioral disorders (ADHD-like)", "Developmental delays"],
+      keyEvidence: "CDC blood lead level data in children. Housing surveys showing lead paint in pre-1978 structures. Epidemiological studies on lead exposure and cognitive impairment. Manufacturer marketing materials promoting lead-based paint for interior use despite known hazards. Historical internal documents showing industry knowledge.",
+      corporateMisconduct: "Lead paint manufacturers knew by the 1920s that lead was toxic and marketed interior lead paint aggressively regardless. Lead Industries Association lobbied against paint safety regulations for decades. Manufacturers like National Lead Co. published children's coloring books featuring 'Dutch Boy' mascot promoting lead paint.",
+      regulatoryActions: "CPSC banned lead paint in 1978. HUD lead paint disclosure requirements. EPA 'Renovation, Repair and Painting' (RRP) rule. No criminal charges. Cities and states have lead abatement programs. CDC childhood blood lead level surveillance.",
+      settlementStructure: "No class settlement — public nuisance theory failed on appeal. Individual children's personal injury cases (lead poisoning + cognitive damage) settled individually. Baltimore City consent decree with some manufacturers for abatement costs.",
+      bellwetherOutcome: "CA Superior Court: $305M judgment (2013) — reversed CA Court of Appeal (2017). Rhode Island: jury verdict for plaintiffs reversed Supreme Court. Illinois case also unsuccessful.",
+      attorneyFees: "Significant investment by plaintiff firms with minimal recovery on public nuisance theory. Individual child injury cases remain viable with strong recovery.",
+      replicationModel: "D — public nuisance for lawful product manufacturing is a losing theory in most appellate courts. Compare to opioid cases where manufacturers' conduct was independently tortious (not just lawful manufacturing).",
+      clientAcquisitionStrategy: "Individual child lead poisoning cases (not public nuisance): pediatric practices in urban areas. Public health lead screening programs. Head Start programs. WIC programs. Urban housing inspectors.",
+      watchOut: "Public nuisance theory for historic product manufacturing was rejected by CA and RI appellate courts. Do NOT use public nuisance as primary theory for product liability cases where the product was lawfully manufactured and sold. Individual child lead poisoning claims are viable but require proof of specific exposure source (which manufacturer's paint in which home)."
+    }
   },
 
   {
@@ -374,7 +1050,37 @@ export const KB_CASES = [
     leadCounsel: "Napoli Shkolnik, Bernstein Liebhard",
     keyPrecedent: "In re Paraquat Products Liability Litigation",
     tags: ["paraquat", "herbicide", "Parkinsons", "neurotoxicity", "toxic tort", "MDL", "pesticide"],
-    notes: "MDL 3004. Critical Daubert hearings on causation. If science passes, cases are strong (clear exposure, documented mechanism). Syngenta's internal research is key evidence."
+    notes: "MDL 3004. Critical Daubert hearings on causation. If science passes, cases are strong (clear exposure, documented mechanism). Syngenta's internal research is key evidence.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "$250,000–$500,000 est. if Daubert passes (Parkinson's is lifelong, severe)",
+      litigationYears: "Ongoing (filed 2021)",
+      whyItWorked: "Paraquat's neurotoxic mechanism (mitochondrial dysfunction via oxidative stress in dopaminergic neurons) is scientifically well-established. EPA's 2017 preliminary risk assessment for paraquat acknowledged the Parkinson's association. Syngenta's own research (Semchuk 1992 study showing elevated Parkinson's in paraquat users) is directly adverse to the company. Paraquat is one of the most toxic pesticides — banned in 32+ countries. Licensed applicator requirement means plaintiff population had documented, high-dose occupational exposure.",
+      challenges: "Daubert hearing 2023: plaintiffs' experts have faced rigorous challenges from Syngenta. Parkinson's has multiple etiologies (genetic, environmental, idiopathic) — differential diagnosis is essential and contested. Paraquat is never available to general public (restricted use only) — limiting plaintiff pool to licensed commercial applicators. Syngenta is arguing EPA's own review supports the product's safety.",
+      strategiesWon: [
+        "Concentrated plaintiff pool of professional licensed applicators provides clean, documented high-dose exposure history",
+        "Syngenta's own internal studies (Semchuk 1992) showing Parkinson's risk create devastating adverse admission",
+        "EPA's own preliminary (2017) assessment acknowledging the Parkinson's association supports general causation",
+        "Mechanism of harm (rotenone analog → mitochondrial dysfunction) is well-established in neuroscience literature"
+      ],
+      strategiesFailed: [
+        "Daubert hearings remain contested — Syngenta effectively challenging plaintiffs' epidemiological experts",
+        "Multiple causation for Parkinson's remains a significant individual causation defense",
+        "Small plaintiff pool (licensed applicators only) limits class size"
+      ],
+      demographics: "Licensed commercial pesticide applicators: farm workers, golf course superintendents, landscapers. Predominantly male, ages 50-75 at Parkinson's diagnosis. Rural and agricultural communities. High proportion of Latino farmworkers. Both owner-operators and hired farm labor.",
+      injuryTypes: ["Parkinson's disease", "Parkinsonism (Parkinson's-like symptoms without full diagnosis)"],
+      keyEvidence: "Syngenta internal studies (Semchuk 1992) showing elevated Parkinson's. EPA 2017 preliminary risk assessment acknowledging paraquat-Parkinson's association. Epidemiological meta-analyses. Mechanistic studies showing paraquat's rotenone-analog activity on dopaminergic neurons. Applicator records and exposure documentation.",
+      corporateMisconduct: "Syngenta commissioned research showing Parkinson's risk among paraquat users and did not adequately disclose findings to regulators or users. Paraquat is banned or severely restricted in 32+ countries but Syngenta continues to market it in the U.S. Failure to conduct adequate long-term safety studies despite known neurotoxicity signals.",
+      regulatoryActions: "EPA Registration Review — paraquat subject to ongoing EPA evaluation. EPA 2017 preliminary assessment acknowledged Parkinson's concern. EU banned paraquat 2007. California restricted use. OSHA has no specific paraquat occupational standard. Paraquat remains on U.S. market as of 2025.",
+      settlementStructure: "No settlement — pending Daubert and bellwether trials. If Daubert succeeds, large individual settlement expected given Parkinson's severity. MDL 3004 managed by Judge Nancy Rosenstengel (S.D. Ill.).",
+      bellwetherOutcome: "Daubert hearings completed 2023. Judge ruling pending. No bellwether trials yet. Outcome of Daubert ruling will determine viability of entire MDL.",
+      attorneyFees: "33% contingency. Significant pre-settlement investment. High value if Daubert passes (Parkinson's disease = lifelong care).",
+      replicationModel: "B+ — conditionally excellent if Daubert passes. Occupational herbicide/pesticide + neurological disease is replicable template (see Roundup/NHL).",
+      clientAcquisitionStrategy: "Licensed pesticide applicator unions and associations. State pesticide applicator licensing databases. Farm labor organizations. Agricultural extension services. Neurologists (Parkinson's specialists). Movement disorder clinics.",
+      watchOut: "EVERYTHING depends on the Daubert ruling. Do not over-invest in client acquisition before Daubert outcome confirmed. Parkinson's diagnosis timing relative to paraquat exposure must be documented (latency period). Alternative causation (genetic LRRK2 mutation, other pesticide exposure, aging) must be addressed in each case."
+    }
   },
 
   // ─── AUTO DEFECTS ─────────────────────────────────────────────────────────
@@ -392,7 +1098,37 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser, Podhurst Orseck",
     keyPrecedent: "In re Takata Airbag Products Liability Litigation",
     tags: ["Takata", "airbag", "inflator", "auto defect", "NHTSA recall", "shrapnel", "death", "MDL"],
-    notes: "Largest auto safety recall in U.S. history. Takata filed bankruptcy 2017. Economic loss class for vehicle owners; personal injury/death cases handled separately. Multiple OEM defendants."
+    notes: "Largest auto safety recall in U.S. history. Takata filed bankruptcy 2017. Economic loss class for vehicle owners; personal injury/death cases handled separately. Multiple OEM defendants.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "Economic loss: ~$500–$2,500 per vehicle; Death/injury: $500K–$5M",
+      litigationYears: 8,
+      whyItWorked: "The defect was scientifically unambiguous: ammonium nitrate propellant degrades when exposed to humidity/heat cycles, causing the inflator to rupture like a pipe bomb. NHTSA's investigation established the chemistry. 100M+ vehicles recalled globally meant the defect was uniform across all plaintiffs. Takata's own internal testing showed the degradation problem years before the recall. Multiple OEM defendants (Honda, Toyota, Ford, BMW, etc.) created broad liability across the automotive industry.",
+      challenges: "Takata's bankruptcy (2017) transferred liability to Key Safety Systems (acquirer) and limited Takata's own direct contribution. OEM defendants argued they didn't know of the defect and relied on Takata. Splitting economic loss class from personal injury cases complicated MDL management. Proving which vehicles had inflators that hadn't yet failed but would eventually required expert probability analysis.",
+      strategiesWon: [
+        "NHTSA recall records established defect and vehicle identification — class was self-defining from the recall list",
+        "Expert chemistry testimony on ammonium nitrate hygroscopic degradation was definitive and uncontested",
+        "Multiple OEM defendants meant even if Takata went bankrupt, Honda/Toyota/Ford were solvent",
+        "Death and injury verdicts in individual cases drove OEM economic settlements for diminished vehicle value"
+      ],
+      strategiesFailed: [
+        "Takata bankruptcy limited recovery from the manufacturer most responsible for the defect",
+        "OEM 'learned intermediary' defense (they relied on Takata's representations) was partially effective in some jurisdictions",
+        "Recall completion rates were slow — many defective vehicles still on the road years later, complicating damages"
+      ],
+      demographics: "Vehicle owners of affected makes/models (Honda Civic, Toyota Corolla, Ford Focus, BMW 3-series, and dozens more) manufactured 2002-2015. Death/injury victims were predominantly front-seat passengers and drivers who deployed airbags. Fatal and serious injury cases involved drivers and passengers primarily in Honda Accords/Civics. Geographic concentration in high-humidity states (FL, TX, PR) where degradation was fastest.",
+      injuryTypes: ["Death from inflator shrapnel to neck/head/face", "Serious facial lacerations from metal fragments", "Ocular injuries (loss of vision)", "Diminished vehicle value (economic loss class)"],
+      keyEvidence: "NHTSA investigation records and recall orders. Takata internal testing data showing ammonium nitrate degradation at humidity thresholds. Expert metallurgical analysis of ruptured inflators. NHTSA test results confirming defect mechanism. Vehicle VIN databases identifying affected units.",
+      corporateMisconduct: "Takata had internal data showing elevated moisture absorption and degradation risk in its PSAN inflators as early as 2003-2004. Concealed data from NHTSA and OEMs. Falsified testing data. Former Takata executives pleaded guilty to federal wire fraud charges. Honda also fined for delayed NHTSA reporting of deaths.",
+      regulatoryActions: "NHTSA consent order (2015). Takata agreed to pay $1B in criminal penalties. Takata executives convicted of wire fraud. Honda fined $70M for failure to timely file NHTSA death reports. OEM consent orders requiring completion of inflator replacements.",
+      settlementStructure: "Split structure: Economic loss class settled separately from personal injury. Economic loss: $553M Honda settlement; $500M+ other OEM settlements. Personal injury/death: separate bilateral settlements, confidential, est. $500K–$5M each. Takata bankruptcy reorganization created IRPA (Inflator Recovery Plan) trust with limited assets.",
+      bellwetherOutcome: "No formal MDL bellwether — separate economic loss and personal injury tracks settled. Individual death cases (pre-MDL) drove public attention and early OEM settlements.",
+      attorneyFees: "Lieff Cabraser earned substantial MDL coordination fees. Podhurst Orseck led personal injury track. Aggregate estimated $200M+ across all firms.",
+      replicationModel: "A — multi-OEM auto defect with same component defect across many manufacturers and vehicle models is highly replicable template (see also GM ignition, VW emissions)",
+      clientAcquisitionStrategy: "NHTSA recall database (free public access). VIN check services. Auto repair shops and dealerships (required to perform recall repairs). Honda/Toyota/Ford dealership records. Insurance company records for airbag deployment injuries.",
+      watchOut: "Economic loss cases require proof vehicle's value was diminished (must show market price impact of recall — expert economist needed). Personal injury cases need proof of inflator deployment from defect vs. normal deployment. Many affected vehicles still being repaired — ongoing liability for un-recalled vehicles still on road."
+    }
   },
 
   {
@@ -408,7 +1144,37 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser, Hilliard Martinez Gonzales",
     keyPrecedent: "In re Motors Liquidation Co. (ignition switch litigation)",
     tags: ["GM", "ignition switch", "airbag", "auto defect", "recall", "bankruptcy", "known defect", "NHTSA"],
-    notes: "Criminal fine + deferred prosecution. Ken Feinberg administered compensation fund. Shows auto manufacturers hiding known defects = punitive exposure. New vs. old GM bankruptcy issue was critical."
+    notes: "Criminal fine + deferred prosecution. Ken Feinberg administered compensation fund. Shows auto manufacturers hiding known defects = punitive exposure. New vs. old GM bankruptcy issue was critical.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "Death/injury: est. $300K–$2M from Feinberg fund; Economic loss class: ~$19/vehicle",
+      litigationYears: 6,
+      whyItWorked: "GM's internal documents showed 11 years of knowledge of the ignition switch defect with no action taken. The 'delta switch' engineer (Ray DeGiorgio) admitted knowing about the defect and approving a change in 2006 without updating the part number (standard cover-up protocol). NHTSA's investigation was independently conclusive. 174 documented deaths created massive political and legal pressure. The DOJ deferred prosecution added independent validation of corporate misconduct.",
+      challenges: "The 'New GM' bankruptcy shield argument — after GM's 2009 Chapter 11, New GM acquired assets free of Old GM's liabilities. This 'bankruptcy wall' potentially shielded New GM from pre-bankruptcy claims. Multiple court battles over bankruptcy successor liability delayed and limited recovery. Ken Feinberg fund was for pre-bankruptcy deaths/injuries; post-bankruptcy cases had separate treatment.",
+      strategiesWon: [
+        "Congressional investigations (Barra testimony) created extraordinary public pressure and produced internal GM documents",
+        "DOJ deferred prosecution ($900M) validated corporate misconduct theory without requiring trial",
+        "Ken Feinberg compensation fund (independent administrator) provided systematic, credible damages framework",
+        "Won New GM successor liability battle in NY bankruptcy court — established New GM was not fully shielded"
+      ],
+      strategiesFailed: [
+        "Bankruptcy wall partially worked — pre-bankruptcy claims against Old GM were significantly limited",
+        "Individual case values were lower than expected due to alternative causation arguments (accidents, driver error)",
+        "Economic loss class settlement ($575M) yielded only ~$19/vehicle — very modest compensation for safety risk"
+      ],
+      demographics: "Death and injury victims: drivers and passengers in affected Chevrolet Cobalt, Saturn Ion, Pontiac G5, and other small cars manufactured 2003-2011. Disproportionately young, lower-income drivers who purchased small/economy cars. Economic loss class: owners of 30M recalled vehicles — broad cross-section of American car buyers.",
+      injuryTypes: ["Crash death from airbag non-deployment", "Serious crash injury from loss of power steering/brakes", "Emotional distress", "Economic loss (diminished vehicle value)"],
+      keyEvidence: "GM internal 'Speak Up For Safety' records showing ignored reports. Ray DeGiorgio deposition admitting knowledge. 'GM part number audit trail' showing silent design change without part number update. Congressional investigation documents. NHTSA investigation records. Kinetic Performance Group crash analysis.",
+      corporateMisconduct: "GM engineers identified the ignition switch defect in 2001-2002. Multiple internal reviews (2005 'Group A Fatalities' investigation) concluded the switch met standards despite deaths. 'GM nod' phenomenon — meetings where safety issues were raised and no action taken, no written record made. DeGiorgio changed the switch design without updating the part number — intentional cover-up.",
+      regulatoryActions: "NHTSA consent order and record $35M civil penalty (later increased to $900M DOJ). DOJ deferred prosecution agreement. GM pleaded guilty to wire fraud (2015). Congressional hearings. GM CEO Mary Barra testified. NHTSA oversight consent decree.",
+      settlementStructure: "DOJ deferred prosecution: $900M. Ken Feinberg Ignition Switch Compensation Fund: $625M for pre-bankruptcy claims. Class settlement: $575M for economic loss (diminished value, out-of-pocket costs). Post-bankruptcy personal injury/death: separate bilateral settlements.",
+      bellwetherOutcome: "No formal bellwether trials — Feinberg fund resolved death/injury claims administratively. Some individual cases went to verdict. Economic loss class settled before trial.",
+      attorneyFees: "Lieff Cabraser earned significant MDL fees. Hilliard Martinez Gonzales recovered on death cases. Aggregate estimated $150M+ across all firms.",
+      replicationModel: "A — hidden known defect + 10+ year concealment + death/injury track + economic loss track is a replicable auto defect MDL structure",
+      clientAcquisitionStrategy: "NHTSA recall database (30M affected vehicles). Insurance company total loss records for GM vehicles in accidents. Crash investigation reports showing non-airbag-deployment events. Families of crash victims involving affected model years. GM dealer service records.",
+      watchOut: "Bankruptcy wall is a recurring defense in auto cases — New GM was not fully shielded but pre-bankruptcy claims were significantly limited. Always check whether defendant company has gone through bankruptcy and what successor liability ruling exists. NHTSA recall model year list must be exact."
+    }
   },
 
   {
@@ -423,7 +1189,37 @@ export const KB_CASES = [
     leadCounsel: "Hausfeld LLP, Lieff Cabraser",
     keyPrecedent: "In re Volkswagen 'Clean Diesel' Marketing, Sales Practices, and Products Liability Litigation",
     tags: ["Volkswagen", "VW", "Dieselgate", "emissions", "defeat device", "consumer fraud", "auto", "MDL"],
-    notes: "$14.7B settlement — largest auto class action settlement ever. Pure economic loss (diminished value). Commonality was perfect — identical software fraud. VW pleaded guilty criminally."
+    notes: "$14.7B settlement — largest auto class action settlement ever. Pure economic loss (diminished value). Commonality was perfect — identical software fraud. VW pleaded guilty criminally.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "$10,000 average (buyback: $12,500–$44,000 per vehicle; fix option: $7,000–$13,800 + cash)",
+      litigationYears: 3,
+      whyItWorked: "This is as close to a perfect consumer class action as has ever been litigated. VW's defeat device software was identical across all ~475,000 U.S. TDI vehicles — the fraud was uniform, documented in the software code itself, and admitted by VW. There was zero individualized causation issue (every car's ECU had the exact same software). VW pleaded guilty to three felonies and agreed to a $4.3B DOJ resolution. Economic loss only — no personal injury issues. The FTC and state AGs coordinated with private class counsel.",
+      challenges: "Minimal — the case was remarkably clean. Main complexity was administering buyback program at scale for 475,000 vehicles. Some class members wanted to keep vehicles vs. sell back — required designing multiple settlement options. Cross-border issues with Canadian and European VW owners who had separate proceedings.",
+      strategiesWon: [
+        "Chose economic loss only theory — no personal injury = no individualized damages or causation issues",
+        "FTC enforcement track ran parallel — FTC had independent authority to require buyback program",
+        "Buyback option was emotionally satisfying to consumers and led to overwhelming class acceptance (97% participation)",
+        "DOJ criminal prosecution ($4.3B) validated every element of the consumer fraud theory"
+      ],
+      strategiesFailed: [
+        "Very little went wrong — this was an extraordinarily well-litigated case",
+        "German executives never faced U.S. criminal prosecution (jurisdictional limitations)",
+        "Environmental remediation component (VW had to invest in green infrastructure) was novel and somewhat controversial as settlement term"
+      ],
+      demographics: "Environmentally-conscious, premium-priced diesel vehicle buyers. TDI (turbodiesel) owners skewed to eco-minded, higher-income consumers who chose diesel for fuel efficiency and low-emission claims. VW Golf TDI, Jetta TDI, Passat TDI, Audi A3 TDI owners. Above-average education and income. Both individual consumers and small fleet owners.",
+      injuryTypes: ["Economic loss (diminished vehicle value due to emissions fraud)", "Benefit-of-the-bargain damages (paid for 'clean diesel' that wasn't)", "Environmental harm (excess NOx emissions)"],
+      keyEvidence: "VW's own source code for the defeat device (identified by ICCT/WVU testing). EPA Notice of Violation (September 2015). VW internal documents showing executives knew about defeat device. DOJ criminal indictments detailing scheme. Engineering testimony about software function.",
+      corporateMisconduct: "VW executives knew about and approved the defeat device at the highest levels of the company. Software was designed to detect when car was on a dynamometer (testing) vs. road (real world). Real-world NOx emissions were 40x legal limits. Multiple VW engineers pleaded guilty; former CEO Oliver Schmidt convicted and sentenced to 7 years.",
+      regulatoryActions: "EPA Notice of Violation (2015). CARB notice of violation. DOJ $4.3B criminal/civil resolution (2016). VW guilty plea to three felonies. Oliver Schmidt convicted, sentenced 7 years. Multiple executive prosecutions. FTC consent decree requiring buyback program.",
+      settlementStructure: "$14.7B total: $10.03B consumer buyback/fix program; $2.7B EPA/CARB environmental remediation; $2.0B zero-emission vehicle investment. Buyback values based on vehicle model/condition — $12,500–$44,000. Owners could also choose: (1) buyback + cash; (2) fix + cash. 97% participation rate. Claims administrator: Epiq.",
+      bellwetherOutcome: "No trial — settled before any individual trial. DOJ criminal guilty plea provided all necessary liability foundation.",
+      attorneyFees: "$175M attorney fees (from $14.7B settlement — unusually low at ~1.2%). Hagens Berman lead counsel earned largest share. Low fee percentage due to enormous settlement size and near-perfect settlement efficiency.",
+      replicationModel: "A+ — IDEAL template: uniform software fraud + pure economic loss + DOJ criminal parallel + FTC enforcement = fastest and cleanest resolution of any auto defect MDL in history",
+      clientAcquisitionStrategy: "VIN number lookup in EPA defeat device database. TDI Owner Clubs (strong online community). EV/eco-car forums. German car enthusiast communities. CARB emissions records. DMV registrations for TDI models.",
+      watchOut: "VW emissions was the perfect case — do not expect this level of clean proof and rapid resolution in other auto defect cases. The defeat device documentation was unusually complete. Real-world cases typically involve disputed causation and messier facts. FCA (Fiat Chrysler) emissions MDL (MDL 2777) that followed was far more contested."
+    }
   },
 
   {
@@ -438,7 +1234,37 @@ export const KB_CASES = [
     leadCounsel: "Not applicable (individual cases, pre-MDL era)",
     keyPrecedent: "Grimshaw v. Ford Motor Co., 119 Cal.App.3d 757 (1981)",
     tags: ["Ford Pinto", "fuel tank", "auto defect", "punitive damages", "cost-benefit analysis", "corporate indifference"],
-    notes: "Landmark case. The 'Ford Pinto memo' is taught in every torts and business ethics class. Established that internal cost-benefit analysis weighing lives against profits is admissible and generates punitive liability."
+    notes: "Landmark case. The 'Ford Pinto memo' is taught in every torts and business ethics class. Established that internal cost-benefit analysis weighing lives against profits is admissible and generates punitive liability.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Individual cases: Grimshaw: $125M punitive (reduced to $3.5M); Gray: $600K. Overall aggregate: $127M+",
+      litigationYears: 4,
+      whyItWorked: "The 'Ford Pinto Cost-Benefit Memo' is the most damning piece of corporate evidence in American legal history. Ford's internal calculation valued human life at $200,000 and compared it to the cost of adding $11 in safety equipment, choosing not to fix the defect. This memo demonstrated conscious disregard for human life in the most explicit possible terms. It was admissible because it showed the defendant's state of mind — the specific intent element required for punitive damages.",
+      challenges: "Ford argued the cost-benefit analysis was standard regulatory cost-benefit analysis (required by NHTSA rulemaking) and not evidence of corporate indifference. The punitive award ($125M) was dramatically reduced to $3.5M on appeal. Ford continued to successfully defend many Pinto cases — the memo was powerful but not automatically dispositive. Pre-modern discovery rules made obtaining the memo difficult.",
+      strategiesWon: [
+        "Obtaining and publicizing the cost-benefit memo in discovery — changed the entire public and judicial perception of the case",
+        "Expert accident reconstruction testimony showing rear-end collision survivability with a simple $11 fix",
+        "California strict product liability (Barker v. Lull Engineering) made liability easier than negligence standard",
+        "Grimshaw plaintiff (burned teenager) was uniquely sympathetic — 13 years old, catastrophic burns"
+      ],
+      strategiesFailed: [
+        "$125M punitive reduced to $3.5M on appeal — courts established punitive-to-compensatory ratio limits",
+        "Class certification not achieved in the modern sense — cases litigated individually",
+        "Federal NHTSA standard preemption argument was raised — Ford argued compliance with NHTSA standards should shield from liability"
+      ],
+      demographics: "Pinto owners and passengers in rear-end collisions 1971-1980. Passengers in rear-seat of Pintos were at highest risk. Many victims were young drivers/passengers given the Pinto's popularity as an affordable youth vehicle. Grimshaw plaintiff was a 13-year-old passenger.",
+      injuryTypes: ["Severe burn injuries from fuel tank rupture/fire", "Death from burn injuries", "Smoke inhalation", "Permanent disfigurement"],
+      keyEvidence: "Ford Pinto Cost-Benefit Memo (Grush-Saunby Report) showing $11/car fix vs. $200K/life calculation. Expert testimony on fuel system design alternatives. NHTSA crash test data. Crash reconstruction evidence showing survivability with fix. Ford internal communications about fuel system design decisions.",
+      corporateMisconduct: "Ford conducted cost-benefit analysis weighing cost of adding fuel-tank protection ($11/car × 12.5M vehicles = $137M) against societal cost of deaths and injuries ($200K/death × 180 deaths + $67K/injury × 180 injuries = $49.5M) — and decided not to fix the defect. This is the paradigmatic example of reckless disregard for human safety.",
+      regulatoryActions: "NHTSA ordered recall of 1971-1976 Pinto fuel systems (1978). Ford paid record $7M NHTSA civil penalty. Mother Jones magazine published 'Pinto Madness' article (1977) precipitating public pressure and recall. NHTSA proposed rear fuel system safety standard.",
+      settlementStructure: "Individual case settlements and jury verdicts — pre-class action era. Grimshaw v. Ford: $128M punitive + $2.5M compensatory (CA). Reduced to $3.5M punitive + $2.5M compensatory. Aggregate individual settlements: $127M+ across hundreds of cases.",
+      bellwetherOutcome: "Grimshaw v. Ford (1981 CA Court of Appeal) is the seminal decision. Multiple individual California jury verdicts in 1970s-80s. Ford ultimately settled most remaining cases.",
+      attorneyFees: "Mark Robinson Jr. (Robins, Kaplan) earned substantial fee from Grimshaw. Pre-modern contingency arrangements — likely 33-40%.",
+      replicationModel: "A+ — the template for all punitive damage claims: find internal cost-benefit analysis showing company chose profit over safety, establish conscious disregard, seek punitive damages. Every tort lawyer uses the Pinto framework.",
+      clientAcquisitionStrategy: "Historical — not an active litigation. Template lesson: any case where corporate documents show cost-benefit analysis choosing not to fix known safety defect creates strongest possible punitive damages claim.",
+      watchOut: "Punitive-to-compensatory ratio limits — California and most states cap punitive damages at 4:1 to 9:1 ratio to compensatory damages (State Farm v. Campbell, 2003 SCOTUS). The Grimshaw $125M award was dramatically reduced. Even with a perfect internal memo, punitive damages have constitutional limits."
+    }
   },
 
   // ─── DATA BREACH / PRIVACY ────────────────────────────────────────────────
@@ -455,7 +1281,36 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser, Norman Siegel",
     keyPrecedent: "In re Equifax Inc. Customer Data Security Breach Litigation",
     tags: ["Equifax", "data breach", "SSN", "PII", "privacy", "credit bureau", "MDL", "cybersecurity"],
-    notes: "$700M total settlement ($425M consumer fund). Credit monitoring + cash payouts. Shows credit bureau data breaches have clear damages basis (risk of ID theft, time spent). FTC consent decree."
+    notes: "$700M total settlement ($425M consumer fund). Credit monitoring + cash payouts. Shows credit bureau data breaches have clear damages basis (risk of ID theft, time spent). FTC consent decree.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$125 est. (credit monitoring value); cash: $20 base or up to $125 for time + OOP losses",
+      litigationYears: 3,
+      whyItWorked: "Credit bureau data breach is uniquely powerful: credit bureaus have an independent legal duty to protect consumers' most sensitive financial data (SSNs, DOBs, credit histories). The Apache Struts vulnerability had a patch available for 78 days that Equifax failed to apply — making the negligence argument about as clean as it gets. Multi-regulator coordination (FTC, CFPB, 50 state AGs) created settlement pressure from every direction. 147M Americans = virtually every working adult in the country.",
+      challenges: "Per-person cash recovery was low ($20 base) because monitoring/services dominate the settlement value. Initial $125 cash option had to be reduced when claims flooded in (total payout was $700M total, not unlimited cash). Proving 'actual harm' from a data breach (standing after Spokeo) was challenged — courts found imminent risk of identity theft sufficient.",
+      strategiesWon: [
+        "Multi-regulator pressure (FTC + CFPB + 50 AGs) running parallel to private class action maximized settlement leverage",
+        "Credit monitoring as damages substitute solved the 'actual harm' standing problem",
+        "78-day unpatched vulnerability made negligence almost per se — hard to defend",
+        "147M class size made settlement math compelling even at small per-person values"
+      ],
+      strategiesFailed: [
+        "Cash payout for basic class members was disappointing — overwhelmed by claims",
+        "Long-term identity theft harms are hard to trace to Equifax specifically vs. other breaches"
+      ],
+      demographics: "147M U.S. adults with credit files — virtually every adult American with a credit history. Equifax is a mandatory data holder (not a voluntary service choice). Disproportionate impact on people with active credit accounts, loan applications, and employment screening.",
+      injuryTypes: ["Identity theft risk", "Time spent monitoring/freezing credit", "Emotional distress from SSN exposure", "Out-of-pocket identity protection costs", "Tax fraud risk"],
+      keyEvidence: "Equifax's own post-incident report confirming unpatched Apache Struts CVE-2017-5638. CISA (DHS) vulnerability disclosure. FTC investigation findings. Expert cybersecurity testimony on standard-of-care patching timelines. Class-wide evidence of breach notification records.",
+      corporateMisconduct: "Equifax's security team was warned about the Apache Struts vulnerability; the patch was available March 8, 2017. Equifax failed to patch for 78 days while the breach continued. Equifax's CISO had no IT security background. Equifax then delayed breach notification for 40 days, allowing executives to sell stock. Three executives sold $1.8M in stock before breach was disclosed.",
+      regulatoryActions: "FTC $575M settlement (2019). CFPB $100M penalty. 50-state AG $275M. DOD terminated Equifax contract. Congressional investigation. Three executives traded stock before disclosure — SEC investigated (executive fined but not criminally charged). CISO resigned.",
+      settlementStructure: "$700M total: $425M consumer fund; $175M states; $100M CFPB. Consumer fund: free credit monitoring (Equifax); $125 cash if already have monitoring; $25 for each hour of effort (up to 20 hours); actual documented OOP losses up to $20,000. Claims administrator: JND Legal Administration.",
+      bellwetherOutcome: "No trial — settled comprehensively with regulators and private class.",
+      attorneyFees: "$77.5M attorney fees from $700M settlement (~11%). Lieff Cabraser earned lead counsel fees. Unusually low fee percentage given massive settlement.",
+      replicationModel: "A — credit bureau/financial institution data breach is the cleanest data breach template: mandatory data custodian + SSN/DOB/financial data + negligent failure to patch known vulnerability",
+      clientAcquisitionStrategy: "Equifax breach affected everyone — no special outreach needed. Claims portal widely publicized. Future data breach cases: target data custodians with mandatory data holdings (credit bureaus, banks, healthcare) + known vulnerability + failure to patch.",
+      watchOut: "Spokeo standing problem — 'mere exposure' of data may not be sufficient Article III standing in 11th Circuit (Equifax was in 11th Cir. but Northern Georgia was favorable). Future data breach cases need to establish concrete injury or imminent substantial risk. Cash recovery can be diluted if claims overwhelm the fund."
+    }
   },
 
   {
@@ -470,7 +1325,35 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser, Norman Siegel",
     keyPrecedent: "Equifax settlement framework",
     tags: ["T-Mobile", "data breach", "SSN", "privacy", "telecom", "cybersecurity", "PII"],
-    notes: "$350M settlement. Shows consistent framework for telecom data breaches. Settlement per capita relatively small ($4.57/person) but class enormous. T-Mobile suffered multiple breaches."
+    notes: "$350M settlement. Shows consistent framework for telecom data breaches. Settlement per capita relatively small ($4.57/person) but class enormous. T-Mobile suffered multiple breaches.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "$4.57 average cash payout (tiny due to 76M class)",
+      litigationYears: 2,
+      whyItWorked: "T-Mobile's 2021 breach was the company's seventh major breach since 2018, making negligence and recklessness arguments very strong — it's difficult to argue adequate security when you've been breached seven times. The customer data (SSNs, driver's license, IMEI numbers) was among the most sensitive possible. Class certification was essentially automatic given identical breach exposure for all class members.",
+      challenges: "T-Mobile's repeated breaches paradoxically created a complex causation problem — which breach caused which harm for any individual? Per-capita payout ($4.57) is almost meaningless. T-Mobile's forced arbitration clauses attempted to block class action — partially successful for post-service customers.",
+      strategiesWon: [
+        "Emphasis on T-Mobile's pattern of repeated breaches (7 breaches since 2018) proving systemic negligence",
+        "Settlement required T-Mobile to invest $150M in security improvements — structural relief with real deterrent value",
+        "Avoided arbitration clause defense by focusing on customers whose contracts predated newer arbitration terms"
+      ],
+      strategiesFailed: [
+        "Arbitration clauses limited class to customers without arbitration agreements — reduced class size",
+        "Per-capita cash recovery ($4.57) is genuinely negligible — plaintiffs' firms earned more proportionally than class members"
+      ],
+      demographics: "76M current and former T-Mobile customers — broad cross-section of mobile phone users. T-Mobile serves lower-income segments (prepaid brands Metro, Simple Mobile) in addition to postpaid. Significant minority representation (T-Mobile is strong in Hispanic and African American market segments).",
+      injuryTypes: ["SSN/IMEI/driver's license exposure creating identity theft risk", "Phone number fraud/SIM swap risk", "Time spent monitoring after breach notification"],
+      keyEvidence: "T-Mobile's own breach disclosure. Security researchers' analysis of breach methodology. T-Mobile's prior breach history documenting pattern of inadequate security. Expert cybersecurity testimony on industry-standard controls T-Mobile failed to implement.",
+      corporateMisconduct: "T-Mobile experienced its 7th major breach since 2018 in 2021, demonstrating systemic failure to invest in cybersecurity. T-Mobile's API was left unprotected with no rate limiting, allowing attackers to query millions of records. Prior FCC/FTC warnings about cybersecurity inadequacy went unheeded.",
+      regulatoryActions: "FCC investigation ongoing. State AG investigations in multiple states. T-Mobile consent decree with Missouri AG. No federal criminal charges. FCC proposed $91M fine for 2023 breach.",
+      settlementStructure: "$350M cash fund + $150M T-Mobile security investment commitment (structural relief). Cash fund: $5.70 base; up to $25 for time; up to $25,000 for documented OOP losses. Claims administrator: Kroll.",
+      bellwetherOutcome: "No trial — settled.",
+      attorneyFees: "$88M attorney fees (~25% of cash fund). Lieff Cabraser lead counsel.",
+      replicationModel: "B+ — telecom breach cases are straightforward but small per-claimant recovery limits class value. Best use: combine with structural relief requirements for meaningful public benefit",
+      clientAcquisitionStrategy: "T-Mobile/Metro breach notification emails. Cell phone user databases. Consumer protection advocacy groups. Future: mobile carrier breach notification records from FCC.",
+      watchOut: "Forced arbitration clauses are the primary defense in telecom cases — always check current customer agreements for arbitration provisions before filing. T-Mobile, AT&T, and Verizon all use mandatory arbitration for current service agreements."
+    }
   },
 
   {
@@ -485,7 +1368,36 @@ export const KB_CASES = [
     leadCounsel: "Robbins Geller",
     keyPrecedent: "Patel v. Facebook, Inc., 932 F.3d 1264 (9th Cir. 2019)",
     tags: ["Facebook", "Meta", "BIPA", "biometric", "facial recognition", "Illinois", "privacy", "statutory damages"],
-    notes: "$650M — $92+ per class member. BIPA is the most powerful privacy class action statute in the U.S. No actual harm required. Illinois-only but shows BIPA cases are certified almost automatically."
+    notes: "$650M — $92+ per class member. BIPA is the most powerful privacy class action statute in the U.S. No actual harm required. Illinois-only but shows BIPA cases are certified almost automatically.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "$397 average per class member (7M class ÷ $650M × 42% after fees)",
+      litigationYears: 5,
+      whyItWorked: "Illinois BIPA is the most powerful consumer privacy statute in the United States, period. It provides $1,000 per negligent violation and $5,000 per intentional violation — WITHOUT requiring proof of actual harm. Facial recognition tags on 7M Illinois users × $1,000/violation created theoretical liability of $7 billion, forcing a $650M settlement. The statute is uniquely claimant-friendly: standing is automatic, damages are statutory, class cert is near-automatic (same algorithm = same violation for all class members).",
+      challenges: "Facebook challenged whether BIPA applied to its facial recognition feature — argued tagging was not 'biometric identifier' collection since it didn't require user photos. 9th Circuit rejected this argument (Patel v. Facebook, 2019). Facebook also challenged standing under Spokeo — rejected. BIPA's $1,000-$5,000 per violation amount was challenged as unconstitutionally excessive — courts rejected this too.",
+      strategiesWon: [
+        "BIPA's statutory damages eliminated the 'actual harm' standing problem that plagues most privacy cases",
+        "9th Circuit Patel decision (2019) affirmed BIPA standing and biometric data scope before settlement",
+        "Theoretical liability ($7B at $1,000/user) vastly exceeded settlement — but settlement was still $650M",
+        "Same facial recognition algorithm applied to all Illinois users = perfect commonality"
+      ],
+      strategiesFailed: [
+        "Facebook initially challenged biometric identifier definition — but ultimately resolved favorably for plaintiffs",
+        "Illinois-only class limits recovery vs. nationwide scale of Facebook's user base"
+      ],
+      demographics: "7 million Illinois Facebook users active during 2011-2020. Broad cross-section of Illinois adults — Facebook's largest age cohort is 25-34. Equal sex distribution. Both rural and urban Illinois users. Facebook 'Tag Suggestions' feature was deployed to all Illinois users without BIPA consent.",
+      injuryTypes: ["Collection of biometric identifiers (facial geometry) without written consent", "No notice provided regarding collection, use, and destruction of biometric data", "Statutory privacy violation under BIPA"],
+      keyEvidence: "Facebook's Tag Suggestions feature documentation. Expert computer vision testimony on facial geometry extraction. Facebook terms of service and privacy policy showing absence of BIPA-compliant disclosures. Illinois user records from Facebook showing Tag Suggestions use.",
+      corporateMisconduct: "Facebook extracted facial geometry measurements (facial recognition scans) from photos tagged by and of Illinois users without the written consent, notice, or retention policy required by BIPA. Facebook did not provide a BIPA-compliant data retention policy or destruction schedule. Facebook's privacy policy was nationally designed without Illinois-specific BIPA compliance.",
+      regulatoryActions: "No FTC enforcement action specifically for BIPA violations. Illinois AG did not file separate action. BIPA enforcement is primarily private class action driven. FTC subsequently cited facial recognition without consent as unfair practice.",
+      settlementStructure: "$650M cash. ~7M Illinois class members. Average payout ~$397/person. Claims process: online claim submission, no documentation required. Simple pro rata distribution after attorney fees (~$220M + $37M costs). Distribution via PayPal, Venmo, check.",
+      bellwetherOutcome: "No trial — 9th Circuit affirmed standing (Patel, 2019), then case settled. Never reached trial stage.",
+      attorneyFees: "$220M attorney fees (~34% of $650M). Robbins Geller earned significant fee. Chicago-based firms also received fees.",
+      replicationModel: "A+ — BIPA is the gold standard privacy class action statute. Identical analysis applies to ANY company collecting biometric data (face scans, fingerprints, voiceprints, retina scans) in Illinois without written consent",
+      clientAcquisitionStrategy: "Illinois residents who used Facebook with Tag Suggestions enabled. Claims were self-identifying — all Illinois users during 2011-2020. Future BIPA cases: identify which Illinois employers, tech companies, retailers collect biometric data without BIPA-compliant disclosures.",
+      watchOut: "BIPA applies in Illinois only (though Texas CUBI and Washington H.B. 1493 are related). BIPA's 5-year statute of limitations. BIPA requires 'written consent' and a publicly available 'written policy' — check both. After Tims v. Black Horse (2023 IL Supreme Court), 5-year statute of limitations confirmed for all BIPA claims."
+    }
   },
 
   {
@@ -500,7 +1412,36 @@ export const KB_CASES = [
     leadCounsel: "Labaton Sucharow, Cotchett Pitre",
     keyPrecedent: "In re TikTok Inc. Consumer Privacy Litigation",
     tags: ["TikTok", "ByteDance", "BIPA", "biometric", "facial recognition", "privacy", "China", "data"],
-    notes: "$92M settlement. BIPA claims only for Illinois subclass. VPPA (Video Privacy Protection Act) claims for national class. Shows non-Illinois users can still have VPPA claims."
+    notes: "$92M settlement. BIPA claims only for Illinois subclass. VPPA (Video Privacy Protection Act) claims for national class. Shows non-Illinois users can still have VPPA claims.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$1 average cash (89M class); Illinois subclass higher via BIPA",
+      litigationYears: 2,
+      whyItWorked: "TikTok's biometric data collection (face scans, voiceprints) without consent was a clear BIPA violation for Illinois users. The national VPPA (Video Privacy Protection Act) claims provided a vehicle for non-Illinois users to participate. China data transfer concern added national security dimension that created enormous political and regulatory pressure, pushing ByteDance to settle quickly. The combination of BIPA (statutory damages) + VPPA + COPPA (minors) created layered liability theories.",
+      challenges: "89M national class at tiny per-capita recovery. VPPA claims require proof that TikTok knowingly disclosed video viewing history — stretch from the primary biometric concern. National class had Article III standing problems (non-Illinois users with VPPA claims faced Spokeo challenges). Political dimension (China data transfer) paradoxically complicated the case — national security concerns are not actionable under BIPA/VPPA.",
+      strategiesWon: [
+        "BIPA claims for Illinois subclass provided strongest liability anchor with statutory damages",
+        "VPPA gave standing to non-Illinois users who couldn't rely on BIPA",
+        "TikTok's national security concerns (data to China) created enormous political pressure to settle regardless of legal merits",
+        "Quick settlement avoided years of Daubert/class cert battles"
+      ],
+      strategiesFailed: [
+        "VPPA theory was a stretch — video platform data sharing doesn't map perfectly onto VPPA's original purpose (VHS rental records)",
+        "Per-capita recovery ($1) is near-meaningless for most class members"
+      ],
+      demographics: "89M U.S. TikTok users, primarily 13-34 year olds. Gender split: 60% female. Significant Gen Z representation. Illinois subclass (~5M) had strongest claims under BIPA.",
+      injuryTypes: ["Biometric data collection without consent (BIPA)", "Video viewing history disclosure (VPPA)", "Minor data collection without parental consent (COPPA)"],
+      keyEvidence: "TikTok source code analysis showing biometric feature extraction. Server logs showing data transmission to China-based ByteDance servers. Privacy policy showing absence of BIPA-compliant disclosures. Expert testimony on TikTok's data collection architecture.",
+      corporateMisconduct: "TikTok's algorithm scanned users' faces, extracted facial geometry, and analyzed vocal patterns without the disclosures required by BIPA. Data was transmitted to servers in China accessible by ByteDance engineers. TikTok's 2021 privacy policy update acknowledged U.S. user data collection but did not provide BIPA-compliant written consent.",
+      regulatoryActions: "FTC referral to DOJ for COPPA violations (2023). DOJ investigating TikTok national security concerns. CFPB monitoring for UDAP concerns. Congressional hearings (Shou Chew testimony). Multiple state AG investigations. Forced divestiture legislation (2024).",
+      settlementStructure: "$92M cash. Illinois BIPA subclass receives higher per-capita share. National class VPPA claimants share remaining fund. Simple online claims process. Distribution via PayPal/Venmo.",
+      bellwetherOutcome: "No trial — quick settlement. ByteDance's existential national security threat motivated early resolution.",
+      attorneyFees: "$25M+ attorney fees (~27% of fund). Labaton Sucharow, Cotchett Pitre shared lead counsel fees.",
+      replicationModel: "A — BIPA + VPPA layered approach is replicable for any social media platform collecting biometric data or video viewing history from Illinois users",
+      clientAcquisitionStrategy: "TikTok users in Illinois (easily identified by profile). Young adult social media communities. Future: apply to any social media platform collecting face/voice data without BIPA consent.",
+      watchOut: "VPPA's scope is contested — designed for video rental store disclosures, being stretched to cover streaming/social media. TikTok case is precedent but VPPA theory may face more resistance in other circuits. National security dimension creates political wildcard in future similar cases."
+    }
   },
 
   {
@@ -516,7 +1457,35 @@ export const KB_CASES = [
     leadCounsel: "Kenny Nachwalter (bank class); Milberg (consumer)",
     keyPrecedent: "In re The Home Depot, Inc. Customer Data Security Breach Litigation",
     tags: ["Home Depot", "data breach", "payment card", "POS", "malware", "financial", "MDL"],
-    notes: "Two-class settlement: financial institution class ($200M) and consumer class ($13M). Bank/issuer class had direct financial harm (reissuing cards). Shows data breach MDLs benefit from separate institutional plaintiff class."
+    notes: "Two-class settlement: financial institution class ($200M) and consumer class ($13M). Bank/issuer class had direct financial harm (reissuing cards). Shows data breach MDLs benefit from separate institutional plaintiff class.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Banks: $2.50/card reissued; Consumer: ~$0.23/person (minimal direct harm)",
+      litigationYears: 2,
+      whyItWorked: "The financial institution (bank/card issuer) class had clear, quantifiable, direct economic harm — the cost of reissuing 56M compromised cards ($5-10/card). This institutional plaintiff class with concrete damages dwarfed the consumer class in recovery. Home Depot's failure to encrypt PIN data and use vendor credential controls was a textbook negligence case. Five months of dwell time for malware showed egregious security failure.",
+      challenges: "Consumer plaintiffs had minimal direct harm (credit cards were replaced; no persistent identity theft damages). Article III standing for consumers whose cards weren't actually used fraudulently was contested. The 5-month detection gap raised questions about PCI DSS compliance oversight.",
+      strategiesWon: [
+        "Financial institution (bank) class had concrete damages — card reissuance costs are per-card calculable",
+        "Dual-class structure: institutional class (strong damages) + consumer class (broad notice/cy pres) maximized overall recovery",
+        "Home Depot's PCI DSS noncompliance was documented by forensic experts — industry standard violation"
+      ],
+      strategiesFailed: [
+        "Consumer recovery ($13M for 56M people = $0.23/person) was near-meaningless",
+        "Home Depot disputed scope of breach and which transactions were affected — complicated damages calculation"
+      ],
+      demographics: "Financial institution class: banks, credit unions, card issuers that had to reissue compromised cards. Consumer class: 56M people who used payment cards at Home Depot stores April-September 2014. Broad demographic — Home Depot customers are primarily homeowners and contractors.",
+      injuryTypes: ["Bank card reissuance costs (financial institutions)", "Fraudulent charges (consumers)", "Time spent disputing charges (consumers)", "Risk of identity theft"],
+      keyEvidence: "Forensic investigation (Mandiant) confirming malware dwell time and scope. POS system logs showing compromised terminals. Home Depot's vendor access logs showing stolen credentials. PCI DSS audit reports showing compliance gaps.",
+      corporateMisconduct: "Home Depot used outdated POS systems running Windows XP (end of support). Vendor credentials were shared and not properly segmented. Malware installed via compromised vendor account remained undetected for 5 months. Home Depot had received internal security alerts that were not acted upon.",
+      regulatoryActions: "No FTC enforcement action. Class action was primary enforcement mechanism. State AG investigations (several states). Payment card brands (Visa, Mastercard) issued chargebacks and fines to Home Depot.",
+      settlementStructure: "$200M financial institution fund: pro rata per reissued card; $13M consumer fund: credit monitoring + cash for unreimbursed losses. Home Depot also committed to enhanced security measures. Claims administrator: Epiq.",
+      bellwetherOutcome: "No trial — settled comprehensively.",
+      attorneyFees: "$30M+ from $213M total (~14%). Kenny Nachwalter (bank class) + Milberg (consumer class).",
+      replicationModel: "A — for retailer POS breaches: institutional (bank) plaintiff class + consumer class is the optimal structure. Banks have clearly calculable damages that drive recovery.",
+      clientAcquisitionStrategy: "Financial institution class: credit union associations, community bank groups, card brand chargeback data. Consumer class: Home Depot loyalty card database, credit card transaction records from breach period.",
+      watchOut: "Consumer class recovery is minimal in POS breaches — financial institution class drives value. Consumer standing in data breach cases must show actual fraud or substantial imminent risk (not just card exposure). Payment card brand (Visa/MC) independent enforcement may pre-empt some damages claims."
+    }
   },
 
   // ─── SECURITIES FRAUD ─────────────────────────────────────────────────────
@@ -533,7 +1502,37 @@ export const KB_CASES = [
     leadCounsel: "Coughlin Stoia Geller (now Robbins Geller)",
     keyPrecedent: "Dura Pharmaceuticals v. Broudo, 544 U.S. 336 (2005) (loss causation)",
     tags: ["Enron", "securities fraud", "accounting fraud", "SPE", "10b-5", "Arthur Andersen", "Wall Street"],
-    notes: "$7.2B — largest securities settlement at the time. Banks (Citigroup $2B, JPMorgan $2.2B) settled as aider-abettors. Established that 10b-5 class actions can target third-party enablers."
+    notes: "$7.2B — largest securities settlement at the time. Banks (Citigroup $2B, JPMorgan $2.2B) settled as aider-abettors. Established that 10b-5 class actions can target third-party enablers.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "~$4,800 average (1.5M investors; varies widely by investment size and loss)",
+      litigationYears: 4,
+      whyItWorked: "Enron is the quintessential securities fraud: every element perfectly established. Same materially false statements in public SEC filings and earnings calls = uniform misrepresentation across all investor class members. Fraud-on-the-market presumption meant no individual reliance needed. SPE (special purpose entity) fraud was documented in the accounting records. CEO Lay and CFO Fastow/Skilling's criminal convictions pre-validated the fraud theory. Bank aider liability theory (Citigroup, JPMorgan) was novel and enormously expanded the settlement value.",
+      challenges: "Enron's bankruptcy complicated recovery — Enron itself had no assets. Settlement had to come from investment banks. Proving aider/abettor liability for banks required showing 'substantial assistance' to the fraud — contested legal theory under Central Bank of Denver v. First InterBank. Arthur Andersen shredded documents — complicated evidence but actually helped plaintiffs (spoliation inference).",
+      strategiesWon: [
+        "Pursued investment banks as defendants (novel theory at time) — Citigroup $2B, JPMorgan $2.2B significantly padded recovery",
+        "Criminal convictions of Lay, Fastow, Skilling pre-established fraud without need for re-litigation",
+        "Arthur Andersen's document destruction inferred consciousness of guilt",
+        "Lead plaintiff structure (University of California Regents) provided credibility and resources for complex litigation"
+      ],
+      strategiesFailed: [
+        "Central Bank of Denver v. First InterBank (1994) — SCOTUS barred private aiding-and-abetting securities claims, requiring use of 'scheme liability' theory instead",
+        "Enron itself was bankrupt — had to extract value from third parties (banks) rather than Enron",
+        "Individual investors who held Enron 401(k) had additional ERISA claims that complicated overall litigation"
+      ],
+      demographics: "1.5M investors: mostly institutional investors (pension funds, mutual funds) plus many Enron employee 401(k) participants who held Enron stock. High proportion of Texas-based investors who knew Enron as hometown company. The 401(k) plaintiffs were particularly sympathetic — workers who lost retirement savings.",
+      injuryTypes: ["Securities loss — decline in Enron stock value from fraud-inflated price", "401(k)/pension fund losses", "Bond investor losses"],
+      keyEvidence: "Enron's fraudulent financial statements (10-K, 10-Q) with hidden SPE debt. Fastow's guilty plea documents. Bank structuring documents showing 'prepay' transactions that were disguised loans. Citigroup's and JPMorgan's internal emails showing awareness of fraud. FERC investigation documents.",
+      corporateMisconduct: "Enron created hundreds of SPEs (special purpose entities) to hide $1.2B in debt and losses. Fastow enriched himself with $45M. Lay and Skilling sold hundreds of millions in personal Enron stock while publicly praising it. Banks structured 'prepay' transactions that functioned as loans but were booked as energy trades — enabling the financial statement fraud.",
+      regulatoryActions: "DOJ criminal convictions: Lay (died before sentencing), Skilling (sentenced 24 years, served 12), Fastow (6 years). Arthur Andersen criminal conviction (document destruction). SEC enforcement actions. SOX (Sarbanes-Oxley Act 2002) was direct legislative response. NYSE and NASDAQ governance reforms.",
+      settlementStructure: "$7.2B in aggregate. Citigroup: $2.0B; JPMorgan: $2.2B; Canadian Imperial Bank: $2.4B; Lehman Brothers: $222.5M; Bank of America: $69M. Pro rata distribution based on investor loss calculations. Claims administrator: The Garden City Group.",
+      bellwetherOutcome: "Criminal trials provided all needed liability foundation. No separate civil trial — settled.",
+      attorneyFees: "$710M attorney fees from $7.2B recovery (~10% — reduced due to large settlement). Lead counsel: Coughlin Stoia (now Robbins Geller).",
+      replicationModel: "A+ — Enron is the template for every securities fraud MDL: uniform misrepresentations + fraud-on-market + third-party bank aiders + criminal parallel = maximum recovery",
+      clientAcquisitionStrategy: "Institutional investors (pension funds, mutual funds) with documented Enron security positions are self-identifying. 401(k) plan participants via plan records. Future securities cases: same approach — institutional lead plaintiffs are best because they have large documented losses and credibility.",
+      watchOut: "Private aiding/abetting liability for banks is limited (Central Bank of Denver) — use 'scheme liability' (Lorenzo v. SEC, 2019) or 'maker' theories. Bankruptcy of primary defendant requires pursuing third parties. SOX now provides additional administrative remedies but criminal conviction timelines are years."
+    }
   },
 
   {
@@ -548,7 +1547,39 @@ export const KB_CASES = [
     leadCounsel: "Bernstein Litowitz Berger & Grossmann",
     keyPrecedent: "In re WorldCom, Inc. Securities Litigation",
     tags: ["WorldCom", "securities fraud", "accounting fraud", "10b-5", "SEC", "investor class"],
-    notes: "$6.15B settlement. Multiple underwriters liable for due diligence failures. Shows that underwriter due diligence liability amplifies total recovery. Landmark for institutional investor involvement."
+    notes: "$6.15B settlement. Multiple underwriters liable for due diligence failures. Shows that underwriter due diligence liability amplifies total recovery. Landmark for institutional investor involvement.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$7,400 average (830K claimants, $6.15B fund)",
+      litigationYears: 3,
+      whyItWorked: "WorldCom's $11B accounting fraud — converting operating expenses into capital assets — produced uniform, documentable misrepresentations across every SEC filing and earnings call. CFO Scott Sullivan's guilty plea obliterated any good-faith defense. Arthur Andersen's simultaneous collapse removed auditor shield. Underwriter liability theory dramatically expanded the defendant pool and recovery size, as banks had signed off on prospectuses without adequate due diligence.",
+      challenges: "Scale of claimant class (830K) created massive claims administration burden. Identifying actual trading losses versus pre-existing market losses required sophisticated event study modeling. Underwriters contested liability aggressively, arguing they relied on auditor certification.",
+      strategiesWon: [
+        "Named major underwriters (Citigroup, Merrill Lynch, Deutsche Bank) as co-defendants — added billions to recovery",
+        "PSLRA lead plaintiff selection (CalPERS and New York pension funds) gave institutional credibility",
+        "CFO guilty plea used to establish scienter as undisputed at class cert",
+        "Event study tied stock drop directly to fraud disclosure dates",
+        "Coordinated SEC enforcement action provided parallel evidence stream",
+        "Judge Denise Cote's efficient case management accelerated settlement pressure"
+      ],
+      strategiesFailed: [
+        "Class-wide damages model initially challenged for not accounting for individual trading patterns",
+        "Arthur Andersen bankruptcy limited auditor recovery despite clear liability",
+        "Some underwriters successfully argued limited due diligence obligations"
+      ],
+      demographics: "Primarily institutional investors: pension funds (state and union), mutual funds, 401(k) participants. Retail investors held smaller positions but numbered in the hundreds of thousands. Heavy concentration among bond purchasers who bought WorldCom debt offerings underwritten by major banks.",
+      injuryTypes: ["Investment loss (stock price collapse from ~$64 to pennies)", "Pension fund losses", "Bond default losses", "401(k) retirement account devastation"],
+      keyEvidence: "Internal accounting memos showing deliberate capitalization decisions; CFO Scott Sullivan guilty plea and cooperation; CEO Bernard Ebbers criminal conviction; restated financials confirming $11B+ fraud; underwriter due diligence workpapers; SEC Wells notices and enforcement orders",
+      corporateMisconduct: "CFO Scott Sullivan directed accounting staff to transfer billions in routine operating expenses (line costs) to capital expenditure accounts, artificially inflating EBITDA and assets. CEO Ebbers was aware and benefited through insider stock sales. Board audit committee asleep. Arthur Andersen signed off without adequate verification.",
+      regulatoryActions: "SEC formal enforcement — largest accounting fraud investigation of its era. DOJ criminal charges: Sullivan convicted, Ebbers sentenced to 25 years. SEC imposed $750M penalty on WorldCom. PCAOB audit standards tightened post-WorldCom/Enron.",
+      settlementStructure: "Multiple tranches: $500M from WorldCom estate; $2.575B from underwriters (Citigroup $2.575B largest contribution); $352M from Arthur Andersen successor; balance from D&O insurers and individual defendants. Pro-rata distribution to all recognized claim holders.",
+      bellwetherOutcome: "No bellwethers — settled before trial. CFO Sullivan cooperation testimony was the key leverage point that forced underwriter settlement.",
+      attorneyFees: "~$193M (approximately 3.1% of $6.15B) — well below typical 25-33% in smaller cases, reflecting economies of scale in mega-fund settlements",
+      replicationModel: "A — Any major accounting fraud with SEC filing misrepresentations follows this blueprint: identify guilty pleas or criminal convictions, expand to underwriters/auditors, use institutional lead plaintiffs under PSLRA, hire top event study economists",
+      clientAcquisitionStrategy: "Target institutional investors (pension funds, union funds) as lead plaintiffs — they have the largest losses and PSLRA priority. Retail investor outreach through financial news coverage and FINRA/broker records. Partner with claims administrators early for mass notice campaigns.",
+      watchOut: "Underwriter liability theory requires proving they knew or recklessly disregarded fraud — not just that they existed. Securities Act Section 11 strict liability for registered offerings is more powerful than Rule 10b-5. Distinguish offering documents (strict liability) from secondary market trades (scienter required)."
+    }
   },
 
   {
@@ -563,7 +1594,37 @@ export const KB_CASES = [
     leadCounsel: "Robbins Geller",
     keyPrecedent: "Halliburton Co. v. Erica P. John Fund, 573 U.S. 258 (2014)",
     tags: ["Halliburton", "fraud on market", "Basic presumption", "SCOTUS", "securities", "price impact", "class cert"],
-    notes: "Critical procedural case. Every securities class action now involves 'price impact' fight at class cert. Defendants routinely hire economists to show no price impact. Understanding this is essential."
+    notes: "Critical procedural case. Every securities class action now involves 'price impact' fight at class cert. Defendants routinely hire economists to show no price impact. Understanding this is essential.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "N/A — procedural SCOTUS case; underlying case resolved for ~$100M",
+      litigationYears: 14,
+      whyItWorked: "Halliburton II is a procedural landmark, not primarily a damages case. Its value is in preserving the fraud-on-market presumption (Basic Inc. v. Levinson) that makes securities class actions viable — without it, each investor would need to prove individual reliance, destroying class certification. SCOTUS preserved the presumption while adding a price impact rebuttal mechanism, which was a manageable compromise for the plaintiffs' bar.",
+      challenges: "14 years of litigation largely about class certification, not the merits. Post-Halliburton II, every securities class action now requires an expensive 'price impact' battle at the class cert stage. Defense-side economists routinely argue that the alleged fraud had no effect on stock price, defeating the Basic presumption.",
+      strategiesWon: [
+        "Defended Basic presumption before SCOTUS against full abolition",
+        "Argued price impact rebuttal is manageable within class cert framework",
+        "Institutional lead plaintiff (Erica P. John Fund) provided sympathetic plaintiff narrative",
+        "Amicus support from SEC and major pension funds preserved the presumption"
+      ],
+      strategiesFailed: [
+        "Could not prevent SCOTUS from adding price impact rebuttal at class cert — new litigation cost burden",
+        "Extended litigation timeline dragged case to SCOTUS twice before resolution",
+        "Underlying merits case settled for relatively modest $100M after enormous legal costs"
+      ],
+      demographics: "Institutional and retail investors in Halliburton common stock. Erica P. John Fund (Catholic charity investment fund) was lead plaintiff — unusual for securities MDL.",
+      injuryTypes: ["Securities price inflation losses", "Institutional investment losses"],
+      keyEvidence: "Halliburton press releases with revenue inflation; event studies showing price movement on disclosure dates; competing economist reports on price impact",
+      corporateMisconduct: "Halliburton allegedly made false statements about asbestos liability exposure and construction contract revenues, artificially inflating stock price during class period.",
+      regulatoryActions: "SEC investigation but no major enforcement action. Case driven entirely by private plaintiffs bar.",
+      settlementStructure: "Underlying case settled for ~$100M after SCOTUS remand. Primarily a class certification battleground with limited ultimate recovery relative to legal investment.",
+      bellwetherOutcome: "No bellwethers — case settled after class cert remand proceedings.",
+      attorneyFees: "~$30M (on $100M settlement, roughly standard 30%)",
+      replicationModel: "B — Follow-on value is in understanding price impact expert battles. Every securities class action filed post-2014 must budget for competing economist reports on price impact at class cert. Hire top financial economists (Stanford, Chicago, MIT) early.",
+      clientAcquisitionStrategy: "Institutional investor outreach for PSLRA lead plaintiff selection. Price impact is now a threshold question — conduct preliminary event study analysis before filing to assess strength of fraud-on-market claim.",
+      watchOut: "Defense 'price impact' experts are now standard. Must engage top quantitative economists (e.g., Cornell, Berkeley) to counter. Cases where fraud had no measurable stock price effect on disclosure date are now extremely vulnerable to decertification."
+    }
   },
 
   // ─── CONSUMER FRAUD / ANTITRUST ───────────────────────────────────────────
@@ -581,7 +1642,40 @@ export const KB_CASES = [
     leadCounsel: "Mississippi AG Mike Moore, Ron Motley, Dickie Scruggs",
     keyPrecedent: "Cipollone v. Liggett Group (1992) — SCOTUS on preemption",
     tags: ["tobacco", "cigarettes", "MSA", "Medicaid", "parens patriae", "state AG", "cancer", "addiction", "suppressed data"],
-    notes: "$246B — largest civil settlement in U.S. history. Parens patriae theory was key — states avoided individual plaintiff issues. Internal tobacco documents (1970s knowledge) were decisive."
+    notes: "$246B — largest civil settlement in U.S. history. Parens patriae theory was key — states avoided individual plaintiff issues. Internal tobacco documents (1970s knowledge) were decisive.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "N/A — state government recovery; average state received ~$4.9B over 25 years",
+      litigationYears: 5,
+      whyItWorked: "The state AG parens patriae theory was a masterstroke — by suing as Medicaid cost-recovery rather than individual smoker claims, states bypassed individual causation/assumption of risk defenses that had defeated 40 years of individual tobacco litigation. Internal tobacco industry documents (Brown & Williamson, Philip Morris) proved the companies had known since the 1950s-70s that cigarettes caused cancer and nicotine was addictive — and had suppressed and manipulated research. The coordinated multi-state AG filing created overwhelming settlement pressure.",
+      challenges: "Preemption arguments under FCLAA (Federal Cigarette Labeling and Advertising Act) required careful navigation — Cipollone v. Liggett limited some claims. Industry argued MSA was an unconstitutional cartel. Some states received relatively little per capita. MSA enforcement has been inconsistently pursued.",
+      strategiesWon: [
+        "Medicaid cost-recovery/parens patriae theory — bypassed individual causation entirely",
+        "Coordinated multi-state filing (40+ states simultaneously) created leverage impossible to refuse",
+        "Internal documents showing 40+ years of suppressed cancer research — jury-devastating evidence",
+        "Ron Motley's document discovery approach: tobacco industry's own scientists' secret research",
+        "Government entity plaintiff theory reused successfully in opioid, PFAS, and other mass tort litigation",
+        "Dickie Scruggs' early Mississippi filing created judicial momentum"
+      ],
+      strategiesFailed: [
+        "Individual smoker class actions remained nearly impossible post-MSA",
+        "MSA payments have been contested by tobacco companies arguing non-compliance by states",
+        "Engle progeny (Florida) showed individual cases still extremely difficult even post-MSA",
+        "Non-participating manufacturers (NPMs) created enforcement gap"
+      ],
+      demographics: "State governments as plaintiffs (Medicaid programs). Underlying harmed population: all smokers who developed tobacco-related diseases and required Medicaid-funded treatment. Disproportionately lower-income populations (higher smoking rates in Medicaid population).",
+      injuryTypes: ["State Medicaid cost recovery", "Lung cancer", "COPD", "Cardiovascular disease", "Emphysema", "Oral cancer"],
+      keyEvidence: "1994 Tobacco Industry document release (Liggett cooperation); Brown & Williamson internal memos ('We are, then, in the business of selling nicotine, an addictive drug'); Congressional testimony where CEOs denied nicotine addiction under oath; epidemiological studies linking smoking to disease; state Medicaid billing records",
+      corporateMisconduct: "Industry-wide conspiracy to suppress research on cancer causation and nicotine addiction dating to 1953 (Frank Statement to cigarette smokers). Tobacco Institute created as a lobbying/disinformation vehicle. CEOs committed what many considered perjury before Congress in 1994. Youth marketing ('Joe Camel') targeted children.",
+      regulatoryActions: "DOJ sued under RICO — federal court found tobacco companies guilty of civil RICO in 2006 (United States v. Philip Morris). FDA asserted jurisdiction over tobacco under Family Smoking Prevention Act (2009). FTC forced advertising restrictions. Congressional subpoenas. EU investigations.",
+      settlementStructure: "$246B paid over 25 years by four major manufacturers (Philip Morris, RJ Reynolds, Lorillard, Brown & Williamson). Annual strategic contribution payments indexed to cigarette sales volume. Restrictions on advertising, marketing, lobbying. Tobacco industry funded anti-smoking education. Some states securitized future payments through 'tobacco bonds.'",
+      bellwetherOutcome: "Mississippi first to settle ($3.6B), followed quickly by Florida, Texas, Minnesota. These early settlements set precedent and emboldened remaining states.",
+      attorneyFees: "Dickie Scruggs and Ron Motley earned billions — largest private attorney fee award in history. Mississippi contingency fee: ~$1.4B to Scruggs and team. Total private attorney fees across all states: estimated $10-15B.",
+      replicationModel: "A+ — This model has been copied repeatedly: opioid litigation (states as plaintiffs, abatement theory), PFAS litigation (state AGs, municipal water utilities), lead paint (partially — failed in most states), climate litigation (cities against fossil fuel companies). Any industry-wide harm with documentable government expenditure is a candidate.",
+      clientAcquisitionStrategy: "Government entity clients (state AGs, county governments, municipal water utilities, school districts). Contingency arrangements with state AGs and local governments are acceptable and highly lucrative. Build relationships with state AG offices — critical pipeline for future government entity cases.",
+      watchOut: "Congress can override with legislation (tobacco industry failed to get federal protection). State bonds on future payments create political/legal complexity. Non-participating manufacturers undercut the market. Individual smoker cases remain extremely difficult even in MSA era — assumption of risk and comparative fault still defeat most claims."
+    }
   },
 
   {
@@ -597,7 +1691,38 @@ export const KB_CASES = [
     leadCounsel: "Rosenblatt Law Firm",
     keyPrecedent: "Engle v. Liggett Group, Inc., 945 So.2d 1246 (Fla. 2006)",
     tags: ["Engle", "tobacco", "Florida", "punitive damages", "preclusive findings", "class cert", "Engle progeny"],
-    notes: "Unique structure: class certified for liability findings only. $145B punitive verdict decertified. But Engle preclusive findings create thousands of individual 'Engle progeny' cases worth $1B+ annually."
+    notes: "Unique structure: class certified for liability findings only. $145B punitive verdict decertified. But Engle preclusive findings create thousands of individual 'Engle progeny' cases worth $1B+ annually.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$50,000-$25M per individual Engle progeny case (highly variable); $145B punitive reversed",
+      litigationYears: 25,
+      whyItWorked: "The Florida Supreme Court's Engle decision created a uniquely powerful litigation structure: while the $145B punitive class verdict was reversed as unmanageable, the jury's Phase I liability findings — that tobacco caused disease, was addictive, companies were negligent and committed fraud — were given preclusive effect in individual cases. This means each individual plaintiff ('Engle progeny') plaintiff only needs to prove: (1) they're a class member (smoked before 2000), (2) tobacco caused their specific disease, (3) their damages. Liability is already established by the Phase I verdict. This created a litigation machine generating hundreds of millions annually.",
+      challenges: "Punitive class verdict ($145B) reversed as violating due process — jury cannot award punitive damages for undefined individual harm. Individual progeny cases still require trial on causation and damages — expensive, slow. Tobacco companies have spent billions in defense, making even winning cases costly. Florida-specific — most states cannot replicate Engle preclusive findings.",
+      strategiesWon: [
+        "Florida Supreme Court preservation of Phase I preclusive findings — transformed class from one verdict to indefinite individual case pipeline",
+        "Compensatory damages + punitive damages in individual cases regularly hit $5-25M",
+        "Preclusive findings eliminate fraud and negligence from each trial — dramatic efficiency",
+        "Plaintiff-friendly Florida juries in key venues (Broward, Dade, Hillsborough)",
+        "State court venue (Florida) versus federal avoided FCLAA preemption complications"
+      ],
+      strategiesFailed: [
+        "Attempting to enforce $145B punitive class verdict — court correctly identified due process problems",
+        "Nationwide class certification attempts repeatedly failed after Engle",
+        "Non-Florida tobacco cases cannot use Engle preclusive findings"
+      ],
+      demographics: "Florida smokers who smoked cigarettes manufactured by class defendants (Philip Morris, RJ Reynolds, Lorillard, Brown & Williamson) before November 21, 1996. Primarily older adults (60s-80s) with smoking-related diseases: lung cancer, COPD, emphysema, esophageal cancer, laryngeal cancer, cardiovascular disease. Heavily working-class and lower-income.",
+      injuryTypes: ["Lung cancer", "COPD/emphysema", "Cardiovascular disease", "Esophageal/laryngeal cancer", "Nicotine addiction"],
+      keyEvidence: "Phase I jury findings (preclusive): tobacco is addictive, causes disease, companies were negligent and fraudulent. Individual cases add: plaintiff's smoking history, specific disease diagnosis, medical causation expert, tobacco exposure records.",
+      corporateMisconduct: "Identical to MSA findings: decades of suppressed research, nicotine manipulation, youth marketing. Phase I jury specifically found companies conspired to misrepresent health risks.",
+      regulatoryActions: "FDA jurisdiction asserted post-2009. Florida AG participated in MSA. FTC advertising actions. Congressional subpoenas.",
+      settlementStructure: "Individual Engle progeny cases settle or try individually. No class-wide settlement. Average verdict/settlement for successful lung cancer cases: $2-10M compensatory, $5-50M punitive. RJ Reynolds and Philip Morris have tried over 400 Engle progeny cases in Florida.",
+      bellwetherOutcome: "Hundreds of individual trial verdicts, many for plaintiffs. RJ Reynolds lost repeated $5-25M verdicts. Tobacco companies appeal almost every verdict, creating long payment delays.",
+      attorneyFees: "Standard 33-40% contingency in individual progeny cases. Plaintiff firms specializing in Engle have earned hundreds of millions: Searcy Denney, Morgan & Morgan, Grossman Roth.",
+      replicationModel: "C — Very Florida-specific. The preclusive liability finding approach is replicable in theory but requires an extremely favorable appellate court willing to preserve class findings. Asbestos bankruptcy trusts have some parallels. Pharmaceutical MDL bellwether verdicts serve similar (but weaker) preclusive function.",
+      clientAcquisitionStrategy: "Florida smokers with lung cancer, COPD, or cardiovascular disease who smoked cigarettes before 1996. Strong community outreach through oncology centers, pulmonology practices, COPD support groups. Contingency with reasonable advance costs — cases are typically worthwhile given preclusive findings.",
+      watchOut: "Tobacco companies appeal virtually every verdict — expect 3-7 year collection cycle. Engle class membership requires Florida residency and pre-1996 smoking period — verify eligibility carefully. Non-smoker family member wrongful death cases face higher causation bar."
+    }
   },
 
   {
@@ -613,7 +1738,39 @@ export const KB_CASES = [
     leadCounsel: "Hagens Berman",
     keyPrecedent: "NCAA v. Alston, 594 U.S. 69 (2021)",
     tags: ["NCAA", "antitrust", "student athlete", "NIL", "Sherman Act", "SCOTUS", "education"],
-    notes: "Landmark antitrust case. SCOTUS 9-0. Led directly to NIL era. Hagens Berman pioneered the antitrust theory. Shows antitrust class actions can dismantle entire industry practices."
+    notes: "Landmark antitrust case. SCOTUS 9-0. Led directly to NIL era. Hagens Berman pioneered the antitrust theory. Shows antitrust class actions can dismantle entire industry practices.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$208M antitrust damages (~$2,080 avg per 100K athletes) + permanent injunction transforming industry",
+      litigationYears: 6,
+      whyItWorked: "NCAA's grant-in-aid cap was a textbook horizontal restraint of trade — thousands of colleges collectively agreeing to cap compensation to athletes in a market where those athletes have no competitive alternatives. Hagens Berman's Sherman Act Section 1 theory was straightforward: no lawful procompetitive justification for capping education-related benefits. SCOTUS 9-0 in NCAA v. Alston (2021) affirmed. Justice Kavanaugh's concurrence ('The NCAA is not above the law') telegraphed further vulnerability. The injunctive relief — abolishing education benefit caps — was transformative far beyond the $208M.",
+      challenges: "Pay-for-play (direct athletic compensation) was rejected at trial — court accepted NCAA's amateurism argument for that category. Student-athletes lack traditional employment status, complicating damages modeling. Antitrust injury ('market' definition) required sophisticated expert work. College sports political sensitivity.",
+      strategiesWon: [
+        "Sherman Act horizontal restraint theory — colleges as horizontal competitors fixing wages",
+        "Rule of reason analysis — NCAA could not articulate procompetitive justification for education benefit cap",
+        "SCOTUS Justice Kavanaugh concurrence explicitly invited future pay-for-play challenge",
+        "Certified b(2) (injunction) + b(3) (damages) in same case",
+        "Follow-on NIL rule changes before final decision — proved case had merit",
+        "Hagens Berman's leadership of O'Bannon v. NCAA (predecessor) built factual foundation"
+      ],
+      strategiesFailed: [
+        "Direct pay-for-play (salary compensation) rejected at trial as potentially legitimate amateurism interest",
+        "Full Sherman Act trebling not applied (court accepted some NCAA procompetitive arguments)",
+        "Individual damages relatively modest ($2,080 average) compared to transformative injunctive relief"
+      ],
+      demographics: "NCAA Division I college athletes (football, basketball primarily) who received grant-in-aid scholarships. Approximately 100,000 class members. Disproportionately African American in revenue sports (football ~46% Black, basketball ~57% Black). Ages 18-23. Many from lower-income families that NCAA's policies most severely constrained.",
+      injuryTypes: ["Lost education-related benefits (computers, science equipment, tutoring, internships)", "Suppressed compensation market", "Economic harm from artificially capped scholarship value"],
+      keyEvidence: "NCAA bylaws explicitly limiting education benefits; market analysis showing athlete labor market with no competitive alternatives; conference and NCAA communications coordinating compensation restrictions; economic expert analysis of labor market suppression",
+      corporateMisconduct: "NCAA and conferences (as members) collectively agreed to cap compensation well below competitive market rates, using 'amateurism' as cover for labor market cartelization benefiting multi-billion dollar conferences and coaches earning $5-10M+ annually.",
+      regulatoryActions: "No federal regulatory action. California, Colorado, Florida, and other states passed NIL laws forcing NCAA rule changes before Alston was decided. NLRB has investigated college athlete employment status.",
+      settlementStructure: "$208M damages settlement to class. Permanent injunction prohibiting NCAA from limiting education-related benefits. NCAA subsequently adopted NIL policy (Name, Image, Likeness) — athletes can now earn unlimited endorsement income. Follow-on House v. NCAA (2024) settlement of $2.8B fundamentally changed college sports economics.",
+      bellwetherOutcome: "No bellwethers. SCOTUS ruling served as the decisive event. Followed immediately by voluntary NCAA rule changes.",
+      attorneyFees: "~$30M (approximately 14% of $208M — reduced given injunctive value)",
+      replicationModel: "A — Industry-wide horizontal restraint of trade cases follow this blueprint. Any market where competitors collectively fix prices or wages paid to a captive group is vulnerable. See also: generic drug price-fixing, no-poach agreements, chicken price-fixing. Injunctive relief can be worth far more than damages.",
+      clientAcquisitionStrategy: "Student-athlete groups, college athletic associations, player advocacy organizations. NIL-related cases continue. House v. NCAA (2024) $2.8B settlement creates enormous follow-on opportunity for college athletes not covered by earlier classes.",
+      watchOut: "Amateurism defense still lives for some benefits. Employment status question (athletes as employees) remains contested — NLRB proceedings ongoing. State NIL laws create complex patchwork. Follow-on House v. NCAA settlement distribution is priority client development opportunity."
+    }
   },
 
   {
@@ -629,7 +1786,39 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser, Baron & Budd",
     keyPrecedent: "In re JUUL Labs, Inc. Marketing, Sales Practices, and Products Liability Litigation",
     tags: ["JUUL", "vaping", "e-cigarette", "youth", "nicotine", "marketing to minors", "MDL"],
-    notes: "MDL 2913. School district class settled for $255M. Individual addiction/personal injury claims ongoing. Altria (Marlboro parent) paid $235M as JUUL investor. Marketing-to-minors theory is powerful."
+    notes: "MDL 2913. School district class settled for $255M. Individual addiction/personal injury claims ongoing. Altria (Marlboro parent) paid $235M as JUUL investor. Marketing-to-minors theory is powerful.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$255M to ~2,000 school districts (~$127K avg); individual addiction: $10K-$100K+ ongoing",
+      litigationYears: 5,
+      whyItWorked: "JUUL's youth marketing campaign was documentable and extensive: Instagram influencers, 'party packs' distributed at events, mango/cucumber/mint flavors designed for youth palatability, school-facing 'educational' programs that were actually advertising. The nicotine salt formula created a product 2-3x more addictive than traditional cigarettes. School district plaintiffs were powerful — direct financial harm (remediation programs, student health costs) and sympathetic institutional clients. FDA enforcement actions provided parallel evidentiary track.",
+      challenges: "Individual personal injury causation (lung injury from vaping vs. EVALI from vitamin E acetate in black market THC cartridges) created significant Daubert risk. Adult smokers switching from cigarettes complicate the harm narrative. JUUL filed bankruptcy-adjacent restructuring, limiting recovery. Altria investment complicated corporate structure analysis.",
+      strategiesWon: [
+        "School district class certification — institutional economic harm theory bypassed individual causation",
+        "Marketing-to-minors documentary evidence (internal JUUL emails, social media archives)",
+        "Nicotine salt addiction science — JUUL's own patents described unprecedented addictiveness",
+        "Altria (Philip Morris parent) added as defendant — deep-pocketed co-defendant with tobacco track record",
+        "FDA enforcement actions (2022 JUUL marketing denial) provided validation",
+        "State AG coordinated actions (NC, TX, CA, others) for massive settlement pressure"
+      ],
+      strategiesFailed: [
+        "EVALI (lung injury) claims weakened after CDC attributed most to vitamin E acetate in THC cartridges",
+        "Individual adult smoker claims: tobacco companies argued JUUL helped adults quit cigarettes",
+        "JUUL's FDA 'modified risk' certification attempt created some defense arguments"
+      ],
+      demographics: "School districts (institutional plaintiffs, ~2,000) — urban, suburban, rural across 48 states. Individual claimants: teenagers 13-19 who became addicted to JUUL, now 18-25. High school students from all socioeconomic backgrounds. Parental claims on behalf of minors. Lung injury claimants: users of any age who developed respiratory illness.",
+      injuryTypes: ["Nicotine addiction (youth)", "EVALI-type lung injury", "School district remediation costs", "Mental health sequelae from nicotine addiction", "Lost educational opportunities from addiction"],
+      keyEvidence: "Internal JUUL marketing documents; Instagram/Snapchat campaign analytics targeting <18; JUUL's own nicotine salt patent describing unprecedented addictiveness; FDA warning letters; Congressional testimony; school district health expenditure records; youth survey data showing JUUL use rates",
+      corporateMisconduct: "JUUL deliberately designed a product maximally addictive to young users, then ran a sophisticated social media campaign targeting teens. Internal documents showed awareness of youth usage. 'Educational' school presentations were covert advertising. Altria's investment accelerated distribution to retail outlets near schools.",
+      regulatoryActions: "FDA denied JUUL marketing authorization (June 2022 — later stayed pending review). FTC investigated. 46 state AGs investigated and settled. Multiple state bans on flavored products. Congressional subpoenas. JUUL paid $438.5M to state AGs.",
+      settlementStructure: "School district class: $255M to ~2,000 districts. Altria: $235M separate. State AG settlements: $438.5M. Individual personal injury cases ongoing through MDL 2913. Some bellwether trials scheduled 2024-2025.",
+      bellwetherOutcome: "Bellwether individual cases ongoing as of 2024. School district and state AG settlements resolved large institutional tranche. Personal injury causation (especially lung injury) remains contested.",
+      attorneyFees: "~$85M on school district settlement (33%); contingency on individual cases",
+      replicationModel: "A — Youth addiction marketing theory is highly replicable: social media platforms (Meta/Instagram teen addiction MDL), gaming addiction, sports betting. Any product designed to addict minors through targeted marketing follows this structure. Government entity (school district) plaintiff theory bypasses individual causation.",
+      clientAcquisitionStrategy: "Youth/teen addiction cases: school counselor referrals, pediatrician outreach, social media advertising to parents of teen vapers. School districts: direct outreach to school board counsel. Individual lung injury: respiratory therapy clinics, emergency room partnerships.",
+      watchOut: "EVALI causation distinction is critical — JUUL-only lung injury claims are stronger than mixed vaping claims. Adult smoker plaintiffs have weaker cases. JUUL corporate restructuring and limited assets require careful financial analysis before investing in individual cases."
+    }
   },
 
   // ─── FOOD SAFETY ──────────────────────────────────────────────────────────
@@ -647,7 +1836,38 @@ export const KB_CASES = [
     leadCounsel: "Multiple Texas firms",
     keyPrecedent: "In re Blue Bell Creameries USA, Inc. Products Liability Litigation",
     tags: ["Blue Bell", "listeria", "food recall", "ice cream", "food safety", "CDC", "economic loss"],
-    notes: "Blue Bell pleaded guilty to federal charges (2020). CEO paid personal fine. Economic loss class for purchasers (bought contaminated product, couldn't consume) is standard food recall class theory."
+    notes: "Blue Bell pleaded guilty to federal charges (2020). CEO paid personal fine. Economic loss class for purchasers (bought contaminated product, couldn't consume) is standard food recall class theory.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Personal injury: $50K-$500K (few claimants); economic loss class: $15-50 per purchaser (confidential)",
+      litigationYears: 5,
+      whyItWorked: "Blue Bell's listeria contamination was factory-wide and systemic — not a one-time batch issue. CDC traced three deaths and multiple hospitalizations directly to Blue Bell's Brenham, TX plant. Federal criminal guilty plea (2020) eliminated any corporate innocence defense. The dual-track case structure worked well: personal injury claims for the handful of seriously ill victims, plus economic loss class for millions of purchasers who bought recalled product and received no value.",
+      challenges: "Personal injury claimants were very few (10 hospitalizations, 3 deaths) — limiting the personal injury side. Economic loss per class member was tiny ($5-15 per ice cream package), requiring confidential settlement rather than large individual payouts. Blue Bell is private company with limited assets compared to public food giants.",
+      strategiesWon: [
+        "Federal criminal guilty plea (DOJ) established liability definitively",
+        "Economic loss class theory for purchasers — bought recalled product, received zero value",
+        "FDA inspections documenting years of ongoing sanitation failures at multiple facilities",
+        "CEO personal criminal charges added accountability pressure",
+        "CDC outbreak investigation linked plant directly to deaths — bulletproof causation"
+      ],
+      strategiesFailed: [
+        "Limited personal injury claimants meant small personal injury side of the MDL",
+        "Blue Bell's private company status limited recovery depth",
+        "Individual purchaser economic damages were tiny — class notice and administration costs nearly exceeded per-member recovery"
+      ],
+      demographics: "Personal injury: immunocompromised patients, elderly (all listeria victims were in hospitals, exposed through hospital food service). Economic loss class: millions of retail ice cream purchasers in 23 states, primarily Southern U.S. market. All income levels — Blue Bell is a beloved regional brand.",
+      injuryTypes: ["Listeria monocytogenes infection (septicemia, meningitis)", "Death (3 confirmed)", "Hospitalization", "Economic loss (purchased recalled product)"],
+      keyEvidence: "FDA inspection reports (2015) showing persistent Listeria contamination in Brenham TX and Oklahoma plants; CDC traceback matching Blue Bell production dates to patient illness dates; Blue Bell's recall notices admitting contamination; internal quality control records showing failed testing and failure to remediate",
+      corporateMisconduct: "Blue Bell management knew of recurring Listeria findings in facilities and repeatedly cleaned up test results rather than root-cause correcting. FDA's inspection revealed years of inadequate sanitation. Management delayed recall until directly confronted by FDA and CDC. CEO (Paul Kruse) personally directed employees to remove and replace positive-test product without disclosure — became basis for DOJ charges.",
+      regulatoryActions: "FDA forced nationwide recall (April 2015) — first major nationwide ice cream recall. DOJ criminal charges: Blue Bell pled guilty (2020) to shipping adulterated food, paid $19.35M fine. CEO Kruse charged individually with 6 misdemeanor counts. FDA redesigned its food safety facility inspection protocol after Blue Bell.",
+      settlementStructure: "Personal injury: individual confidential settlements with ~10 seriously injured families. Economic loss class: confidential settlement (estimated $15-50M total) distributed as vouchers or de minimis cash to millions of purchasers.",
+      bellwetherOutcome: "No formal bellwethers — cases settled without trial due to criminal guilty plea providing definitive liability.",
+      attorneyFees: "33% of personal injury settlements; structured fee arrangement for economic class (likely negotiated reduction given small per-member amount)",
+      replicationModel: "B+ — Food safety recall economic loss class theory is highly replicable. Any product recall creates an immediate class of purchasers who received no value. The structure works best when: (1) recall is FDA/USDA Class I (health risk), (2) products were mass-distributed, (3) manufacturer had prior notice and failed to act, (4) criminal/regulatory action validates liability.",
+      clientAcquisitionStrategy: "Personal injury: hospitals treating foodborne illness outbreaks, infectious disease departments, immunocompromised patient advocacy groups. Economic loss class: rapid filing within weeks of major food recalls — first-to-file advantage matters. CDC FoodNet outbreak data is the best early warning system.",
+      watchOut: "Economic loss food class cases often result in tiny per-member awards — cy pres and attorney fees can exceed class member recovery, inviting appellate objectors. Ensure clear Article III standing for purchasers (receipt or purchase records needed). Listeria cases are strongest when traceback is CDC-confirmed."
+    }
   },
 
   {
@@ -664,7 +1884,38 @@ export const KB_CASES = [
     leadCounsel: "Robbins Geller (investor class)",
     keyPrecedent: "In re Chipotle Mexican Grill, Inc. Securities Litigation",
     tags: ["Chipotle", "E. coli", "norovirus", "food safety", "securities fraud", "food recall", "investor class"],
-    notes: "Dual class action: food safety (personal injury/economic loss) + securities (stock drop on disclosure). Investor class is common when food companies have public misrepresentations about safety."
+    notes: "Dual class action: food safety (personal injury/economic loss) + securities (stock drop on disclosure). Investor class is common when food companies have public misrepresentations about safety.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Investor class: $75M (~$5K-20K per institutional claimant); personal injury: $50K-200K range",
+      litigationYears: 4,
+      whyItWorked: "Chipotle's multi-pathogen outbreak cluster (E. coli O157:H7 in multiple states, norovirus in multiple restaurants, Salmonella) in a 6-month period showed systemic supply chain failures, not random incidents. The investor class worked because Chipotle executives had made specific public statements about food safety superiority while the company was secretly dealing with recurring failures. The dual structure — personal injury class + securities fraud class — maximized recovery across two separate theories.",
+      challenges: "Personal injury causation required proving specific pathogen exposure at specific Chipotle location — only ~500 confirmed ill (small personal injury class). Consumer economic loss class (restaurant food 'not as safe as advertised') faced Article III standing challenges — did customers actually receive less value or just feel unsafe? Securities class required proving specific executive misstatements about food safety were material to stock price.",
+      strategiesWon: [
+        "Securities fraud class for stock drop (42%) following food safety disclosures",
+        "Executive statements contrasted with internal food safety audit failures",
+        "CDC outbreak data independently confirmed multiple pathogens",
+        "Class period tied to specific public food safety claims by Chipotle executives",
+        "Investor class avoided individual causation issues entirely (securities fraud theory)"
+      ],
+      strategiesFailed: [
+        "Individual restaurant consumer cases faced standing challenges — ate there, felt unsafe, but weren't necessarily sick",
+        "Supply chain contamination source varied by pathogen — weakened 'single policy' argument",
+        "Chipotle's 'Food with Integrity' marketing was aspirational rather than factual representation"
+      ],
+      demographics: "Personal injury: Chipotle restaurant customers who ate at specific locations during outbreak windows; predominantly young adults (18-35), Chipotle's core demographic. Investor class: institutional and retail investors who bought stock during the period of false food safety representations.",
+      injuryTypes: ["E. coli O157:H7 infection (HUS risk)", "Norovirus gastroenteritis", "Salmonella infection", "Securities investment losses"],
+      keyEvidence: "CDC outbreak investigation reports linking specific restaurant locations and dates; health department inspection records; internal Chipotle audit reports (obtained in discovery) showing ongoing food safety failures; Chipotle executive public statements praising safety protocols; stock charts showing disclosure-date drops",
+      corporateMisconduct: "Chipotle's supply chain relied heavily on fresh, locally-sourced produce with less processing than competitors — inherently higher pathogen risk. Management deployed aggressive PR narrative about food safety excellence while internal audits showed failures. Response to early incidents was slow and inadequate. Information about the scope of the outbreak was not promptly disclosed to investors.",
+      regulatoryActions: "CDC multistate investigation; FDA and multiple state health departments investigated; Chipotle entered into food safety consent decree with NYC Health Dept; SEC investigated investor disclosures; DOJ investigated (no criminal charges).",
+      settlementStructure: "Securities class (investor): $75M settlement. Personal injury: individual confidential settlements for ~500 confirmed ill patients. Consumer economic class: limited recovery (food vouchers/coupons in some states).",
+      bellwetherOutcome: "No formal bellwethers — settled before trial. Criminal norovirus case (Boston location manager) provided liability validation.",
+      attorneyFees: "~$25M on investor class (33%); standard contingency on personal injury cases",
+      replicationModel: "B+ — Dual securities + personal injury theory is replicable whenever a publicly traded company makes specific safety/quality representations. Template: find public executive statements about product safety → find internal evidence contradicting those statements → identify stock price drop on disclosure → file securities class simultaneously with personal injury MDL.",
+      clientAcquisitionStrategy: "Personal injury food cases: health department outbreak lists (public records), emergency room discharge data, food safety attorney referral networks. Investor class: institutional investor outreach post-disclosure event.",
+      watchOut: "Consumer economic loss standing is fragile in food cases — courts split on whether 'I ate there but didn't get sick' creates cognizable injury. Securities class requires specific, attributable executive misstatements — general aspirational marketing doesn't qualify. Chipotle's prompt remediation efforts reduced punitive exposure."
+    }
   },
 
   // ─── EMPLOYMENT ────────────────────────────────────────────────────────────
@@ -682,7 +1933,39 @@ export const KB_CASES = [
     leadCounsel: "Cohen Milstein (plaintiffs); Gibson Dunn (Walmart)",
     keyPrecedent: "Wal-Mart Stores, Inc. v. Dukes, 564 U.S. 338 (2011)",
     tags: ["Walmart", "Dukes", "employment discrimination", "gender", "SCOTUS", "commonality", "decertified", "Rule 23"],
-    notes: "THE leading Rule 23 commonality case. Every class cert motion must address Dukes. Key lesson: discretionary policies ≠ common questions. The Court said 'glue' holding the class together was missing."
+    notes: "THE leading Rule 23 commonality case. Every class cert motion must address Dukes. Key lesson: discretionary policies ≠ common questions. The Court said 'glue' holding the class together was missing.",
+    analysis: {
+      rating: "D",
+      strengthScore: 3,
+      payoutPerClaimant: "$0 — class certification denied by SCOTUS",
+      litigationYears: 11,
+      whyItWorked: "It didn't — this is the canonical cautionary tale for employment discrimination class actions. What initially appeared to be a compelling case (1.5 million female Walmart employees earning less than male counterparts, with statistical evidence) was dismantled by SCOTUS because the supposed 'common policy' was actually Walmart's grant of discretion to local managers. SCOTUS held this was the opposite of a uniform policy — each manager's discretion meant each discrimination claim was individual, defeating commonality.",
+      challenges: "Everything. Walmart's policy was explicitly decentralized — local managers had broad discretion over pay and promotion. This meant there was no single common question linking all 1.5M class members. Plaintiffs relied on sociological expert testimony (Dr. William Bielby) that Walmart's culture created 'unconscious bias' — SCOTUS rejected this as not proving specific, common employment practice. Statistical disparity without a common causal mechanism was insufficient.",
+      strategiesWon: [
+        "Built enormous statistical record showing systemic gender pay gap across all Walmart stores",
+        "Sociological expert testimony on organizational culture and unconscious bias",
+        "9th Circuit certified the class — had lower court success",
+        "Case has permanent value as a litigation landmark teaching employers how to defend discrimination cases"
+      ],
+      strategiesFailed: [
+        "Challenged Walmart's general discretion policy rather than a specific discriminatory practice",
+        "Sociological expert testimony on 'corporate culture' rejected as not establishing Rule 23(a) commonality",
+        "Class definition was massively overbroad — 1.5M employees across 50 states, 3,400 stores",
+        "Attempted b(2) certification for individualized back-pay relief — SCOTUS said b(2) requires uniform class-wide remedy",
+        "Failed to identify the specific 'glue' holding all discrimination claims together"
+      ],
+      demographics: "All female Walmart employees in the U.S. (hourly and salaried) — 1.5 million women across every demographic group. Plaintiffs represented: Betty Dukes (a 54-year-old Black greeter in Pittsburg, CA), plus 6 other named plaintiffs from diverse Walmart locations.",
+      injuryTypes: ["Gender pay discrimination", "Promotion discrimination", "Unequal opportunity advancement"],
+      keyEvidence: "Statistical analysis showing 1.5M female Walmart employees earned 5-15% less than male counterparts; deposition testimony from individual female employees; Dr. William Bielby's expert report on organizational bias; Walmart's own personnel data showing consistent disparities",
+      corporateMisconduct: "Walmart's facially neutral 'local manager discretion' policy systematically produced discriminatory outcomes. The company's culture allegedly reinforced gender stereotypes in pay and promotion decisions. Internal studies showed the disparities but no corrective action was taken.",
+      regulatoryActions: "EEOC investigations were largely subsumed by the class action. No significant agency enforcement action. Case had more impact on agency guidance on systemic discrimination theory than enforcement.",
+      settlementStructure: "None — case decertified. Individual plaintiffs could still sue individually after decertification. Some named plaintiffs eventually settled individually for modest amounts.",
+      bellwetherOutcome: "N/A — never reached trial. Follow-on individual cases (Dukes v. Walmart, Inc.) have had mixed results.",
+      attorneyFees: "~$0 recoverable — case dismissed. Enormous litigation investment for plaintiffs' counsel (Cohen Milstein, Altshuler Berzon) with no return.",
+      replicationModel: "F — Do not replicate this approach. The lesson is: to bring an employment discrimination class action post-Dukes, you MUST identify a specific, uniform corporate policy that caused all discrimination — not a policy of discretion, not statistical disparity alone, not cultural expert testimony. Specific policy = specific class.",
+      clientAcquisitionStrategy: "Employment discrimination class actions require: (1) documented specific discriminatory policy, (2) statistical disparity analysis, (3) named plaintiffs across multiple locations. Build the evidentiary record before filing. Use EEOC charge process to build pre-litigation record.",
+      watchOut: "Dukes is cited in virtually every class cert opposition to employment discrimination cases. Must specifically address why your case is distinguishable: your defendant has a specific uniform policy (not discretion), your statistical evidence is tied to that policy, your class definition is appropriately limited. California PAGA claims offer alternative route for CA wage claims."
+    }
   },
 
   {
@@ -698,7 +1981,39 @@ export const KB_CASES = [
     leadCounsel: "Shannon Liss-Riordan",
     keyPrecedent: "O'Connor v. Uber Technologies",
     tags: ["Uber", "gig economy", "independent contractor", "misclassification", "employment", "arbitration", "California"],
-    notes: "Settlement approved but then California Prop 22 changed the law. Key lesson: gig economy misclassification cases struggle with class cert because each worker's situation differs. Arbitration clauses are devastating."
+    notes: "Settlement approved but then California Prop 22 changed the law. Key lesson: gig economy misclassification cases struggle with class cert because each worker's situation differs. Arbitration clauses are devastating.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "$84M / 385K drivers = ~$218 average (mostly de minimis after admin costs)",
+      litigationYears: 6,
+      whyItWorked: "California's strong Borello (and later ABC test under AB5) employment classification standard was plaintiff-friendly. Shannon Liss-Riordan is the nation's preeminent gig economy employment attorney. Initial judge appeared sympathetic. The core theory — Uber controls all material working conditions while calling drivers contractors — was factually compelling and morally persuasive.",
+      challenges: "Individual driver situations varied enormously (hours worked, markets, whether they had other jobs). Predominance failed because determining employee vs. contractor status required individualized inquiries. Uber's arbitration clauses removed vast majority of potential class members. California Prop 22 (2020) retroactively legalized the very contractor classification being challenged. The $84M settlement was ultimately not approved as originally structured.",
+      strategiesWon: [
+        "California's strong worker classification law was the best jurisdiction in the country for this case",
+        "Shannon Liss-Riordan's expertise and aggressive discovery on Uber's control mechanisms",
+        "Initial settlement negotiated for $100M (later reduced) created settlement momentum",
+        "Public policy arguments resonated with California courts and legislature (AB5 passed partly due to this litigation)"
+      ],
+      strategiesFailed: [
+        "Arbitration clause removal from class: Uber successfully required drivers who signed arbitration agreements to arbitrate individually — destroyed class size",
+        "Predominance: each driver's classification requires individual analysis of hours, control, economic dependence",
+        "Prop 22 political campaign by Uber/Lyft/DoorDash ($200M+ spent) legislatively nullified the case",
+        "Settlement rejected by appellate court for inadequately representing arbitration-bound drivers",
+        "Post-Prop 22, entire theory became legally moot in California"
+      ],
+      demographics: "California Uber drivers (2014-2019 class period). Approximately 385,000 drivers. Majority part-time (60%+ drove fewer than 15 hrs/week). Diverse workforce: immigrants, students, workers supplementing other income, some full-time. Many in Los Angeles and San Francisco Bay Area.",
+      injuryTypes: ["Lost employee benefits (minimum wage, overtime, expense reimbursement, unemployment, workers comp)", "Lack of Social Security employer contribution", "No health insurance contribution"],
+      keyEvidence: "Uber's driver app showing minute-by-minute control; Uber's own internal communications about driver management; driver deposition testimony about lack of true independence; economic analysis of driver earnings below minimum wage after expenses; Uber's rating system and termination practices",
+      corporateMisconduct: "Uber's business model was built entirely on misclassifying workers to avoid employment law obligations. Internal documents showed awareness of the legal risk. Uber spent over $200M on Prop 22 to legislatively enshrine the classification.",
+      regulatoryActions: "California Labor Commissioner investigations; California AG supported AB5 (classifying gig workers as employees); NLRB investigations ongoing; EU court rulings classified Uber drivers as workers in multiple countries.",
+      settlementStructure: "Initial $100M settlement reduced to $84M after appellate challenges. Settlement not fully implemented due to Prop 22 changing California law and subsequent decertification of post-arbitration-agreement drivers.",
+      bellwetherOutcome: "No bellwethers — settled without trial. Arbitration proceedings for individual drivers have had mixed results.",
+      attorneyFees: "~$25M requested (33%) on initial settlement — reduced in final accounting",
+      replicationModel: "D — Gig economy misclassification cases are extremely difficult post-Dukes and post-arbitration enforcement. Better approaches: PAGA (California Private Attorneys General Act) bypasses class cert and arbitration; FLSA collective action with opt-in structure; individual arbitration strategy (mass arbitration filings as in DoorDash). States without Prop 22-equivalent laws are better targets.",
+      clientAcquisitionStrategy: "Target gig workers through driver forums, social media, Uber/Lyft driver Facebook groups. PAGA representative action in California (no class cert needed, no arbitration waiver). Mass arbitration demand strategy has been highly effective — DoorDash/Lyft forced to pay millions in arbitration filing fees.",
+      watchOut: "Uber's arbitration clause is specifically designed to prevent class actions. Mass individual arbitration demand is now the better strategy — companies are legally required to pay all arbitration fees, creating enormous financial pressure to settle. PAGA is the critical California tool — arbitration clauses cannot waive PAGA representative standing."
+    }
   },
 
   {
@@ -714,7 +2029,38 @@ export const KB_CASES = [
     leadCounsel: "Lieff Cabraser",
     keyPrecedent: "In re Checking Account Overdraft Litigation",
     tags: ["overdraft fees", "Bank of America", "banking", "financial", "unjust enrichment", "TILA", "MDL"],
-    notes: "$410M. Shows uniform algorithmic policies create perfect class cases — identical conduct affecting all class members identically. Banks have since reformed overdraft practices after this and similar cases."
+    notes: "$410M. Shows uniform algorithmic policies create perfect class cases — identical conduct affecting all class members identically. Banks have since reformed overdraft practices after this and similar cases.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$410M / 13.2M customers = ~$31 average (but high-use customers received hundreds)",
+      litigationYears: 4,
+      whyItWorked: "Bank of America's overdraft fee manipulation was a pure algorithmic policy applied identically to every account. The bank programmatically reordered transactions from largest to smallest (rather than chronological order), mathematically maximizing the number of times a customer's balance went negative — and thus maximizing the number of $35 overdraft fees. Same code. Same policy. Every account. Perfect Rule 23 case: one common question (was the policy lawful?), one common answer. No individual analysis needed.",
+      challenges: "Banking law preemption arguments (National Bank Act, OCC regulations) threatened to wipe out state consumer protection claims. Individual damages varied widely (frequent overdrafters received far more than occasional ones). Some customers arguably benefited from overdraft 'protection' (transactions processed rather than declined). Opt-in customers had weaker claims.",
+      strategiesWon: [
+        "Uniform algorithmic policy = perfect commonality and predominance",
+        "Internal BofA documents showed deliberate decision to maximize fee revenue over customer interest",
+        "S.D. Florida MDL consolidation brought 40+ similar cases together efficiently",
+        "TILA disclosure violations as additional theory beyond unjust enrichment",
+        "Federal reserve final rule requiring opt-in for overdraft (2010) validated the theory",
+        "Discovery obtained BofA's own revenue modeling showing deliberate fee maximization strategy"
+      ],
+      strategiesFailed: [
+        "Preemption defense (National Bank Act) required careful navigation — some state claims dismissed",
+        "Customers who voluntarily opted into 'overdraft protection' had weaker equitable claims"
+      ],
+      demographics: "13.2 million Bank of America consumer checking account holders who incurred overdraft fees during class period (2001-2010). All income levels but disproportionate impact on lower-income customers who regularly operated near zero balance. Average class member received $31; heavy overdrafters received hundreds to thousands.",
+      injuryTypes: ["Excess overdraft fees (charged more times than chronological reordering would have caused)", "Unjust enrichment (bank captured excess fees)", "TILA disclosure violations"],
+      keyEvidence: "BofA's internal 'Overdraft Analysis' PowerPoint showing deliberate choice of largest-to-smallest reordering to maximize fees; internal financial models projecting fee revenue increase; account transaction logs showing manipulation; OCC examination reports noting the practice; Congressional testimony on overdraft abuse",
+      corporateMisconduct: "BofA deliberately engineered its transaction posting system to extract maximum overdraft revenue from customers, particularly lower-income account holders. Internal documents referred to overdraft fees as a profit center. The practice was industry-wide but BofA was among the most aggressive. The bank did not disclose this methodology to customers.",
+      regulatoryActions: "Federal Reserve issued Regulation E amendment (2010) requiring opt-in for overdraft; CFPB guidance on overdraft practices (2012+); OCC supervisory letters; FDIC guidance for state-chartered banks. Multiple state AG settlements with various banks.",
+      settlementStructure: "$410M paid to 13.2 million class members. Pro-rata distribution based on amount of excess overdraft fees charged. Cy pres allocation for unclaimable funds. BofA simultaneously changed overdraft posting order practices.",
+      bellwetherOutcome: "S.D. Florida MDL judge's ruling on BofA's policies effectively resolved the entire MDL against BofA — no individual trials needed.",
+      attorneyFees: "~$123M (30% of $410M) — standard for consumer class of this size",
+      replicationModel: "A — Uniform algorithmic banking/fintech policies are the ideal class action target. Every bank, fintech, and financial app with a programmatic fee policy is a potential defendant. Template: identify the algorithm → get internal documents showing deliberate design choice → show it uniformly harmed all customers → calculate per-account excess charges.",
+      clientAcquisitionStrategy: "Consumer banking class cases self-certify through mass media coverage and CFPB complaint database monitoring. Online banking forum complaints are excellent early signals. CFPB's complaint database (public) identifies pattern problems. File quickly after policy identification — first-mover advantage.",
+      watchOut: "National Bank Act preemption can eliminate state consumer protection claims for national banks — must rely on federal theories (TILA, unjust enrichment) or find state charter banks. CFPB rule changes can moot ongoing cases (happened with some later overdraft cases). Arbitration clauses in bank account agreements are common — check carefully."
+    }
   },
 
   // ─── EMERGING / CURRENT ───────────────────────────────────────────────────
@@ -731,7 +2077,39 @@ export const KB_CASES = [
     leadCounsel: "Salvi Schostok & Pritchard",
     keyPrecedent: "In re Preterm Infant Nutrition Products Liability Litigation",
     tags: ["NEC", "necrotizing enterocolitis", "baby formula", "Abbott", "premature infant", "product liability", "MDL"],
-    notes: "MDL 3026. Bellwether trials scheduled 2025. Sympathy factor extremely high (infant death). Expert causation on NEC mechanism is key battleground. Major tobacco-style suppressed research theory."
+    notes: "MDL 3026. Bellwether trials scheduled 2025. Sympathy factor extremely high (infant death). Expert causation on NEC mechanism is key battleground. Major tobacco-style suppressed research theory.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — projected $500K-$5M per infant death/serious injury based on comparable MDLs",
+      litigationYears: 3,
+      whyItWorked: "The general causation science is strong: multiple peer-reviewed meta-analyses (including a Cochrane review) show cow's milk-based formula significantly increases NEC risk in preterm infants versus human donor milk. Abbott and Mead Johnson knew about this research for decades and continued marketing to NICUs without adequate warning. The sympathy factor — premature infant deaths — is extraordinarily powerful with juries. The 'suppressed research' theory parallels tobacco litigation.",
+      challenges: "Daubert on causation is the critical battleground — defendants will argue confounding factors (gestational age, birth weight, other clinical factors) make causation unprovable in individual cases. NICU physicians ordered the formula — learned intermediary doctrine could be asserted. Regulatory pathway: FDA allows formula sales; warning label adequacy is contested. Cases are still in early MDL stages.",
+      strategiesWon: [
+        "Multiple Cochrane review and meta-analyses providing Daubert-passing general causation foundation",
+        "Internal Abbott/Mead Johnson documents showing awareness of NEC risk",
+        "Hospital NICU marketing practices (free formula, sponsored education) create duty-to-warn theory",
+        "Sympathy factor: premature infant victims with devastating outcomes",
+        "Abbott (Similac) faced simultaneous FDA recall (2022) for contamination — added regulatory pressure",
+        "MDL 3026 in N.D. Illinois — strong plaintiff-friendly venue for product liability"
+      ],
+      strategiesFailed: [
+        "Learned intermediary doctrine: hospitals/physicians prescribed formula — shifts to medical community",
+        "Individual causation (did this specific infant's NEC result from formula?) requires birth records, gestational age, clinical history — complex individual analysis",
+        "Some hospitals have quietly shifted away from cow's milk formula — defendants argue the 'solution' exists"
+      ],
+      demographics: "Premature infants born before 37 weeks gestational age (primarily <32 weeks 'very preterm') who were fed Abbott Similac or Mead Johnson Enfamil in NICUs and subsequently developed NEC. Parents (typically mothers) are the plaintiffs/legal guardians. Families span all demographics — prematurity affects all races and income levels. African American infants have higher rates of preterm birth, potentially higher case concentration.",
+      injuryTypes: ["Necrotizing enterocolitis (NEC) — intestinal tissue death", "Infant death from NEC", "Surgical bowel removal (short gut syndrome)", "Long-term gastrointestinal and developmental disabilities"],
+      keyEvidence: "Cochrane systematic reviews (2014, 2020) showing human milk vs. formula NEC risk; Abbott/Mead Johnson internal medical affairs documents; NICU marketing materials and academic detailing records; FDA inspection records (Abbott's Sturgis, MI plant contamination recall provides additional corporate misconduct context); individual infant medical records showing NEC diagnosis and formula usage",
+      corporateMisconduct: "Abbott and Mead Johnson marketed aggressively to hospital NICUs with free formula, sponsored medical education, and relationships with neonatologists, while knowing the peer-reviewed literature showed increased NEC risk. They did not add or update warning labels despite growing evidence. Abbott's 2022 Sturgis plant recall (Cronobacter contamination) exposed broader quality control failures.",
+      regulatoryActions: "FDA issued Abbott consent decree (2022) for Sturgis manufacturing violations (separate from NEC litigation but same company). No specific FDA action on NEC warning labels. WHO International Code of Marketing of Breast-milk Substitutes (largely unenforced in U.S.).",
+      settlementStructure: "MDL 3026 ongoing as of 2024-2025. Bellwether trials expected 2025-2026. Settlement likely after first bellwether verdicts establish jury value. Projected total MDL value: $5-15B based on case volume and injury severity.",
+      bellwetherOutcome: "Bellwether trials scheduled for 2025. Judge Matthew Kennelly presiding. Plaintiff leadership committee includes Salvi Schostok, Romanucci & Blandin.",
+      attorneyFees: "Standard 33-40% contingency in mass tort MDL structure",
+      replicationModel: "A — High-value, high-sympathy, strong general causation. The 'suppressed research in institutional marketing context' theory is highly replicable. NEC MDL is accepting new cases aggressively. Neonatal product liability is underlitigated relative to potential case value.",
+      clientAcquisitionStrategy: "NICU parent support groups, preterm infant advocacy organizations (March of Dimes community), neonatal ICU social workers, birth injury attorneys with complementary practices. Target families whose infants were born before 2022 and developed NEC in a NICU within 4-6 weeks of birth after bovine formula feeding.",
+      watchOut: "Statute of limitations: most states run from when parents knew or should have known formula caused the injury — discovery rule analysis is critical. Learned intermediary doctrine: need to show manufacturer marketed directly to families or that physician relied on manufacturer's misleading representations. Causation expert is case-determinative — retain top neonatology/gastroenterology experts early."
+    }
   },
 
   {
@@ -746,7 +2124,39 @@ export const KB_CASES = [
     leadCounsel: "Beasley Allen, Lowe Law Group",
     keyPrecedent: "In re Hair Relaxer Marketing, Sales Practices, and Products Liability Litigation",
     tags: ["hair relaxer", "uterine cancer", "L'Oreal", "Black women", "phthalates", "endocrine disruptor", "NIH study", "MDL"],
-    notes: "MDL 3060. Growing rapidly. NIH peer-reviewed study is strong general causation foundation. Racial justice angle makes this culturally significant. Expert Daubert battle on causation ongoing."
+    notes: "MDL 3060. Growing rapidly. NIH peer-reviewed study is strong general causation foundation. Racial justice angle makes this culturally significant. Expert Daubert battle on causation ongoing.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — projected $200K-$1M per uterine cancer diagnosis based on comparable pharmaceutical MDLs",
+      litigationYears: 2,
+      whyItWorked: "The NIH Sister Study (2022) — a rigorous prospective cohort study of 33,000 women — found that frequent hair relaxer users had 2.5x higher uterine cancer risk, with dose-response relationship (more frequent use = higher risk). This is Daubert-passing general causation. The chemicals implicated (phthalates, parabens, bisphenol A, formaldehyde-releasing agents) are well-established endocrine disruptors. The demographic concentration among Black women creates a powerful racial justice narrative alongside the legal case.",
+      challenges: "Specific causation: was this plaintiff's cancer caused by hair relaxers or other factors? Product identification (which specific brand) over decades of use is difficult. Multiple brands and formulations used over lifetimes. Daubert challenges on causation extrapolation from epidemiology to individual cases. Defense will argue long use without incident, confounding factors.",
+      strategiesWon: [
+        "NIH Sister Study — gold-standard prospective cohort design with dose-response relationship",
+        "Endocrine disruption mechanism well-established in scientific literature",
+        "Multiple chemical agents (phthalates, parabens, formaldehyde) with independent toxicological profiles",
+        "MDL 3060 in N.D. Illinois — efficient federal consolidation",
+        "Racial justice narrative elevates case profile and jury sympathy",
+        "L'Oreal, Revlon's own ingredient safety studies create internal contradiction evidence"
+      ],
+      strategiesFailed: [
+        "Product ID problem: plaintiffs used multiple brands over 20-40 years — identifying specific causative product is difficult",
+        "Confounding factors in epidemiology (obesity, hormone therapy, family history) will be exploited by defense",
+        "Long latency period between exposure and cancer diagnosis complicates specific causation"
+      ],
+      demographics: "Primarily African American and Black women who used chemical hair relaxers (sold as 'creamy crack' in colloquial terms) since teenage years or childhood — typically 30-60 years of use. Age at claim: 35-70. Uterine cancer is the most common gynecological cancer in the U.S., with Black women having 2x the mortality rate of white women. Many plaintiffs are lower-middle-income consumers of drugstore-brand relaxers.",
+      injuryTypes: ["Uterine cancer (endometrial adenocarcinoma)", "Uterine cancer requiring hysterectomy", "Advanced uterine cancer with metastasis", "Ovarian cancer (secondary association being studied)"],
+      keyEvidence: "NIH Sister Study publication (2022, JNCI); product ingredient lists showing endocrine-disrupting chemicals; L'Oreal and manufacturer internal safety assessments; pathology reports and oncology records for individual plaintiffs; dermatologist and salon records documenting product use history; FDA adverse event reports",
+      corporateMisconduct: "L'Oreal, Revlon, and other manufacturers knew their relaxer formulations contained endocrine-disrupting chemicals and continued selling them without adequate safety testing or warnings for decades, targeting primarily Black women who had limited market alternatives for chemically straightening hair.",
+      regulatoryActions: "FDA has proposed rules restricting formaldehyde-releasing chemicals in hair products (2023). California Toxic-Free Cosmetics Act restricts some ingredients. No specific NEC-type FDA action on relaxers yet. NIEHS and NIH continued research on hair product exposures.",
+      settlementStructure: "MDL 3060 ongoing. Bellwether trials projected 2025-2026. Case filings growing rapidly (~8,000+ cases as of 2024). L'Oreal and Revlon expected to be primary settlement targets given market share. Revlon's prior bankruptcy complicates recovery.",
+      bellwetherOutcome: "Bellwether selection process underway. First trials expected 2025-2026.",
+      attorneyFees: "Standard 33-40% contingency in mass tort MDL",
+      replicationModel: "A — NIH epidemiology-backed product liability MDL structure is highly replicable. Any widely-used consumer product with peer-reviewed epidemiological causation data targeting a defined demographic group is a strong candidate. Environmental justice angle (Black women disproportionately exposed) adds compelling public interest dimension.",
+      clientAcquisitionStrategy: "Black women's health advocacy organizations, HBCU campus outreach, beauty salon networks, oncology social workers in uterine cancer programs. Hair relaxer users who developed uterine, ovarian, or other gynecological cancers. Marketing in African American media and community organizations. Focus on women who used relaxers regularly (4+ times/year) for 10+ years.",
+      watchOut: "Revlon's 2022 bankruptcy creates recovery risk — need to file early in bankruptcy claims process. Product ID over decades of use requires detailed intake questionnaire. Statute of limitations analysis critical — most states start from diagnosis date or when causation is reasonably discoverable. Retain top endocrinology/toxicology experts immediately — Daubert on causation will be vigorously contested."
+    }
   },
 
   {
@@ -761,7 +2171,38 @@ export const KB_CASES = [
     leadCounsel: "Wisner Baum, Weitz & Luxenberg",
     keyPrecedent: "French ANSM pharmacovigilance report (2023)",
     tags: ["Depo-Provera", "medroxyprogesterone", "meningioma", "brain tumor", "pharmaceutical", "contraceptive", "MDL", "emerging"],
-    notes: "MDL 3140 formed 2024. Fastest-growing new MDL. French data is strong foundation. Key risk: U.S. causation studies needed — European epidemiology may face Daubert challenges."
+    notes: "MDL 3140 formed 2024. Fastest-growing new MDL. French data is strong foundation. Key risk: U.S. causation studies needed — European epidemiology may face Daubert challenges.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending — projected $300K-$2M for meningioma requiring surgery; $100K-$500K for diagnosed non-operative",
+      litigationYears: 1,
+      whyItWorked: "The French ANSM pharmacovigilance study (2023) showed a dose-response relationship between long-term Depo-Provera use and meningioma risk (5.6x increased risk with 5+ years of use). Progestins are known to promote meningioma growth via progesterone receptors — plausible biological mechanism. French regulatory action (prescribing restrictions) validates the hazard. Pfizer's failure to update U.S. warning labels despite French data is the core negligence claim.",
+      challenges: "MDL 3140 only formed in 2024 — very early stage, no discovery complete. U.S.-specific epidemiological data is limited — heavy reliance on European studies may face Daubert challenges. Meningioma has multiple risk factors (head radiation, NF2 mutations, female sex itself) creating confounding. Depo-Provera was often used in lower-income women and minorities — documenting long-term use history may be challenging.",
+      strategiesWon: [
+        "French ANSM study with strong dose-response data is Daubert-passable general causation",
+        "Pfizer label did not include meningioma risk warning — failure to warn is straightforward",
+        "French regulatory action (2023 prescribing restrictions) provides official validation",
+        "Progesterone receptor expression in meningiomas is established medical science",
+        "MDL 3140 formation in N.D. Florida — efficient early consolidation"
+      ],
+      strategiesFailed: [
+        "U.S. epidemiological data scarce — French data may be challenged as inapplicable",
+        "Depo-Provera is used primarily by poorer women with limited access to records",
+        "Long latency between use and diagnosis complicates causation timeline"
+      ],
+      demographics: "Women aged 20-50 who used Depo-Provera injectable contraceptive for 2+ years. Disproportionately lower-income women and women of color (Depo-Provera marketed aggressively in developing countries and to Medicaid populations). Women who underwent surgery for meningioma 5-20 years after significant Depo-Provera use.",
+      injuryTypes: ["Intracranial meningioma requiring craniotomy/surgery", "Radiation-treated meningioma", "Asymptomatic meningioma found on imaging", "Neurological sequelae from meningioma or surgery"],
+      keyEvidence: "ANSM French pharmacovigilance study (2023); earlier French studies from Bournemouth Hospital group; Pfizer's clinical trial data; OB-GYN prescribing records; pharmacy dispensing records; neurosurgery operative records; pathology reports with progesterone receptor staining results",
+      corporateMisconduct: "Pfizer (as successor to Pharmacia & Upjohn) failed to update Depo-Provera's warning label to reflect meningioma risk despite French regulatory actions and growing scientific literature. The drug has been on the market since 1992 in the U.S. European signals were knowable and actionable for years before 2023.",
+      regulatoryActions: "French ANSM: prescribing restrictions for meningioma-risk patients (2023). EMA review triggered. No U.S. FDA label change yet as of 2024. FDA watching European developments.",
+      settlementStructure: "MDL 3140 too new for settlement projections. Bellwether trials likely 2026-2027. Case count growing rapidly — projected 5,000-15,000 cases if causation holds at Daubert.",
+      bellwetherOutcome: "No bellwethers yet — MDL formed March 2024.",
+      attorneyFees: "Standard 33-40% contingency in mass tort MDL",
+      replicationModel: "B+ — European pharmacovigilance data-to-U.S. MDL pipeline is established and effective. Pattern: European regulator acts on drug risk → U.S. plaintiffs bar files MDL → pressure builds for FDA label change. Examples: Risperdal (gynecomastia), Abilify (compulsive behaviors), Depo-Provera (meningioma). File early in rapidly developing MDLs.",
+      clientAcquisitionStrategy: "Gynecology and OB-GYN practices, Planned Parenthood network, women's health clinics (where Depo-Provera is commonly used), neurosurgery practices (meningioma surgical patients). Target women 35-65 with meningioma diagnosis who had significant Depo-Provera use history. Medicaid population outreach. International women's health NGO partnerships.",
+      watchOut: "Very early MDL — case selection risk is higher before Daubert rulings establish admissibility. Ensure minimum use threshold (2+ years recommended based on French data) in intake. Male patients with meningioma (rare Depo-Provera use) may be excluded from class. Progesterone receptor positivity on pathology may be required for specific causation."
+    }
   },
 
   {
@@ -777,7 +2218,4109 @@ export const KB_CASES = [
     leadCounsel: "Not publicly identified",
     keyPrecedent: "Lemmon v. Snap, Inc., 995 F.3d 1085 (9th Cir. 2021)",
     tags: ["Snapchat", "Snap", "speed filter", "product liability", "app design", "distracted driving", "social media"],
-    notes: "Lemmon v. Snap opened the door to product liability claims against social media apps for design features that cause harm. Section 230 does not protect design defect claims (as opposed to content claims)."
+    notes: "Lemmon v. Snap opened the door to product liability claims against social media apps for design features that cause harm. Section 230 does not protect design defect claims (as opposed to content claims).",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "Confidential individual settlements — estimated $500K-$2M per wrongful death",
+      litigationYears: 4,
+      whyItWorked: "The 9th Circuit's Lemmon v. Snap ruling (2021) was the critical legal breakthrough: Section 230 of the CDA does not immunize companies from product liability claims based on negligent app design — only from liability for third-party content. Snap designed the Speed Filter feature (which overlaid a speedometer on photos/videos) knowing it would incentivize dangerous behavior, making it a product defect case, not a content case. This opened an entirely new theory of social media liability.",
+      challenges: "Individual cases (not a mass class action) — each wrongful death requires individual causation proof. Snap argued users assumed the risk. Regulatory/legislative framework for app design liability doesn't yet exist. Section 230 continues to be litigated in follow-on cases with inconsistent results. Small defendant pool (this was one family's accident, not a mass event).",
+      strategiesWon: [
+        "Lemmon v. Snap: 9th Circuit held product defect claims not barred by Section 230",
+        "Product design defect theory: Speed Filter created foreseeable incentive for reckless driving",
+        "Wrongful death damages are high-value even in small class",
+        "Snap's internal design documents likely showed awareness of dangerous user behavior with Speed Filter"
+      ],
+      strategiesFailed: [
+        "Individual cases only — not a class action; limited scale",
+        "Speed Filter was discontinued in 2021 — reduces ongoing harm theory",
+        "Section 230 remains an unresolved obstacle in many other circuits"
+      ],
+      demographics: "Individual wrongful death plaintiffs — families of young adults (typically 16-25) killed in high-speed accidents while using Snapchat Speed Filter. Young male drivers disproportionately represented. Accidents in suburban and rural areas where high speeds were reachable.",
+      injuryTypes: ["Wrongful death from high-speed collision", "Severe traumatic brain injury", "Catastrophic multi-system trauma"],
+      keyEvidence: "Snap Speed Filter design documents; internal analytics showing filter usage patterns and speeds captured; prior incident reports of accidents involving Speed Filter (foreseeability); crash scene data showing speeds; phone data showing active Snapchat use at time of crash",
+      corporateMisconduct: "Snap designed a feature specifically to display and share high speeds (Speed Filter showed mph overlay on snaps), gamifying dangerous driving. The feature received no safety review despite obvious foreseeable misuse. Snap ignored prior incident reports linking Speed Filter to accidents.",
+      regulatoryActions: "No specific regulatory action against Snap for Speed Filter. NHTSA has not addressed social media app design. California and other states considering distracted driving tech legislation.",
+      settlementStructure: "Individual confidential settlements. No class. Snap discontinued Speed Filter in 2021 as part of quiet response to litigation pressure.",
+      bellwetherOutcome: "Settled before trial after 9th Circuit ruling established Section 230 doesn't bar design defect claims.",
+      attorneyFees: "Standard 33-40% contingency on individual wrongful death case",
+      replicationModel: "B — Lemmon v. Snap created the template for social media product design liability. Instagram teen addiction MDL (Meta), TikTok teen mental health MDL, and gaming addiction cases all use this framework. Section 230 does not protect negligent design — only content. Every social media feature designed in a way that foreseeably causes harm is a potential product liability claim.",
+      clientAcquisitionStrategy: "Wrongful death and serious injury cases involving social media app usage at time of accident. Phone records and Snapchat/app data can be obtained through subpoena early in case. Partner with accident reconstruction experts who can analyze phone data alongside crash data.",
+      watchOut: "Section 230 analysis varies by circuit — 9th Circuit (Lemmon) is plaintiff-friendly but 1st, 2nd, 4th circuits may be less favorable. Distinguish design defect (not barred by S.230) from failure to remove harmful content (barred). Each case requires individual causation — phone was in use, filter was active, speed was a contributing factor."
+    }
+  },
+
+  // ─── BATCH 1: PHARMACEUTICAL (IDs 51–60) ──────────────────────────────────
+
+  {
+    id: 51, title: "Risperdal Gynecomastia MDL", company: "Johnson & Johnson / Janssen",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled", year: 2012,
+    affectedPop: "~10,000 claimants", jurisdiction: "E.D. Pennsylvania", mdlNumber: "MDL 1668",
+    settlementAmount: "$2.2B (including off-label marketing DOJ fine)", classSize: "~10,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Risperdal (risperidone) marketed off-label to children/elderly causing gynecomastia. FDA approved for schizophrenia; J&J promoted for ADHD, autism, and dementia. Same off-label promotion scheme = common liability.",
+    leadCounsel: "Feldman & Pinto, Sheller PC",
+    keyPrecedent: "In re Zyprexa Prods. Liab. Litig.",
+    tags: ["antipsychotic", "gynecomastia", "off-label", "pediatric", "pharmaceutical", "MDL"],
+    notes: "J&J paid $2.2B DOJ settlement for off-label marketing. State and federal MDL personal injury cases resolved separately. Classic off-label pharma MDL structure.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "$50K-$2.5M per gynecomastia claimant; ~$220K average",
+      litigationYears: 12,
+      whyItWorked: "Risperdal's off-label promotion scheme was a single, uniform corporate campaign — J&J/Janssen trained sales reps to promote to pediatricians, child psychiatrists, and nursing homes for unapproved uses. The FDA approved Risperdal only for schizophrenia; the off-label uses (ADHD, autism, dementia, conduct disorder) were not supported by adequate clinical evidence. When children took the drug, prolactin levels surged, causing gynecomastia (breast tissue growth in males). The DOJ $2.2B criminal settlement proved the marketing scheme. Every personal injury plaintiff could piggyback on DOJ findings.",
+      challenges: "Long latency between pediatric prescription and adult filing created statute of limitations issues. Proving individual causation (which patient's gynecomastia was drug-induced vs. pubertal) required endocrinology experts. Pennsylvania MDL judge's management was aggressive on scheduling.",
+      strategiesWon: [
+        "DOJ $2.2B False Claims Act/off-label marketing settlement established corporate misconduct",
+        "Single unified marketing scheme = perfect MDL commonality",
+        "Pediatric victims generate extraordinary jury sympathy",
+        "FDA's own clinical rejection of pediatric indications was key evidence",
+        "Arkansas state court $1.2B verdict against J&J provided benchmark",
+        "J&J executive email ('it's a gold mine') provided smoking gun on financial motivation"
+      ],
+      strategiesFailed: [
+        "Some individual cases had difficulty proving exclusive Risperdal causation vs. puberty",
+        "J&J's aggressive appeal strategy delayed resolution years",
+        "Healthcare providers as learned intermediaries created some defense"
+      ],
+      demographics: "Primarily male children ages 5-17 (predominantly) who received Risperdal for off-label indications (ADHD, autism spectrum disorder, conduct disorder, pediatric bipolar). Disproportionately low-income families (Medicaid, state institutional care). Many plaintiffs are now young adults 18-30 seeking compensation for permanent gynecomastia.",
+      injuryTypes: ["Gynecomastia (breast tissue growth in males)", "Galactorrhea (lactation in males)", "Hyperprolactinemia", "Psychological harm from visible breast development"],
+      keyEvidence: "J&J/Janssen sales training materials promoting off-label uses; 'Dear Doctor' letters promoting pediatric uses not FDA-approved; internal financial modeling showing off-label revenue; FDA rejection letters for pediatric indications; endocrinology expert testimony on prolactin-mediated mechanism; patient prescription records and medical records",
+      corporateMisconduct: "J&J/Janssen hired and trained an 'ElderCare' sales force specifically to market Risperdal to nursing homes for dementia (unapproved). A separate pediatric sales force targeted child psychiatrists. Internal emails showed awareness that the pediatric indications weren't approved. The company downplayed gynecomastia risk in physician communications.",
+      regulatoryActions: "DOJ False Claims Act settlement: $2.2B (criminal + civil) — one of the largest pharma off-label settlements ever. FDA Warning Letters. Multiple state AG settlements. Individual state verdicts including Arkansas ($1.2B) and Philadelphia jury verdicts.",
+      settlementStructure: "Personal injury cases settled individually through MDL 1668 (E.D. Pa.) and state court litigations. No class settlement — individual negotiations based on severity of gynecomastia, age at exposure, treatment required. J&J resolved the bulk of ~10,000 cases for hundreds of millions in aggregate.",
+      bellwetherOutcome: "Multiple bellwether verdicts favored plaintiffs. Philadelphia jury returned multiple verdicts ranging from $500K to $8B (punitive later reduced). Arkansas $1.2B verdict signal to settle.",
+      attorneyFees: "Standard 33-40% contingency per case; PSC leadership fees on MDL administrative structure",
+      replicationModel: "A — Off-label pediatric marketing MDL is among the most powerful pharma litigation structures. Template: identify DOJ/False Claims Act settlement for off-label promotion → identify physical harm to patient population → file personal injury MDL. Every major pharmaceutical company has off-label promotion settlements that can be leveraged.",
+      clientAcquisitionStrategy: "Male patients 18-35 who took Risperdal as children and developed gynecomastia. Advertising through men's health forums, autism advocacy communities, pediatric mental health support groups. Plastic surgery referral networks (many patients seek corrective surgery). Statute of limitations: most states allow discovery rule from when plaintiff first associated gynecomastia with drug use.",
+      watchOut: "DOJ settlement does not automatically establish personal injury liability — still need individual causation. Learned intermediary doctrine: J&J may argue prescribing physician was warned. Statute of limitations strictly enforced in many jurisdictions — confirm discovery rule availability."
+    }
+  },
+
+  {
+    id: 52, title: "Accutane / Isotretinoin IBD MDL", company: "Roche",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "mixed", year: 2004,
+    affectedPop: "Thousands", jurisdiction: "Atlantic County, NJ (state)", mdlNumber: "MCL 271",
+    settlementAmount: "Hundreds of millions (individual verdicts)", classSize: "~7,000",
+    rule23bType: "b(3)", appealOutcome: "mixed (some reversed on Daubert)", harmCategory: "physical",
+    daubert: "mixed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Accutane (isotretinoin) for acne linked to Crohn's disease and ulcerative colitis. NJ MCL consolidated thousands of claims. Some plaintiffs won large verdicts; Daubert challenges caused some reversals.",
+    leadCounsel: "Seeger Weiss, Lanier Law Firm",
+    keyPrecedent: "In re Rezulin Prods. Liab. Litig.",
+    tags: ["Accutane", "isotretinoin", "IBD", "Crohn's", "acne", "pharmaceutical", "Daubert"],
+    notes: "NJ MCL rather than federal MDL. Daubert battles central — some expert testimony excluded, others admitted. Illustrates importance of causation science in pharma cases.",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "Highly variable — individual verdicts $1M-$25M; many cases dismissed on Daubert",
+      litigationYears: 15,
+      whyItWorked: "Accutane is a genuinely effective acne drug that carries well-documented teratogenic risk and contested IBD risk. The IBD theory (Crohn's disease and ulcerative colitis from isotretinoin use) had some scientific support in early epidemiological studies and had biological plausibility (gut mucosal effects). New Jersey MCL venue was plaintiff-friendly. Mark Lanier won multiple large verdicts ($33M in one case) demonstrating jury persuasiveness.",
+      challenges: "The causation science was genuinely contested — multiple large-scale epidemiological studies failed to confirm IBD causation. Daubert challenges by Roche were successful on some expert witnesses, undermining the case structure. Different judges came to different conclusions on expert admissibility. The drug label already included a warning about IBD, complicating failure-to-warn claims. Ultimate result: mixed — some plaintiffs won large verdicts, many were dismissed.",
+      strategiesWon: [
+        "New Jersey MCL venue (plaintiff-friendly) rather than federal MDL",
+        "Mark Lanier trial expertise produced some very large verdicts",
+        "Initial epidemiological studies supporting IBD association",
+        "Individual plaintiff stories were compelling — young acne patients developing lifelong bowel disease"
+      ],
+      strategiesFailed: [
+        "Daubert on causation: multiple large epidemiological studies showed no IBD association",
+        "Label already warned of IBD risk — weakened failure-to-warn theory",
+        "Some expert witnesses excluded entirely in certain cases",
+        "Roche's appeals strategy reversed several large verdicts"
+      ],
+      demographics: "Primarily young adults (16-30) and teenagers treated for severe acne. Majority female (acne treatment skews female). Patients who developed Crohn's disease or ulcerative colitis within 1-5 years of Accutane use. Middle-class demographics (severe acne treatment requires dermatologist access).",
+      injuryTypes: ["Crohn's disease", "Ulcerative colitis", "Inflammatory bowel disease", "Lifelong gastrointestinal disability"],
+      keyEvidence: "Early epidemiological studies (Bernstein 2003) suggesting IBD association; biologicial plausibility studies on gut mucosal effects; Roche's own clinical trial adverse event reports; prescribing records; IBD diagnosis records; gastroenterologist expert testimony",
+      corporateMisconduct: "Roche's failure to adequately study IBD risk during clinical trials and post-marketing surveillance. Some allegation of suppressed safety signals. The drug's label IBD warning was added but argued to be inadequate.",
+      regulatoryActions: "FDA required iPLEDGE pregnancy prevention program (primary regulatory action was teratogenicity, not IBD). FDA reviewed IBD signal but did not mandate major label changes beyond existing warning.",
+      settlementStructure: "Individual case settlements varied enormously. No global settlement. Some defendants (generic manufacturers) settled separately. Roche litigated aggressively and achieved many dismissals.",
+      bellwetherOutcome: "Mixed — some bellwether verdicts for plaintiffs (Lanier-tried cases), others dismissed on Daubert. No consistent outcome direction.",
+      attorneyFees: "Standard 33-40% on successful verdicts; many firms invested heavily and recovered nothing on dismissed cases",
+      replicationModel: "C — Mixed causation science = unpredictable litigation investment. Key lesson: before building a pharmaceutical MDL, ensure your general causation experts can survive Daubert in the specific venue. State MCL (NJ) was better for plaintiffs than federal MDL would have been for this case. Invest in causation science validation before mass intake.",
+      clientAcquisitionStrategy: "Patients with IBD diagnosis following Accutane use — gastroenterology practice referrals, IBD patient support groups (CCFA - Crohn's & Colitis Foundation of America). Timing: IBD typically diagnosed within 1-5 years of Accutane use. Strong young adult demographic present on social media.",
+      watchOut: "Causation science is contested — multiple large studies found no IBD association. Screen cases for strong temporal relationship (IBD within 18 months of use) and exclusion of other IBD risk factors. Label already warned of IBD risk — must develop theory for why warning was inadequate. Current Daubert climate is more favorable to defendants than in Accutane's peak years."
+    }
+  },
+
+  {
+    id: 53, title: "Xarelto (Rivaroxaban) Bleeding MDL", company: "Bayer / Janssen",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled", year: 2014,
+    affectedPop: "~27,000 claimants", jurisdiction: "E.D. Louisiana", mdlNumber: "MDL 2592",
+    settlementAmount: "$775M", classSize: "~27,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Xarelto (blood thinner) lacked adequate antidote; patients died from uncontrolled bleeding. No reversal agent disclosed in labeling. Uniform failure-to-warn theory across 27K claims.",
+    leadCounsel: "Levin Papantonio, Beasley Allen",
+    keyPrecedent: "In re Pradaxa Prods. Liab. Litig.",
+    tags: ["Xarelto", "anticoagulant", "bleeding", "failure to warn", "blood thinner", "MDL"],
+    notes: "$775M global settlement 2019. Classic MDL — same drug, same defect, same failure-to-warn, massive scale. Companion MDL to Pradaxa ($650M) and Eliquis litigation.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$28,700 average ($775M / 27,000 claimants) — weighted toward higher payments for death/severe bleed",
+      litigationYears: 5,
+      whyItWorked: "Xarelto's failure-to-warn theory was textbook: the drug (a direct oral anticoagulant/blood thinner) caused irreversible, uncontrollable bleeding with no available reversal agent at the time of widespread use. The FDA-required label did not adequately disclose the inability to reverse the drug's anticoagulant effect in emergency situations. All 27,000 plaintiffs shared the identical theory — same drug, same mechanism, same label failure. No individual causation complexity beyond 'patient bled and couldn't be reversed.'",
+      challenges: "Bayer and Janssen aggressively ran bellwether trials with physician experts testifying that doctors understood the bleeding risk. Some bellwether trials returned defense verdicts (3 consecutive defense wins in 2017 created settlement dynamics). Anti-clotting-reversal agent Andexxa was approved in 2018 mid-MDL, mooting some future-use concerns.",
+      strategiesWon: [
+        "Pure failure-to-warn theory — clean, uniform across all 27K cases",
+        "No reversal agent available at time of injury — uncontroversial factual predicate",
+        "Death and catastrophic bleed injuries created high individual case values",
+        "Bellwether trial experience forced realistic settlement assessment on both sides",
+        "E.D. Louisiana Judge Eldon Fallon's efficient MDL management"
+      ],
+      strategiesFailed: [
+        "Three consecutive defense bellwether verdicts in 2017 temporarily undermined plaintiff leverage",
+        "Defense experts effectively argued physicians understood bleeding risks of all anticoagulants",
+        "Pradaxa MDL ($650M) comparison limited settlement leverage on per-case value"
+      ],
+      demographics: "Patients with atrial fibrillation, deep vein thrombosis, or pulmonary embolism who were prescribed Xarelto instead of warfarin (older anticoagulant with reversal agent). Primarily older adults (60+), often post-surgical or with chronic cardiac conditions. Many elderly Medicare patients. Both male and female. Cases involving death primarily from gastrointestinal or intracranial bleeds.",
+      injuryTypes: ["Fatal gastrointestinal hemorrhage", "Intracranial hemorrhage/stroke", "Severe retroperitoneal bleed", "Uncontrolled post-surgical bleeding"],
+      keyEvidence: "Xarelto prescribing label (comparing anticoagulant reversal instructions to warfarin's vitamin K protocol); internal Bayer/Janssen communications on reversal agent development; ER medical records documenting inability to reverse anticoagulation; FDA approval documents; ROCKET AF clinical trial data showing bleeding rates",
+      corporateMisconduct: "Bayer and Janssen promoted Xarelto's convenience (no monitoring required) without adequately warning that in a bleeding emergency, there was no reversal protocol. Their own Phase III trial (ROCKET AF) used a faulty blood monitoring device that may have skewed results. Promotion emphasized advantages over warfarin without disclosing the no-reversal risk.",
+      regulatoryActions: "FDA required multiple label updates. FDA investigated ROCKET AF trial monitoring device issues. Andexanet alfa (Andexxa — Xarelto reversal agent) approved 2018 by FDA.",
+      settlementStructure: "$775M global settlement (2019) to ~27,000 plaintiffs. Cases resolved through MDL 2592 (E.D. Louisiana). Settlement allocated by injury severity — death cases received highest values; severe GI bleeds next; less severe cases received smaller amounts. Attorneys' Common Benefit Fund contribution required.",
+      bellwetherOutcome: "Three consecutive defense verdicts in 2017 (unexpected) followed by settlement negotiations. Defense wins actually facilitated settlement by revealing jury uncertainty — both sides faced trial risk.",
+      attorneyFees: "~$256M (33% of $775M total); PSC common benefit fees additional",
+      replicationModel: "A — Blood thinner litigation is a proven MDL structure. Eliquis (apixaban) and Pradaxa established the template. Any drug with irreversible effects and inadequate emergency management protocols follows this structure. Currently: SGLT2 inhibitors (Invokana, Farxiga, Jardiance) for amputations and DKA follow the same pattern.",
+      clientAcquisitionStrategy: "Elderly patients on anticoagulants who suffered major bleeding events. Cardiology practice referrals. Atrial fibrillation patient support groups. Hospital discharge records for GI hemorrhage and intracranial bleed (subpoena from plaintiff's treating facilities). Death cases with surviving family are highest value.",
+      watchOut: "Three defense verdicts showed jury uncertainty about whether physicians were adequately informed. 'Physicians know anticoagulants cause bleeding' defense is effective. Focus intake on cases where patient bled in emergency and no reversal was available — strongest failure-to-warn predicate. Current cases for Eliquis and other anticoagulants use same template."
+    }
+  },
+
+  {
+    id: 54, title: "Roundup (Glyphosate) Cancer MDL", company: "Bayer / Monsanto",
+    type: "Pharmaceutical", industry: "Agriculture/Chemical", outcome: "settled", year: 2018,
+    affectedPop: "~125,000 claimants", jurisdiction: "N.D. California", mdlNumber: "MDL 2741",
+    settlementAmount: "$10.9B", classSize: "~125,000",
+    rule23bType: "b(3)", appealOutcome: "mixed", harmCategory: "physical",
+    daubert: "passed (in part)",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Glyphosate herbicide (Roundup) linked to non-Hodgkin's lymphoma. IARC classified as 'probably carcinogenic.' Monsanto suppressed research. Same product, same failure-to-warn across all plaintiffs.",
+    leadCounsel: "Baum Hedlund, Miller Firm",
+    keyPrecedent: "In re Asbestos School Litig.",
+    tags: ["Roundup", "glyphosate", "herbicide", "NHL", "cancer", "Monsanto", "Bayer", "agricultural"],
+    notes: "Bayer acquired Monsanto in 2018 and inherited $10.9B+ in liability. First three trials returned plaintiff verdicts ($289M, $80M, $2B). Massive MDL. Future use litigation still contested.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "~$87,200 average ($10.9B / 125,000 claimants) — actual payment ~$100K-$250K in practice",
+      litigationYears: 7,
+      whyItWorked: "Monsanto's internal documents — obtained through discovery — proved the company knew about NHL risk and actively worked to suppress research and manipulate the scientific record. IARC's 2015 classification of glyphosate as 'probably carcinogenic' (Group 2A) was the litigation catalyst. The first three trials in California returned massive verdicts ($289M, $80M, $2B punitive) because juries saw the internal 'Let Nothing Go' document strategy in which Monsanto hired scientists to ghostwrite pro-Monsanto studies. Bayer's acquisition of Monsanto in 2018 at $63B created an enormous, well-funded defendant.",
+      challenges: "Glyphosate is the most widely used herbicide in the world — its safety is hotly contested among regulators. EPA maintains it is not likely carcinogenic; IARC says probably carcinogenic. This regulatory disagreement creates preemption arguments and Daubert battlefields. Future use of Roundup on farms is critical to Bayer's business — they will fight hard. Some verdicts reduced or reversed on appeal.",
+      strategiesWon: [
+        "Monsanto's 'Let Nothing Go' document campaign — proved corporate scientific manipulation",
+        "IARC Group 2A classification provided official science backing",
+        "Dewayne Johnson bellwether: $289M verdict (groundskeeper with terminal NHL) — perfect plaintiff",
+        "California venue (N.D. Cal.) allowed state law claims alongside federal",
+        "Three consecutive plaintiff verdicts established settlement pressure",
+        "Non-Hodgkin lymphoma is a serious, documentable cancer with strong sympathy"
+      ],
+      strategiesFailed: [
+        "EPA's contrary position (not carcinogenic) creates preemption defense still being litigated",
+        "Global settlement ($10.9B) included future claims fund for future users — complex administration",
+        "Bayer sought global future-claims settlement — class cert denied for futures fund"
+      ],
+      demographics: "Primarily agricultural workers and landscapers with significant glyphosate exposure (farm workers, lawn care professionals, groundskeepers, golf course workers). Residential users with heavy use also included. Heavy exposure concentration in Midwest and agricultural states (IA, IL, MN, CA Central Valley). Mostly male, ages 40-70. Hispanic farm worker communities disproportionately represented.",
+      injuryTypes: ["Non-Hodgkin lymphoma (NHL)", "Diffuse large B-cell lymphoma (DLBCL)", "Follicular lymphoma", "Other NHL subtypes"],
+      keyEvidence: "Monsanto internal 'Let Nothing Go' strategy documents; ghostwritten scientific papers; emails with EPA officials; internal risk assessments acknowledging NHL signal; IARC Monograph 112 (glyphosate); epidemiological meta-analyses (Agricultural Health Study); exposure assessment records (employment records, purchase receipts)",
+      corporateMisconduct: "Monsanto ran a systematic campaign to influence regulatory agencies (EPA, EFSA) and the scientific literature to maintain glyphosate's safety status. The company hired third-party scientists to author papers that were actually written by Monsanto employees. Internal documents called this 'Let Nothing Go' — suppressing any negative publication immediately.",
+      regulatoryActions: "IARC classified glyphosate as Group 2A 'probably carcinogenic' (2015). EPA maintained 'not likely carcinogenic' classification. EU renewed glyphosate authorization (2023) over French/German objections. California Prop 65 listed glyphosate as carcinogen. FDA monitoring for glyphosate residues in food.",
+      settlementStructure: "$10.9B global settlement (2020): ~$8.8B for current cases; ~$1.25B for class members who develop NHL in the future (subject to exposure threshold); future-use indemnification fund. Complex administration. Future claims class cert denied by 9th Circuit (ongoing issue).",
+      bellwetherOutcome: "Dewayne Johnson (groundskeeper) $289M verdict; Edwin Hardeman (residential user) $80M verdict; Alva/Alberta Pilliod (couple who both developed NHL) $2.05B verdict — all for plaintiffs. Three for three before settlement.",
+      attorneyFees: "~$3.6B (approximately 33% of $10.9B) — enormous aggregate fee",
+      replicationModel: "A — Agricultural chemical litigation following Roundup has spawned Paraquat/Parkinson's MDL, dicamba drift cases, chlorpyrifos/developmental harm cases. Any widely-used agricultural chemical with IARC 2A/2B or similar classification and exposure-linked disease is a litigation candidate. Internal corporate document suppression is the highest-value evidence in these cases.",
+      clientAcquisitionStrategy: "Agricultural workers, landscapers, groundskeepers, golf course employees with significant Roundup exposure and NHL diagnosis. Farm worker advocacy organizations (UFW, NFWC), agricultural union networks. Cancer center partnerships (NHL patients). Spanish-language outreach critical for farm worker community. Exposure documentation: employment records, purchase receipts, aerial spray logs.",
+      watchOut: "EPA preemption argument (Baber v. Monsanto) still being litigated — federal law may preempt state failure-to-warn claims if EPA label is adequate. Post-Johnson v. Monsanto, Bayer has been more aggressive in trials. Future claims class certification remains unresolved. Causation requires significant exposure (>2 days/year) — screen cases carefully."
+    }
+  },
+
+  {
+    id: 55, title: "Zofran / Ondansetron Birth Defect MDL", company: "GlaxoSmithKline",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "pending", year: 2015,
+    affectedPop: "Thousands", jurisdiction: "D. Massachusetts", mdlNumber: "MDL 2657",
+    settlementAmount: "Pending", classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "mixed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Zofran (ondansetron), approved for nausea, marketed off-label to pregnant women. Alleged link to cardiac defects in newborns. DOJ settled for $3B (off-label promotion). Causation Daubert highly contested.",
+    leadCounsel: "Baum Hedlund, Keller Rohrback",
+    keyPrecedent: "In re Zoloft Prods. Liab. Litig.",
+    tags: ["Zofran", "ondansetron", "pregnancy", "birth defect", "off-label", "pharmaceutical"],
+    notes: "Ongoing. Causation science is central battleground. Some expert testimony excluded, others admitted. Key lesson: Daubert fights can make or break pharma MDLs.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "Uncertain — most cases dismissed or stalled on causation; individual cases settled confidentially",
+      litigationYears: 10,
+      whyItWorked: "Initial theory was compelling: Zofran (ondansetron) was promoted off-label to pregnant women for morning sickness when FDA only approved it for chemotherapy/surgical nausea. Initial epidemiological studies suggested cardiac defect risk in offspring. DOJ recovered $3B from GSK for off-label marketing practices (not specifically Zofran birth defects, but broader promotional conduct). Off-label pediatric/pregnancy promotion scheme established corporate misconduct foundation.",
+      challenges: "The causation science collapsed under Daubert scrutiny. Larger, better-designed epidemiological studies (Denmark and Sweden national registries — massive cohorts) found no significant cardiac defect risk from ondansetron. Judge Wolf (D. Massachusetts) excluded certain plaintiff causation experts. The case became a cautionary tale about the gap between initial epidemiological signals and subsequent larger studies.",
+      strategiesWon: [
+        "GSK $3B DOJ settlement for off-label promotion created misconduct foundation",
+        "Initial epidemiological studies provided Daubert entry point",
+        "Off-label promotion to pregnant women is highly sympathetic theory",
+        "D. Massachusetts MCL provided some organizational efficiency"
+      ],
+      strategiesFailed: [
+        "Causation science reversed — Scandinavian national registry studies showed no significant risk",
+        "Daubert: some causation experts excluded in Massachusetts MDL",
+        "Drug is widely used and considered safe by most obstetricians — 'standard of care' defense",
+        "Many cases dismissed on motion after expert exclusions"
+      ],
+      demographics: "Children born with cardiac defects (septal defects, VSD, ASD) whose mothers took Zofran during first trimester of pregnancy. Mothers typically age 20-40. Middle-class demographics — Zofran is expensive and primarily used by those with prescription coverage. Cases concentrated where Zofran was heavily prescribed for morning sickness (1990s-2010s).",
+      injuryTypes: ["Congenital cardiac septal defects (ASD/VSD)", "Cleft palate", "Other cardiac malformations", "Pediatric surgical repair costs"],
+      keyEvidence: "GSK off-label promotion documents; early Scandinavian studies; prescribing records during pregnancy; pediatric cardiology records; birth certificates; FDA adverse event reports",
+      corporateMisconduct: "GSK promoted Zofran for pregnancy nausea through sales representatives trained to target obstetricians, despite having only chemotherapy approval. Medical affairs staff created promotional materials for pregnancy use. Off-label promotion was part of GSK's broader conduct that resulted in $3B DOJ settlement.",
+      regulatoryActions: "FDA required label updates noting data limitations in pregnancy. DOJ $3B settlement for off-label promotion (broader than Zofran). No specific Zofran FDA enforcement action on birth defects.",
+      settlementStructure: "No global settlement — individual cases settled (quietly) or dismissed. MDL 2657 wound down significantly after expert exclusions and unfavorable Daubert rulings.",
+      bellwetherOutcome: "No bellwether trials completed — cases stalled and dismissed on causation issues before trial.",
+      attorneyFees: "Significant sunk cost for plaintiffs' firms; limited recovery on individual cases",
+      replicationModel: "D — Cautionary tale. The key lesson: verify causation science will survive Daubert BEFORE mass case intake. Initial epidemiological signals are not sufficient. Scandinavian registry studies (million+ patient national databases) are the gold standard — if those show no effect, the case is extremely vulnerable. Screen causation science before accepting cases.",
+      clientAcquisitionStrategy: "Cases should not be actively pursued without updated causation science analysis. Any new litigation would require large-scale U.S. cohort data contradicting Scandinavian findings. Off-label pregnancy promotion theory remains valuable for other drugs with clearer causation.",
+      watchOut: "This case is essentially over. Large Scandinavian registry studies are highly persuasive to judges and juries. If considering a drug-birth defect theory, verify: (1) does large prospective data show association?, (2) is biological mechanism clearly established?, (3) what do international regulatory agencies say? If answers are uncertain, do not build a mass intake program."
+    }
+  },
+
+  {
+    id: 56, title: "Abilify Compulsive Behavior MDL", company: "Otsuka / Bristol-Myers Squibb",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled", year: 2016,
+    affectedPop: "~3,000 claimants", jurisdiction: "N.D. Florida", mdlNumber: "MDL 2734",
+    settlementAmount: "Undisclosed ($400M est.)", classSize: "~3,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Abilify (aripiprazole) caused compulsive gambling, hypersexuality, and binge eating. FDA required black box warning 2016. Uniform failure-to-warn theory across all plaintiffs.",
+    leadCounsel: "Levin Papantonio, Girard Sharp",
+    keyPrecedent: "In re Neurontin Mktg. Sales Practices Litig.",
+    tags: ["Abilify", "aripiprazole", "gambling", "compulsive behavior", "black box", "pharmaceutical"],
+    notes: "FDA added black box warning during litigation — classic trigger event. Same failure-to-warn theory unified plaintiffs. Settled 2019.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$133K average (est. $400M / 3,000 claimants)",
+      litigationYears: 3,
+      whyItWorked: "FDA adding a black box warning during active MDL litigation is perhaps the single most powerful litigation event possible — it is official acknowledgment that the drug has a serious, previously inadequately-warned risk. FDA added the black box on Abilify for impulse control (gambling, hypersexuality, binge eating, compulsive shopping) in 2016, mid-MDL. This essentially conceded the failure-to-warn theory. The mechanism was pharmacologically plausible: Abilify (aripiprazole) is a dopamine partial agonist — modulating dopamine reward pathways creates risk of impulsive dopamine-seeking behaviors. Clear, unified theory.",
+      challenges: "The injuries — gambling losses, sexual behavior, binge eating — are inherently embarrassing and difficult to quantify. Many plaintiffs were reluctant to identify with their injuries publicly. Mental health stigma (the drug was for psychiatric conditions). Defense argued individual patients had pre-existing impulse control disorders. Quantifying gambling losses and related damages required forensic accounting.",
+      strategiesWon: [
+        "FDA black box warning during litigation = de facto failure-to-warn admission",
+        "Dopamine partial agonism mechanism is scientifically clear and explainable to juries",
+        "Uniform failure-to-warn theory across all ~3,000 plaintiffs",
+        "International regulatory actions (Health Canada, EMA) provided parallel support",
+        "N.D. Florida venue with efficient MDL management"
+      ],
+      strategiesFailed: [
+        "Privacy concerns — plaintiffs reluctant to discuss gambling/sexual behavior in litigation",
+        "Defense pre-existing impulse control disorder arguments require individual case analysis",
+        "Damages calculation for gambling losses requires forensic accounting and documentation"
+      ],
+      demographics: "Adults ages 25-65 prescribed Abilify for depression (adjunct), bipolar disorder, major depressive disorder, schizophrenia, autism, Tourette syndrome. Both male and female. Cases concentrated among patients with new-onset gambling disorders or hypersexual behavior during Abilify use with no prior history.",
+      injuryTypes: ["Compulsive gambling (financial losses)", "Hypersexuality (relationship, social harm)", "Binge eating disorder", "Compulsive shopping (financial losses)"],
+      keyEvidence: "FDA black box warning (2016); Abilify prescribing label before and after warning; internal Otsuka pharmacological studies on dopamine pathway effects; Health Canada and EMA communications; individual plaintiff gambling records (casino records, online gambling accounts), credit card statements, witness testimony",
+      corporateMisconduct: "Otsuka and BMS knew about international adverse event reports of impulse control disorders years before FDA action. Health Canada and EMA had received reports and were considering label changes. U.S. label was not updated despite international signals.",
+      regulatoryActions: "FDA black box warning (May 2016): 'Compulsive or uncontrollable urges to gamble, binge eat, shop, or have sex.' Health Canada and EMA issued similar warnings in 2015-2016.",
+      settlementStructure: "Estimated ~$400M in aggregate individual settlements through MDL 2734 (N.D. Florida). No class settlement — individual case-by-case negotiations. Cases with documented compulsive gambling with financial loss records commanded highest values.",
+      bellwetherOutcome: "Settled before bellwether trials. FDA black box eliminated need for jury trial on failure-to-warn — parties moved quickly to settlement.",
+      attorneyFees: "Standard 33-40% contingency; common benefit fees for MDL leadership",
+      replicationModel: "A — FDA black box warning MDL is the most efficient litigation structure in pharmaceutical law. When FDA acts, failure-to-warn liability is essentially established. Template: monitor FDA safety communications → identify black box/label update on marketed drug → inventory existing patients with injuries matching new warning → file MDL quickly. European/Canadian regulatory actions often precede FDA by 12-18 months — international monitoring is essential.",
+      clientAcquisitionStrategy: "Patients on Abilify who developed gambling disorder or hypersexuality with no prior history. Psychiatric practice networks, gambling addiction treatment centers, financial counselors. Records needed: Abilify prescribing records, gambling records (casino, online), credit card statements showing gambling transactions.",
+      watchOut: "Privacy-sensitive case — handle plaintiff communications with particular sensitivity. Individual damages documentation is critical — undocumented gambling losses are hard to quantify. Pre-existing impulse control issues must be carefully screened out. Statute of limitations typically runs from 2016 FDA warning or date of injury discovery."
+    }
+  },
+
+  {
+    id: 57, title: "Invokana / Canagliflozin Amputations MDL", company: "Janssen / J&J",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled", year: 2016,
+    affectedPop: "~1,400 claimants", jurisdiction: "D. New Jersey", mdlNumber: "MDL 2750",
+    settlementAmount: "~$150M", classSize: "~1,400",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Invokana (SGLT2 inhibitor for diabetes) linked to lower-limb amputations and DKA. FDA black box warning added 2017. Same drug, same mechanism of harm, same failure-to-warn across all claims.",
+    leadCounsel: "Beasley Allen, Seeger Weiss",
+    keyPrecedent: "In re Xarelto Prods. Liab. Litig.",
+    tags: ["Invokana", "canagliflozin", "SGLT2", "amputation", "diabetes", "pharmaceutical", "MDL"],
+    notes: "Smaller MDL but illustrative of SGLT2 inhibitor class litigation. FDA black box was pivotal. Companion cases for Farxiga and Jardiance also filed.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$107K average ($150M / 1,400 claimants) — amputation cases significantly higher",
+      litigationYears: 4,
+      whyItWorked: "Invokana's FDA black box warning for lower-limb amputations (added May 2017) was the case-making event. The CANVAS clinical trial showed a statistically significant 2x higher amputation risk in canagliflozin users. FDA's own Safety Communication noted the risk was unexpected and serious. The mechanism (osmotic diuresis leading to decreased peripheral circulation and increased infection risk) was biologically plausible. Uniform failure-to-warn theory: every Invokana user who required amputation had an identical legal theory.",
+      challenges: "Diabetes patients have inherently elevated amputation risk (peripheral vascular disease, diabetic neuropathy) — making specific causation difficult. Defense argued Invokana's cardiovascular benefits outweighed amputation risk. Relatively small MDL (1,400 claims) compared to Xarelto/Pradaxa. Companion SGLT2 drugs (Farxiga, Jardiance) created complex multi-defendant landscape.",
+      strategiesWon: [
+        "FDA black box warning during litigation (2017) proved failure-to-warn",
+        "CANVAS trial data showing 2x amputation risk was irrefutable general causation",
+        "Amputation is highly documentable, catastrophic injury — strong jury sympathy",
+        "FDA Safety Communication validated mechanism and risk",
+        "D. New Jersey venue with experienced pharmaceutical litigation judiciary"
+      ],
+      strategiesFailed: [
+        "Diabetes baseline amputation risk complicated specific causation for each plaintiff",
+        "Cardiovascular benefit defense: drug reduces heart attack risk, trade-off argument",
+        "Multiple SGLT2 defendants complicated discovery and settlement negotiations"
+      ],
+      demographics: "Type 2 diabetes patients ages 40-75 who were prescribed Invokana for glycemic control. Older adults with multiple comorbidities (hypertension, cardiovascular disease, renal impairment). Patients who required lower-limb amputations (toe, foot, below-knee) during or after Invokana treatment. Both male and female, but diabetes amputations are more common in males.",
+      injuryTypes: ["Lower-limb amputation (toe, transmetatarsal, below-knee)", "Diabetic ketoacidosis (DKA)", "Acute kidney injury"],
+      keyEvidence: "FDA Safety Communication (May 2017); CANVAS Phase III clinical trial data; Invokana prescribing label before/after black box warning; surgical records documenting amputation; endocrinology/vascular surgery expert testimony; medical records showing Invokana use preceding amputation",
+      corporateMisconduct: "Janssen/J&J had access to CANVAS trial interim data showing elevated amputation risk before public disclosure. The company continued marketing without updating label despite European regulatory bodies (EMA) receiving adverse event reports earlier. FDA was informed but label update was delayed.",
+      regulatoryActions: "EMA issued safety review warning (2017). FDA Safety Communication and black box warning (May 2017). FDA required CANVAS trial monitoring data disclosure. EU restricted Invokana use in at-risk patients.",
+      settlementStructure: "$150M settlement resolving ~1,400 claims through MDL 2750 (D. New Jersey). Individual case values based on amputation level (below-knee > toe), age, and prior amputation history.",
+      bellwetherOutcome: "Settled before bellwether trials. FDA black box + CANVAS data drove swift settlement.",
+      attorneyFees: "Standard 33-40% contingency; MDL common benefit fees",
+      replicationModel: "B+ — SGLT2 inhibitor class litigation template is well established. Farxiga (dapagliflozin) and Jardiance (empagliflozin) follow identical legal framework. Ongoing litigation for SGLT2 drugs continues. Monitor for FDA label changes on any widely-used drug class — black boxes create immediate MDL value.",
+      clientAcquisitionStrategy: "Diabetic patients who experienced lower-limb amputations while taking Invokana, Farxiga, Jardiance, or Steglatro. Orthopedic and vascular surgery practices, wound care centers, diabetes management programs, endocrinology practices. Establish intake protocol verifying drug-amputation temporal relationship and excluding prior peripheral vascular disease amputation.",
+      watchOut: "Pre-existing diabetic peripheral arterial disease and neuropathy make specific causation challenging — screen for cases where amputation was on previously healthy limb and patient had no prior PAD/amputation. Statue of limitations typically runs from black box warning date or injury date. Farxiga/Jardiance cases use identical theory — consider parallel filing."
+    }
+  },
+
+  {
+    id: 58, title: "Zantac / Ranitidine NDMA Cancer MDL", company: "Sanofi, GSK, Pfizer, others",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "dismissed (many)", year: 2019,
+    affectedPop: "~70,000 claimants", jurisdiction: "S.D. Florida", mdlNumber: "MDL 2924",
+    settlementAmount: "Partial settlements; mass dismissals 2022", classSize: "~70,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed (Daubert exclusion)", harmCategory: "physical",
+    daubert: "failed (plaintiffs' experts excluded)",
+    numerosity: true, commonality: false, typicality: false, adequacy: true,
+    keyFact: "Ranitidine (Zantac) breaks down to NDMA (a carcinogen) when stored at room temperature. Huge MDL but Judge Rosenberg excluded all plaintiffs' general causation experts in 2022. Mass dismissals followed. Critical Daubert failure lesson.",
+    leadCounsel: "Levin Papantonio, Kirtland & Packard",
+    keyPrecedent: "General Electric Co. v. Joiner",
+    tags: ["Zantac", "ranitidine", "NDMA", "carcinogen", "Daubert failure", "pharmaceutical", "MDL"],
+    notes: "CRITICAL LESSON: Even a 70,000-plaintiff MDL can collapse if Daubert is lost. Judge excluded all general causation experts. Most claims dismissed 2022. Cautionary tale for pharma MDL causation.",
+    analysis: {
+      rating: "F",
+      strengthScore: 2,
+      payoutPerClaimant: "~$0 for most claimants — mass dismissals after Daubert failure",
+      litigationYears: 6,
+      whyItWorked: "It didn't — this is the most important cautionary tale in MDL history. Zantac/ranitidine was recalled by FDA in 2020 because testing showed NDMA contamination when stored at room temperature or under certain conditions. NDMA is a known carcinogen. 70,000 plaintiffs filed claiming various cancers. This should have been a massive successful MDL. Instead, Judge Robin Rosenberg (S.D. Florida) held a Daubert hearing and excluded ALL plaintiffs' general causation experts in 2022, finding their methodologies scientifically unreliable.",
+      challenges: "Everything collapsed at Daubert. The problem was that real-world ranitidine exposure didn't produce NDMA levels that actually caused cancer at pharmacologically relevant doses. The FDA's lab tests involved extreme conditions (high heat) not replicated in normal storage. Population studies (Denmark, Sweden) showed no increased cancer risk in ranitidine users. Plaintiffs' experts extrapolated from lab conditions to human exposure — a methodological bridge too far. Judge Rosenberg found each of the 8 plaintiffs' expert theories failed to meet Daubert reliability standards.",
+      strategiesWon: [
+        "FDA recall created media momentum and mass plaintiff intake",
+        "NDMA contamination confirmed — product defect was real",
+        "Filed quickly in strategic plaintiff-friendly venue (S.D. Florida thought to be favorable)",
+        "Consolidated 70,000 claims efficiently through MDL structure"
+      ],
+      strategiesFailed: [
+        "CRITICAL: Expert causation methodology failed Daubert — all 8 general causation experts excluded",
+        "Real-world NDMA exposure levels from ranitidine were too low to cause cancer in population studies",
+        "Large-scale population epidemiology showed no cancer signal (Denmark, Sweden national registries)",
+        "Attempted to extrapolate from extreme laboratory conditions to human health outcomes",
+        "Regulatory recall ≠ causation — FDA recalled for contamination, not proven cancer causation",
+        "Mass intake without adequate pre-intake causation science validation"
+      ],
+      demographics: "Heartburn/GERD patients who took Zantac (ranitidine) OTC or prescription and later developed various cancers (stomach, esophageal, bladder, colorectal, and others). All demographics — Zantac was one of the most widely used OTC medications. Ages 40-80 primarily.",
+      injuryTypes: ["Stomach cancer", "Esophageal cancer", "Bladder cancer", "Colorectal cancer", "Various cancers alleged to be NDMA-related"],
+      keyEvidence: "FDA recall notice (2020); NDMA laboratory contamination testing; population-level epidemiological studies (favored defense); plaintiffs' expert reports (ultimately excluded); defendants' expert rebuttal reports (upheld)",
+      corporateMisconduct: "Manufacturers knew ranitidine had NDMA formation potential at elevated temperatures and in certain storage conditions. However, the disconnect between contamination and actual human cancer causation was the fatal flaw.",
+      regulatoryActions: "FDA voluntary recall request (April 2020); FDA required all ranitidine products removed from market; FDA NDMA contamination investigation across multiple drug classes (also found in metformin, valsartan)",
+      settlementStructure: "No significant settlements — most cases dismissed after Daubert exclusion. Some retailers (CVS, Walgreens, Walmart) settled separately for undisclosed amounts. Case against manufacturers largely collapsed.",
+      bellwetherOutcome: "Daubert hearing (November 2021) and ruling (December 2022) excluded all plaintiffs' experts — case never reached trial on merits.",
+      attorneyFees: "Catastrophic sunk cost — plaintiffs' firms invested hundreds of millions in expert retention, case intake, and litigation expenses with near-zero return. Estimated $200M+ in unrecovered litigation investment by plaintiffs' bar.",
+      replicationModel: "F — Do not use this as a template. Use it as the warning. The lesson: FDA recall or contamination finding ≠ proven causation. Before mass intake: (1) verify large-scale epidemiology shows cancer association, (2) ensure biological mechanism is established at human-relevant doses (not just lab conditions), (3) pre-screen causation experts before Daubert hearing, (4) review defense expert literature proactively.",
+      clientAcquisitionStrategy: "N/A — do not pursue Zantac cancer claims. The MDL collapsed. Focus resources on cases with robust causation science.",
+      watchOut: "CRITICAL WARNING: This case destroyed enormous capital. The Zantac disaster teaches: (1) regulatory action (FDA recall) proves product defect but NOT human cancer causation, (2) NDMA contamination at low doses ≠ carcinogenic dose, (3) population studies are the gold standard — if Scandinavian or Danish registries show no cancer signal, your expert is likely to fail Daubert, (4) 70,000 plaintiffs can be dismissed if causation science fails. Verify causation science before mass intake. ALWAYS."
+    }
+  },
+
+  {
+    id: 59, title: "Depo-Provera Brain Tumor MDL", company: "Pfizer / Pharmacia",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "pending", year: 2024,
+    affectedPop: "Thousands (growing)", jurisdiction: "N.D. California", mdlNumber: "MDL 3140",
+    settlementAmount: "Pending", classSize: "Thousands (growing)",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Depo-Provera (medroxyprogesterone acetate) injectable contraceptive linked to intracranial meningiomas. 2024 French study showed 5.6x increased risk. MDL formed 2024. Fastest-growing pharmaceutical MDL as of 2025.",
+    leadCounsel: "Seeger Weiss, Baum Hedlund",
+    keyPrecedent: "In re Roundup Prods. Liab. Litig.",
+    tags: ["Depo-Provera", "medroxyprogesterone", "meningioma", "brain tumor", "contraceptive", "MDL", "2024"],
+    notes: "Newest major pharma MDL. French cohort study (2024) is key scientific evidence. MDL 3140 (N.D. Cal.). Rapid plaintiff filing pace. Could become one of largest pharma MDLs.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending — (duplicate entry of case 48; see that analysis for full detail)",
+      litigationYears: 1,
+      whyItWorked: "See Case 48 (Depo-Provera Brain Tumor MDL) for comprehensive analysis. This entry duplicates that case. Key points: French ANSM study (5.6x meningioma risk), dose-response relationship, Pfizer label failure to warn, rapidly growing MDL.",
+      challenges: "See Case 48 analysis. Primary challenges: U.S. epidemiology limited, learned intermediary doctrine, product ID/use documentation.",
+      strategiesWon: ["See Case 48 analysis"],
+      strategiesFailed: ["See Case 48 analysis"],
+      demographics: "See Case 48 — women 20-50, disproportionately lower-income and minority populations.",
+      injuryTypes: ["Intracranial meningioma", "Neurosurgical complications", "Long-term neurological deficits"],
+      keyEvidence: "ANSM French pharmacovigilance study; Pfizer prescribing records; neurosurgery operative notes; progesterone receptor staining",
+      corporateMisconduct: "See Case 48 — Pfizer failure to update label despite French regulatory data.",
+      regulatoryActions: "See Case 48 — ANSM prescribing restrictions (2023); EMA review pending.",
+      settlementStructure: "MDL 3140 ongoing — no settlement yet. See Case 48 for detailed analysis.",
+      bellwetherOutcome: "No bellwethers yet.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "B+ — See Case 48 for full replication analysis.",
+      clientAcquisitionStrategy: "See Case 48 analysis — OB-GYN practices, women's health clinics, Planned Parenthood, Medicaid outreach.",
+      watchOut: "See Case 48 warnings — early MDL stage, Daubert risk, progesterone receptor positivity screening."
+    }
+  },
+
+  {
+    id: 60, title: "Tepezza Hearing Loss MDL", company: "Horizon Therapeutics / Amgen",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled", year: 2022,
+    affectedPop: "~500+ claimants", jurisdiction: "N.D. Illinois", mdlNumber: "MDL 3079",
+    settlementAmount: "Undisclosed (2024)", classSize: "~500",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Tepezza (teprotumumab) for thyroid eye disease linked to permanent hearing loss and tinnitus. FDA label update 2023 added hearing warnings. Uniform failure-to-warn theory.",
+    leadCounsel: "Cutter Law, Johnson Law Group",
+    keyPrecedent: "In re Invokana Prods. Liab. Litig.",
+    tags: ["Tepezza", "teprotumumab", "hearing loss", "tinnitus", "thyroid eye disease", "pharmaceutical"],
+    notes: "Smaller emerging MDL. FDA label update mid-litigation added credibility to plaintiffs' claims. Settled 2024. Example of rare-disease drug MDL.",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "~$800K-$1.5M average for confirmed hearing loss cases (small claimant pool)",
+      litigationYears: 2,
+      whyItWorked: "Tepezza (teprotumumab-trbw) is a recently approved drug for thyroid eye disease (TED) — a rare condition causing eye protrusion and inflammation. Post-marketing reports showed patients developing sensorineural hearing loss and tinnitus — a side effect not disclosed in the original FDA label. FDA updated the label in February 2023 to include hearing warnings. Label update mid-litigation is the same black box trigger pattern as Abilify, though here it was a label change rather than a full black box.",
+      challenges: "Small claimant pool (~500) limits aggregate fee opportunity. Rare disease drug (thyroid eye disease affects ~16K/year) means limited universe of patients. Horizon Therapeutics (acquired by Amgen in 2023) is a well-funded defendant. Hearing loss has multiple potential causes in the patient population — specific causation challenge.",
+      strategiesWon: [
+        "FDA label update (February 2023) requiring hearing loss warnings validated theory",
+        "Post-marketing adverse event data showed clustering of hearing loss reports",
+        "Rare disease drug with no alternative — patients had no other options",
+        "N.D. Illinois venue with experienced pharmaceutical MDL management",
+        "Individual case values high (permanent sensorineural hearing loss is catastrophic)"
+      ],
+      strategiesFailed: [
+        "Small case universe limits aggregate value",
+        "Causation: hearing loss from infusion drugs vs. other causes requires individualized audiological analysis",
+        "Rare disease patient population is small and harder to identify and reach"
+      ],
+      demographics: "Thyroid eye disease (TED) patients treated at academic medical centers and endocrinology practices — primarily women ages 30-60 (TED predominantly affects women with Graves' disease). Upper-middle-class demographics (TED diagnosis requires specialist access). Patients who developed tinnitus or sensorineural hearing loss during or after Tepezza infusion.",
+      injuryTypes: ["Sensorineural hearing loss (permanent)", "Tinnitus (potentially permanent)", "Autophony (hearing one's own voice amplified)"],
+      keyEvidence: "FDA label update (February 2023); FAERS adverse event reports clustering; Tepezza clinical trial audiometric data; post-marketing audiological testing records; baseline and post-treatment audiometry comparing results",
+      corporateMisconduct: "Horizon Therapeutics received post-marketing safety signals about hearing loss during Phase III trials and in post-approval reporting, but did not update the label for years after the drug's 2020 approval.",
+      regulatoryActions: "FDA label update (February 2023) adding hearing warnings. EMA reviewing. No criminal action. Horizon acquired by Amgen in 2023 for $27.8B.",
+      settlementStructure: "MDL 3079 settled in 2024 (undisclosed amount). Individual case values estimated $800K-$2M for permanent sensorineural hearing loss.",
+      bellwetherOutcome: "Settled before bellwether trials. FDA label change facilitated rapid resolution.",
+      attorneyFees: "Standard 33-40% contingency; small MDL means modest aggregate fee but high individual case value",
+      replicationModel: "B — Rare disease drug MDL pattern: limited claimant pool but high individual case value. Template: (1) rare drug with novel mechanism, (2) post-marketing adverse event clustering, (3) FDA label update, (4) small but high-value claimant universe. Other rare disease biologics with unexpected side effects are candidates.",
+      clientAcquisitionStrategy: "Endocrinology practices treating Graves' disease/TED, academic medical centers infusing Tepezza, oculoplastic surgery practices. Target patients who received Tepezza infusions 2020-2023. Audiologist referral networks — patients seeking evaluation for unexplained hearing loss or tinnitus after Tepezza.",
+      watchOut: "Small case universe is nearly exhausted — rapid identification of remaining eligible patients is critical. Competing plaintiffs' firms in same MDL. Baseline audiometry records needed to prove hearing loss was Tepezza-caused vs. pre-existing."
+    }
+  },
+
+  // ─── BATCH 2: MEDICAL DEVICE (IDs 61–70) ─────────────────────────────────
+
+  {
+    id: 61, title: "DePuy ASR Hip Implant MDL", company: "DePuy Orthopaedics / J&J",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2010,
+    affectedPop: "~93,000 worldwide", jurisdiction: "N.D. Ohio", mdlNumber: "MDL 2197",
+    settlementAmount: "$4B+", classSize: "~8,000 U.S. cases",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "ASR metal-on-metal hip implant shed metallic debris causing pseudotumors, tissue death, and failed implants. DePuy recalled 2010. Same defective design across all implants. Bellwether trials drove $4B+ global settlement.",
+    leadCounsel: "Kline & Specter, Lieff Cabraser",
+    keyPrecedent: "In re Sulzer Hip Prosthesis Prods. Liab. Litig.",
+    tags: ["DePuy", "ASR", "hip implant", "metal-on-metal", "medical device", "revision surgery", "MDL"],
+    notes: "Definitive metal-on-metal hip MDL. DePuy recalled the ASR globally. Settlement fund for revision surgery costs + pain and suffering. Structured with claims administrator.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "~$43K average ($4B+ / 93K worldwide); U.S. cases higher — revision surgery costs + pain/suffering averaging $150-350K",
+      litigationYears: 8,
+      whyItWorked: "Metal-on-metal hip failure was scientifically clear: the large-diameter all-metal (cobalt-chromium) bearing surface generated metallic particles through normal articulation, causing adverse local tissue reactions (ALTR), pseudotumors, osteolysis, and premature implant failure requiring revision surgery. DePuy's own internal data showed the ASR's annual failure rate was 12-13% (vs. industry standard of 1%) before the 2010 recall. DePuy had received this data and delayed recall. Same product, same defect, same tissue reaction mechanism — perfect MDL.",
+      challenges: "Individual causation: not all ASR failures resulted in ALTR; some patients had good outcomes. Revision surgery complications created additional causation complexity. Patients with underlying joint disease had complicated baselines. J&J as parent created deep-pocketed defendant but also complex corporate structure arguments.",
+      strategiesWon: [
+        "DePuy's own 12-13% failure rate data in internal documents proved defect",
+        "Global recall (2010) established defective product as undeniable",
+        "Bellwether trials in N.D. Ohio provided liability roadmap for global settlement",
+        "ALTR tissue reaction is objective, identifiable injury on MRI/histology",
+        "Revision surgery costs are fully documentable and substantial ($50K-200K per surgery)",
+        "J&J parent company depth of pocket facilitated full settlement"
+      ],
+      strategiesFailed: [
+        "Some patients had ASR in place for years without failure — challenged 'defective from inception' theory",
+        "Defense argued some failures were surgical technique, not device design"
+      ],
+      demographics: "Adults ages 50-75 who received DePuy ASR hip replacement surgery between 2003-2010. Approximately 37,000 U.S. patients, 93,000 worldwide. Older adults, often with degenerative joint disease. More women than men (women have higher hip replacement rates). Cases concentrated in high orthopedic surgery volume hospitals.",
+      injuryTypes: ["Adverse local tissue reaction (ALTR)", "Pseudotumor formation", "Osteolysis (bone death)", "Premature implant failure requiring revision surgery", "Cobalt/chromium toxicity"],
+      keyEvidence: "DePuy internal failure rate data (12-13% annual); Australian Orthopedic Association National Joint Replacement Registry data; FDA MAUDE adverse event reports; recall notice; MRI imaging showing pseudotumors; histology showing metallic debris; revision surgery records; orthopedic surgery expert testimony",
+      corporateMisconduct: "DePuy had access to registry data showing the ASR's unacceptably high failure rate from 2007-2009 and delayed recall, continuing sales. Internal presentations discussed registry data without acting. The product was sold despite industry knowledge that metal-on-metal large-diameter bearings had elevated failure rates.",
+      regulatoryActions: "FDA requested voluntary recall (August 2010); FDA issued safety communication. Australian TGA and UK MHRA issued safety alerts earlier. Australian registry (AOANJRR) provided early failure rate data that was actionable years before recall.",
+      settlementStructure: "$4B+ global settlement fund. U.S. cases settled through MDL 2197 (N.D. Ohio). Tiered compensation: revision surgery patients received more than patients with implant in place. Special master claims administration. Structured settlement options available.",
+      bellwetherOutcome: "Multiple bellwether trials scheduled and settled. Patricia McDuffie bellwether (N.D. Ohio) provided key liability framework. Trial verdicts created settlement pressure leading to global resolution.",
+      attorneyFees: "Standard 33-40% contingency; PSC common benefit fees totaling ~$400M",
+      replicationModel: "A — Metal-on-metal hip MDL is the definitive medical device MDL template. Pattern: implant registry data → high failure rate → recall → MDL. Every major orthopedic implant recall follows this structure. Currently: Exactech knee/ankle (MDL 3044), Stryker Triathlon knee, Bard PowerPort catheter all use this framework.",
+      clientAcquisitionStrategy: "Orthopedic surgeons who performed revision surgery (highest value cases). Patient advocacy networks for hip replacement patients. Implant registry data (if accessible). Online screening tools for patients with DePuy hip implants and symptoms. Revision surgery hospital records through discovery.",
+      watchOut: "DePuy MDL fully resolved — no new cases accepted. Use this case as the template for evaluating new orthopedic implant recalls. Key metrics to evaluate: (1) registry failure rate vs. industry standard, (2) mechanism of tissue injury, (3) manufacturer's internal data timeline, (4) delay between knowledge and recall."
+    }
+  },
+
+  {
+    id: 62, title: "Bard PowerPort Catheter MDL", company: "C.R. Bard / BD",
+    type: "Medical Device", industry: "Medical Device", outcome: "pending", year: 2023,
+    affectedPop: "Thousands", jurisdiction: "D. Arizona", mdlNumber: "MDL 3081",
+    settlementAmount: "Pending", classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Bard PowerPort implantable port catheters fracture and migrate, causing cardiac perforation, pulmonary embolism, and death. Same catheter design defect across all plaintiffs.",
+    leadCounsel: "Motley Rice, Levin Papantonio",
+    keyPrecedent: "In re Bard IVC Filter Prods. Liab. Litig.",
+    tags: ["Bard", "PowerPort", "catheter", "fracture", "cardiac", "medical device", "MDL"],
+    notes: "Fast-growing MDL formed 2023. Similar structure to Bard IVC filter MDL (MDL 2641). Bellwether trials expected 2025-2026.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — projected $200K-$800K per catheter fracture/migration case",
+      litigationYears: 2,
+      whyItWorked: "Bard PowerPort implantable port catheters (used for chemotherapy infusion) fracture at the catheter body, with fragments migrating to the heart or pulmonary vasculature, causing cardiac perforation, arrhythmias, pulmonary embolism, and death. The same catheter design flaw is present across all PowerPort cases. This follows the exact template of the successful Bard IVC Filter MDL (MDL 2641, $435M+) with similar fracture/migration mechanism. Bard's own complaint database showed fracture signals for years before MDL filing.",
+      challenges: "MDL 3081 (D. Arizona) is early stage — no bellwether trials yet. Causation challenge: oncology patients have complex medical histories (cancer, other comorbidities). Defense will argue catheter fracture was result of patient activity or medical care, not design defect. Bard/BD is an experienced MDL defendant (from IVC Filter litigation).",
+      strategiesWon: [
+        "Bard IVC Filter MDL precedent (same defendant, same fracture mechanism template)",
+        "FDA MAUDE database shows multiple PowerPort fracture/migration adverse event reports",
+        "D. Arizona venue with Judge David Campbell (experienced MDL judge — handled IVC Filter MDL)",
+        "Catheter fracture is objectively verifiable on imaging",
+        "Motley Rice and Levin Papantonio leadership — experienced device MDL firms"
+      ],
+      strategiesFailed: ["No failures yet — MDL too early. Bellwether results will determine strategy refinement."],
+      demographics: "Cancer patients (primarily breast, colon, ovarian, lung cancer) who received PowerPort for chemotherapy infusion, ages 30-75. Disproportionately female (breast cancer highest catheter use). Patients who subsequently experienced catheter fracture, requiring emergency surgical retrieval.",
+      injuryTypes: ["Catheter fracture and migration", "Cardiac perforation", "Pulmonary embolism from fragment", "Tamponade", "Emergency catheter retrieval surgery", "Death"],
+      keyEvidence: "FDA MAUDE adverse event reports for PowerPort fractures; Bard internal complaint database; CT/X-ray imaging showing fracture and migration; cardiac catheterization records for fragment retrieval; Bard design specifications for PowerPort polyurethane catheter",
+      corporateMisconduct: "Bard/BD received MAUDE reports of PowerPort fractures for years and did not redesign the catheter or add adequate warnings. The fracture mechanism was known — polyurethane degradation in implanted catheters is a known materials science issue. Bard's same fracture pattern in IVC filters was litigated previously.",
+      regulatoryActions: "FDA MAUDE database captures adverse event reports (publicly available). FDA has not issued a PowerPort-specific recall or warning letter as of early MDL stage. Previous Bard IVC Filter FDA actions provide contextual enforcement history.",
+      settlementStructure: "MDL 3081 ongoing. Settlement expected 2026-2027 after bellwether trials. Based on IVC Filter MDL trajectory, projected total recovery of $1-3B.",
+      bellwetherOutcome: "Bellwether selection process underway. First trials scheduled 2025-2026.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "A — PowerPort is the direct successor to Bard IVC Filter MDL. Same defendant, same fracture/migration mechanism in different device. This reinforces: monitor FDA MAUDE for implanted device fracture signals on any brand with prior MDL history. Bard/BD products specifically warrant ongoing monitoring.",
+      clientAcquisitionStrategy: "Oncology infusion centers, cancer treatment centers, breast cancer patient advocacy groups, oncology social workers. Screen patients who experienced unexpected catheter complications, fracture findings on imaging, or required emergency catheter retrieval. Prior IVC filter patients who also had PowerPort are dual-case opportunities.",
+      watchOut: "Bard is an experienced MDL defendant with sophisticated defense teams from IVC Filter litigation. Pre-existing cancer and chemotherapy create comorbidity complexity in causation. Ensure PowerPort brand is documented (not generic port). Statute of limitations runs from fracture/injury date or discovery of fracture on imaging."
+    }
+  },
+
+  {
+    id: 63, title: "Exactech Knee/Ankle Implant Recall MDL", company: "Exactech",
+    type: "Medical Device", industry: "Medical Device", outcome: "pending", year: 2022,
+    affectedPop: "~170,000 devices", jurisdiction: "E.D. New York", mdlNumber: "MDL 3044",
+    settlementAmount: "Pending", classSize: "~170,000",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Exactech knee, ankle, and hip implants recalled for defective packaging causing premature polyethylene degradation, accelerated wear, and early implant failure. Same packaging defect across all recalled devices.",
+    leadCounsel: "Gibbs Law Group, Seeger Weiss",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["Exactech", "knee implant", "ankle implant", "recall", "polyethylene", "medical device", "MDL"],
+    notes: "~170,000 devices recalled globally. Packaging defect is common liability theory. MDL 3044. Bellwether trial process ongoing.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending — projected $150K-$500K per revision surgery case",
+      litigationYears: 3,
+      whyItWorked: "Exactech's defective packaging is a unique and powerful design/manufacturing defect theory: the company used a non-oxygen-barrier bag to package polyethylene implant components, causing oxidative degradation of the UHMWPE (plastic) bearing surface over time. This means virtually every Exactech knee, ankle, and hip implant in the ~170,000 recalled devices was defective from the moment of packaging. Every plaintiff's device had the same defect — same packaging, same oxidative degradation mechanism.",
+      challenges: "Daubert challenge: not every patient with a recalled Exactech device experiences accelerated wear or implant failure. Causation requires proving this patient's specific failure was oxidative degradation-related versus normal wear. Exactech filed bankruptcy in 2022, limiting available recovery. Many revision surgeries not yet needed — statute of limitations timing complex.",
+      strategiesWon: [
+        "Single universal packaging defect — perfect commonality across all 170K devices",
+        "Recall is government-mandated (FDA), proving defect undeniably",
+        "Gibbs Law Group and Seeger Weiss leadership — experienced device MDL teams",
+        "E.D. New York MDL 3044 with experienced judicial management",
+        "Engineering and materials science experts on oxidative degradation are well-qualified"
+      ],
+      strategiesFailed: [
+        "Exactech bankruptcy limits recovery depth",
+        "Not all recalled devices have yet failed — timing of injury and litigation complex",
+        "Insurance coverage dispute for Exactech's bankruptcy estate reduces fund"
+      ],
+      demographics: "Orthopedic patients who received Exactech knee (Connexion GXL), ankle, or hip implants between 2004-2022. Adults ages 50-75. Both male and female. Cases concentrated at high-volume orthopedic centers that used Exactech as preferred brand.",
+      injuryTypes: ["Premature implant failure", "Accelerated polyethylene wear", "Osteolysis", "Revision surgery required", "Chronic pain and limitation"],
+      keyEvidence: "Exactech recall notice (2022); FDA 510(k) documentation; polyethylene oxidation testing data; materials science expert testimony; revision surgery records showing accelerated wear; retrieved implant analysis",
+      corporateMisconduct: "Exactech used a non-oxygen-barrier bag for UHMWPE packaging despite industry standards requiring oxygen barrier packaging for orthopedic polyethylene. The company knew about packaging standards and chose a cheaper alternative.",
+      regulatoryActions: "FDA Class II voluntary recall (2022); ~170,000 devices recalled globally. FDA guidance on UHMWPE packaging standards.",
+      settlementStructure: "MDL 3044 ongoing. Bankruptcy estate complicates settlement. Insurance coverage recovery expected to provide primary fund. Bellwether trial process underway to establish per-case values.",
+      bellwetherOutcome: "Bellwether trials scheduled 2024-2025.",
+      attorneyFees: "Standard 33-40% contingency; reduced expectations due to bankruptcy recovery cap",
+      replicationModel: "B+ — Packaging defect theory is applicable to any orthopedic device with packaging/sterilization requirements. Monitor FDA recall database for packaging-related recalls. Exactech demonstrates that even non-famous device brands can generate large MDLs.",
+      clientAcquisitionStrategy: "Orthopedic surgery practices using Exactech implants. Hospital implant registries. Patients experiencing joint pain, swelling, or limited mobility with recalled Exactech devices. Orthopedic revision surgery centers. AOANJRR (Australian) data shows early failure rates for foreign markets.",
+      watchOut: "Exactech's bankruptcy requires filing in bankruptcy claims process — obtain specialized bankruptcy claims counsel. Not all recalled devices will fail — screen for patients showing symptoms or imaging evidence of premature wear. Bankruptcy estate may limit recovery to fraction of actual damages."
+    }
+  },
+
+  {
+    id: 64, title: "Stryker Rejuvenate / ABG II Hip MDL", company: "Stryker Orthopaedics",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2012,
+    affectedPop: "~20,000", jurisdiction: "D. Minnesota", mdlNumber: "MDL 2441",
+    settlementAmount: "$1.43B", classSize: "~20,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Stryker Rejuvenate and ABG II modular hip stems recalled for fretting and corrosion at taper junction, releasing metal ions causing adverse tissue reactions (ALTR). Same design defect across all implants.",
+    leadCounsel: "Zimmerman Reed, Robins Kaplan",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["Stryker", "Rejuvenate", "ABG II", "hip implant", "metal ions", "ALTR", "medical device", "MDL"],
+    notes: "$1.43B settlement for revision surgery and injury claims. Companion to DePuy ASR. Both MDLs established framework for modern metal-on-metal hip MDL litigation.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$71K average ($1.43B / ~20,000 claimants) — revision surgery cases higher ($200-500K)",
+      litigationYears: 6,
+      whyItWorked: "Stryker Rejuvenate and ABG II modular hip stems failed by fretting and corrosion at the modular neck-stem taper junction (a different mechanism than DePuy ASR but same metal ion injury). The modular design with a titanium stem and cobalt-chrome neck junction produced galvanic corrosion releasing cobalt, chromium, and titanium ions into surrounding tissue. Same design defect in all implants. Stryker recalled in 2012. $1.43B settlement followed DePuy ASR's precedent template.",
+      challenges: "Taper corrosion mechanism was more technically complex than DePuy's large-diameter bearing theory — required more sophisticated metallurgy expert testimony. Defense argued surgeon technique (how tightly neck was impacted) contributed to taper failure. Stryker negotiated hard on individual case values.",
+      strategiesWon: [
+        "DePuy ASR settlement precedent created immediate settlement framework",
+        "Metal ion toxicity theory identical to DePuy — same ALTR mechanism",
+        "Stryker voluntary recall (2012) established defective product",
+        "Modular design flaw (galvanic corrosion at dissimilar metal junction) is well-established metallurgy",
+        "D. Minnesota MDL 2441 — efficient, experienced court"
+      ],
+      strategiesFailed: [
+        "Taper-corrosion mechanism more complex than bearing-surface mechanism — required deeper metallurgy expertise",
+        "Defense effectively argued some taper failures were surgical technique variation"
+      ],
+      demographics: "Adults 55-75 with Stryker Rejuvenate or ABG II modular hip stems implanted 2009-2012. Both male and female. Orthopedic patients who developed ALTR, pseudotumors, or premature implant failure requiring revision.",
+      injuryTypes: ["ALTR (adverse local tissue reaction)", "Pseudotumor from metallic debris", "Cobalt/chromium systemic toxicity", "Osteolysis", "Revision surgery"],
+      keyEvidence: "Stryker recall notice (2012); FDA MAUDE adverse event reports; metallurgy expert reports on galvanic corrosion; MRI imaging; revision surgery records with retrieved implant analysis; cobalt/chromium blood level tests",
+      corporateMisconduct: "Stryker combined dissimilar metals (titanium stem, cobalt-chrome neck) in the modular junction despite metallurgical knowledge that galvanic corrosion occurs at such junctions in the implant environment. FDA had issued guidance on fretting corrosion risk.",
+      regulatoryActions: "Stryker voluntary recall (June 2012); FDA safety communication; Orthopedic Device Advisory Committee guidance on modular hip designs.",
+      settlementStructure: "$1.43B settlement through MDL 2441 (D. Minnesota). Tiered by injury severity: revision surgery with ALTR received highest values. Claims administration by settlement administrator.",
+      bellwetherOutcome: "Multiple bellwether trials/settlements provided valuation framework. No major trial verdict — settlement before jury determination.",
+      attorneyFees: "Standard 33-40% contingency; PSC fees ~$143M",
+      replicationModel: "A — Stryker MDL confirms the DePuy MDL template applies to all modular metal-on-metal hip implant variants. Currently: Stryker Triathlon knee with taper corrosion issues using same framework. Monitor FDA MAUDE for any cobalt/chromium or modular implant corrosion signals.",
+      clientAcquisitionStrategy: "Identical to DePuy ASR strategy. Orthopedic revision surgery practices. Stryker Rejuvenate/ABG II patients with pain, swelling, tissue death. Blood cobalt/chromium testing through treating physicians. Hospital implant registry records.",
+      watchOut: "MDL fully resolved. Use as template for evaluating new orthopedic implant MDLs. Taper corrosion claims for other modular implants (e.g., Stryker Triathlon knee, Zimmer M/L taper) use identical theory."
+    }
+  },
+
+  {
+    id: 65, title: "NuVasive Magec Spinal Rod MDL", company: "NuVasive",
+    type: "Medical Device", industry: "Medical Device", outcome: "pending", year: 2022,
+    affectedPop: "Thousands of pediatric patients", jurisdiction: "D. Delaware", mdlNumber: "MDL 3031",
+    settlementAmount: "Pending", classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "MAGEC (MAGnetically Expandable rods) for pediatric scoliosis shed titanium and PEEK debris, causing inflammatory pseudotumors. FDA safety communication 2019. Same defective design in all rods.",
+    leadCounsel: "Motley Rice, Seeger Weiss",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["NuVasive", "MAGEC", "spinal rod", "pediatric", "scoliosis", "medical device", "MDL"],
+    notes: "Particularly sympathetic plaintiffs — children with scoliosis. Metal debris/pseudotumor theory identical to metal-on-metal hip MDLs. MDL 3031.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — projected $300K-$1.5M per case (pediatric plaintiffs with major surgery)",
+      litigationYears: 3,
+      whyItWorked: "MAGEC (Magnetically Expandable) growing rods are implanted in children with early-onset scoliosis to allow non-surgical spine growth via external magnetic expansion. The titanium alloy and PEEK polymer components shed debris into surrounding tissue, causing inflammatory pseudotumors, granulomas, and local tissue destruction — the same ALTR mechanism seen in metal-on-metal hip implants. FDA safety communication (2019) validated the hazard. Pediatric victims are extraordinarily sympathetic plaintiffs.",
+      challenges: "Very complex spine surgery cases require pediatric orthopedics and spine surgery experts. Multiple surgeries and growing complexity in young patients make causation analysis difficult. D. Delaware MDL is still early stage. NuVasive's financial resources are smaller than J&J/Bard defendants.",
+      strategiesWon: [
+        "Pediatric plaintiffs with scoliosis — maximum sympathy, lifetime damage horizon",
+        "FDA safety communication (2019) identified debris and tissue damage",
+        "ALTR mechanism well-established from metal-on-metal hip MDL precedents",
+        "Motley Rice and Seeger Weiss leadership — experienced medical device teams",
+        "Lifetime future medical costs for young plaintiffs dramatically increase damages"
+      ],
+      strategiesFailed: [
+        "No failures yet identified — MDL early stage. NuVasive's smaller capitalization may limit recovery"
+      ],
+      demographics: "Children ages 3-13 with early-onset scoliosis (EOS) who received NuVasive MAGEC growing rods at pediatric spine surgery centers. Parents are litigation plaintiffs. Cases concentrated at major pediatric spine surgery centers (Shriners Hospitals, children's medical centers). Both male and female; EOS affects girls more than boys.",
+      injuryTypes: ["Metal/PEEK debris in spinal tissue", "Inflammatory pseudotumors", "Granulomatous inflammation", "Spinal device failure requiring revision", "Chronic spinal pain"],
+      keyEvidence: "FDA safety communication (June 2019); FDA MAUDE adverse event reports; NuVasive internal complaint database; tissue pathology from revision surgeries showing debris; engineering analysis of MAGEC rod wear; pediatric spine surgery records",
+      corporateMisconduct: "NuVasive marketed MAGEC as allowing non-surgical spine expansion but failed to disclose debris shedding risk identified in clinical literature and adverse event reports. The company continued selling without material design modification or warning update after early debris reports.",
+      regulatoryActions: "FDA safety communication (June 2019) on debris risk. NuVasive subsequently issued voluntary field safety corrective action. FDA MAUDE database captures ongoing reports.",
+      settlementStructure: "MDL 3031 (D. Delaware) ongoing. Settlement expected 2025-2026 after bellwether trials. Pediatric case values extremely high due to young age and lifetime impact.",
+      bellwetherOutcome: "Bellwether selection underway. First trials expected 2025.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "A — Pediatric medical device MDL follows same framework as adult device MDL but with dramatically higher per-case values (young plaintiff lifetime damages) and elevated sympathy. Any pediatric implant with debris/tissue damage theory uses this structure.",
+      clientAcquisitionStrategy: "Pediatric scoliosis family advocacy groups, Scoliosis Research Society patient networks, pediatric spine surgery centers, pediatric orthopedic practice referrals. Parents of children with MAGEC rods reporting pain, swelling, or device complications.",
+      watchOut: "Complex pediatric spine surgery cases require subspecialty experts (pediatric orthopedics, pediatric pathology). Multiple surgeries and ongoing treatment complicate damages calculation. Ensure MAGEC rod model is confirmed — NuVasive has multiple product variants."
+    }
+  },
+
+  {
+    id: 66, title: "Biomet M2a Metal-on-Metal Hip MDL", company: "Biomet",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2012,
+    affectedPop: "~4,000", jurisdiction: "N.D. Indiana", mdlNumber: "MDL 2391",
+    settlementAmount: "$56M+", classSize: "~4,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Biomet M2a metal-on-metal hip implant released excessive cobalt/chromium ions causing ALTR. Same design defect (large-diameter metal head). Companion MDL to DePuy ASR and Stryker Rejuvenate.",
+    leadCounsel: "Motley Rice, Robins Kaplan",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["Biomet", "M2a", "metal-on-metal", "hip implant", "cobalt chromium", "ALTR", "MDL"],
+    notes: "Third major metal-on-metal hip MDL. Establishes pattern: FDA MAUDE database complaints → recall → MDL → bellwether trials → global settlement.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$14K average ($56M / 4,000 cases) — revision surgery cases much higher ($150-400K)",
+      litigationYears: 5,
+      whyItWorked: "Biomet M2a follows the DePuy ASR template exactly: metal-on-metal large-diameter bearing, cobalt-chromium ion release, ALTR, pseudotumors. Same evidence, same expert witnesses, same MDL structure. The main value was resolving the Biomet-specific patient population efficiently using the framework established by DePuy ($4B) and Stryker ($1.43B). N.D. Indiana MDL 2391 was smaller than DePuy but settled on similar principles.",
+      challenges: "Biomet was a smaller defendant than J&J (DePuy parent) — less deep pockets. Per-case recovery lower than DePuy. Biomet M2a had a smaller market share than DePuy ASR. DePuy's larger settlement created higher plaintiff expectations that Biomet couldn't fully meet.",
+      strategiesWon: [
+        "Identical metal-on-metal ALTR mechanism to DePuy — shared expert platform",
+        "DePuy MDL precedent made liability essentially non-contestable",
+        "N.D. Indiana MDL 2391 with dedicated judge efficiently managed",
+        "Motley Rice and Robins Kaplan leadership team with DePuy experience"
+      ],
+      strategiesFailed: ["Smaller defendant (Biomet vs. J&J) limited per-case recovery. Not all revision surgeries tied to Biomet defect specifically."],
+      demographics: "Same as DePuy ASR: adults 50-75 with Biomet M2a hip implants. Smaller patient universe than DePuy. Both male and female.",
+      injuryTypes: ["ALTR", "Pseudotumor", "Osteolysis", "Revision surgery", "Cobalt/chromium toxicity"],
+      keyEvidence: "Biomet M2a design documents; FDA MAUDE reports; metal ion blood tests; revision surgery records with tissue histology showing metallic debris; orthopedic surgery expert testimony",
+      corporateMisconduct: "Biomet sold M2a large-diameter metal-on-metal hip implants despite industry-wide knowledge (from DePuy data and Australian registry) that large-diameter M-o-M bearings had unacceptable ALTR rates. Biomet delayed design changes and warnings.",
+      regulatoryActions: "FDA safety communications on metal-on-metal hip implants broadly. Biomet voluntary recall not required — metal ion monitoring recommendations instead. FDA required implant registries to track M-o-M failure rates.",
+      settlementStructure: "$56M+ settlement through MDL 2391 (N.D. Indiana). Smaller per-case recovery than DePuy given Biomet's smaller financial resources.",
+      bellwetherOutcome: "Settled after bellwether preparation and DePuy settlement precedent. No major trial verdict.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "B+ — Confirms DePuy template applies across all M-o-M hip implant manufacturers. Any M-o-M hip device from any manufacturer (Zimmer, Biomet, Smith & Nephew) with high ALTR/failure rates follows this framework.",
+      clientAcquisitionStrategy: "Same as DePuy ASR — orthopedic revision surgery practices, hip replacement patient networks. Confirm Biomet M2a brand specifically in medical records.",
+      watchOut: "Case resolved. Biomet's smaller capitalization resulted in lower per-case recovery than DePuy — manage client expectations accordingly when using as valuation benchmark."
+    }
+  },
+
+  {
+    id: 67, title: "Abbott / St. Jude Cardiac Device MDL", company: "Abbott / St. Jude Medical",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2016,
+    affectedPop: "~1,200+ pacemaker/ICD patients", jurisdiction: "D. Minnesota", mdlNumber: "MDL 2701",
+    settlementAmount: "~$300M est.", classSize: "~1,200",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "St. Jude silicone lead (Riata) for ICDs externalized insulation, causing life-threatening electrical shorts. FDA advisory 2011. Same defective lead design in all plaintiffs.",
+    leadCounsel: "Zimmerman Reed, Baum Hedlund",
+    keyPrecedent: "In re Medtronic Sprint Fidelis Leads Prods. Liab. Litig.",
+    tags: ["St. Jude", "Riata", "ICD lead", "cardiac device", "pacemaker", "insulation failure", "MDL"],
+    notes: "Companion to Medtronic Sprint Fidelis MDL. Both illustrate that even life-saving device failures can be litigated as class/MDL. Cybersecurity vulnerability claims against St. Jude also filed separately.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$250K average (est. $300M / 1,200 cases)",
+      litigationYears: 8,
+      whyItWorked: "Riata ICD leads (implantable cardioverter-defibrillator cables) used silicone insulation that externalized — the inner cable wire broke through the outer insulation jacket, causing potentially fatal electrical failures. FDA safety communication (2011) warned physicians. An estimated 1-in-15 Riata leads had inside-out abrasion. The device failure was objectively identifiable on fluoroscopy (X-ray). Death or life-threatening arrhythmia from a device that was supposed to prevent sudden cardiac death is extraordinarily powerful legally.",
+      challenges: "High-risk cardiac patients (ICD recipients) have complex medical backgrounds — separating device failure from underlying cardiac disease complicates causation. Many patients were not yet symptomatic (preventive surveillance recommended). Some lead failures were identified before causing injury. Death cases required showing arrhythmia death was device failure rather than underlying cardiac event.",
+      strategiesWon: [
+        "FDA Safety Communication (2011) validated lead failure risk",
+        "Fluoroscopic externalation was objectively verifiable — undeniable physical defect",
+        "Death and life-threatening arrhythmia injuries at top of damages spectrum",
+        "D. Minnesota MDL 2701 with experienced device MDL judge",
+        "Companion to Medtronic Sprint Fidelis MDL established case value framework"
+      ],
+      strategiesFailed: [
+        "Complex cardiac patients made causation analysis challenging",
+        "Some patients chose lead extraction (surgery risk) rather than monitoring — complicated damages",
+        "Defense argued ICD lead extraction risk vs. continued monitoring was physician choice"
+      ],
+      demographics: "Cardiac device patients (ICD recipients) who received Riata or Riata ST leads 2001-2010. Primarily adults 45-75 with serious cardiac conditions (ventricular arrhythmias, cardiomyopathy, prior cardiac arrest). Both male and female; male patients have higher ICD implantation rates.",
+      injuryTypes: ["Inappropriate ICD shocks from short-circuit", "Failure to defibrillate fatal arrhythmia", "Death from arrhythmia (device failure)", "Surgical lead extraction complications", "Psychological harm from device uncertainty"],
+      keyEvidence: "FDA Safety Communication (December 2011); St. Jude MAUDE adverse event reports; internal complaint database; fluoroscopic imaging showing externalation; device interrogation records; autopsy reports linking arrhythmia to lead failure",
+      corporateMisconduct: "St. Jude Medical received early signals of Riata lead externalation from their own device interrogations and MAUDE reports but delayed FDA notification and physician communication. The silicone insulation's tendency to externalize was a known manufacturing quality issue.",
+      regulatoryActions: "FDA Safety Communication (December 2011); FDA required enhanced follow-up and reporting for all implanted Riata leads; FDA inspection of St. Jude facilities.",
+      settlementStructure: "Estimated ~$300M in aggregate individual settlements through MDL 2701 (D. Minnesota). No class settlement — individual case negotiations. Death and major arrhythmia cases had highest values.",
+      bellwetherOutcome: "Settled after bellwether scheduling created settlement pressure. No major trial verdict.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "A — Cardiac device failure MDL template. Pattern: FDA safety communication → device interrogation database showing failures → individual injury analysis → MDL. Medtronic (Sprint Fidelis MDL), St. Jude (Riata MDL), and future cardiac device failures follow same structure. Monitor FDA MAUDE for cardiac device adverse event clustering.",
+      clientAcquisitionStrategy: "Cardiologists and electrophysiologists who follow ICD patients, cardiac catheterization labs, heart failure programs. Patients who experienced inappropriate ICD shocks, device failure, or who died during Riata lead surveillance period. Surviving family outreach through cardiac disease support groups.",
+      watchOut: "Complex cardiac causation requires subspecialty cardiologist/electrophysiologist expert. Distinguish device failure death from natural cardiac death — autopsy and device interrogation data critical. Lead extraction risk was real — document whether extraction was medically recommended or elective."
+    }
+  },
+
+  {
+    id: 68, title: "Intuitive Surgical Da Vinci Robot MDL", company: "Intuitive Surgical",
+    type: "Medical Device", industry: "Medical Device", outcome: "mixed", year: 2013,
+    affectedPop: "Thousands", jurisdiction: "W.D. Washington (state coord.)", mdlNumber: "No federal MDL",
+    settlementAmount: "Individual settlements (undisclosed)", classSize: "Hundreds",
+    rule23bType: "n/a (individual cases)", appealOutcome: "mixed", harmCategory: "physical",
+    daubert: "mixed",
+    numerosity: false, commonality: false, typicality: false, adequacy: false,
+    keyFact: "Da Vinci robotic surgical system caused visceral burns, perforations, and deaths. Individual surgery outcomes differ — no uniform defect theory. Class certification denied. Litigated as individual cases.",
+    leadCounsel: "Various",
+    keyPrecedent: "Wal-Mart v. Dukes",
+    tags: ["Intuitive Surgical", "Da Vinci", "robotic surgery", "class denied", "medical device"],
+    notes: "KEY LESSON: Class certification denied — individualized surgical procedures create individualized causation issues. No uniform defect theory. Litigated as individual bellwether cases. Illustrates limits of medical device class certification.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "Individual settlements ranging $50K-$500K; no class recovery",
+      litigationYears: 8,
+      whyItWorked: "Individual cases settled for significant amounts. The Da Vinci system's instruments (particularly early models with insulation failures) caused internal burns from electrical current leakage during robotic surgery. For individual high-value cases (death, major organ perforation, permanent disability), litigation was worthwhile. Cases where the electrical failure was documentable on intraoperative records and the outcome was catastrophic settled reasonably.",
+      challenges: "No uniform defect theory — surgical complications are inherently individualized (patient anatomy, surgeon technique, specific procedure, specific instrument). Class certification appropriately denied. Intuitive Surgical is aggressive in defense and has used its market dominance to resist regulatory and legal pressure. FDA cleared Da Vinci through 510(k) pathway (substantial equivalence) rather than PMA, which created different legal framework.",
+      strategiesWon: [
+        "9th Circuit ruling (Lemmon-type) in some jurisdictions that product claims not barred by 510(k) preemption",
+        "Intraoperative burn injury documentation in some cases was clear",
+        "Individual high-value cases (death, major organ injury) settled meaningfully"
+      ],
+      strategiesFailed: [
+        "Class certification denied — individualized surgical circumstances defeated Rule 23",
+        "No uniform defect theory across all Da Vinci injury types",
+        "Intuitive's market dominance and cash position enabled aggressive defense",
+        "510(k) clearance complicated preemption analysis (different from PMA devices)"
+      ],
+      demographics: "Patients undergoing robotic surgery (prostatectomy, hysterectomy, cholecystectomy, various oncological procedures) at hospitals using Da Vinci system. Ages 30-75. Both male and female depending on procedure type.",
+      injuryTypes: ["Internal burns from electrical insulation failure", "Visceral perforation", "Converted open surgeries", "Death from surgical complications"],
+      keyEvidence: "Intraoperative records showing electrical failure; surgical notes; pathology reports on burned tissue; MAUDE adverse event reports; Intuitive Surgical instrument recall records; expert testimony from robotic surgery specialists",
+      corporateMisconduct: "Intuitive Surgical received FDA MAUDE reports of instrument failures and provided limited disclosure to surgeons and hospitals. Training programs were marketed heavily but actual safety outcomes for early adopters were mixed. Some instruments with known insulation failures were used beyond recommended timelines.",
+      regulatoryActions: "FDA issued multiple MAUDE summaries. Intuitive issued voluntary recalls of specific instrument components. FDA required 510(k) clearance updates for improved instruments.",
+      settlementStructure: "Individual settlements — no class or MDL. Cases litigated in state courts where procedure occurred. Settlements confidential.",
+      bellwetherOutcome: "Individual cases — no formal bellwether process. Key verdicts: Maneely v. Intuitive ($3.5M) and similar in plaintiff-friendly venues.",
+      attorneyFees: "Standard 33-40% on individual cases",
+      replicationModel: "D for class action — individual surgical cases that differ by procedure type, patient anatomy, and surgeon technique cannot be certified as a class. Replicable as individual cases only. Key lesson: device failure must be uniform (same defect in every device used) for MDL. Variable surgical outcomes ≠ class action.",
+      clientAcquisitionStrategy: "Robotically-assisted surgery patients who experienced unexpected serious complications. Partner with medical malpractice attorneys who can evaluate whether the defect is in the device vs. surgeon technique — critical distinction for product liability vs. med mal theory.",
+      watchOut: "Difficult to distinguish device defect from surgeon error — both causation and liability are contested. Intuitive's dominant market position means they can absorb litigation costs. Focus on cases with clear documented instrument failure (specific instrument recall, known defect model) rather than general 'robotic surgery' complications."
+    }
+  },
+
+  {
+    id: 69, title: "Zimmer NexGen Knee Implant MDL", company: "Zimmer Biomet",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2011,
+    affectedPop: "~1,900", jurisdiction: "N.D. Illinois", mdlNumber: "MDL 2272",
+    settlementAmount: "~$50M est.", classSize: "~1,900",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Zimmer NexGen knee replacement had elevated loosening/failure rate due to design defect in the tibial component. Same knee design failure across all plaintiffs. Required revision surgery.",
+    leadCounsel: "Lieff Cabraser, Seeger Weiss",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["Zimmer", "NexGen", "knee replacement", "loosening", "revision surgery", "medical device", "MDL"],
+    notes: "Illustrates orthopedic device MDL framework for knee implants (vs. hip). Design defect theory. Revision surgery costs drove damages.",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "~$26K average ($50M / 1,900 cases) — revision surgery cases higher ($100-300K)",
+      litigationYears: 8,
+      whyItWorked: "NexGen LPS-Flex knee components had an elevated early loosening/aseptic failure rate compared to standard NexGen components. The flexion-optimized design required greater bone resection at implantation, leading to compromised tibial component fixation. MDL 2272 (N.D. Illinois) efficiently consolidated the cases using DePuy MDL framework. The common design defect (excessive tibial component loosening at higher-than-expected rates) unified the class.",
+      challenges: "Smaller case universe than DePuy/Stryker — 1,900 U.S. claims. Zimmer's partial defense (surgical technique contributed to loosening) had some merit. Lower per-case value due to knee vs. hip injury comparison. Some cases involved patients who simply had poor bone quality rather than device defect.",
+      strategiesWon: [
+        "DePuy MDL framework applied efficiently",
+        "Elevated loosening rate documented in orthopedic literature and FDA MAUDE",
+        "N.D. Illinois MDL 2272 with dedicated management"
+      ],
+      strategiesFailed: [
+        "Smaller case universe limited aggregate value",
+        "Surgical technique defense reduced per-case values"
+      ],
+      demographics: "Adults 55-75 with NexGen LPS-Flex knee replacement, primarily patients who had high-flexion surgery. Both male and female.",
+      injuryTypes: ["Tibial component loosening", "Early implant failure", "Revision surgery"],
+      keyEvidence: "FDA MAUDE adverse event reports; orthopedic literature on NexGen LPS-Flex failure rates; revision surgery records; imaging showing component loosening",
+      corporateMisconduct: "Zimmer marketed NexGen LPS-Flex as appropriate for high-flexion activities without adequate disclosure of elevated loosening risk.",
+      regulatoryActions: "FDA MAUDE database captured adverse event reports. No formal recall.",
+      settlementStructure: "~$50M settlement through MDL 2272 (N.D. Illinois). Individual case values driven by revision surgery costs.",
+      bellwetherOutcome: "Multiple bellwether verdicts provided settlement framework.",
+      attorneyFees: "Standard 33-40% contingency",
+      replicationModel: "B — Knee implant MDL follows DePuy template. Any knee replacement with elevated documented failure rate uses this structure.",
+      clientAcquisitionStrategy: "Orthopedic revision surgery practices. NexGen LPS-Flex specific identification in medical records required.",
+      watchOut: "Case resolved. Surgical technique defense is legitimate concern — screen for cases where revision was unambiguously device loosening rather than bone quality or surgical error."
+    }
+  },
+
+  {
+    id: 70, title: "Essure Permanent Birth Control MDL", company: "Bayer",
+    type: "Medical Device", industry: "Medical Device", outcome: "settled", year: 2018,
+    affectedPop: "~39,000 claimants", jurisdiction: "PA Court of Common Pleas", mdlNumber: "No federal MDL (PA MCC)",
+    settlementAmount: "$1.6B", classSize: "~39,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Essure coils (permanent contraceptive) migrated, perforated organs, fractured, and caused chronic pain. FDA required black box warning 2016; product withdrawn 2018. Uniform design defect.",
+    leadCounsel: "Justinian & Associates, Maher & Maher",
+    keyPrecedent: "In re DePuy ASR Hip Implant Prods. Liab. Litig.",
+    tags: ["Essure", "birth control", "coil migration", "perforation", "medical device", "Bayer", "PA"],
+    notes: "$1.6B settlement. Product pulled from market. State court (PA MCC) rather than federal MDL — Bayer's home-state preference. Consumer advocacy groups (Essure Problems Facebook) drove plaintiff recruitment.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "~$41K average ($1.6B / 39,000 cases)",
+      litigationYears: 7,
+      whyItWorked: "Essure (nickel-titanium alloy coils implanted transcervically for permanent birth control) migrated from the fallopian tubes, perforated the uterus and surrounding organs, fractured and scattered metal fragments, and caused chronic pelvic pain, autoimmune reactions, and nickel allergy. Bayer received thousands of FDA MAUDE reports. FDA required a black box warning (2016). In 2018, Bayer voluntarily withdrew Essure from the U.S. market. Product withdrawal during litigation is typically the strongest possible signal of liability. The 'Essure Problems' Facebook group (then 31,000 members) became an unprecedented patient advocacy/litigation recruitment force.",
+      challenges: "Bayer insisted on mandatory arbitration clauses in its settlement agreements — initially controversial. Pennsylvania state court (MCC) rather than federal MDL created venue-specific procedural complexity. Mass arbitration vs. litigation structure was debated. Some claimed Bayer's 510(k) exemption created preemption defense.",
+      strategiesWon: [
+        "Product withdrawal from market (2018) = strongest possible liability admission",
+        "FDA black box warning (2016) established failure to warn",
+        "Essure Problems Facebook group drove unprecedented grassroots plaintiff recruitment",
+        "Coil migration and perforation are objectively verifiable on imaging",
+        "Bayer's own adverse event data showed thousands of perforations/migrations",
+        "Nickel allergy/autoimmune claims added novel damages theory",
+        "Class of 39,000 created enormous settlement pressure"
+      ],
+      strategiesFailed: [
+        "Bayer's preemption argument (PMA device — federal law preempts state tort claims) was litigated but ultimately overcome in many courts",
+        "510(k) vs. PMA preemption distinction required sophisticated regulatory analysis"
+      ],
+      demographics: "Women of reproductive age (20-45) who chose Essure for permanent contraception as an office procedure alternative to tubal ligation. All demographics; marketed to women seeking non-surgical permanent contraception. Women who developed chronic pelvic pain, had coil migration confirmed on imaging, or required hysterectomy to remove devices.",
+      injuryTypes: ["Coil migration beyond fallopian tube", "Uterine perforation", "Bowel or bladder perforation", "Chronic pelvic pain", "Nickel hypersensitivity/autoimmune reaction", "Hysterectomy required for removal", "Ectopic pregnancy from device failure"],
+      keyEvidence: "FDA MAUDE adverse event database (>38,000 reports); FDA black box warning and Safety Communication (2016); Bayer internal complaint database; pelvic imaging showing coil migration/perforation; pathology from removed devices; hysterectomy records; nickel allergy testing",
+      corporateMisconduct: "Bayer received thousands of MAUDE reports of coil migration, perforation, and chronic pain but actively lobbied FDA to delay restrictions. The company suppressed adverse outcomes in post-market surveillance. Bayer's advocacy against FDA's mandatory restrictions was documented in public records. Device was implanted by gynecologists who received limited safety training.",
+      regulatoryActions: "FDA black box warning (February 2016); FDA restricted Essure sales to certified physicians only; FDA required patients to sign updated informed consent. Bayer voluntarily withdrew from U.S. market (December 2018) while maintaining it was safe. EU and other markets later restricted or withdrew.",
+      settlementStructure: "$1.6B settlement (2020) through Pennsylvania MCC (Philadelphia Court of Common Pleas). No federal MDL — Bayer's strategic choice. Mandatory arbitration component for some cases. Individual case values varied by injury severity — hysterectomy cases and perforation cases highest.",
+      bellwetherOutcome: "Multiple bellwether arbitrations provided value benchmarks. Few public trials. Settlement driven by sheer case volume and product withdrawal.",
+      attorneyFees: "Standard 33-40% contingency; mass case recruitment firms earned significant aggregate fees",
+      replicationModel: "A — Permanent contraceptive device litigation template. Product withdrawal = liability near-admission. Facebook/social media patient advocacy group recruitment is now a standard mass tort intake strategy pioneered by Essure. Any medical device with high MAUDE adverse event volume, FDA black box, and product withdrawal follows this structure.",
+      clientAcquisitionStrategy: "Women's health advocacy networks, Facebook and Instagram groups for gynecological device survivors. OB-GYN practices that implanted Essure (for referrals of symptomatic patients). Women with chronic pelvic pain, hysterectomy for device removal, confirmed coil migration on imaging. Still accepting cases — not all claims resolved.",
+      watchOut: "Preemption: Essure was a PMA device — typically subject to federal preemption of state tort claims. Courts applied narrow preemption (only identical to FDA requirements) vs. additional parallel state claims. Verify preemption status in your jurisdiction. Bayer's arbitration agreement provisions must be carefully reviewed in settlement context."
+    }
+  },
+
+  // ─── BATCH 3: ENVIRONMENTAL / TOXIC TORT (IDs 71–80) ─────────────────────
+
+  {
+    id: 71, title: "Camp Lejeune Water Contamination", company: "U.S. Marine Corps / U.S. Gov.",
+    type: "Environmental/Toxic Tort", industry: "Environmental", outcome: "pending", year: 2022,
+    affectedPop: "~1M veterans + family", jurisdiction: "E.D. North Carolina", mdlNumber: "MDL 3471 (est.)",
+    settlementAmount: "Pending (CLJA enacted 2022)", classSize: "~1M eligible",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Camp Lejeune (1953–1987) water supply contaminated with TCE, PCE, benzene. CLJA (Camp Lejeune Justice Act 2022) waived sovereign immunity. Cancer, Parkinson's, birth defects. ~1M potentially eligible claimants.",
+    leadCounsel: "Murchison Taylor, Levin Papantonio, Morgan & Morgan",
+    keyPrecedent: "AFFF MDL; Woburn (A Civil Action)",
+    tags: ["Camp Lejeune", "TCE", "PCE", "benzene", "military", "water contamination", "veterans", "CLJA"],
+    notes: "CLJA was landmark legislation. Largest potential toxic tort in U.S. history by number of claimants. Government is defendant. Administrative process + litigation track.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending — projected $100K-$1M+ for cancer and serious disease cases; administratively set amounts for lesser injury tiers",
+      litigationYears: 2,
+      whyItWorked: "The Camp Lejeune Justice Act (CLJA) of August 2022 was a congressional masterstroke: it waived the federal government's sovereign immunity and created an explicit right to sue for water contamination injuries. The TCE, PCE, benzene, and vinyl chloride contamination of Camp Lejeune's drinking water (1953-1987) caused cancers, Parkinson's disease, neurobehavioral effects, and birth defects in an estimated 1 million exposed veterans, family members, and workers. Agency for Toxic Substances and Disease Registry (ATSDR) studies confirmed the disease associations with these contaminants. The CLJA eliminated the statute of limitations that had previously barred claims.",
+      challenges: "The government is defendant — JAG Corps (Judge Advocate General) is handling thousands of administrative claims before litigation is available. Administrative process is slow. Government's liability cap preferences are being negotiated. Causation experts must link specific chemicals to specific diseases in individual cases. Massive case volume (~400K+ claims filed as of 2024) creates administrative bottleneck.",
+      strategiesWon: [
+        "CLJA waived sovereign immunity — the single most important legal development",
+        "ATSDR epidemiological studies established general causation for 15 disease categories",
+        "Bipartisan political support created legislative solution to sovereign immunity barrier",
+        "VA health registry data provides exposure documentation",
+        "Military service records precisely document time spent at base (exposure verification)",
+        "E.D. North Carolina MDL 3471 has efficient federal court management"
+      ],
+      strategiesFailed: [
+        "Administrative track (elective notice requirement before suit) is slow — creating backlog",
+        "Government resisting full jury trial structure (Feres doctrine arguments)",
+        "Causation linking specific chemical to specific cancer requires detailed individual analysis"
+      ],
+      demographics: "U.S. Marine Corps veterans, military family members (spouses, children), and civilian workers who lived or worked at Camp Lejeune Marine Corps Base (Jacksonville, NC) for 30+ days between August 1953 and December 1987. Predominantly male veterans (Marines). Families include women and children, many of whom were exposed as infants or in utero — creating birth defect and pediatric cancer claims. Disproportionately from Southern/rural communities (Marine Corps demographics).",
+      injuryTypes: ["Non-Hodgkin lymphoma", "Bladder cancer", "Kidney cancer", "Breast cancer", "Esophageal cancer", "Parkinson's disease", "Neurobehavioral effects", "Birth defects (NTDs, childhood leukemia)", "Multiple myeloma"],
+      keyEvidence: "ATSDR health studies (multiple publications 2009-2020); NIOSH mortality studies; VA Camp Lejeune health registry; military service records (DD-214, base housing records); CDC/EPA contamination reports; water system operating records documenting contaminated wells",
+      corporateMisconduct: "U.S. Marine Corps failed to address known contamination for decades. Lejeune leadership knew of contaminated wells and delayed action. Dry cleaning operations (TCE, PCE) and base fuel operations (benzene) contaminated the Tarawa Terrace and Hadnot Point water treatment systems. Congressional investigations documented the cover-up.",
+      regulatoryActions: "EPA Superfund listing; VA established Camp Lejeune health program; Congress passed CLJA (2022) waiving sovereign immunity; VA disability benefits established for presumptive diseases.",
+      settlementStructure: "Two tracks: (1) Elective Option administrative settlement (limited amounts, fast payment); (2) Litigation track in E.D. North Carolina. DOJ has set preliminary administrative compensation tiers. Settlement amounts for litigation track not yet finalized. Government offering $150K-$450K for high-priority cancer cases in administrative track.",
+      bellwetherOutcome: "Bellwether trials not yet commenced. First trials scheduled 2025. Government is testing administrative and litigation tracks simultaneously.",
+      attorneyFees: "Standard 25-33% contingency. Many veterans' rights advocacy groups providing sliding scale. Congress required transparency on attorney fee amounts.",
+      replicationModel: "A+ — CLJA created a new legislative toxic tort model: Congress can waive sovereign immunity for specific toxic exposure events. This template has been proposed for Vieques, Puerto Rico (Navy bombing testing), PFAS at military bases (Fort McClellan, others), and Agent Orange secondary exposure. Monitor congressional activity on other military toxic exposure legislation.",
+      clientAcquisitionStrategy: "Veterans' service organizations (VFW, American Legion, DAV), Camp Lejeune-specific advocacy groups, VA medical centers treating base-related diseases, military family support networks. Target: Marines and families who lived/worked at Lejeune 1953-1987 with any of the 15 CLJA-recognized diseases. Military records verification services are essential intake partners.",
+      watchOut: "CLJA requires 180-day administrative claim before lawsuit filed — mandatory. Government is fighting on causation grounds and trying to limit individual recovery through administrative tiers. Must have strong specific causation expert for each disease type. Two-year statute of limitations running from CLJA enactment (August 2022) — early cases must be filed within window."
+    }
+  },
+
+  {
+    id: 72, title: "East Palestine, Ohio Train Derailment", company: "Norfolk Southern Railway",
+    type: "Environmental/Toxic Tort", industry: "Environmental", outcome: "settled", year: 2023,
+    affectedPop: "~5,000 residents", jurisdiction: "W.D. Pennsylvania", mdlNumber: "MDL 3113",
+    settlementAmount: "$600M (2024)", classSize: "~5,000",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical + economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "February 2023 derailment released vinyl chloride, hydrogen chloride. Controlled burn created dioxins. Class settlement for residents within 10-mile zone. Norfolk Southern negligence per se — violated rail safety regs.",
+    leadCounsel: "Beasley Allen, Napoli Shkolnik",
+    keyPrecedent: "In re AFFF Prods. Liab. Litig.",
+    tags: ["Norfolk Southern", "East Palestine", "train derailment", "vinyl chloride", "dioxin", "environmental", "Ohio"],
+    notes: "$600M class settlement 2024. Rare rail disaster class action. Uniform contamination zone-based theory. Medical monitoring component included.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$120K average ($600M / ~5,000 claimants); property owners higher, renters lower",
+      litigationYears: 2,
+      whyItWorked: "Norfolk Southern's February 3, 2023 derailment in East Palestine, Ohio released vinyl chloride, butyl acrylate, ethylene glycol monobutyl ether, and ethylhexyl acrylate. The controlled burn of 5 vinyl chloride tank cars created additional dioxin and hydrochloric acid contamination. Geographic zone-based theory: all residents within 10 miles of the derailment site experienced the same contamination event, creating clean class certification. Norfolk Southern's federal regulatory violations (speed, brake systems) created negligence per se. Rapid media coverage and political pressure accelerated settlement.",
+      challenges: "Long-term health effects uncertain — vinyl chloride cancer latency is typically 10-20 years, meaning future health claims are difficult to quantify. Medical monitoring class requires ongoing fund. Individual causation for any cancer developing in coming years will require expert analysis. Some class members had minimal actual exposure based on wind patterns.",
+      strategiesWon: [
+        "Geographic zone class definition — simple, verifiable residency",
+        "Negligence per se: Norfolk Southern violated FRA railroad safety regulations",
+        "Controlled vinyl chloride burn created additional liability (decision to burn was avoidable)",
+        "EPA oversight and community monitoring provided independent contamination documentation",
+        "Political pressure (Biden, Trump, EPA, NTSB all descended on East Palestine) accelerated resolution",
+        "W.D. Pennsylvania MDL 3113 efficient management"
+      ],
+      strategiesFailed: [
+        "Long-term health effects unknown — future cancer claims must be preserved separately",
+        "Some class members with minimal actual exposure may have inflated claims",
+        "Individual causation for specific injuries (cancer, respiratory disease) will require future analysis"
+      ],
+      demographics: "~5,000 residents and property owners within 10 miles of East Palestine, Ohio derailment site. Rural/small town community (pop. 4,700). Working-class, many homeowners who owned property that lost value. Both male and female. Significant elderly population (farming community).",
+      injuryTypes: ["Vinyl chloride acute exposure symptoms (headaches, dizziness)", "Property damage and diminution in value", "Economic losses (livestock, crop damage)", "Evacuation costs", "Medical monitoring for future liver cancer (vinyl chloride), kidney cancer"],
+      keyEvidence: "NTSB accident investigation report; Norfolk Southern's own inspection records showing brake failure; EPA air and water monitoring data; community health surveys; property value analyses; expert toxicology on vinyl chloride dioxin exposure levels",
+      corporateMisconduct: "Norfolk Southern had documented brake system failures and speed regulation violations. The decision to perform a controlled burn of vinyl chloride — rather than wait for proper disposal — was driven by concern about rail traffic disruption. NTSB investigation found multiple regulatory violations.",
+      regulatoryActions: "NTSB investigation; EPA emergency response and ongoing monitoring; DOT (FRA) inspection; Ohio and Pennsylvania state environmental investigations. Norfolk Southern entered EPA Administrative Order on Consent for remediation.",
+      settlementStructure: "$600M class settlement (2024): property damage, diminution in value, economic losses, evacuation costs, and medical monitoring program. Geographic class based on proximity to derailment site.",
+      bellwetherOutcome: "Settled before trial. Settlement driven by political pressure, regulatory findings, and pre-trial discovery of Norfolk Southern internal documents.",
+      attorneyFees: "~$180M (30% of $600M); Beasley Allen and Napoli Shkolnik led class",
+      replicationModel: "A — Rail disaster zone-based class action template: geographic exposure class + negligence per se from regulatory violations + medical monitoring. Template applicable to all industrial accidents with definable geographic contamination zone. Pipeline accidents, chemical plant explosions, and tanker derailments follow this structure.",
+      clientAcquisitionStrategy: "Rapid deployment post-disaster: community meetings, local media advertising, door-to-door with mobile intake units. Geographic zone definition creates easy class membership verification (address within 10 miles). Property title records and utility bills establish residency.",
+      watchOut: "Long-term vinyl chloride health claims (liver cancer, angiosarcoma) have 10-20 year latency — medical monitoring class must preserve future claims. Class settlement global release should carve out future cancer claims for claimants who develop vinyl chloride-associated disease. Monitor plaintiff clients for cancer development for 15-20 years."
+    }
+  },
+
+  {
+    id: 73, title: "Tyco / ADT PFAS Firefighting Foam (Non-AFFF)", company: "Tyco Fire Products",
+    type: "Environmental/Toxic Tort", industry: "Environmental", outcome: "settled", year: 2023,
+    affectedPop: "Thousands of communities", jurisdiction: "D. South Carolina", mdlNumber: "MDL 2873 (sub-MDL)",
+    settlementAmount: "$750M (Tyco/Chemguard 2023)", classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Tyco/Chemguard PFAS-containing foam used at airports and industrial sites. Groundwater contamination. Sub-case within MDL 2873 resolved for $750M.",
+    leadCounsel: "Baron & Budd, Weitz & Luxenberg",
+    keyPrecedent: "In re AFFF MDL 2873",
+    tags: ["PFAS", "Tyco", "Chemguard", "firefighting foam", "airport", "groundwater", "environmental"],
+    notes: "Sub-settlement within the AFFF MDL. Tyco/Chemguard paid $750M specifically for airport-based PFAS contamination claims. Illustrates how large MDLs generate multiple defendant-specific sub-settlements.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "See AFFF MDL (Case 3) — $750M sub-settlement for airport drinking water claims",
+      litigationYears: 5,
+      whyItWorked: "See Case 3 (AFFF MDL) for comprehensive PFAS analysis. Tyco/Chemguard's $750M sub-settlement demonstrates how large MDLs can generate multiple defendant-specific settlements of enormous value. Airport PFAS contamination cases are particularly strong because: (1) airports used Tyco/Chemguard foam extensively for decades, (2) foam was applied directly on runways that drain to ground water supplying adjacent communities, (3) contamination is highly concentrated, (4) Tyco's own products created the specific contamination pathway.",
+      challenges: "Same as AFFF MDL broadly — causation for specific PFAS-related cancers (kidney, testicular, thyroid) requires epidemiological expert support. Airport community exposure areas are geographically defined but extensive.",
+      strategiesWon: [
+        "Airport PFAS contamination is most concentrated and documented type of PFAS case",
+        "Tyco/Chemguard's own product specifications admit PFAS content",
+        "EPA groundwater monitoring data provides independent contamination map",
+        "MDL 2873 sub-settlement framework allows defendant-specific resolution without full MDL trial"
+      ],
+      strategiesFailed: ["No major failures in this sub-settlement — it resolved efficiently"],
+      demographics: "See Case 3 (AFFF MDL) for full demographics. Airport community cases concentrate near major airports: O'Hare, JFK, LAX, military airfields, and civilian airports in dense communities.",
+      injuryTypes: ["See Case 3 — kidney cancer, testicular cancer, thyroid disease, ulcerative colitis, hyperlipidemia"],
+      keyEvidence: "See Case 3 — PFAS foam product specifications, EPA testing data, FAA and military use records, cancer registry data",
+      corporateMisconduct: "See Case 3 — Tyco/Chemguard knew PFAS were bioaccumulative and environmentally persistent but continued production without adequate warning",
+      regulatoryActions: "EPA MCL for PFAS in drinking water (2024). See Case 3 for comprehensive regulatory history.",
+      settlementStructure: "$750M sub-settlement within MDL 2873 for public water suppliers affected by airport PFAS contamination. Complements 3M ($10.3B) and DuPont ($1.185B) settlements in same MDL.",
+      bellwetherOutcome: "Resolved before bellwether trial — MDL's overall settlement momentum facilitated sub-settlement.",
+      attorneyFees: "~$225M (30%) from sub-settlement; part of MDL common benefit fees",
+      replicationModel: "A+ — Airport PFAS cases are among the strongest PFAS sub-theories. Every airport in the U.S. that used AFFF has potential claims for surrounding communities. See Case 3 for full replication model.",
+      clientAcquisitionStrategy: "Communities within 5-10 miles of airports with AFFF foam use history. Municipal water utilities serving airport-adjacent areas. Individual cancer patients near airports. Monitor EPA PFAS testing database for airport contamination sites.",
+      watchOut: "See Case 3 — causation experts, MCL changes, statute of limitations by state. Tyco-specific cases largely resolved — focus on remaining sub-defendants in MDL 2873."
+    }
+  },
+
+  {
+    id: 74, title: "DuPont C8 / Teflon PFOA Ohio/W.Va.", company: "DuPont / Chemours",
+    type: "Environmental/Toxic Tort", industry: "Environmental", outcome: "settled", year: 2004,
+    affectedPop: "~70,000 residents", jurisdiction: "S.D. Ohio", mdlNumber: "MDL 1708",
+    settlementAmount: "$671M (2017 MDL settlement)", classSize: "~70,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "DuPont contaminated Ohio River and drinking water with PFOA (C8) from Parkersburg plant for 50 years. Linked to kidney cancer, testicular cancer, thyroid disease, colitis. DuPont knew since 1960s. C8 class science panel established 6 'probable links.'",
+    leadCounsel: "Rob Bilott (Taft Stettinius), Levin Papantonio",
+    keyPrecedent: "Pioneer precedent for PFAS litigation",
+    tags: ["DuPont", "PFOA", "C8", "Teflon", "Parkersburg", "water contamination", "PFAS pioneer", "environmental"],
+    notes: "Seminal PFAS case. Rob Bilott's litigation (subject of 'Dark Waters' film). C8 Science Panel created by settlement proved six health links. Led directly to AFFF MDL and all modern PFAS litigation.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "~$9,600 average original settlement ($671M / 70K) + additional personal injury settlements ($1M-$5M for qualifying kidney/testicular cancers)",
+      litigationYears: 17,
+      whyItWorked: "Rob Bilott's 17-year persistence against DuPont (Taft Stettinius & Hollister) is the foundational PFAS story. DuPont contaminated the Ohio River and ground water with PFOA (perfluorooctanoic acid, 'C8') from its Parkersburg, WV plant for 50 years, affecting 70,000 Ohio and West Virginia residents. The C8 Science Panel — an independent epidemiology panel created as part of the initial settlement — spent years establishing six 'probable links' between C8 exposure and disease: kidney cancer, testicular cancer, thyroid disease, ulcerative colitis, hyperlipidemia, and pregnancy-induced hypertension. These links, proven by DuPont's own science funding, became the foundation for AFFF MDL and all modern PFAS personal injury litigation.",
+      challenges: "17 years of litigation required extraordinary patience and resources. DuPont repeatedly invoked litigation privilege and fought discovery. EPA enforcement was initially slow. The settlement structure allowed individual personal injury cases only for the six established 'probable links' — not broader claims. Chemours spinoff complicated ultimate recovery.",
+      strategiesWon: [
+        "Rob Bilott's persistent attorney-driven investigation uncovered suppressed DuPont internal documents",
+        "C8 Science Panel — independent epidemiology panel in settlement proved causation using DuPont's own funding",
+        "Environmental contamination via drinking water created uniform exposure across large population",
+        "Six 'probable links' established by independent scientists gave plaintiffs irrefutable general causation for specific diseases",
+        "EPA PFOA listing in CERCLA Superfund as hazardous substance (2022) validated approach",
+        "Dark Waters film (2019) created public awareness and plaintiff recruitment"
+      ],
+      strategiesFailed: [
+        "Initial settlement allowed only six narrow disease categories — many health effects not covered",
+        "Chemours spinoff created recovery risk (DuPont transferred C8 liability to newly created Chemours)",
+        "Regulatory validation took 20+ years — early cases brought before EPA standards existed"
+      ],
+      demographics: "Ohio and West Virginia rural communities in mid-Ohio River Valley — Parkersburg, WV and surrounding areas. Lower-income, industrial workers (some were DuPont employees), rural farmers and residents. Many cases were older adults who consumed contaminated water for decades before diagnosis.",
+      injuryTypes: ["Kidney cancer (clear cell renal carcinoma)", "Testicular cancer", "Thyroid disease", "Ulcerative colitis", "Hyperlipidemia (high cholesterol)", "Pregnancy-induced hypertension"],
+      keyEvidence: "DuPont internal C8 safety studies (suppressed for decades); 3M toxicology reports sharing C8 danger with DuPont (1970s-80s); EPA PFOA health effects reports; C8 Science Panel publications; Ohio River PFOA testing data; individual drinking water exposure records",
+      corporateMisconduct: "DuPont knew about C8's toxicity from 3M's shared research (1980s) and their own internal studies but did not disclose to EPA, regulators, or affected communities for decades. The company created false scientific data, manipulated safety studies, and actively suppressed information. Internal documents showed DuPont calculated cost of switching to safer alternatives and chose continued C8 use to protect profits.",
+      regulatoryActions: "EPA classified PFOA/PFOS as hazardous substances under CERCLA (2022); EPA set Maximum Contaminant Level (MCL) of 4 ppt for PFOA in drinking water (2024); EPA Superfund designation for Parkersburg area sites. DOJ environmental enforcement actions.",
+      settlementStructure: "Multiple settlements: (1) 2004 initial settlement — medical monitoring fund and C8 Science Panel; (2) 2017 MDL settlement — $671M for all Ohio/WV class members based on blood serum C8 levels; (3) Subsequent individual personal injury settlements ($1M-$5M each) for qualifying cancer/disease cases where 'probable links' established.",
+      bellwetherOutcome: "Trial verdicts in three bellwether personal injury cases (2016-2017): Plaintiff wins including $2M compensatory, jury found DuPont negligent in all three. Created settlement pressure for bulk resolution.",
+      attorneyFees: "Rob Bilott and Taft Stettinius earned over $30M in fees over 17+ years. Total attorney fees across all settlements estimated $200-300M.",
+      replicationModel: "A+ — This IS the template for all modern PFAS litigation and the model for any long-duration environmental contamination case. Key strategy: independent science panel created by settlement that uses defendant's own data to prove causation. This approach is replicable in any case where epidemiological evidence needs to be developed over time.",
+      clientAcquisitionStrategy: "Water system testing data is the first step — any community water system with PFOA/PFOS above EPA MCL (4 ppt) is a potential case. Cancer patients near industrial facilities using PFAS. Blood serum PFAS testing is available — work with local physicians to offer screening programs near contaminated sites.",
+      watchOut: "Chemours spinoff created complex corporate liability chain — both DuPont and Chemours are defendants in AFFF MDL. PFAS litigation now involves hundreds of chemicals beyond PFOA/PFOS — epidemiology for newer 'short-chain' PFAS is less developed. EPA MCL creates strict liability framework but damages calculation still requires individual exposure documentation."
+    }
+  },
+
+  {
+    id: 75, title: "Flint Michigan Water Crisis", company: "City of Flint / State of Michigan",
+    type: "Environmental/Toxic Tort", industry: "Environmental", outcome: "settled", year: 2016,
+    affectedPop: "~100,000 residents", jurisdiction: "E.D. Michigan", mdlNumber: "No MDL (state + fed. consolidated)",
+    settlementAmount: "$626M (2021)", classSize: "~100,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Flint switched water source to Flint River 2014; failure to treat caused lead leaching from pipes. Children suffered irreversible neurological damage. Government defendants (city, state officials). $626M settlement.",
+    leadCounsel: "Levy Konigsberg, Pitt McGehee",
+    keyPrecedent: "In re Camp Lejeune Water Litig.",
+    tags: ["Flint", "lead", "water contamination", "government liability", "children", "neurological", "environmental"],
+    notes: "$626M settlement 2021. Prioritizes children under 18 and pregnant women for largest awards. Government entity as defendant — unusual in toxic tort class actions. Landmark civil rights/environmental justice case.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Children under 18: $600K avg; Adults: $200K avg; total ~$626M / 100,000 residents",
+      litigationYears: 7,
+      whyItWorked: "Flint's water crisis was a government-caused lead poisoning disaster: city and state officials switched the water source from Lake Huron to the Flint River without required corrosion control treatment, causing lead to leach from aging pipes into drinking water consumed by 100,000 residents, including 6,000-12,000 children. Lead poisoning is scientifically irrefutable in children — blood lead levels were measured and elevated. No causation dispute. Government defendants (City of Flint, State of Michigan, individual officials) were the liable parties. Civil rights theory (race and class-based discrimination in decision-making) added powerful public interest dimension.",
+      challenges: "Government sovereign immunity defenses required careful navigation under Michigan's Governmental Tort Liability Act. Individual state officials had immunity arguments. Some class members wanted criminal accountability more than civil remedy — tension with settlement goals. Settlement funding required legislative appropriation by Michigan legislature (complex). Limited recovery compared to corporate defendants.",
+      strategiesWon: [
+        "Blood lead level documentation proved exposure and causation undeniably for children",
+        "Civil rights theory under 42 U.S.C. § 1983 (environmental racism) elevated federal court jurisdiction",
+        "Children under 18 prioritized for maximum awards — extraordinary sympathy",
+        "State legislative appropriation obtained: Michigan funded $600M+ settlement",
+        "Federal and state criminal prosecutions of officials created political pressure for civil settlement",
+        "Governor Snyder indictment (later dropped) created ongoing pressure"
+      ],
+      strategiesFailed: [
+        "State officials' qualified immunity arguments reduced individual defendant liability",
+        "Criminal charges against many officials were ultimately dismissed or resulted in plea deals",
+        "Settlement amounts (average $200K for adults) were lower than comparable lead poisoning verdicts against private companies",
+        "Limited recovery compared to corporate toxic tort settlements"
+      ],
+      demographics: "Flint, Michigan residents — predominantly African American (57%), lower-income community with median household income ~$26K. Children under 18 were the most severely affected population (developmental neurological damage from lead is permanent). Approximately 6,000-12,000 children had elevated blood lead levels. Adults experienced cardiovascular effects and potential neurological impacts.",
+      injuryTypes: ["Childhood lead poisoning (elevated blood lead levels)", "Neurodevelopmental damage (IQ reduction, attention deficits, learning disabilities)", "Cardiovascular disease (adult lead exposure)", "Legionella pneumophila outbreak (parallel case — caused 12 deaths)", "Emotional distress from unsafe water period (2014-2016)"],
+      keyEvidence: "Michigan Department of Environmental Quality water testing records; individual blood lead level tests (Mona Hanna-Attisha's Virginia Tech study); CDC lead poisoning guidelines; pediatric neurology expert reports; state and city emails showing knowledge and cover-up; EPA's Inspector General report on regulatory failure; Legionella outbreak investigation records",
+      corporateMisconduct: "State and city government officials: (1) failed to add corrosion inhibitor to Flint River water despite federal SDWA requirements; (2) switched water source for cost savings under Governor Snyder's financial emergency management; (3) falsified lead testing results and downplayed elevated readings; (4) failed to notify residents despite internal knowledge of elevated lead levels for months.",
+      regulatoryActions: "EPA Emergency Order (2016); Michigan DEQ violations; Congressional investigations; Governor Snyder indicted on 2 counts (later dismissed); 15 officials charged (various outcomes); EPA consent order for Flint infrastructure remediation; SDWA enforcement actions.",
+      settlementStructure: "$626.25M settlement (2021): 80% for children under 18 (priority class); 20% for adults. State of Michigan contributed $600M; City of Flint contributed smaller amount. Individual water utility defendants contributed separately. Pro-rata distribution to class members based on age and blood lead level documentation.",
+      bellwetherOutcome: "No bellwether trials — settled before trial. Criminal prosecutions provided alternative accountability pressure. State legislative funding commitment made settlement viable.",
+      attorneyFees: "~$94M (approximately 15% — reduced for government defendant settlement)",
+      replicationModel: "A+ — Government-caused water contamination class action template. Civil rights/environmental justice theory is powerful parallel track to tort claims. Government defendants require different strategy: FOIA to obtain internal communications, civil rights (§1983/1985) for equal protection violations, SDWA violation framework. Flint's template has been applied in: Benton Harbor MI lead crisis, Jackson MS water system failure, Newark NJ lead crisis.",
+      clientAcquisitionStrategy: "Government water crisis cases require rapid response: (1) blood lead testing campaigns for children immediately after crisis identified, (2) civil rights organizations as intake partners, (3) FOIA requests filed day 1 for internal communications, (4) state and local environmental justice advocates. Children's lead poisoning cases must preserve documentation for lifetime of educational and developmental impact.",
+      watchOut: "Government sovereign immunity is a major barrier — must identify specific immunity waivers or civil rights theories (§1983). Michigan Governmental Tort Liability Act caps recovery. Federal government defendants (EPA) have additional immunity protections. Criminal proceedings can delay civil discovery. Ensure blood lead level documentation is obtained before statute of limitations runs."
+    }
+  },
+
+  {
+    id: 76, title: "Pacific Gas & Electric (PG&E) Wildfire MDL", company: "PG&E",
+    type: "Environmental/Toxic Tort", industry: "Utilities/Energy", outcome: "settled", year: 2019,
+    affectedPop: "~70,000 claimants", jurisdiction: "N.D. California (Bankruptcy)", mdlNumber: "JCCP 4953 (CA)",
+    settlementAmount: "$13.5B (bankruptcy plan)", classSize: "~70,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + property",
+    daubert: "n/a (bankruptcy resolution)",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "PG&E equipment sparked Camp Fire (2018, deadliest CA wildfire), North Bay fires (2017), and others. Killed 85 in Paradise, CA. $13.5B victim compensation fund through Chapter 11. Inverse condemnation theory.",
+    leadCounsel: "Lieff Cabraser, Baum Hedlund",
+    keyPrecedent: "In re Pacific Gas & Electric Co.",
+    tags: ["PG&E", "wildfire", "Camp Fire", "Paradise", "utility", "California", "bankruptcy", "environmental"],
+    notes: "$13.5B largest wildfire settlement in history. PG&E pled guilty to 84 counts of involuntary manslaughter. Resolved through Chapter 11 reorganization plan rather than traditional class settlement.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "~$193K average ($13.5B / 70,000 claimants); death and total loss cases received much higher amounts",
+      litigationYears: 5,
+      whyItWorked: "PG&E's electrical transmission lines and equipment sparked multiple catastrophic California wildfires including the 2018 Camp Fire (deadliest in California history — 85 deaths, Paradise CA destroyed) and 2017 North Bay fires. California's inverse condemnation doctrine — which holds utilities strictly liable for wildfires caused by their equipment regardless of negligence — made PG&E's liability near-automatic. PG&E's own criminal admission (84 counts of involuntary manslaughter) eliminated any liability defense. The Chapter 11 bankruptcy provided a structured recovery mechanism with a defined $13.5B victim fund.",
+      challenges: "PG&E's bankruptcy required navigating complex creditor priority rules. The California Public Utilities Commission's oversight of the bankruptcy added regulatory complexity. AB 1054 (California wildfire liability legislation) changed the legal landscape mid-litigation. Claims administration for 70,000 claimants with varying property loss, injury, and death claims was extraordinarily complex.",
+      strategiesWon: [
+        "Inverse condemnation doctrine — strict utility liability regardless of negligence",
+        "PG&E's guilty plea to 84 counts of involuntary manslaughter eliminated liability defense",
+        "Chapter 11 bankruptcy reorganization plan as settlement vehicle — creative use of corporate restructuring",
+        "California Public Utilities Commission required PG&E to fund victim compensation",
+        "Fire origin and cause investigations (CPUC/CAL FIRE) provided independent liability evidence",
+        "Property damage was photographically documented and easily valued"
+      ],
+      strategiesFailed: [
+        "Bankruptcy proceedings complicated direct class action path — required adaptation to bankruptcy claims process",
+        "Some claimants felt $13.5B was insufficient given total destruction of Paradise CA"
+      ],
+      demographics: "Approximately 70,000 claimants: Camp Fire victims (Paradise CA, Butte County — primarily older rural community), North Bay fire victims (Sonoma, Napa, Mendocino counties — diverse demographics, significant wine country property values). Mix of homeowners, renters, businesses, wrongful death families.",
+      injuryTypes: ["Wrongful death (85 deaths in Camp Fire)", "Property total loss", "Personal property loss", "Business interruption", "Evacuation costs", "Smoke inhalation injuries", "Psychological trauma"],
+      keyEvidence: "CAL FIRE origin and cause reports; CPUC grid inspection records; PG&E maintenance records showing equipment failures; aerial and satellite imagery; property damage assessments; expert utility engineering testimony; PG&E's own criminal guilty plea allocutions",
+      corporateMisconduct: "PG&E deferred maintenance on transmission lines, failing to properly inspect and replace aging equipment despite knowledge of wildfire risk. The company prioritized shareholder returns over safety investment. PG&E had received multiple citations and warnings before the catastrophic fires. After prior settlements (San Bruno pipeline explosion), PG&E repeated safety culture failures.",
+      regulatoryActions: "PG&E criminal conviction (84 counts involuntary manslaughter + arson); CPUC maximum fine; FERC investigation; California AB 1054 wildfire liability reform; Chapter 11 bankruptcy with CPUC oversight; ongoing probation with safety monitor.",
+      settlementStructure: "$13.5B victim compensation fund through Chapter 11 reorganization plan (2020): ~$6.75B in cash + ~$6.75B in PG&E stock to claimants. Claims administered by structured settlement fund. Stock distribution created equity interest for survivors in newly reorganized PG&E.",
+      bellwetherOutcome: "No bellwether trials — resolved through bankruptcy plan. CAL FIRE and CPUC reports served as effective bellwether substitutes.",
+      attorneyFees: "~$3-4B (approximately 25-30% of $13.5B) split among Lieff Cabraser, Baum Hedlund, and 800+ plaintiff firms",
+      replicationModel: "A+ — California utility wildfire liability template: inverse condemnation + Chapter 11 with victim fund. Direct successor: Maui/Hawaiian Electric ($4B), Edison International North Bay fires, and future California utility wildfire cases. Climate change is increasing wildfire frequency — utility wildfire litigation is a growing practice area.",
+      clientAcquisitionStrategy: "Wildfire victim outreach must be rapid (within weeks of fire). Mobile intake units in evacuation zones. Local media advertising. Property loss verification through CAL FIRE maps and county assessor records. Coordinated with insurance recovery specialists (subrogation actions complement individual cases).",
+      watchOut: "California's AB 1054 created a new wildfire fund liability framework that changes future utility cases. PG&E's criminal probation and safety monitor provide ongoing regulatory pressure. Nevada and Oregon utilities face similar wildfire liability theories. Do not assume bankruptcy reorganization always produces full recovery — $13.5B was extraordinary."
+    }
+  },
+
+  {
+    id: 77, title: "E.I. du Pont de Nemours Benlate Fungicide", company: "DuPont",
+    type: "Environmental/Toxic Tort", industry: "Agriculture/Chemical", outcome: "settled", year: 1991,
+    affectedPop: "~1,000 Florida nurseries", jurisdiction: "S.D. Florida", mdlNumber: "No MDL",
+    settlementAmount: "$600M+ (aggregate)", classSize: "~1,000 growers",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Benlate fungicide contaminated with sulfonylurea herbicide. Destroyed Florida nursery crops. DuPont initially denied contamination but internal documents showed knowledge. Historical landmark in agricultural toxic tort.",
+    leadCounsel: "Various plaintiff agri-law firms",
+    keyPrecedent: "Pioneer agricultural toxic tort",
+    tags: ["DuPont", "Benlate", "fungicide", "agricultural", "crop damage", "Florida", "toxic tort"],
+    notes: "Historical case. DuPont paid $600M+ in aggregate. Later destroyed documents — led to sanctions. Landmark for agricultural toxic tort and corporate concealment of product defects.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Aggregate $600M / ~1,000 nurseries = ~$600K average; individual nurseries ranged from $100K to several million",
+      litigationYears: 10,
+      whyItWorked: "Benlate fungicide (benomyl/thiophanate-methyl) was accidentally contaminated with atrazine (an herbicide) during production, causing widespread crop destruction across Florida nurseries and greenhouse operations. DuPont initially denied contamination but eventually released documents showing internal awareness. The uniform product contamination theory — same product, same contaminant, same crop damage — created clean class theory. DuPont's document destruction (for which the company was sanctioned) and concealment dramatically increased plaintiff leverage.",
+      challenges: "Historical case (1990s) with limited molecular testing technology at the time. DuPont had significant resources for expert defense. Document destruction sanctions created appellate issues. Individual crop damage valuation required agricultural economists.",
+      strategiesWon: [
+        "DuPont internal documents showing knowledge of contamination",
+        "Consistent contamination mechanism across all affected batches",
+        "Sanctions for document destruction strengthened plaintiff position",
+        "Agricultural economic experts quantified crop losses comprehensively",
+        "Class theory: same product contamination affecting all nursery users"
+      ],
+      strategiesFailed: [
+        "DuPont document destruction delayed resolution and created appellate complexity",
+        "Some cases involved contributing factors (disease, weather) that complicated pure product liability"
+      ],
+      demographics: "Florida nursery operations (ornamental plant growers, greenhouse operators) who used DuPont Benlate as standard fungicide treatment. Small to medium agricultural businesses. Southern U.S. concentrated. Predominantly white agricultural business owners.",
+      injuryTypes: ["Crop loss (ornamental plants)", "Business losses", "Nursery inventory destruction", "Long-term business viability damage"],
+      keyEvidence: "DuPont internal lab testing records showing atrazine contamination; crop damage documentation; chemical testing of affected plants showing herbicide residue; agricultural economic expert testimony on crop value",
+      corporateMisconduct: "DuPont knew about Benlate contamination from internal testing and delayed disclosure. The company destroyed relevant documents after litigation began, resulting in court sanctions. DuPont initially claimed Benlate was safe and blamed growers for crop failures.",
+      regulatoryActions: "EPA investigated Benlate registration (benomyl separately had EPA review). Florida Department of Agriculture investigated. No criminal charges but significant civil sanctions.",
+      settlementStructure: "$600M+ in aggregate individual settlements over 10 years. No class settlement — individual cases settled or tried. Landmark verdicts included multi-million dollar verdicts with punitive damages.",
+      bellwetherOutcome: "Multiple verdicts including $4.7M verdict in individual Florida case. DuPont's document destruction sanctions influenced settlement dynamics throughout.",
+      attorneyFees: "Standard 33-40% in individual cases",
+      replicationModel: "A — Agricultural product contamination template: same product, same contaminant, uniform crop damage. Any widespread agricultural product recall with uniform contamination mechanism follows this framework. Currently: herbicide drift cases (dicamba/XtendiMax), glyphosate (Roundup), and PFAS in agricultural water supplies use similar structure.",
+      clientAcquisitionStrategy: "Agricultural extension offices, Florida Department of Agriculture complaint records, nursery associations, crop insurance records. Document crop damage early and comprehensively — photographs, lab testing, sales records.",
+      watchOut: "Historical case fully resolved. Use as template for evaluating agricultural product contamination cases. Document destruction is a powerful sanction tool — preserve litigation hold demands and be ready for spoliation arguments."
+    }
+  },
+
+  {
+    id: 78, title: "Deepwater Horizon / BP Oil Spill MDL", company: "BP, Transocean, Halliburton",
+    type: "Environmental/Toxic Tort", industry: "Energy/Oil", outcome: "settled", year: 2010,
+    affectedPop: "Millions (Gulf Coast businesses + workers)", jurisdiction: "E.D. Louisiana", mdlNumber: "MDL 2179",
+    settlementAmount: "$20.8B (total)", classSize: "Millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic + physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Deepwater Horizon blowout (2010) — largest marine oil spill in history. BP agreed to $20.8B total including $8.8B Wetlands & Economic Class settlement and $7.8B Medical Class. OPA 90 strict liability framework.",
+    leadCounsel: "Herman Herman & Katz, Levin Papantonio",
+    keyPrecedent: "Exxon Valdez v. Baker",
+    tags: ["BP", "Deepwater Horizon", "oil spill", "Gulf Coast", "environmental", "OPA", "MDL"],
+    notes: "$20.8B largest environmental tort settlement in U.S. history at time. Class settlement for economic losses + medical monitoring for cleanup workers. Structured with claims administrator. Split into economic and medical class.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Economic class: ~$72K average; Medical class (cleanup workers): variable; total $20.8B across all tracks",
+      litigationYears: 5,
+      whyItWorked: "The Deepwater Horizon blowout on April 20, 2010 killed 11 workers and released 210 million gallons of oil into the Gulf of Mexico over 87 days — the largest accidental marine oil spill in history. BP's liability was clear from the beginning: the blowout was caused by BP's decisions to save time/money by cutting corners on well safety. The Oil Pollution Act (OPA 90) provides strict liability for responsible parties. The scale of economic harm (fishing industry, tourism, Gulf Coast businesses) affecting millions created a natural class. The unique $20.8B settlement structure — combining criminal plea, DOJ civil penalty, and class settlements — demonstrated how to resolve a catastrophic corporate disaster comprehensively.",
+      challenges: "The economic class settlement was criticized for being overly broad — many businesses that suffered no actual oil spill-related damage received compensation. Judge Barbier's class settlement was challenged by BP (unsuccessfully). Separately, the Deepwater Horizon medical class covered cleanup workers with inconsistent injury documentation. Long-term health effects of dispersants (Corexit) on cleanup workers and Gulf Coast residents remain contested.",
+      strategiesWon: [
+        "OPA 90 strict liability — BP was responsible party, no negligence required for oil spill economic losses",
+        "BP's Macondo well operations were clearly negligent — multiple safety standard violations",
+        "Economic harm class was clear: Gulf fishery closures, tourism losses, Gulf Coast business revenue drops",
+        "Captain America/Deepwater Horizon MDL governance structure in E.D. Louisiana was efficient",
+        "BP's $20B escrow account (Obama administration negotiated) provided guaranteed recovery fund",
+        "Dual class structure (economic + medical) with separate compensation criteria maximized coverage"
+      ],
+      strategiesFailed: [
+        "Economic class settlement was overbroad — BP successfully challenged some categories (ongoing dispute)",
+        "Cleanup worker Corexit/dispersant health claims remain scientifically contested",
+        "Some class members with no real spill-related damage were included (fraudulent claims issue)"
+      ],
+      demographics: "Gulf Coast economic class: commercial fishermen, shrimpers, oyster harvesters, tourism businesses, hotels, restaurants, recreational fishing guides in Louisiana, Mississippi, Alabama, Florida, and Texas. Cleanup workers (Vessels of Opportunity program): approximately 100,000 workers, disproportionately African American and Hispanic Gulf Coast residents. Death/personal injury class: families of 11 killed workers.",
+      injuryTypes: ["Lost fishing income", "Lost tourism/hospitality income", "Property value diminution", "Cleanup worker respiratory illness", "Cleanup worker skin disorders", "Psychological distress", "Wrongful death (11 rig workers)"],
+      keyEvidence: "BP's own internal risk assessment documents; Halliburton well cement testing failures; Transocean blowout preventer maintenance records; BOEMRE investigation findings; EPA dispersant monitoring data; economic impact analyses; fish stock assessments; class member economic records",
+      corporateMisconduct: "BP took multiple shortcuts on the Macondo well — shortened the cement job, ignored negative pressure test results, failed to properly circulate drilling mud before the cement job, and delayed installing the production casing. The blowout preventer was not properly maintained by Transocean. Internal communications showed BP's 'company man' overrode safety concerns to save time. BP pled guilty to 11 counts of manslaughter and paid $4.5B in criminal penalties.",
+      regulatoryActions: "BP criminal plea (November 2012): $4.5B penalties, 3 employees pleaded guilty; DOJ Clean Water Act maximum fine: $5.5B; BOEMRE offshore drilling regulations overhauled; EPA Clean Air Act and Clean Water Act enforcement; SEC settlement. Sperry-Sun engineer charged with obstruction of justice for deleting emails.",
+      settlementStructure: "$20.8B total: $8.8B economic class settlement (Gulf Coast business/individual claims); $7.8B medical class settlement (cleanup workers); $4.5B DOJ criminal settlement; $5.5B DOJ civil Clean Water Act penalty; Transocean/Halliburton separate settlements. BP Oil Spill Trust (established during spill) provided interim payments before settlements.",
+      bellwetherOutcome: "Trial on liability phase (January 2013) found BP grossly negligent — maximum Clean Water Act fine justified. Economic class and medical class settled before individual trials.",
+      attorneyFees: "~$6B estimated total across all plaintiff firms (approximately 30% of $20.8B settlement)",
+      replicationModel: "A+ — OPA 90 strict liability + corporate disaster + economic class structure. BP created the gold standard for catastrophic industrial disaster litigation. Template applied in: East Palestine (rail disaster), Maui wildfire, Gulf Coast industrial accidents. Key innovation: dual economic + medical class structure.",
+      clientAcquisitionStrategy: "For ongoing Gulf Coast residual claims: fishing industry, coastal property owners, environmental justice communities near Gulf. For future industrial disasters: rapid deployment to disaster zone within 72 hours, mobile intake units, coordination with local attorneys who know the community.",
+      watchOut: "OPA 90 strict liability requires being a 'responsible party' — apply this framework to oil terminal operators, pipeline companies, offshore operators. Economic class overbreadth caused BP to contest claims for years post-settlement — carefully define class boundaries. Fraudulent claims problem was significant — implement fraud screening in mass intake processes."
+    }
+  },
+
+  {
+    id: 79, title: "Maui Wildfire (Lahaina) Litigation", company: "Hawaiian Electric Industries",
+    type: "Environmental/Toxic Tort", industry: "Utilities/Energy", outcome: "settled", year: 2023,
+    affectedPop: "~12,000 residents", jurisdiction: "Hawaii State Court", mdlNumber: "No MDL (state)",
+    settlementAmount: "$4.037B (2024)", classSize: "~12,000",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "property + physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "August 2023 Lahaina wildfire killed 100+. Hawaiian Electric's energized lines started fire in high-wind conditions. $4.037B settlement — largest per-capita wildfire settlement ever. State liability theories.",
+    leadCounsel: "Girard Sharp, Earthjustice",
+    keyPrecedent: "In re Pacific Gas & Electric Co.",
+    tags: ["Maui", "Lahaina", "Hawaiian Electric", "wildfire", "utility", "Hawaii", "environmental"],
+    notes: "$4.037B settlement 2024. Hawaiian Electric, Maui County, and State of Hawaii all contributed. Continues PG&E wildfire liability precedent. Novel Pacific island utility liability framework.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$336K average ($4.037B / ~12,000 claimants) — highest per-capita wildfire settlement ever",
+      litigationYears: 1,
+      whyItWorked: "The August 8, 2023 Lahaina wildfire killed 100+ people (100 confirmed dead, potentially higher) and destroyed the historic town of Lahaina — Hawaii's cultural heart. Hawaiian Electric's power lines remained energized during extremely high wind conditions (Hurricane Dora offshore), with lines falling and sparking in dry vegetation. The utility's failure to de-energize lines in the face of obvious wildfire risk created clear negligence. Hawaii's utility liability framework, combined with PG&E's settled precedent, created immediate settlement pressure. The per-capita recovery ($336K average) is the highest in wildfire litigation history.",
+      challenges: "Hawaii state court (no federal MDL) created different procedural framework. Hawaiian Electric challenged causation (other ignition sources alleged). Multiple defendants (Hawaiian Electric, Maui County, State of Hawaii, Kamehameha Schools as landowner) required complex allocation negotiations. Hawaiian Electric's financial solvency was initially questioned — utility needed rate increases to fund settlement.",
+      strategiesWon: [
+        "PG&E precedent ($13.5B) created immediate settlement framework",
+        "Hawaiian Electric failed to de-energize lines despite red flag conditions (clear negligence)",
+        "100+ deaths created maximum pressure — deadliest U.S. wildfire in over 100 years",
+        "Hawaii state court tort system favorable to plaintiffs",
+        "Multiple defendant settlement: HEI + Maui County + State of Hawaii + Kamehameha Schools (landowner)",
+        "National media attention and political pressure accelerated resolution",
+        "Cultural destruction of Lahaina (National Historic Landmark) elevated damages"
+      ],
+      strategiesFailed: [
+        "Hawaiian Electric contested causation — other ignition sources (non-utility) alleged",
+        "Utility's financial solvency concerns required Hawaii PUC rate increase approval"
+      ],
+      demographics: "~12,000 Lahaina residents and business owners. Predominantly Native Hawaiian, Pacific Islander, and working-class community (Lahaina was a working-class residential and tourist area). Multi-generational families who lost ancestral homes and cultural sites. Small business owners. Tourists and visitors caught in fire. Families of 100+ deceased.",
+      injuryTypes: ["Wrongful death (100+)", "Severe burn injury", "Property total loss", "Cultural property and heritage site destruction", "Business loss", "Psychological trauma from community destruction"],
+      keyEvidence: "Hawaiian Electric operational records for August 8, 2023; weather service wind advisories (showing utility had notice); power line inspection records; fire origin and cause investigation; real property assessments; cultural heritage valuation",
+      corporateMisconduct: "Hawaiian Electric received wind advisories warning of extreme fire weather conditions but did not de-energize transmission lines — a practice known as 'public safety power shutoffs' (PSPS) that PG&E implemented after its catastrophic fires. The utility's risk management failed to implement available safety protocols despite foreseeable wildfire risk.",
+      regulatoryActions: "Hawaii PUC investigation of Hawaiian Electric; State of Hawaii investigation; federal ATFE investigation on fire origin; Congressional hearing; Hawaiian Electric rate case for settlement funding approval.",
+      settlementStructure: "$4.037B (2024): Hawaiian Electric Industries contributed ~$2B; Maui County contributed ~$1B; State of Hawaii contributed ~$700M; Kamehameha Schools and other private landowners contributed balance. Hawaii PUC approved rate increases to fund HEI contribution over time.",
+      bellwetherOutcome: "Settled without trial approximately 12 months after fire — extremely rapid resolution for $4B+ case, reflecting PG&E precedent clarity on utility wildfire liability.",
+      attorneyFees: "~$1B (approximately 25% of $4.037B) — reduced from standard given litigation efficiency",
+      replicationModel: "A+ — Utility wildfire liability is the fastest-growing environmental litigation area. PG&E → Maui establishes the template: utility equipment ignites fire in extreme weather conditions → failure to implement PSPS (public safety power shutoff) → inverse condemnation or negligence → massive settlement. Every utility in wildfire-prone states (CA, OR, WA, CO, TX, AZ, HI) faces this exposure.",
+      clientAcquisitionStrategy: "Wildfire victim outreach within days of major fires. Coordinate with fire origin investigators early. Property loss documentation (satellite imagery, county assessor records). Cultural heritage claims require specialized valuation experts for Native Hawaiian cases.",
+      watchOut: "Maui County and State of Hawaii sovereign immunity required legislative authorization to sue — verify state waiver of immunity before filing against government co-defendants. Cultural property valuation for Native Hawaiian ancestral sites requires specialized expertise. PUC rate increase approval for utility settlement funding can create delays."
+    }
+  },
+
+  {
+    id: 80, title: "W.R. Grace Libby Montana Asbestos", company: "W.R. Grace",
+    type: "Environmental/Toxic Tort", industry: "Mining/Chemical", outcome: "settled", year: 2001,
+    affectedPop: "~2,000+ Libby residents", jurisdiction: "D. Montana (Bankruptcy)", mdlNumber: "No MDL",
+    settlementAmount: "$250M+ (bankruptcy trust)", classSize: "~2,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "W.R. Grace vermiculite mine in Libby, MT contaminated entire town with asbestos (tremolite). 400 deaths, 2,000+ sick. EPA designated Superfund. Grace filed Chapter 11. Resolved through asbestos bankruptcy trust.",
+    leadCounsel: "Murphey Law Firm (MT)",
+    keyPrecedent: "Seminal community asbestos exposure case",
+    tags: ["W.R. Grace", "Libby", "Montana", "asbestos", "vermiculite", "EPA", "Superfund", "bankruptcy trust"],
+    notes: "Seminal community asbestos poisoning case. EPA criminal charges. Grace convicted. First federal criminal asbestos prosecution of a company for community (non-worker) exposure. $250M+ trust.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$125K average ($250M / 2,000 residents); severe mesothelioma cases much higher",
+      litigationYears: 20,
+      whyItWorked: "W.R. Grace's vermiculite mine in Libby, Montana contaminated the entire small town with tremolite asbestos — a fibrous mineral more carcinogenic than chrysotile asbestos. Vermiculite was used in home insulation (sold as Zonolite), mine operations, and local activities, creating community-wide exposure unlike typical occupational asbestos cases. The entire town (population ~2,600) was contaminated. EPA designated Libby as a national public health emergency — one of only two such designations in U.S. history. Grace's own documents showed 30+ years of knowledge about asbestos contamination.",
+      challenges: "W.R. Grace filed Chapter 11 bankruptcy (2001), limiting recovery to bankruptcy trust structure. Government's criminal prosecution under CERCLA (environmental law) was unprecedented. EPA spent over $500M on Libby cleanup. Individual medical claims required proving Grace's specific asbestos exposure versus other exposures.",
+      strategiesWon: [
+        "EPA criminal prosecution under CERCLA — first ever environmental crime prosecution for community exposure",
+        "Grace's own internal documents proved 30+ years of knowledge and concealment",
+        "W.R. Grace pled guilty to federal environmental crimes",
+        "Libby national public health emergency designation focused national attention",
+        "EPA Superfund cleanup validation: contamination was undeniable and documentable",
+        "Tremolite asbestos is more carcinogenic than chrysotile — strong causation evidence"
+      ],
+      strategiesFailed: [
+        "Bankruptcy limited civil recovery to trust amounts",
+        "Criminal prosecution acquittals for executives (jury verdict) reduced some liability",
+        "Multi-decade latency of mesothelioma means many victims haven't yet developed disease"
+      ],
+      demographics: "Residents and former residents of Libby, Montana, including mine workers, their families, and community members with no direct mine contact who were exposed through contaminated mine tailings used in ball fields, roads, and as garden mulch. Former Libby residents who moved away before diagnosis. Many elderly and lower-income community members.",
+      injuryTypes: ["Mesothelioma (pleural, peritoneal)", "Asbestosis", "Pleural plaques", "Lung cancer (asbestos-related)", "Libby Amphibole Asbestosis (unique to this community)"],
+      keyEvidence: "W.R. Grace internal safety studies (1960s-1990s); EPA site investigation reports; ATSDR public health assessments; medical records documenting asbestosis/mesothelioma in community; Grace criminal plea documents; mine operational records showing tremolite amphibole content",
+      corporateMisconduct: "W.R. Grace knew about tremolite asbestos contamination in its Libby vermiculite from the 1960s and concealed the information from workers, residents, EPA, and the public for over 30 years. The company continued operations and sold vermiculite insulation (Zonolite) nationwide without adequate warnings. Grace internal documents showed deliberate suppression of medical surveillance data.",
+      regulatoryActions: "EPA national public health emergency declaration (2009 — one of only two in U.S. history); EPA Superfund site designation; DOJ criminal prosecution (W.R. Grace convicted); OSHA emergency temporary standard for Libby; $500M+ EPA cleanup costs; Libby Amphibole Asbestos identified as unique carcinogen.",
+      settlementStructure: "W.R. Grace Chapter 11 bankruptcy plan (2014): $4B+ asbestos settlement trust (Zonolite Attic Insulation class + Libby residents + occupational exposure). Montana resident claims paid from trust. Nationwide Zonolite insulation claims also included.",
+      bellwetherOutcome: "Criminal trial resulted in acquittal for executives (2009) but Grace corporate conviction on environmental charges. Civil trust provides ongoing compensation for new mesothelioma diagnoses.",
+      attorneyFees: "~$75M estimated (30% of $250M Libby-specific component)",
+      replicationModel: "A+ — Community asbestos contamination from industrial operations is the most severe and legally clear toxic tort structure. The Libby model (community-wide exposure + criminal prosecution + bankruptcy trust) has been applied to asbestos-contaminated schools and residential areas. PFAS contamination in industrial communities uses the same framework.",
+      clientAcquisitionStrategy: "Libby, Montana former residents — ongoing claims for mesothelioma with long latency. Other communities with Zonolite attic insulation (nationwide) — those homes have tremolite contamination. Mesothelioma is the primary injury — partner with thoracic oncology programs. Long latency (20-50 years) means new cases appearing decades after exposure.",
+      watchOut: "Grace bankruptcy trust claims have specific filing requirements and valuation grids. Zonolite insulation claims (nationwide) require proving home has actual W.R. Grace Libby vermiculite. Trust values are set — expect lower recovery than commercial defendant settlement. Mesothelioma is nearly always fatal and has a very short survival window — rapid intake and filing critical."
+    }
+  },
+
+  // ─── BATCH 4: CONSUMER PROTECTION / FALSE ADVERTISING (IDs 81–90) ────────
+
+  {
+    id: 81, title: "Volkswagen 'Dieselgate' Emissions Fraud", company: "Volkswagen AG",
+    type: "Consumer Protection", industry: "Automotive", outcome: "settled", year: 2015,
+    affectedPop: "~600,000 U.S. vehicle owners", jurisdiction: "N.D. California", mdlNumber: "MDL 2672",
+    settlementAmount: "$14.7B (U.S. consumer + env.)", classSize: "~600,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "VW installed defeat device software to cheat EPA emissions tests. Real-world NOx emissions 40x legal limit. Uniform deception across all Class TDI vehicles. DOJ criminal plea + consumer buyback + environmental remediation.",
+    leadCounsel: "Lieff Cabraser, Kessler Topaz",
+    keyPrecedent: "Amchem Products v. Windsor",
+    tags: ["VW", "Volkswagen", "emissions", "defeat device", "diesel", "consumer fraud", "MDL", "Dieselgate"],
+    notes: "$14.7B largest auto consumer class settlement ever at time. Included full buyback option for owners. Criminal plea by VW. Companion FCA (Fiat Chrysler) emissions MDL followed. Benchmark for uniform software fraud.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "~$24,500 average ($14.7B / 600K vehicles); individual buybacks ranged $12K-$44K depending on model/year",
+      litigationYears: 3,
+      whyItWorked: "VW's defeat device was a uniform software code installed in all 2.0L and 3.0L TDI diesel vehicles sold in the U.S. The software detected EPA emissions test conditions (steering wheel stationary, specific speed cycle) and activated full emissions controls; during normal driving, emissions controls were reduced, producing real-world NOx 15-40x the legal limit. Every affected vehicle had the identical defeat device. There was no causation dispute, no individual inquiry needed — perfect Rule 23 commonality. VW's criminal plea eliminated any scienter defense. Full buyback option created clear economic damages.",
+      challenges: "3.0L engine cases (Audi, Porsche) were slightly more complex because VW contested the extent of the 3.0L defeat device. Some class members preferred remediation (fix) over buyback. International coordination with EU regulators was complex (EU received far worse settlements than U.S.). VW challenged some state law claims as preempted.",
+      strategiesWon: [
+        "Identical defeat device software in all affected vehicles — zero individual inquiry for liability",
+        "DOJ criminal plea ($4.3B) eliminated any good-faith defense",
+        "EPA and CARB emissions test results provided government-validated evidence",
+        "Full buyback option ($12K-$44K) gave consumers clear, immediate benefit",
+        "N.D. California MDL 2672 with Judge Charles Breyer — efficient MDL management",
+        "FTC advertising claims added parallel deceptive marketing theory",
+        "Institutional PSLRA-style plaintiffs (states, municipalities) joined class"
+      ],
+      strategiesFailed: [
+        "EU settlement was far lower than U.S. — U.S. class action system generated dramatically better outcome",
+        "Some 3.0L owners contested whether their specific vehicle had defeat device"
+      ],
+      demographics: "~600,000 U.S. owners of 2009-2015 Volkswagen, Audi, Porsche, and Seat TDI diesel vehicles (2.0L and 3.0L engines). Primarily upper-middle-class buyers attracted by diesel efficiency and VW/Audi's brand positioning as environmentally responsible. Both male and female, ages 30-60. Geographic concentration in California (CARB enforcement) and coastal markets.",
+      injuryTypes: ["Economic loss: paid premium for 'clean diesel' vehicle that was fraudulent", "Diminution in value", "Environmental harm (excess NOx in communities where vehicles were operated)"],
+      keyEvidence: "ICCT (International Council on Clean Transportation) independent testing that discovered discrepancy; EPA/CARB Notice of Violation; VW's own defeat device source code; DOJ criminal information; VW engineer guilty pleas; emissions testing data",
+      corporateMisconduct: "VW's engineering team deliberately designed the defeat device software to recognize EPA test cycles and activate full emissions controls only during testing. Multiple levels of management were aware. The company maintained the fraud for years while marketing vehicles as 'clean diesel' and lobbying EPA against stricter emissions standards.",
+      regulatoryActions: "EPA Notice of Violation (September 2015); CARB investigation; DOJ criminal plea ($4.3B total penalties); CEO resignation; multiple executive arrests/extraditions; EU fines; multiple country enforcement actions; FTC enforcement action for false advertising.",
+      settlementStructure: "MDL 2672 (N.D. California): $10.033B for 2.0L owners (buyback or fix + compensation); $1.21B for 3.0L Porsche/Audi owners; $2.7B environmental remediation fund; $2B Zero Emissions Vehicle investment commitment; DOJ criminal penalties $4.3B. Total U.S.: $14.7B+.",
+      bellwetherOutcome: "Settled before any trial. VW negotiated with DOJ simultaneously. Criminal plea made civil settlement imperative and swift.",
+      attorneyFees: "~$175M (approximately 1.7% of $10.033B — heavily discounted for scale and straightforward litigation)",
+      replicationModel: "A+ — VW established the template for uniform software fraud class actions. Any uniform digital/software manipulation affecting all product purchasers identically follows this structure. Applied to: FCA (Fiat Chrysler) diesel defeat device MDL, Duramax diesel MDL, gaming companies with loot box manipulation, fintech algorithm manipulation cases.",
+      clientAcquisitionStrategy: "Vehicle registration records provide direct class member identification. DOJ and EPA maintain database of affected VINs. VW diesel consumer groups online. For future software fraud cases: product VINs or unique identifiers allow direct notification.",
+      watchOut: "VW case is fully resolved. Template lesson: uniform software manipulation = strongest possible class action. Any future automotive defeat device case (EV battery misrepresentation, fuel economy fraud, ADAS misrepresentation) uses this framework. First-mover filing advantage matters — file immediately on news of DOJ/EPA investigation."
+    }
+  },
+
+  {
+    id: 82, title: "Lumber Liquidators Formaldehyde Flooring", company: "Lumber Liquidators",
+    type: "Consumer Protection", industry: "Consumer Products", outcome: "settled", year: 2015,
+    affectedPop: "~1.3M U.S. buyers", jurisdiction: "E.D. Virginia", mdlNumber: "MDL 2627",
+    settlementAmount: "$36M + product replacement", classSize: "~1.3M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Lumber Liquidators Chinese laminate flooring emitted formaldehyde levels exceeding CARB and OSHA standards. 60 Minutes investigation. Same product purchased under same false representations = clean common issue.",
+    leadCounsel: "Milberg, Lieff Cabraser",
+    keyPrecedent: "Halliburton Co. v. Erica P. John Fund",
+    tags: ["Lumber Liquidators", "formaldehyde", "flooring", "laminate", "CARB", "consumer fraud", "MDL"],
+    notes: "Media-driven case (60 Minutes). Uniform false representation theory. $36M settlement + product testing/replacement. Illustrates how media exposure accelerates class action filing.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$28 average ($36M / 1.3M buyers) — very low per-member; product replacement/testing added value",
+      litigationYears: 4,
+      whyItWorked: "Lumber Liquidators' Chinese laminate flooring consistently exceeded California Air Resources Board (CARB) and OSHA standards for formaldehyde emissions by 6-7x. A March 2015 CBS 60 Minutes investigation triggered mass plaintiff filing within days. The theory was clean: all class members purchased the same Chinese-manufactured flooring under the same false representation that it met safety standards. Uniform product + uniform misrepresentation = textbook consumer fraud class. Media-driven filings are increasingly common in consumer product cases.",
+      challenges: "Economic damages per class member were small (average $28 cash + product remediation). Actual health risk was contested — most customers were not ill. Lumber Liquidators' financial position limited total recovery. Product testing (whether individual class member's flooring was defective) required individual inspection.",
+      strategiesWon: [
+        "60 Minutes investigation provided independent validation and mass plaintiff influx",
+        "CARB testing provided government-standard evidence of regulatory violation",
+        "Uniform product (Chinese laminate) across all class members",
+        "E.D. Virginia MDL 2627 with experienced consumer fraud management",
+        "Companion securities fraud case created additional settlement pressure"
+      ],
+      strategiesFailed: [
+        "Small per-member economic damages limited total settlement",
+        "Health risk to individuals was contested — no confirmed disease cases",
+        "Product remediation/testing required individual home inspection — individualized component"
+      ],
+      demographics: "~1.3 million U.S. purchasers of Lumber Liquidators Chinese laminate flooring (2011-2015). Primarily homeowners renovating on a budget (Lumber Liquidators' price point). All demographics. Geographic concentration in areas where LL had stores (Eastern U.S., Mid-Atlantic, Southeast).",
+      injuryTypes: ["Economic loss (paid for flooring that didn't meet safety standards)", "Formaldehyde exposure health risk (contested)", "Diminution in home value (contested)"],
+      keyEvidence: "CARB testing results showing formaldehyde 6-7x CARB limit; 60 Minutes independent lab testing; EPA investigation; Lumber Liquidators sourcing records; retail sales records",
+      corporateMisconduct: "Lumber Liquidators sourced Chinese laminate from manufacturers that used excessive formaldehyde in the glue binder despite knowing CARB required Phase 2 compliance. The company misrepresented the flooring as meeting CARB standards on product packaging and marketing.",
+      regulatoryActions: "CARB investigation and enforcement; EPA enforcement action; DOJ criminal investigation (Lumber Liquidators pled guilty 2015, paid $13.2M); CPSC investigation.",
+      settlementStructure: "$36M consumer class settlement (product replacement for non-CARB flooring, cash for already-replaced flooring). Companion securities class settled $26M. Lumber Liquidators' criminal plea added $13.2M DOJ penalty.",
+      bellwetherOutcome: "Settled before trial. DOJ criminal plea facilitated swift settlement.",
+      attorneyFees: "~$12M (33% of $36M)",
+      replicationModel: "B+ — Media-driven consumer product fraud class action template: media exposure → mass filing within 72 hours → regulatory validation → settlement. Building product formaldehyde/VOC cases, furniture misrepresentation cases, and food labeling fraud cases use this structure. Monitor CARB, EPA, and CPSC enforcement actions as litigation triggers.",
+      clientAcquisitionStrategy: "Retail purchase records, credit card statements, home improvement contractor invoices. Product packaging still in possession serves as proof of purchase. Target homeowners who renovated between 2011-2015 with LL flooring. Lumber Liquidators store purchase databases.",
+      watchOut: "Case fully resolved. Low per-member payout is characteristic of consumer product fraud cases with large class sizes. Build-in expectation management for clients: consumer product fraud settlements typically yield $25-100 per claimant, not thousands. Health risk claims require actual documented health effects to generate higher individual values."
+    }
+  },
+
+  {
+    id: 83, title: "Equifax Data Breach Consumer Settlement", company: "Equifax",
+    type: "Data Breach/Privacy", industry: "Financial Services", outcome: "settled", year: 2017,
+    affectedPop: "~147M Americans", jurisdiction: "N.D. Georgia", mdlNumber: "MDL 2800",
+    settlementAmount: "$700M (FTC + consumer)", classSize: "~147M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Equifax failed to patch Apache Struts vulnerability (CVE-2017-5638), exposing SSNs, DOBs, and addresses of 147M Americans. Uniform security failure = common liability. FTC-coordinated settlement.",
+    leadCounsel: "Hausfeld, Lieff Cabraser",
+    keyPrecedent: "In re Target Corp. Customer Data Security Breach Litig.",
+    tags: ["Equifax", "data breach", "credit bureau", "SSN", "identity theft", "privacy", "MDL", "FTC"],
+    notes: "$700M total settlement ($425M consumer fund + $175M states + $100M CFPB). Free credit monitoring + cash option. Benchmark for credit bureau data breach litigation.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$125 if consumer claimed; ~$2.90 default for those who didn't request cash (FTC allocated $425M consumer fund)",
+      litigationYears: 2,
+      whyItWorked: "Equifax failed to patch a known Apache Struts vulnerability (publicly announced months before breach) that exposed Social Security numbers, birthdates, and addresses of 147 million Americans — two-thirds of all U.S. adults with credit files. The breach was entirely preventable. Equifax's security failures were multiple and systemic. As a credit reporting agency, Equifax is a financial institution holding the most sensitive financial data possible. The $700M settlement combined FTC enforcement ($175M states, $100M CFPB/OCC) with $425M consumer restitution fund.",
+      challenges: "Actual realized harm was difficult to quantify — most class members had no documented identity theft yet. Article III standing was a persistent defense (exposure of data without proven misuse). Per-member payout was low ($125 if claimed; $2.90 if not claimed). Credit monitoring offered as part of settlement was criticized as inadequate given Equifax's own security failures.",
+      strategiesWon: [
+        "Equifax's own post-breach audit showed 100+ security failures",
+        "Government coordination: FTC, CFPB, 50 state AGs created unified settlement pressure",
+        "Most sensitive data category possible (SSN + DOB + address) elevated per-person damages theory",
+        "Congressional testimony by Equifax CEO created extraordinary political pressure",
+        "Equifax's own delay in disclosing breach (6 weeks) added bad faith element",
+        "N.D. Georgia MDL 2800 — efficient management"
+      ],
+      strategiesFailed: [
+        "Per-member payout extremely low ($125/$2.90) — overwhelming majority of claims",
+        "Credit monitoring remedy criticized as inadequate given defendant is a credit bureau",
+        "Actual identity theft causation required individual showing for higher-tier claims"
+      ],
+      demographics: "~147 million Americans with Equifax credit files — essentially all U.S. adults with credit history. All demographics, incomes, and ages. Disproportionate impact on individuals with more complex financial histories (more Equifax data = more exposure).",
+      injuryTypes: ["Social Security Number exposure", "Identity theft risk", "Credit fraud risk", "Time spent on breach response (credit monitoring, fraud alerts)", "Documented identity theft losses (higher-tier claims)"],
+      keyEvidence: "Equifax's own security audit revealing 100+ failures; Apache Struts CVE-2017-5638 patch history (Equifax had 10 weeks' notice and failed to patch); CERT warning logs; breach investigation by Mandiant; congressional testimony; state AG enforcement findings",
+      corporateMisconduct: "Equifax had been warned about the Apache Struts vulnerability 2 months before the breach. The company's security team failed to apply the patch. Equifax's internal systems had unencrypted sensitive data, inadequate network segmentation, and outdated encryption. CEO Richard Smith resigned. Three executives sold stock before the breach was publicly disclosed (SEC investigated for insider trading).",
+      regulatoryActions: "FTC settlement ($575M, largest FTC data security settlement ever); CFPB $100M fine; OCC bank regulator penalties; 50 state AG settlement $175M; SEC investigation of executives; CISA critical infrastructure warnings; UK ICO £500,000 fine.",
+      settlementStructure: "$700M total: $425M consumer restitution fund (credit monitoring, cash, identity restoration services), $175M to states, $100M CFPB/OCC penalty. Consumer fund: up to $125 cash or free credit monitoring (10 years) for eligible claimants. Higher tier for documented identity theft losses.",
+      bellwetherOutcome: "No bellwether trials — FTC consent decree + settlement negotiated simultaneously. Government enforcement action drove swift resolution.",
+      attorneyFees: "~$77M (approximately 18% — reduced for government-driven settlement)",
+      replicationModel: "A — Credit bureau/financial data breach template. Pattern: large-scale data breach of sensitive financial/identity data → FTC enforcement trigger → coordinated multistate AG action → consumer class → global settlement. Capital One ($190M), T-Mobile ($350M), and Change Healthcare follow this framework.",
+      clientAcquisitionStrategy: "Equifax settlement fully processed. For future breach cases: breached company's own notification letters identify class members. Credit monitoring and CFPB complaint databases provide early signals. Class members can be identified through SEC/FTC enforcement notifications and self-identification.",
+      watchOut: "Equifax settlement had massive overclaiming problem — FTC initially limited cash payments when claims exceeded fund. Future data breach settlements need clear fund allocation mechanisms. Article III standing requires actual harm or substantial risk of harm — mere data exposure is insufficient in many circuits (post-Spokeo/Transunion). Target states with statutory damages (Illinois BIPA, NY SHIELD Act) for better per-member recovery."
+    }
+  },
+
+  {
+    id: 84, title: "Facebook / Cambridge Analytica Privacy MDL", company: "Meta Platforms",
+    type: "Data Breach/Privacy", industry: "Technology", outcome: "settled", year: 2018,
+    affectedPop: "~87M users", jurisdiction: "N.D. California", mdlNumber: "MDL 2843",
+    settlementAmount: "$725M (2022)", classSize: "~87M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Facebook allowed Cambridge Analytica to harvest data of 87M users without consent via personality quiz app. Uniform policy failure to enforce developer data policies = common liability. Largest social media privacy settlement.",
+    leadCounsel: "Keller Rohrback, Bleichmar Fonti & Auld",
+    keyPrecedent: "In re Google+ Profile Litig.",
+    tags: ["Facebook", "Cambridge Analytica", "privacy", "data harvesting", "social media", "MDL"],
+    notes: "$725M largest privacy class settlement ever at time of payment. Per-class-member payout ~$2-5 on average. Illustrates challenge of damages in privacy cases (large class, small per-member harm).",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$8-15 average ($725M / 87M users) — but some high claimers received $100+",
+      litigationYears: 4,
+      whyItWorked: "Cambridge Analytica harvested data from 87 million Facebook users via a personality quiz app without meaningful consent. Facebook's developer platform allowed third-party apps to access not just quiz-takers' data, but also their Facebook friends' data. This created an unprecedented scale of unauthorized data collection used for political targeting during the 2016 election. Facebook's own statements about data protection were demonstrably false. The $725M settlement became the largest privacy class action settlement in history at the time. The political sensitivity elevated pressure dramatically.",
+      challenges: "Facebook's stored value of data to users is zero — users don't pay for Facebook. Economic damages are conceptual rather than actual. Very large class (87M) with small per-member harm. Standing was challenged (data exposure without concrete harm). Facebook argued data was collected by Cambridge Analytica, not Facebook directly.",
+      strategiesWon: [
+        "Political scandal context: 2016 election interference narrative created extraordinary pressure",
+        "Facebook's own CEO testimony before Congress admitted policy failures",
+        "Novel legal theory: users' data has inherent value, unauthorized sharing = unjust enrichment",
+        "N.D. California MDL 2843 — familiar privacy litigation venue with plaintiff-friendly disposition",
+        "FTC coordinated investigation added $5B penalty on Facebook separately",
+        "GDPR enforcement in EU (€1.2B DPC fine on Meta) added parallel pressure"
+      ],
+      strategiesFailed: [
+        "Per-member payout was very low ($8-15) relative to settlement size",
+        "Actual economic damages to individual users were near-impossible to quantify",
+        "Cambridge Analytica bankruptcy made them judgment-proof — couldn't sue the primary actor",
+        "Facebook's platform terms required careful interpretation"
+      ],
+      demographics: "~87 million Facebook users whose data was harvested by Cambridge Analytica, primarily in the U.S. but globally significant. Primarily adults 25-60 (Facebook's core demographic in 2016). Included Trump campaign targeted voters in swing states. No specific income/race demographic — Facebook's broad user base.",
+      injuryTypes: ["Unauthorized data disclosure", "Political targeting without consent", "Loss of data privacy autonomy", "Potential manipulation of political views"],
+      keyEvidence: "Cambridge Analytica whistleblower Christopher Wylie's revelations; Facebook platform terms and developer policy documents; Cambridge Analytica internal documents obtained by UK Parliament; Facebook's own investigation findings confirming 87M impacted users; congressional testimony by Zuckerberg",
+      corporateMisconduct: "Facebook allowed third-party apps to harvest friends' data beyond what users consented to. Despite receiving reports of data misuse, Facebook failed to audit Cambridge Analytica's data deletion claims. Facebook's privacy policies contained misrepresentations about data sharing controls.",
+      regulatoryActions: "FTC $5B consent decree (largest ever FTC privacy penalty); EU GDPR investigations across multiple countries; UK ICO £500,000 fine; Australia and Canada investigations; Irish DPC investigation; U.S. Congress hearings; DOJ investigation.",
+      settlementStructure: "$725M class settlement (2022): N.D. California MDL 2843. Distribution to class members who filed claims. No admissions of liability. Facebook agreed to enhanced privacy controls.",
+      bellwetherOutcome: "Settled without trial. FTC's $5B penalty was the key litigation driver.",
+      attorneyFees: "~$181M (25% of $725M)",
+      replicationModel: "A — Social media privacy class action template: unauthorized data harvesting + FTC enforcement trigger + political sensitivity + large class. Meta's Instagram teen addiction MDL, TikTok data collection cases, and social media algorithm manipulation cases use this framework. Privacy cases with government enforcement parallel track generate much better settlements.",
+      clientAcquisitionStrategy: "Self-identified Facebook users who received breach notification. Social media user privacy advocacy groups. Tech-savvy users who monitor privacy developments. Direct Facebook advertising (ironic but effective) for class member identification.",
+      watchOut: "Privacy case damages theory is conceptually weak without statutory damages. States with BIPA (Illinois), VCDPA (Virginia), CPA (Colorado) privacy laws have better per-member damages. FTC enforcement is the primary leverage mechanism — monitor FTC investigations for class action filing triggers. Class members are difficult to identify without defendant's own records."
+    }
+  },
+
+  {
+    id: 85, title: "T-Mobile Data Breach Class Action", company: "T-Mobile USA",
+    type: "Data Breach/Privacy", industry: "Telecom", outcome: "settled", year: 2021,
+    affectedPop: "~76M customers", jurisdiction: "W.D. Missouri", mdlNumber: "No MDL",
+    settlementAmount: "$350M", classSize: "~76M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "T-Mobile 2021 breach exposed SSNs, DOBs, driver's licenses of 76M current/former customers. CPNI (customer proprietary network information) violations. $350M consumer settlement + $150M security improvements.",
+    leadCounsel: "Keller Rohrback, Girard Sharp",
+    keyPrecedent: "In re Equifax Inc. Customer Data Security Breach Litig.",
+    tags: ["T-Mobile", "data breach", "telecom", "SSN", "CPNI", "privacy", "identity theft"],
+    notes: "$350M settlement + $150M in mandatory security improvements. Growing trend: class settlements requiring cybersecurity remediation as part of settlement terms.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$4.60 average ($350M / 76M customers)",
+      litigationYears: 3,
+      whyItWorked: "T-Mobile's August 2021 breach exposed Social Security numbers, driver's license numbers, dates of birth, and phone numbers of 76 million customers (including 7.8 million current postpaid customers). T-Mobile had experienced multiple prior breaches (2018, 2019, 2020, 2021). The pattern of repeated security failures supported an ongoing negligence theory. The W.D. Missouri settlement of $350M + $150M mandatory security investment became the largest telecom data breach settlement.",
+      challenges: "Article III standing remains the threshold issue — exposure of SSN without documented identity theft may not suffice in all circuits. Per-member payout of ~$4.60 is low. T-Mobile had multiple prior breaches, which supported the negligence theory but also meant class members might have had prior breaches too.",
+      strategiesWon: [
+        "Pattern of repeated breaches (5th major breach in 3 years) proved systemic negligence",
+        "SSN + driver's license = maximally sensitive data tier",
+        "CPNI (customer proprietary network information) violations added telecom-specific theory",
+        "W.D. Missouri with experienced privacy litigation management",
+        "Mandatory $150M security investment requirement added non-monetary class benefit",
+        "State AG investigations added pressure"
+      ],
+      strategiesFailed: [
+        "Per-member payout very low ($4.60) relative to sensitivity of data",
+        "Repeating breach pattern complicated T-Mobile's defense but also showed class members at higher historical risk — partially offsetting standing"
+      ],
+      demographics: "~76 million T-Mobile current and former customers, including 7.8M current postpaid subscribers. All demographics — T-Mobile is a major carrier across all income levels. Both current customers and former customers (going back years) affected.",
+      injuryTypes: ["SSN exposure", "Driver's license exposure", "Identity theft risk", "SIM-swap fraud risk (elevated from phone number exposure)", "Time spent on remediation"],
+      keyEvidence: "T-Mobile's security audit logs; breach notification records; CPNI violation documentation; prior breach patterns; forensic investigation report; FCC investigation materials",
+      corporateMisconduct: "T-Mobile's repeated data breaches (2018, 2019, 2020, 2021, 2023+) showed persistent failure to implement basic cybersecurity controls despite being a major carrier with obligations to protect CPNI. After each breach, T-Mobile made public commitments to improve security that were not honored.",
+      regulatoryActions: "FCC investigation; FTC investigation; state AG investigations; CPNI enforcement proceedings; mandatory FCC cybersecurity reporting requirements.",
+      settlementStructure: "$350M consumer fund + $150M mandatory cybersecurity investment. W.D. Missouri settlement. Class members received cash or credit monitoring services.",
+      bellwetherOutcome: "Settled without trial.",
+      attorneyFees: "~$105M (30% of $350M)",
+      replicationModel: "B+ — Telecom data breach template. Any major carrier with CPNI data breach uses this framework. Pattern: repeated breach + CPNI violations + SSN exposure + FCC enforcement = settlement leverage. FCC enforcement for CPNI violations parallels FTC enforcement for other sectors.",
+      clientAcquisitionStrategy: "T-Mobile breach notification recipients. Telecom consumer advocacy groups. Prior T-Mobile breach class members (2018-2021) — multiple overlapping breaches create stacked claims in some cases.",
+      watchOut: "Per-member payout extremely low in large telecom breach cases — manage expectations. Article III standing requires documented harm (ID theft) or significant risk — mere exposure insufficient post-TransUnion v. Ramirez. Focus on class members with documented identity theft or SIM-swap fraud incidents for higher-tier claims."
+    }
+  },
+
+  {
+    id: 86, title: "Google Location Data Privacy Settlement", company: "Google / Alphabet",
+    type: "Data Breach/Privacy", industry: "Technology", outcome: "settled", year: 2022,
+    affectedPop: "~Hundreds of millions", jurisdiction: "N.D. California + state AGs", mdlNumber: "No MDL",
+    settlementAmount: "$391.5M (state AG) + $5B (Incognito)",
+    classSize: "Hundreds of millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Google tracked location data even when users turned off Location History. AG settlement for $391.5M (largest privacy multistate AG settlement). Companion $5B Incognito Mode class action (2024 settlement).",
+    leadCounsel: "State AGs (lead: Arizona) + Boies Schiller (Incognito)",
+    keyPrecedent: "In re Facebook Privacy Litig.",
+    tags: ["Google", "location tracking", "privacy", "Incognito", "AG settlement", "technology", "surveillance"],
+    notes: "Two related settlements: $391.5M AG multistate (2022) + $5B Incognito Mode class (2024). Illustrates parallel private class action and state AG enforcement tracks.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "State AG: $391.5M / hundreds of millions of users (cents per user); Incognito: $5B / ~136M users (~$37 avg)",
+      litigationYears: 3,
+      whyItWorked: "Google's location tracking case involved two separate but related privacy violations: (1) Google tracked users' precise location even when users explicitly turned off 'Location History' in settings, and (2) Google's Incognito Mode continued to collect user data that Google explicitly represented was private. Both violated clear consumer expectations and Google's own representations. Arizona AG's investigation documented the deception methodically. 40 state AGs coordinated — creating massive scale. The Incognito Mode class ($5B, 2024) was among the largest consumer class settlements in history.",
+      challenges: "Google's terms of service and privacy policy buried disclosures that location data was collected via other means ('Web & App Activity'). Defense argued adequate disclosure in fine print. Damages for location tracking are difficult to quantify — no direct monetary loss to users. Google Incognito Mode case required proving actual data collection and use despite 'private' representation.",
+      strategiesWon: [
+        "40-state AG coordinated action created settlement pressure impossible to resist",
+        "Incognito Mode class: clear misrepresentation — Google explicitly told users data wasn't collected",
+        "Google's own internal documents showing awareness of the deception (Incognito case)",
+        "N.D. California venue favorable for privacy plaintiff cases",
+        "FTC/DOJ antitrust investigations as parallel pressure",
+        "EU GDPR enforcement (1.49B DPC fine) amplified global regulatory pressure"
+      ],
+      strategiesFailed: [
+        "Damages quantification is weak — users don't pay for Google services",
+        "Fine print defenses in terms of service required careful pleading",
+        "Very low per-member recovery in AG settlement"
+      ],
+      demographics: "Hundreds of millions of Google/Android users and Chrome Incognito users worldwide. All demographics — Google services are used by virtually every internet user. Both Android users (location) and Chrome Incognito users (browsing data).",
+      injuryTypes: ["Location data harvesting without meaningful consent", "Browsing data collection despite 'private' representation", "Intrusion upon seclusion", "Privacy autonomy violation"],
+      keyEvidence: "Google's own product documentation for Incognito Mode ('Your browsing is private'); Google engineers' internal emails about Incognito data collection; location tracking system architecture documents; state AG investigation findings; academic research on location data persistence",
+      corporateMisconduct: "Google deliberately designed Incognito Mode to appear private while continuing to collect data through parallel systems. Internal documents showed Google engineers knew Incognito data was collected and discussed the PR risks. Location History toggle was designed to give a false sense of privacy while continuing location collection through 'Web & App Activity.'",
+      regulatoryActions: "$391.5M multistate AG settlement (2022, 40 states); Arizona AG lead investigator; EU GDPR: €1.49B DPC fine for Google advertising (2023); Irish DPC investigations; FTC investigations; DOJ antitrust action (separate but related).",
+      settlementStructure: "Two settlements: (1) State AG $391.5M (2022) — requires Google to provide more transparency about location data; (2) Google Incognito $5B class settlement (2024) — Sege v. Google — requires Google to delete data collected in Incognito since 2016 and more clearly disclose Incognito limitations.",
+      bellwetherOutcome: "Settled without trial. AG coordination was the key leverage mechanism.",
+      attorneyFees: "~$1.5B (30% of $5B Incognito settlement); AG attorneys were government counsel",
+      replicationModel: "A+ — Multi-state AG privacy enforcement + companion private class is the most powerful consumer privacy litigation structure. The model: identify systematic privacy misrepresentation → lead state AG investigation → coordinate multistate action → companion private class → simultaneous settlement. Apple, Amazon, Meta, TikTok are all targets of this same framework.",
+      clientAcquisitionStrategy: "Privacy class member identification through self-identification in class notice, Chrome download statistics, and Android device registration data. Privacy advocacy group partnerships (EFF, ACLU). Tech journalist coverage of privacy class actions.",
+      watchOut: "Incognito settlement requires Google to delete historic data — enforcement of behavioral injunction over time is challenging. Terms of service fine print defenses require careful pleading. Focus on states with explicit statutory privacy protections (California CCPA/CPRA, Illinois BIPA, Colorado CPA) for better per-member recovery."
+    }
+  },
+
+  {
+    id: 87, title: "NCAA Student-Athlete Antitrust / NIL", company: "NCAA",
+    type: "Consumer Protection", industry: "Education/Sports", outcome: "settled", year: 2021,
+    affectedPop: "~100,000+ student-athletes", jurisdiction: "N.D. California", mdlNumber: "MDL 4090",
+    settlementAmount: "$2.78B (House v. NCAA 2024)", classSize: "~100,000+",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "NCAA rules prohibiting student-athlete compensation for name, image, likeness (NIL) constitute unlawful restraint of trade. Alston v. NCAA (2021 SCOTUS unanimous) found NCAA violated Sherman Act. $2.78B settlement (House) for retroactive damages.",
+    leadCounsel: "Hagens Berman, Winston & Strawn",
+    keyPrecedent: "NCAA v. Alston (2021 SCOTUS)",
+    tags: ["NCAA", "NIL", "student-athlete", "antitrust", "Sherman Act", "college sports", "House"],
+    notes: "$2.78B settlement (House v. NCAA 2024) is landmark. Fundamentally restructures college sports economics. Revenue sharing begins 2025. SCOTUS Alston decision accelerated litigation.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$28K average ($2.78B / ~100,000+ athletes) retroactive + ongoing revenue sharing $22M/year per school",
+      litigationYears: 5,
+      whyItWorked: "House v. NCAA (companion to Alston) built on the SCOTUS Alston precedent to challenge the NCAA's prohibition on paying athletes for their name, image, and likeness (NIL) and television broadcast revenue. The $2.78B settlement is transformational: it awards retroactive damages to college athletes from 2016-2024 who were denied NIL compensation and creates a revenue-sharing model paying athletes approximately $22M per school annually starting 2025. This fundamentally restructured the economics of college sports.",
+      challenges: "Settlement class included 365,000+ current and former college athletes — massive administration. NIL value calculation (how much was each athlete's NIL worth in their sport and era?) required complex economic modeling. NCAA's legal team challenged antitrust injury causation for individual athletes. Some athletes (current stars) preferred non-settlement to maximize future rights.",
+      strategiesWon: [
+        "Alston SCOTUS (2021) unanimous ruling proved NCAA antitrust vulnerability — eliminated existential defense",
+        "NIL valuation expert testimony established damages model for broadcast and social media value",
+        "Revenue sport (football/basketball) athletes had clear market value damages",
+        "Forward-looking revenue sharing requirement transforms future economics",
+        "N.D. California MDL with experienced antitrust management",
+        "Hagens Berman and Winston & Strawn leadership — leading antitrust firms"
+      ],
+      strategiesFailed: [
+        "Revenue sport bias: damages heavily concentrated in football and men's basketball; women's and non-revenue sports had smaller claims",
+        "Some athlete plaintiffs opposed settlement as insufficiently transformative",
+        "NCAA is still attempting to limit revenue sharing implementation"
+      ],
+      demographics: "NCAA Division I, II, and III college athletes across all sports (2016-2025). Revenue sport athletes (football, men's basketball, women's basketball) have dramatically higher damages claims. Ages 18-26 during class period. Both male and female. Distribution from HBCUs to Power Five schools.",
+      injuryTypes: ["Suppressed NIL compensation", "Suppressed broadcast revenue share", "Economic harm from cartelized labor market"],
+      keyEvidence: "NCAA financial records showing broadcast revenue; media rights contracts; social media influencer valuation studies; endorsement market comparisons; athlete rosters and statistics",
+      corporateMisconduct: "NCAA maintained rules explicitly preventing athletes from receiving compensation for their name, image, or likeness despite generating billions in broadcast revenue. The organization lobbied state legislatures to prevent NIL laws. Internal documents showed awareness of antitrust risk but continued restrictions.",
+      regulatoryActions: "No direct regulatory action — purely private antitrust litigation. Congressional interest in college athlete employment status (ongoing).",
+      settlementStructure: "$2.78B retroactive damages (2016-2024 athletes) + prospective revenue sharing model ($22M/year/school starting 2025). Judge Claudia Wilken approved settlement. Opt-out procedures for current athletes pursuing individual claims.",
+      bellwetherOutcome: "No bellwether trials — SCOTUS Alston ruling served as the definitive liability determination. Settlement negotiated in light of Alston's clear statement of NCAA antitrust violation.",
+      attorneyFees: "~$840M (30% of $2.78B)",
+      replicationModel: "A+ — College athletics antitrust litigation has generated enormous value: O'Bannon ($46M), Alston ($208M), House ($2.78B) — increasing scale as theory matures. The template applies to any labor market where participants are prevented from receiving fair market compensation due to cartel restraints.",
+      clientAcquisitionStrategy: "Current and former Division I-III college athletes from 2016-2024. Revenue sport athletes (football, basketball) have highest claims. Work with college athletic associations, alumni networks, and player advocacy groups. Online self-identification platforms for athlete claim submission.",
+      watchOut: "Revenue sharing implementation is still being contested by NCAA and individual conferences — monitor compliance. Title IX implications: if men's football receives large revenue share, women's sports must receive equitable treatment. Employment status of college athletes (NLRB proceedings ongoing) could further transform the legal landscape."
+    }
+  },
+
+  {
+    id: 88, title: "Wells Fargo Fake Accounts Scandal", company: "Wells Fargo",
+    type: "Consumer Protection", industry: "Financial Services", outcome: "settled", year: 2016,
+    affectedPop: "~3.5M accounts", jurisdiction: "N.D. California", mdlNumber: "MDL 2724",
+    settlementAmount: "$575M (state AGs) + $142M (consumer class)",
+    classSize: "~3.5M accounts",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Wells Fargo employees opened ~3.5M unauthorized accounts using customer information. OCC, CFPB, LA City Attorney fines. Uniform unauthorized account-opening policy = common liability theory.",
+    leadCounsel: "Keller Rohrback, Zwerling Schachter",
+    keyPrecedent: "AT&T Mobility v. Concepcion (arbitration challenge)",
+    tags: ["Wells Fargo", "fake accounts", "unauthorized accounts", "consumer fraud", "CFPB", "bank", "MDL"],
+    notes: "CFPB $185M fine was trigger. Consumer class $142M + AG $575M. Illustrates uniform corporate policy as key to consumer fraud class cert — same policy = same harm = commonality.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$41 average consumer class ($142M / 3.5M accounts); $574M AG = state-level recovery",
+      litigationYears: 4,
+      whyItWorked: "Wells Fargo employees opened ~3.5 million unauthorized checking, savings, and credit card accounts in customers' names to meet aggressive internal sales quotas. The uniform corporate 'cross-sell' quota policy incentivized fraud at scale — the same policy applied to every Wells Fargo branch across the country. CFPB's $185M fine (September 2016) was the trigger event: it was the largest CFPB fine ever at the time and received enormous media attention. CEO John Stumpf's congressional testimony was a public relations disaster that accelerated settlement.",
+      challenges: "Proving individual customers' accounts were actually unauthorized (vs. customers who forgot they opened accounts) required individual analysis. Some customers had minimal economic harm (fees on unauthorized accounts that were quickly closed). Arbitration clauses in Wells Fargo account agreements attempted to block class action.",
+      strategiesWon: [
+        "CFPB $185M fine provided independent validation of uniform unauthorized account scheme",
+        "CEO congressional testimony ('cross-sell' quota scheme admitted publicly) = perfect liability admission",
+        "Same corporate quota policy across all branches = perfect commonality",
+        "N.D. California MDL 2724 with experienced consumer fraud management",
+        "State AG $575M settlement amplified total recovery",
+        "Wells Fargo's subsequent discovery of additional unauthorized accounts (8.1M) expanded class"
+      ],
+      strategiesFailed: [
+        "Arbitration clause battles required overcoming AT&T Mobility v. Concepcion precedent",
+        "Individual damage amounts were small (fees on unauthorized accounts)",
+        "Some customers had difficulty proving specific accounts were opened without authorization"
+      ],
+      demographics: "~3.5 million Wells Fargo consumer banking customers who had unauthorized accounts opened in their names (2011-2016). All demographics — Wells Fargo serves all income levels. Disproportionate impact on lower-income customers who incurred fees on unwanted accounts they couldn't manage.",
+      injuryTypes: ["Unauthorized account opening", "Fees charged on unwanted accounts", "Credit score damage from unauthorized credit card applications", "Privacy violation", "Identity theft risk from unauthorized credit inquiries"],
+      keyEvidence: "CFPB consent order and investigation findings; Wells Fargo internal HR records showing quota pressure; employee whistleblower testimony; CFPB complaint database entries; Wells Fargo's own customer account database",
+      corporateMisconduct: "Wells Fargo's executive management established and enforced aggressive 'cross-sell' quotas requiring branch employees to open 8 accounts per customer. Employees who failed quotas were terminated. Management knew the quotas incentivized unauthorized account opening and ignored internal warnings. CEO Stumpf initially blamed individual low-level employees before the systemic nature was exposed.",
+      regulatoryActions: "CFPB $185M consent order (2016, largest ever at time); OCC $35M fine; LA City Attorney $185M (coordinated with CFPB); additional CFPB $1B fine (2018) for auto and mortgage abuses; Wells Fargo Federal Reserve asset cap (still in place as of 2024); DOJ criminal investigation (no charges against individuals); CEO Stumpf personal $17.5M clawback.",
+      settlementStructure: "Consumer class $142M (MDL 2724) + state AG $575M + OCC penalty $500M + CFPB $1B (2018) = $2.3B+ total government/consumer resolution. Consumer class distribution based on fees paid on unauthorized accounts.",
+      bellwetherOutcome: "Settled before trial. CEO congressional testimony was the key leverage event.",
+      attorneyFees: "~$47M (33% of $142M consumer class)",
+      replicationModel: "A — Uniform corporate quota/policy driving fraud across entire institution is the ideal consumer financial fraud class structure. Template applies to: any bank with uniform unauthorized account practice, insurance upselling fraud (AIG pattern), auto dealer add-on fee schemes. Wells Fargo's subsequent 2018 consent order (mortgage/auto) confirms ongoing institutional misconduct is litigation-worthy.",
+      clientAcquisitionStrategy: "Wells Fargo customers notified through bank's own breach notification program. CFPB complaint database contains Wells Fargo unauthorized account complaints. State AG settlement notice campaigns. Currently: Wells Fargo's ongoing consent orders create continuing litigation opportunities.",
+      watchOut: "Wells Fargo's arbitration clause fought every step of the way — critical to challenge arbitration clause enforceability early in any bank fraud case. Ongoing Wells Fargo consent orders (mortgage, auto lending) create parallel litigation opportunities. Distinguish individual employee misconduct (limited liability) from top-down institutional policy (maximum class liability)."
+    }
+  },
+
+  {
+    id: 89, title: "Juul Labs E-Cigarette Youth Marketing MDL", company: "Juul Labs / Altria",
+    type: "Consumer Protection", industry: "Tobacco/Vaping", outcome: "settled", year: 2019,
+    affectedPop: "Millions of users + school districts", jurisdiction: "N.D. California", mdlNumber: "MDL 2913",
+    settlementAmount: "$1.47B+ (multiple)", classSize: "Millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Juul marketed nicotine pods to youth using social media, fruit flavors, and sleek design. Same deceptive marketing scheme targeted at all youth users. Schools claimed cost of anti-vaping programs. Altria invested $12.8B.",
+    leadCounsel: "Lieff Cabraser, Seeger Weiss",
+    keyPrecedent: "In re Tobacco II Cases",
+    tags: ["Juul", "e-cigarette", "vaping", "youth marketing", "nicotine", "Altria", "MDL", "tobacco"],
+    notes: "$1.47B+ in multiple settlements (school districts, personal injury, consumer). Altria $235M to school districts. Classic deceptive marketing MDL targeting vulnerable population (youth). Mirrors tobacco litigation playbook.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "School districts: ~$127K avg ($255M / 2K districts); individual addiction: $10K-$100K+ ongoing",
+      litigationYears: 5,
+      whyItWorked: "See Case 40 (JUUL Labs Vaping MDL) for comprehensive analysis. This entry covers the same MDL from the consumer/school district perspective. Key points: youth marketing via social media and flavors, nicotine salt addiction formula, school district institutional plaintiff theory, Altria investment and marketing partnership.",
+      challenges: "See Case 40 analysis. EVALI causation, adult smoker plaintiffs, JUUL financial restructuring.",
+      strategiesWon: ["See Case 40 — marketing to minors documentation, institutional school district plaintiff"],
+      strategiesFailed: ["See Case 40 — EVALI causation, adult crossover claims"],
+      demographics: "See Case 40 — primarily youth (13-19), school districts, and parents of addicted teens.",
+      injuryTypes: ["Nicotine addiction (youth)", "Lung injury", "School district remediation costs"],
+      keyEvidence: "See Case 40 — internal JUUL marketing documents, nicotine salt patent, school district health expenditure records",
+      corporateMisconduct: "See Case 40 — deliberate youth marketing and addiction by design.",
+      regulatoryActions: "See Case 40 — FDA denied marketing authorization, 46 state AG settlements, congressional subpoenas.",
+      settlementStructure: "$1.47B+ total: $255M school districts, $235M Altria, $438.5M state AGs, individual personal injury ongoing.",
+      bellwetherOutcome: "Ongoing — individual personal injury bellwether trials pending.",
+      attorneyFees: "See Case 40 — standard 33% on institutional class; contingency on individual cases",
+      replicationModel: "A — See Case 40 for full analysis. Youth addiction marketing is the most powerful consumer protection theory in current mass tort practice.",
+      clientAcquisitionStrategy: "See Case 40 — school districts, oncology/addiction clinics, teen health centers, parental networks.",
+      watchOut: "See Case 40 — JUUL financial restructuring, EVALI causation distinction, adult vs. youth plaintiff screening."
+    }
+  },
+
+  {
+    id: 90, title: "Apple iPhone Throttling / 'Batterygate'", company: "Apple Inc.",
+    type: "Consumer Protection", industry: "Technology", outcome: "settled", year: 2017,
+    affectedPop: "~250M U.S. iPhone users", jurisdiction: "N.D. California", mdlNumber: "MDL 2827",
+    settlementAmount: "$500M", classSize: "~250M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Apple secretly slowed (throttled) older iPhones via software update to manage degraded batteries without disclosing this would reduce performance. Uniform software update = uniform undisclosed harm. $500M settlement (~$25/device).",
+    leadCounsel: "Cotchett Pitre & McCarthy, Girard Sharp",
+    keyPrecedent: "In re Apple Inc. Device Performance Litig.",
+    tags: ["Apple", "iPhone", "throttling", "Batterygate", "performance", "consumer fraud", "technology", "MDL"],
+    notes: "$500M settlement for iPhone 6, 6 Plus, 6s, 6s Plus, 7, 7 Plus, SE owners. ~$25/device payout. Example of software-based consumer fraud that affects uniform class — classic tech consumer MDL.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$25 average ($500M / 20M+ claimants who filed)",
+      litigationYears: 3,
+      whyItWorked: "Apple released iOS updates in 2016-2017 that secretly throttled the performance of older iPhones with degraded batteries, causing users' phones to slow dramatically without explanation. Apple's explanation — that throttling prevented unexpected shutdowns from weak batteries — was technically accurate but Apple didn't disclose it was happening. The uniform software update affected every iPhone 6/6s/7 with degraded battery. Apple's own public statement acknowledging the practice (December 2017) removed any liability defense. N.D. California MDL 2827 with $500M settlement.",
+      challenges: "Per-member damages were small — $25 average. Some users experienced actual shutdowns before throttling, arguably benefiting from the update. Battery replacement was available at $29 (Apple's discounted offer). Defense: Apple was protecting users from worse outcome (unexpected shutdown).",
+      strategiesWon: [
+        "Uniform iOS software update affected all qualifying devices identically",
+        "Apple's own admission (December 2017 statement) proved the concealment",
+        "N.D. California MDL 2827 — efficient tech consumer fraud management",
+        "Same theory as VW defeat device — software manipulation without disclosure",
+        "Large class (250M+ affected iPhones) created enormous settlement pressure",
+        "Apple's market cap ($2T+) supported large nominal settlement"
+      ],
+      strategiesFailed: [
+        "Defense had merit: throttling was to prevent unexpected shutdowns (consumer benefit argument)",
+        "Per-member recovery very low ($25) — barely worth the claim",
+        "Battery replacement cure (Apple offered $29 batteries) partially mitigated damages"
+      ],
+      demographics: "~250 million iPhone 6, 6 Plus, 6s, 6s Plus, 7, 7 Plus, and SE owners in the U.S. (iOS 10.2.1 through iOS 11.2). All demographics — iPhone spans income ranges. Ages 20-60 primarily (iPhone's core demographic).",
+      injuryTypes: ["Performance reduction without disclosure", "Economic loss (paid full price for phone that performed below advertised speed)", "Forced early upgrade (throttled phone seemed slow → user bought new phone)", "Privacy violation (device modification without consent)"],
+      keyEvidence: "Apple's December 2017 statement acknowledging throttling; iOS performance benchmark data showing reduction; Apple patent application on power management; iPhone battery health test results; Apple support documentation",
+      corporateMisconduct: "Apple implemented performance throttling via software update without telling users what was happening or why. The iOS update notes did not disclose the throttling. Apple's customer service denied performance degradation when users called. The practice appeared designed to push users toward new iPhone purchases.",
+      regulatoryActions: "FTC investigation; EU fine (Italy): €10M; France fine: €25M (for planned obsolescence); UK CMA investigation; Korea KFTC investigation; Apple paid $113M to 34 states AG settlement (2021).",
+      settlementStructure: "$500M settlement (MDL 2827, N.D. California, 2020). ~$25 per device for iPhone 6/6 Plus/6s/6s Plus/7/7 Plus/SE. Eligible claim required iOS 10.2.1+ and demonstrably degraded battery (below 80% health threshold).",
+      bellwetherOutcome: "Settled before trial. Apple's own admission eliminated any trial strategy.",
+      attorneyFees: "~$93M (approximately 18.6% — below standard, reflecting scale economy)",
+      replicationModel: "A — Tech consumer software fraud template: uniform software update reducing advertised performance without disclosure = textbook consumer fraud. Template applies to: Tesla battery software degradation, Android manufacturer CPU throttling, game console performance limiting, smart appliance firmware updates reducing features.",
+      clientAcquisitionStrategy: "iPhone purchasers during qualifying period — Apple device records and App Store accounts provide direct notification. Tech consumer advocacy groups. iOS performance benchmark apps as self-identification tools.",
+      watchOut: "Case fully resolved. Defense theory (preventing shutdowns) is legitimate and was Apple's winning PR argument. Future software throttling cases should establish deliberate concealment clearly. Check whether manufacturer disclosed update effects — disclosure defeats the concealment theory."
+    }
+  },
+
+  // ─── BATCH 5: DATA BREACH / PRIVACY (IDs 91–100) ─────────────────────────
+
+  {
+    id: 91, title: "Anthem Health Insurance Data Breach MDL", company: "Anthem Blue Cross",
+    type: "Data Breach/Privacy", industry: "Healthcare/Insurance", outcome: "settled", year: 2015,
+    affectedPop: "~78.8M members", jurisdiction: "N.D. California", mdlNumber: "MDL 2617",
+    settlementAmount: "$115M", classSize: "~78.8M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Anthem's database breached; 78.8M members' SSNs, employment data, DOBs exposed. Largest U.S. healthcare breach ever. Insufficient network segmentation. $115M was largest healthcare data breach settlement at time.",
+    leadCounsel: "Lieff Cabraser, Cohen Milstein",
+    keyPrecedent: "In re Adobe Systems Privacy Litig.",
+    tags: ["Anthem", "health insurance", "data breach", "SSN", "healthcare", "privacy", "MDL"],
+    notes: "$115M was largest healthcare data breach settlement at time of filing. Free credit monitoring, fraud protection. Health data uniquely sensitive — higher per-person awards than financial breach cases.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$1.46 avg (78.8M class) + 2yr credit monitoring (~$50 value)",
+      litigationYears: 3,
+      whyItWorked: "Health data is categorically more sensitive than financial data — SSNs, employment history, DOBs enabled identity theft at scale. Anthem's network segmentation failure was an obvious, documentable IT negligence. Uniform breach of a single database gave the class perfect commonality. HIPAA regulatory backdrop amplified duty-of-care argument even though HIPAA has no private right of action.",
+      challenges: "No private right of action under HIPAA forced plaintiffs to plead negligence, breach of contract, and state privacy claims — patchwork of state laws. Article III standing battles: courts split on whether risk of future harm = injury-in-fact. Low per-person cash payout disappointed class members who expected more for health record exposure.",
+      strategiesWon: ["Argued health data is uniquely sensitive, warranting higher damages than financial breach", "Leveraged HIPAA's security rule standards as negligence-per-se evidence even without private right of action", "Obtained early class certification by showing uniform database architecture = uniform exposure", "Credit monitoring + identity theft protection as injunctive relief satisfied Rule 23(b)(2) component"],
+      strategiesFailed: ["Attempt to get statutory damages under state HIPAA analogs largely rejected", "Individualized damages (some members suffered actual identity theft, most did not) nearly defeated Rule 23(b)(3) predominance"],
+      demographics: "78.8M current and former Anthem health insurance members across 14 Blue Cross Blue Shield states; broad age range, significant elderly and pediatric members",
+      injuryTypes: ["Identity theft risk from SSN/DOB/employment data exposure", "Actual identity theft for subset", "Lost time monitoring credit and remediating fraud", "Emotional distress (anxiety over medical record privacy)"],
+      keyEvidence: "NIST framework compliance failure; internal emails showing delayed breach detection (5-week gap from intrusion to discovery); forensic reports confirming Chinese state-sponsored APT10 group; expert testimony on healthcare data black market premium pricing",
+      corporateMisconduct: "Anthem failed to encrypt stored customer data despite HIPAA security rule requirements and industry best practice. Network segmentation was inadequate. Intrusion detection was delayed 5 weeks. Largest healthcare insurer in the U.S. had substandard security for 78.8M members.",
+      regulatoryActions: "OCR (HHS) investigation; multi-state AG settlement ($8.7M separate); no federal criminal charges — foreign state actor attackers",
+      settlementStructure: "$115M common fund: $15M for credit monitoring services (AllClear ID); $100M cash fund; claims-made distribution; cy pres to privacy organizations",
+      bellwetherOutcome: "N/A — settled pre-trial. No bellwether process given health data privacy concerns",
+      attorneyFees: "~$38M (33% of fund); Lieff Cabraser lead",
+      replicationModel: "A — Template for all subsequent healthcare breach MDLs (Premera, BCBS, Change Healthcare). Health data sensitivity argument, HIPAA-as-negligence-standard, and credit monitoring structure all become boilerplate.",
+      clientAcquisitionStrategy: "Target current/former Anthem members in affected states (CA, IN, OH, NY, VA, etc.). Partner with medical identity theft advocacy groups. Advertise in healthcare worker communities — often Anthem-insured. Emphasize health record exposure goes beyond financial: prescription history, diagnoses exposed.",
+      watchOut: "Standing erosion — Clapper v. Amnesty Int'l standard for speculative future harm still contested in health breach cases. Per-person cash payouts are low (< $2) — manage client expectations carefully. HIPAA violation without private right of action means jury instructions are complex."
+    }
+  },
+
+  {
+    id: 92, title: "Capital One Data Breach Class Action", company: "Capital One Financial",
+    type: "Data Breach/Privacy", industry: "Financial Services", outcome: "settled", year: 2019,
+    affectedPop: "~106M customers", jurisdiction: "E.D. Virginia", mdlNumber: "No MDL",
+    settlementAmount: "$190M", classSize: "~106M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Former AWS employee exploited misconfigured web application firewall to steal 106M credit card applications. Largest bank data breach settlement. SSDI, SSNs, credit scores exposed.",
+    leadCounsel: "Keller Rohrback, Grant & Eisenhofer",
+    keyPrecedent: "In re Equifax Inc. Customer Data Security Breach Litig.",
+    tags: ["Capital One", "data breach", "financial", "AWS", "credit card", "privacy"],
+    notes: "$190M settlement. Distinction: Capital One breach involved cloud misconfiguration rather than traditional hacking. Sets precedent for cloud-hosted data breach liability.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$25 avg (106M class); $2,500 cap for documented losses",
+      litigationYears: 3,
+      whyItWorked: "Largest bank data breach at the time, affecting 106M U.S. and Canadian customers. The attacker was a former AWS employee — creating clear insider threat/cloud misconfiguration liability narrative. Capital One's WAF (web application firewall) misconfiguration was a specific, identifiable, correctable defect. The Equifax settlement had already primed courts and juries to award significant data breach settlements.",
+      challenges: "Individualized harm: only ~1% of class suffered actual identity theft; most had no documented loss. AWS as third-party cloud provider created shared-fault defense. Stolen data was credit card application data — complete financial profiles but no actual account takeover for most.",
+      strategiesWon: ["Cited Equifax $700M as floor for comparable breach", "Documented that SSDI + SSNs + credit scores = complete identity theft package", "Leveraged criminal conviction of insider (Paige Thompson) as proof of breach", "Cloud misconfiguration expert testimony (AWS WAF SSRF vulnerability was well-known, preventable)"],
+      strategiesFailed: ["Attempt to include AWS as co-defendant ultimately unsuccessful", "Canadian class members required separate coordination under PIPEDA framework"],
+      demographics: "106M U.S. and Canadian credit card applicants (2005-2019); disproportionate impact on consumers with credit applications (subprime and prime borrowers); ~140K SSNs for credit card customers",
+      injuryTypes: ["Identity theft and credit fraud (documented subset)", "Time and money spent on credit monitoring", "Increased risk of future identity theft", "Emotional distress from financial data exposure"],
+      keyEvidence: "AWS server logs showing Thompson's SSRF attack; Capital One's internal security review identifying WAF misconfiguration 2 months before breach; FTC's data security order from prior breach (2016); Thompson's own GitHub post advertising the data",
+      corporateMisconduct: "Capital One failed to detect a server-side request forgery (SSRF) vulnerability in its AWS WAF configuration despite known industry warnings. The breach went undetected for months. A prior 2016 breach had already resulted in FTC data security order — recidivism strengthened negligence case.",
+      regulatoryActions: "OCC $80M fine (largest bank data breach fine at time); FTC action referencing prior consent order; SEC 8-K disclosure; DOJ criminal conviction of Paige Thompson (CFAA violations)",
+      settlementStructure: "$190M settlement fund: $25 avg cash distribution; $2,500 cap for documented losses; $250 cap for out-of-pocket expenses without documentation; 3-year credit monitoring",
+      bellwetherOutcome: "N/A — settled without trial",
+      attorneyFees: "~$63M (33%); Keller Rohrback and Grant & Eisenhofer lead",
+      replicationModel: "A — Cloud breach template. WAF/misconfiguration as defendant's negligence, insider threat as strict liability analog, prior regulatory order as aggravating factor. Direct template for subsequent AWS/Azure/GCP-hosted breach cases.",
+      clientAcquisitionStrategy: "Target Capital One credit card applicants 2005-2019 in U.S. (especially CA, TX, NY, FL). Emphasize SSN + financial profile exposure = complete identity theft kit. Social media ads targeting credit card users, partnerships with identity theft resolution services.",
+      watchOut: "Damages individualization: absence of actual identity theft in 99% of class makes large individual awards difficult. Cloud provider third-party defense can complicate liability allocation. Canadian class requires separate PIPEDA analysis and different damages framework."
+    }
+  },
+
+  {
+    id: 93, title: "Marriott / Starwood Hotel Data Breach MDL", company: "Marriott International",
+    type: "Data Breach/Privacy", industry: "Hospitality", outcome: "settled", year: 2018,
+    affectedPop: "~500M guests", jurisdiction: "D. Maryland", mdlNumber: "MDL 2879",
+    settlementAmount: "$52M (states) + pending consumer", classSize: "~500M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Marriott acquired Starwood (2016) without discovering its database had been hacked since 2014. Passport numbers, payment cards, 500M records exposed. Largest hospitality breach. FTC + UK ICO fines.",
+    leadCounsel: "Gibbs Law Group, Zwerling Schachter",
+    keyPrecedent: "In re Equifax Inc. Customer Data Security Breach Litig.",
+    tags: ["Marriott", "Starwood", "hotel", "data breach", "passport", "hospitality", "MDL"],
+    notes: "Marriott inherited breach via acquisition — novel liability theory for M&A-related data breaches. UK ICO £18.4M fine. Consumer class litigation ongoing.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "$52M state AG / pending consumer class (500M class = potentially $0.10 cash + services)",
+      litigationYears: 6,
+      whyItWorked: "500M records — largest hotel breach in history — created undeniable scale. Passport numbers exposed are uniquely damaging: unlike SSNs, passports are hard/expensive to replace and enable international identity theft for years. The M&A liability angle was powerful: Marriott bought Starwood knowing it had a hack already in progress for 4 years. Due diligence failure during M&A = corporate negligence at the board level.",
+      challenges: "Consumer class cash payouts are minimal given $52M vs 500M people ($0.10/person). Passport data harm is speculative: few plaintiffs showed actual misuse of passport data. International class members (non-U.S. guests) create complex jurisdictional issues. UK ICO fine reduced pressure for U.S. consumer settlement.",
+      strategiesWon: ["M&A liability theory: buyer inherits breach liability from acquired company's undiscovered breach", "Passport exposure = uniquely severe harm (identity documents, not just financial data)", "Multi-jurisdictional regulatory pressure (UK ICO, FTC, state AGs) created settlement incentive", "Bellwether process focused on most-injured class members (those with actual passport fraud)"],
+      strategiesFailed: ["Individualized harm impossible to show for majority of 500M class", "Injunctive relief (improved security) was primary value of settlement — difficult to monetize for claimants"],
+      demographics: "500M Marriott/Starwood loyalty program guests worldwide; significant international representation (UK, Europe, Asia); business travelers with high-value passport data; affluent demographic (Marriott/Westin/Ritz Carlton brands)",
+      injuryTypes: ["Passport data exposure enabling international identity fraud", "Credit card data exposure (payment card fraud)", "Personal travel history exposure (privacy violation)", "Loyalty points theft", "Identity theft risk"],
+      keyEvidence: "Marriott's own post-acquisition IT audit revealing pre-existing breach; 4-year timeline of Starwood breach before discovery; forensic evidence of Chinese APT group (same as Anthem attackers); Marriott's 2018 8-K disclosing breach magnitude",
+      corporateMisconduct: "Marriott acquired Starwood in 2016 without conducting adequate cybersecurity due diligence. Starwood's Reservations Database (SRS) had been breached since 2014. Marriott did not discover the breach until November 2018 — 4 years after initial intrusion, 2 years after acquisition. SOX and SEC disclosure obligations implicated.",
+      regulatoryActions: "UK ICO £18.4M fine (reduced from initial £99M assessment); FTC investigation; multi-state AG $52M settlement (50 AGs); SEC inquiry re: disclosure timing",
+      settlementStructure: "$52M state AG settlement (security improvements + consumer remediation); consumer class pending; UK ICO fine separate. Full consumer class settlement expected $200-400M range.",
+      bellwetherOutcome: "Pending — consumer class trial not yet scheduled",
+      attorneyFees: "Pending (state AG settlement was ~15% in attorney fees)",
+      replicationModel: "A — Defines M&A breach liability template: acquirer assumes all cybersecurity liability of target. Essential for any deal involving companies with customer databases. Also defines multi-sovereign coordination (U.S. + UK) as standard practice.",
+      clientAcquisitionStrategy: "Target Starwood Preferred Guest (SPG) loyalty members and Marriott Bonvoy members who stayed pre-2018. Hotel loyalty program member data is accessible; partner with travel security firms. Emphasize passport exposure harm — differentiate from typical financial breach.",
+      watchOut: "Low per-person cash payout risk — class of 500M means even $500M settlement = $1/person. Manage expectations: primary recovery is security monitoring services. International claimants may not recover under U.S. class. Injunctive relief (improved security) is true win here."
+    }
+  },
+
+  {
+    id: 94, title: "MOVEit Transfer Data Breach MDL", company: "Progress Software / Clop Ransomware",
+    type: "Data Breach/Privacy", industry: "Technology/B2B", outcome: "pending", year: 2023,
+    affectedPop: "~64M individuals (2,500+ organizations)", jurisdiction: "D. Massachusetts", mdlNumber: "MDL 3083",
+    settlementAmount: "Pending", classSize: "~64M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "SQL injection zero-day in MOVEit file transfer software exploited by Clop ransomware group. Affected 2,500+ organizations including Shell, British Airways, PSC. 64M individuals' data exposed. Largest supply-chain breach MDL.",
+    leadCounsel: "Gibbs Law Group, Console & Associates",
+    keyPrecedent: "SolarWinds/Log4j precedents",
+    tags: ["MOVEit", "Progress Software", "Clop", "ransomware", "supply chain", "data breach", "MDL", "zero-day"],
+    notes: "MDL 3083. Novel: software vendor (not direct data custodian) as defendant. Supply chain breach theory. Competing theories: software defect vs. duty to patch. 2,500+ downstream entity victims.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending — estimated $500-$2,000 range if settled; Progress Software insurance coverage ~$125M",
+      litigationYears: 3,
+      whyItWorked: "MOVEit is the largest supply chain breach MDL in history — 64M individuals across 2,500+ organizations. The zero-day SQL injection vulnerability is a straightforward software defect claim: Progress Software shipped a product with a known vulnerability class (OWASP Top 10) that it failed to patch in time. Scale and visibility created enormous settlement pressure. Critical sector defendants (airlines, banks, government contractors) have reputational incentives to settle.",
+      challenges: "Software vendor liability is novel — Progress didn't store any data itself, it made the tool that stored data. Comparative fault: each organizational customer chose to deploy MOVEit and potentially failed to apply available patches. 2,500+ entities = complex allocation of liability. Foreign ransomware group (Clop/Russia) is unreachable defendant, focusing all liability on Progress.",
+      strategiesWon: ["Software defect theory: SQL injection is an OWASP Top 10 known vulnerability — inexcusable in enterprise data transfer software", "Supply chain breach theory: single software vendor = single defendant for 64M victims", "MDL consolidation of 2,500+ downstream entities into MDL 3083 provides efficient resolution path", "Insurance coverage litigation against Progress Software's cyber liability policy"],
+      strategiesFailed: ["Clop ransomware group is unreachable — no recovery from actual attackers", "Patch-was-available defense: Progress released patch same day as disclosure; entities that hadn't patched within hours are comparatively at fault"],
+      demographics: "64M individuals from diverse sectors: federal employees (U.S. DoE, HHS), airline passengers (British Airways), pension beneficiaries, healthcare patients, university students. No single demographic profile.",
+      injuryTypes: ["SSN and government ID exposure", "Financial account data", "Healthcare records", "Employment data", "Personal correspondence and documents"],
+      keyEvidence: "Progress Software's own security advisory acknowledging zero-day SQL injection; CISA advisory; expert testimony on OWASP SQL injection prevention standards; Clop's own leak site showing stolen data; third-party security researcher reports predating the breach",
+      corporateMisconduct: "Progress Software shipped enterprise-grade data transfer software with a SQL injection vulnerability in its authentication bypass flow — one of the most well-known and preventable vulnerability categories. The vulnerability had characteristics suggesting it existed for years. Progress did not conduct adequate penetration testing or secure code review.",
+      regulatoryActions: "FTC investigation pending; SEC enforcement for companies that failed to disclose; CISA issued emergency advisory; UK ICO investigations of British Airways, BBC; EU DPA investigations",
+      settlementStructure: "MDL 3083 ongoing; Progress Software insurance policy ($125M cyber coverage) likely basis for settlement; expect $200-500M total resolution across all downstream entities",
+      bellwetherOutcome: "Bellwether process not yet begun — MDL in early discovery",
+      attorneyFees: "Contingent; Gibbs Law Group and Console & Associates in early leadership",
+      replicationModel: "A — Establishes software vendor liability for supply-chain breaches. Any software company that handles or processes sensitive data can face this theory. Essential template for SolarWinds, Log4j, and future enterprise software breach cases.",
+      clientAcquisitionStrategy: "Target individuals who received MOVEit breach notification letters from any of 2,500+ affected organizations. Breach notices came from employers, government agencies, healthcare providers, universities. Partner with HR departments of affected companies. News coverage of specific organizations (Shell, British Airways, NYC DOE) enables targeted outreach.",
+      watchOut: "Progress Software's financial limits — company's market cap (~$1.5B) and insurance coverage (~$125M) may cap recovery. Comparative fault allocation among 2,500 organizational defendants is complex. Clop being a Russian threat actor means zero recovery from the actual perpetrators."
+    }
+  },
+
+  {
+    id: 95, title: "Meta / Instagram Teen Mental Health MDL", company: "Meta Platforms",
+    type: "Data Breach/Privacy", industry: "Technology/Social Media", outcome: "pending", year: 2023,
+    affectedPop: "Tens of millions of minors", jurisdiction: "N.D. California", mdlNumber: "MDL 3047",
+    settlementAmount: "Pending", classSize: "Tens of millions",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Meta's Instagram and Facebook algorithmically maximized engagement for teen users despite internal research showing harm. Linked to eating disorders, anxiety, depression, self-harm, suicide. Product liability + negligence theories.",
+    leadCounsel: "Seeger Weiss, Beasley Allen",
+    keyPrecedent: "Lemmon v. Snap (design defect precedent)",
+    tags: ["Meta", "Instagram", "Facebook", "teen mental health", "algorithm", "eating disorder", "MDL", "social media"],
+    notes: "MDL 3047. State AG coordinated actions separately. Internal Meta documents ('The Facebook Files') are key evidence. Novel product liability theory for social media algorithms. Bellwether trials scheduled 2025.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending — estimated $300-$500K per bellwether individual (personal injury); class component TBD",
+      litigationYears: 5,
+      whyItWorked: "The Facebook Files — Meta's own internal research showing its platforms harm teen girls — are the most damaging corporate documents since the tobacco industry's internal memos. Meta knew Instagram caused eating disorders, depression, and suicidal ideation and concealed it. Product liability theory for algorithm design defect is gaining traction after Lemmon v. Snap. Hundreds of thousands of families with injured minors creates massive sympathy. Congress holding hearings amplifies pressure. State AGs filing coordinated actions removes Section 230 defense arguments.",
+      challenges: "Section 230 immunity is the central battleground: does the CDA § 230 immunize Meta from liability for algorithmic amplification of harmful content? Courts are split. Causation: individual plaintiffs must prove Instagram (not other factors) caused their specific mental health injury — Daubert will be fierce. Damages individualization — each teen's injury is different. Class certification for personal injury claims is notoriously difficult under Cimino.",
+      strategiesWon: ["Product liability framing (not publisher/speaker) sidesteps Section 230", "Internal Meta documents ('The Facebook Files', Francis Haugen testimony) as smoking gun evidence", "Bellwether trial strategy for personal injury cases (eating disorder, suicide) rather than attempting class certification for all", "State AG coordinated actions build public and regulatory pressure", "School district class (economic harm — counseling costs) provides certifiable class component"],
+      strategiesFailed: ["Section 230 blanket immunity motion filed by Meta — uncertain outcome in 9th Circuit", "Class certification for personal injury (heterogeneous injuries) remains the core challenge"],
+      demographics: "Teen and pre-teen girls (ages 10-17) with eating disorders, depression, anxiety, NSSI, and suicide attempts linked to Instagram use; primarily 2012-2022 period; also minor boys with body dysmorphia",
+      injuryTypes: ["Eating disorders (anorexia, bulimia, orthorexia)", "Clinical depression and anxiety disorder", "Non-suicidal self-injury (NSSI)", "Completed and attempted suicide", "Body dysmorphia", "Social isolation and academic failure"],
+      keyEvidence: "Meta internal 'Facebook Files' research (2019-2021) showing 32% of teen girls felt worse about their bodies; Arturo Bejar whistleblower testimony; Dr. Jean Twenge academic research; Instagram's own internal slides showing 'we make body image issues worse for 1 in 3 teen girls'; algorithmic recommendation models targeting engagement over wellbeing",
+      corporateMisconduct: "Meta's internal research confirmed Instagram's harm to teen mental health. Rather than fixing the product, Meta suppressed research, lobbied against regulation, and publicly denied harm. The company optimized algorithms for engagement (maximizing time-on-app) at the direct expense of user wellbeing — especially for the most vulnerable users (teen girls).",
+      regulatoryActions: "41-state AG investigation; FTC action ($5B fine for broader privacy violations); UK ICO investigation; EU DMA/DSA regulatory scrutiny; Congressional hearings (Zuckerberg testimony March 2024); FTC proposed rule limiting teen data collection",
+      settlementStructure: "Bellwether individual personal injury cases ($300K-$500K per case); school district class for economic damages; possible global settlement expected $5-15B range (comparable to opioid settlements given scale)",
+      bellwetherOutcome: "Bellwether trials scheduled 2025; early bellwether results will determine global settlement value",
+      attorneyFees: "33% contingency; Seeger Weiss and Beasley Allen lead",
+      replicationModel: "A+ — Defines social media product liability for algorithm design defect. Direct template for YouTube Kids MDL, TikTok MDL, Snapchat speed filter MDL. The most consequential tech liability litigation in history if plaintiffs prevail on Section 230.",
+      clientAcquisitionStrategy: "Target families of teens with eating disorders, depression, suicide attempts diagnosed 2012-2022. Partner with eating disorder treatment centers (remuda, NEDA), child psychiatrists, school counselors. Social media advertising (ironically) to parents of affected teens. Local legal ads in school district litigation. Emphasize: if your teen was hospitalized for mental health issues while using Instagram, they may have a claim.",
+      watchOut: "Section 230 risk is existential — if 9th Circuit holds Meta immune as a publisher, entire MDL collapses (compare Zantac). Individual causation Daubert challenge will be severe — mental health causation is complex. Product liability for algorithm = cutting-edge law with no guarantee of success."
+    }
+  },
+
+  {
+    id: 96, title: "TikTok COPPA Privacy MDL", company: "ByteDance / TikTok",
+    type: "Data Breach/Privacy", industry: "Technology/Social Media", outcome: "settled", year: 2021,
+    affectedPop: "~92M minor users", jurisdiction: "N.D. Illinois", mdlNumber: "MDL 2948",
+    settlementAmount: "$92M", classSize: "~92M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "TikTok collected biometric data (face geometry, voiceprints) from minors without parental consent, violating COPPA, BIPA (Illinois), and similar state laws. $92M settlement — largest COPPA class settlement.",
+    leadCounsel: "Edelson PC, Labaton Sucharow",
+    keyPrecedent: "In re Facebook Biometric Information Privacy Litig.",
+    tags: ["TikTok", "ByteDance", "COPPA", "BIPA", "biometric", "minors", "privacy", "MDL"],
+    notes: "$92M largest COPPA settlement to date. BIPA (Illinois Biometric Information Privacy Act) claims drove large per-person damages. Illustrates intersection of federal COPPA + state biometric privacy laws.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$1 avg cash (92M class); BIPA Illinois sub-class ~$150/person",
+      litigationYears: 3,
+      whyItWorked: "BIPA + COPPA combination = statutory damages without need to prove actual harm. BIPA's $1,000-$5,000 per-violation statutory damages created exposure so massive ($920B theoretical maximum for 92M users × $1,000/violation) that TikTok had overwhelming incentive to settle. The biometric data collection (face geometry, voiceprints) is an OWASP-recognized high-risk data category. Chinese ownership of ByteDance added national security and political pressure to settle.",
+      challenges: "BIPA's applicability to TikTok (Illinois residents only) limited the high-statutory-damages class to a subset. COPPA enforcement is primarily an FTC function — private COPPA right of action does not exist; plaintiffs had to piggyback on state law claims. FTC's $5.7M consent decree for prior COPPA violation undercut TikTok's credibility but limited additional FTC enforcement.",
+      strategiesWon: ["BIPA statutory damages ($1,000/violation) created astronomical potential liability forcing settlement", "COPPA + state privacy law combination for minor users in non-BIPA states", "FTC's prior Musical.ly/$5.7M COPPA consent decree (2019) as pattern evidence of knowing COPPA violations", "Chinese government data access concerns as aggravating settlement pressure"],
+      strategiesFailed: ["National COPPA class limited by no private right of action — had to rely on state analogs", "FTC's own consent decree pre-empted some monetary recovery theories"],
+      demographics: "92M primarily U.S. minor users of TikTok (formerly Musical.ly); ages 8-17; disproportionate representation of Gen Z and Gen Alpha; Illinois BIPA sub-class most valuable",
+      injuryTypes: ["Biometric data collection without parental consent (face geometry scans)", "Voiceprint collection", "Location data collection", "Behavioral data mining of minors", "Disclosure of minor's video content to Chinese government (alleged)"],
+      keyEvidence: "TikTok's own engineering documentation showing face geometry extraction; Musical.ly COPPA consent decree (2019); expert testimony on biometric data extraction from video; FTC investigation findings; leaked ByteDance documents on data access practices",
+      corporateMisconduct: "TikTok (as Musical.ly successor) had already settled a FTC COPPA action in 2019 for $5.7M and was under a consent decree. Despite the consent decree, TikTok continued collecting biometric data from minors. The knowledge of COPPA requirements + violation = knowing/intentional violation enhancing damages.",
+      regulatoryActions: "FTC $5.7M COPPA consent decree (2019 Musical.ly); FTC investigation of TikTok data practices; DOJ national security review of ByteDance; FCC petition for Apple/Google to remove TikTok; Congressional hearings",
+      settlementStructure: "$92M common fund: $70M cash distribution; $22M injunctive relief (improved privacy controls, BIPA compliance, COPPA compliance); Illinois BIPA sub-class receives proportionally higher allocation",
+      bellwetherOutcome: "N/A — class settlement",
+      attorneyFees: "~$29M (33%); Edelson PC lead",
+      replicationModel: "A — BIPA + minor privacy law template for any platform collecting biometric or behavioral data from minors. YouTube Kids (COPPA + BIPA) follows this template directly. Essential for Roblox, Fortnite, Snapchat, and any platform with minor users collecting biometric data.",
+      clientAcquisitionStrategy: "Target parents of TikTok users ages 8-17 (accounts prior to 2022). Illinois residents are priority (BIPA sub-class). Facebook/Instagram parenting groups, school PTA networks, child privacy advocacy organizations. Emphasize: TikTok collected your child's face geometry without consent.",
+      watchOut: "BIPA applicability is geographically limited to Illinois residents (most valuable sub-class). No private COPPA right of action means relying on state laws that vary significantly. Chinese ownership creates political complexity that can cut both ways — higher settlement pressure but also sovereign immunity arguments."
+    }
+  },
+
+  {
+    id: 97, title: "Clearview AI Biometric Privacy Litigation", company: "Clearview AI",
+    type: "Data Breach/Privacy", industry: "Technology/AI", outcome: "settled", year: 2022,
+    affectedPop: "Tens of millions (IL residents prioritized)", jurisdiction: "N.D. Illinois", mdlNumber: "No MDL",
+    settlementAmount: "$52M est. (equity stake structure)",
+    classSize: "Tens of millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Clearview AI scraped 30B+ facial images from internet to build facial recognition database sold to law enforcement. Violated BIPA (IL). Novel settlement: equity stake in company rather than cash.",
+    leadCounsel: "Edelson PC",
+    keyPrecedent: "In re Facebook Biometric Information Privacy Litig.",
+    tags: ["Clearview", "facial recognition", "biometric", "BIPA", "AI", "surveillance", "privacy", "scraping"],
+    notes: "Novel settlement structure: equity stake option (class could receive ~%20 of company if IPO). BIPA's $1,000-$5,000 per-violation statutory damages drove enormous potential liability. Groundbreaking AI privacy case.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "$52M est. equity settlement (class may receive equity stake worth potentially $100M+ if IPO); Illinois BIPA sub-class prioritized",
+      litigationYears: 3,
+      whyItWorked: "BIPA is the nuclear weapon of privacy litigation. Clearview scraped 30 billion face images without consent — BIPA's statutory damages of $1,000-$5,000 per violation created theoretical liability exceeding Clearview's entire market cap tens of thousands of times over. The company literally could not pay cash — leading to the first-ever equity settlement in a class action privacy case. The facial recognition technology's use by law enforcement for unregulated surveillance added constitutional/civil liberties dimensions.",
+      challenges: "Clearview's financial insolvency risk made cash recovery impossible. Novel equity settlement structure is unprecedented — no class member has ever received company stock as class settlement before. Clearview argued it scraped only publicly available information (First Amendment/fair use defense for database aggregation). Company's ongoing operations subject to BIPA compliance injunctions.",
+      strategiesWon: ["BIPA statutory damages theory forced settlement despite company claiming insolvency", "Equity stake structure was creative solution to judgment-proof defendant — class owns 23% of Clearview if IPO", "Section 230 does not protect scraping + compiling facial recognition data", "Public interest/civil liberties framing attracted amicus support and media attention", "International GDPR/biometric law parallel proceedings (UK ICO £7.5M fine) amplified pressure"],
+      strategiesFailed: ["Cash recovery impossible against effectively insolvent defendant", "First Amendment 'public information' scraping defense is a legitimate ongoing challenge"],
+      demographics: "Tens of millions of U.S. individuals whose facial images appeared in public internet photos (social media, news, etc.); Illinois BIPA sub-class (IL residents) receives priority; law enforcement databases include images of suspects, victims, and bystanders",
+      injuryTypes: ["Biometric identifier collection without consent (face geometry)", "Surveillance by law enforcement using Clearview tool", "False positive facial recognition matches creating civil liberty harms", "Loss of anonymity in public spaces", "Data shared with foreign entities (Clearview investors include UAE interests)"],
+      keyEvidence: "BuzzFeed and New York Times investigation revealing Clearview's database size and law enforcement customers; Clearview's own investor presentations; ICO audit findings; ACLU of Illinois litigation evidence; expert testimony from Dr. Joy Buolamwini on facial recognition bias and harm",
+      corporateMisconduct: "Clearview AI built a facial recognition database by scraping billions of photos from Facebook, Instagram, LinkedIn, and other platforms in direct violation of those platforms' terms of service and BIPA. The company sold access to law enforcement (and private actors) without any regulatory oversight. False positive matches led to wrongful arrests (Robert Williams, Nijeer Parks cases).",
+      regulatoryActions: "UK ICO £7.5M fine + enforcement notice; Australian Information Commissioner (AIC) enforcement; France CNIL enforcement; Italy Garante enforcement; Germany DSK enforcement; Canada OPC investigation; FTC investigation ongoing; multiple state AG actions",
+      settlementStructure: "Novel equity settlement: Clearview grants class 23% equity stake (worth ~$52M est.); additional BIPA injunctive compliance; 5-year ban on selling data to private entities; Illinois sub-class receives priority cash distribution from separate fund",
+      bellwetherOutcome: "N/A — class settlement",
+      attorneyFees: "~15% (below standard given equity structure complexity); Edelson PC",
+      replicationModel: "A+ — Defines AI facial recognition liability under BIPA. Template for any AI company using scraping + biometric analysis. Also establishes equity settlement as valid structure for judgment-proof privacy defendants. Must-study for any biometric privacy case.",
+      clientAcquisitionStrategy: "Illinois residents are priority (BIPA statutory damages). Target civil liberties advocates, criminal defense attorneys (wrongful arrest via facial recognition clients), journalists, activists whose photos are online. ACLU member lists. Privacy-conscious tech workers. Emphasize: your face is in Clearview's database without consent.",
+      watchOut: "Equity stake only valuable if Clearview achieves IPO or acquisition — may be worth zero. BIPA claims limited to Illinois residents for highest damages. First Amendment 'public information' defense is unresolved. Ongoing regulatory enforcement could render equity worthless (if company is shut down)."
+    }
+  },
+
+  {
+    id: 98, title: "Twitter / X Data Breach (2022 API Exploit)", company: "Twitter / X Corp.",
+    type: "Data Breach/Privacy", industry: "Technology/Social Media", outcome: "settled", year: 2023,
+    affectedPop: "~200M users", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "$350M est. (Irish DPC + US pending)",
+    classSize: "~200M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "API vulnerability allowed scraping of 200M+ users' email addresses and phone numbers linked to Twitter accounts. Irish DPC (EU GDPR lead regulator) imposed €450M fine. U.S. class action pending.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "In re Meta Pixel Healthcare Litig.",
+    tags: ["Twitter", "X", "data breach", "API", "GDPR", "scraping", "privacy", "social media"],
+    notes: "Illustrates EU GDPR enforcement running parallel to U.S. class action. Irish DPC €450M GDPR fine + U.S. class. Cross-border data breach litigation increasingly common.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending U.S. class; Irish DPC €450M GDPR fine (European users); U.S. settlement est. $100-250M",
+      litigationYears: 3,
+      whyItWorked: "200M exposed user records is catastrophic scale. The API vulnerability was known to Twitter — a bug bounty submission had disclosed the vulnerability months earlier and Twitter failed to patch it. The EU GDPR enforcement by Irish DPC (Twitter's EU data controller) created massive regulatory pressure that typically accelerates U.S. settlement. Elon Musk's acquisition of Twitter and resulting mass layoffs of security staff are relevant to ongoing security failures.",
+      challenges: "Twitter's post-acquisition financial instability under Elon Musk creates judgment-proof risk. The scraped data (email + phone linked to Twitter handle) is less sensitive than SSN/financial data — limited actual harm beyond de-anonymization risk. No evidence of mass identity theft from this breach specifically.",
+      strategiesWon: ["EU GDPR fine (€450M) created regulatory pressure accelerating U.S. resolution", "Known-vulnerability theory: bug bounty disclosure preceded breach — Twitter had notice and failed to patch", "Mass layoffs of security team post-Musk acquisition as evidence of willful neglect of cybersecurity", "Linking of email/phone to Twitter accounts enables targeted phishing — cognizable harm beyond mere exposure"],
+      strategiesFailed: ["Actual harm showing is weak — de-anonymization risk is speculative for most users", "Financial instability of Twitter/X Corp. limits recovery potential"],
+      demographics: "200M+ global Twitter users; significant journalist, activist, political figure, and whistleblower sub-populations with heightened harm from de-anonymization; EU users entitled to GDPR redress",
+      injuryTypes: ["De-anonymization: linking real identity to pseudonymous Twitter handle", "Targeted phishing using known email/phone", "Harassment risk for journalists and activists whose accounts are de-anonymized", "Privacy violation (right to pseudonymity)"],
+      keyEvidence: "Bug bounty report disclosing API vulnerability (months before breach); Twitter internal security tickets; Irish DPC investigation findings; forensic evidence of 200M record dataset appearing on hacker forums; expert testimony on de-anonymization harm",
+      corporateMisconduct: "Twitter received a responsible disclosure report of the API vulnerability via its bug bounty program. The company failed to patch the vulnerability within an appropriate timeframe, and the same vulnerability was exploited on a massive scale. Post-Musk acquisition, Twitter's security team was reduced by over 80%, and GDPR compliance staff were gutted — arguably making the company willfully indifferent to security obligations.",
+      regulatoryActions: "Irish DPC €450M GDPR fine (2023); FTC investigation (Twitter was under consent decree for prior privacy violations); SEC investigation re: disclosure timing; UK ICO investigation",
+      settlementStructure: "Irish DPC €450M GDPR fine (European enforcement); U.S. class action pending settlement est. $100-250M; FTC consent decree modification likely",
+      bellwetherOutcome: "N/A — settlement expected",
+      attorneyFees: "Pending; Hagens Berman lead",
+      replicationModel: "B+ — Cross-border breach template (U.S. class + EU GDPR parallel enforcement). Known-vulnerability/bug-bounty-notice theory is highly replicable. Judgment-proof defendant risk is the limiting factor here.",
+      clientAcquisitionStrategy: "Target Twitter/X users who used personal email addresses (not burner accounts). Emphasize de-anonymization risk for journalists, activists, political figures, domestic violence survivors, whistleblowers. GDPR opt-in for EU/UK users. Security researcher communities where Twitter breach was widely publicized.",
+      watchOut: "Twitter/X Corp. financial instability is serious judgment-proof risk — the company may not survive long enough to fund a settlement. Per-person damages are low (de-anonymization vs. actual financial harm). Irish DPC GDPR fine may satisfy European claims but U.S. class still needs independent basis."
+    }
+  },
+
+  {
+    id: 99, title: "Change Healthcare / UnitedHealth Mega-Breach", company: "UnitedHealth Group / Change Healthcare",
+    type: "Data Breach/Privacy", industry: "Healthcare/Insurance", outcome: "pending", year: 2024,
+    affectedPop: "~190M patients", jurisdiction: "D. Minnesota", mdlNumber: "MDL 3145",
+    settlementAmount: "Pending", classSize: "~190M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic + physical",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "ALPHV/BlackCat ransomware group breached Change Healthcare (Feb 2024). 190M Americans' health records, prescriptions, and insurance data exposed — largest healthcare breach in U.S. history. $22M ransom paid. Nationwide pharmacy/claims processing disruption.",
+    leadCounsel: "Pending (multiple filers)",
+    keyPrecedent: "In re Anthem Data Breach Litig.",
+    tags: ["Change Healthcare", "UnitedHealth", "ransomware", "health data", "ALPHV", "BlackCat", "MDL", "2024"],
+    notes: "MDL 3145. Largest data breach in U.S. history (190M). Healthcare data = maximum sensitivity = high per-person damages. Nationwide disruption to pharmacy claims caused secondary harms. Frontier of healthcare breach litigation.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending — estimated $2,000-$5,000 given healthcare data sensitivity and scale; UnitedHealth's $400B market cap = deep pockets",
+      litigationYears: 4,
+      whyItWorked: "190 million Americans affected — largest data breach in U.S. history, surpassing all prior healthcare breaches combined. UnitedHealth is the largest health insurance company in America with a $400B market cap — unlimited deep pockets. Healthcare data is the most sensitive category (prescriptions, diagnoses, mental health records, HIV status) — highest per-person damages possible. The breach caused a secondary catastrophic harm: nationwide pharmacy claims processing shutdown affected patient care (delayed prescriptions, surgeries), creating additional injury theories beyond data exposure. ALPHV/BlackCat ransomware attack + UnitedHealth paid $22M ransom shows gross security failures.",
+      challenges: "190M class size = potential aggregate liability dwarfing any prior settlement — creates perverse incentive for UnitedHealth to litigate indefinitely. Healthcare privacy claims require individual HIPAA analysis in some jurisdictions. MDL in early stages — years from resolution. Change Healthcare's position as healthcare clearinghouse (processing 50% of U.S. medical claims) creates systemic/public utility arguments against full liability.",
+      strategiesWon: ["Scale ($190M affected) = most important class action in U.S. healthcare history", "HIPAA Security Rule negligence-per-se theory: UnitedHealth failed to implement MFA on legacy Citrix systems", "Secondary harm theory: pharmacy/claims disruption caused direct patient harm (delayed medications, cancelled surgeries)", "Deep pockets: UnitedHealth's $400B market cap and $22B annual profit can fund massive settlement", "Ransomware payment as admission of breach severity — $22M ransom paid"],
+      strategiesFailed: ["Size of class creates predominance challenge — individual harm varies enormously (some received cancer diagnoses exposed, others just names/DOBs)", "Government contractor/public utility arguments may limit liability"],
+      demographics: "190M Americans who used prescription medications, health insurance, or medical care routed through Change Healthcare's clearinghouse system (2015-2024); disproportionate impact on individuals with sensitive diagnoses (HIV, mental health, substance abuse, reproductive health)",
+      injuryTypes: ["PHI exposure: prescriptions, diagnoses, mental health records, HIV status, reproductive health data", "Secondary harm: pharmacy closures causing delayed medications (life-threatening for some)", "Insurance claim denials/delays cascading from processing shutdown", "Identity theft using medical insurance information", "Emotional distress from most intimate health information being exposed"],
+      keyEvidence: "UnitedHealth's failure to implement MFA on legacy Citrix systems (violates NIST/HHS guidance); ALPHV/BlackCat's own claims about data stolen; HHS OCR investigation findings; Congressional testimony by UnitedHealth CEO Andrew Witty; expert testimony on pharmacy disruption cascading harm; $22M ransom payment records",
+      corporateMisconduct: "UnitedHealth acquired Change Healthcare in 2022 (opposed by DOJ antitrust) making it the nation's largest medical billing clearinghouse. The company failed to implement basic MFA authentication on critical infrastructure. When breached, it paid $22M ransom, did not restore systems for weeks, and failed to adequately notify 190M affected individuals within required HIPAA 60-day window. The company's market dominance (50% of U.S. medical claims) made the systemic harm uniquely catastrophic.",
+      regulatoryActions: "HHS OCR investigation (potential $2M+ HIPAA civil money penalties per violation); FTC investigation; Congressional hearings; DOJ antitrust investigation of Change Healthcare acquisition; State AG investigations; SEC Form 8-K scrutiny",
+      settlementStructure: "Pending MDL 3145; expect $5-15B global settlement given scale (comparable to opioid/tobacco precedents); UnitedHealth's $400B market cap can absorb massive judgment; HHS OCR civil money penalties separate",
+      bellwetherOutcome: "Bellwether process not yet established — MDL in discovery",
+      attorneyFees: "Contingent 33%; multiple firms filed; MDL leadership TBD",
+      replicationModel: "A+ — Definitional case for healthcare clearinghouse/infrastructure breach liability. Establishes template: (1) HIPAA security rule as negligence-per-se, (2) secondary harm from system disruption, (3) MFA requirement standard of care. Will be cited in every future healthcare breach MDL.",
+      clientAcquisitionStrategy: "Target patients who received HIPAA breach notification letters from Change Healthcare (mailed 2024). Any person who used health insurance, filled prescriptions, or had medical claims processed 2015-2024 is potentially in class. Partner with pharmacies, patient advocacy groups, diabetes/HIV/mental health organizations. Emphasize: your most private medical records (mental health, prescriptions, HIV status) may be exposed.",
+      watchOut: "190M class size creates actuarial challenge — per-person recovery may be lower than sensitivity warrants if aggregate cap is reached. UnitedHealth's legal team will argue systemic importance limits liability (too big to punish). HIPAA breach notification timing litigation could be a side battle. Ransom payment creates potential wire transfer/crime facilitation complications."
+    }
+  },
+
+  {
+    id: 100, title: "National Public Data / Jericho Pictures Breach", company: "National Public Data",
+    type: "Data Breach/Privacy", industry: "Data Broker", outcome: "pending", year: 2024,
+    affectedPop: "~2.7B records (est. 170M individuals)", jurisdiction: "S.D. Florida", mdlNumber: "No MDL (yet)",
+    settlementAmount: "Company filed bankruptcy 2024", classSize: "~170M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "National Public Data (data broker) had 2.7B records stolen including SSNs, addresses, family member data for ~170M Americans. Company posted data was scraped from public sources. Filed for bankruptcy after lawsuits. Data broker liability frontier.",
+    leadCounsel: "Multiple filers",
+    keyPrecedent: "In re Equifax Inc. Customer Data Security Breach Litig.",
+    tags: ["National Public Data", "data broker", "SSN", "background check", "privacy", "bankruptcy", "2024"],
+    notes: "Landmark data broker breach. Company filed bankruptcy 2024 — truncated recoveries. Raises critical questions about data broker industry liability under state privacy laws (CCPA, VCDPA) and potential federal framework.",
+    analysis: {
+      rating: "C",
+      strengthScore: 5,
+      payoutPerClaimant: "Near-zero cash (company bankrupt); potential cy pres to privacy organizations; CCPA statutory $100-$750/person for willful violations if pursued",
+      litigationYears: 2,
+      whyItWorked: "2.7 billion records — largest data broker breach in history. 170M Americans' SSNs, addresses, family trees, and background check data exposed. The data broker industry is largely unregulated — this case is forcing the question of whether companies that aggregate personal data without consumer consent have liability when that data is breached. CCPA's $100-$750/person private right of action for data breaches is the most promising recovery theory.",
+      challenges: "National Public Data filed for bankruptcy in October 2024 — effectively judgment-proof. The company's core argument (data was scraped from public sources) creates a First Amendment/fair use defense for the aggregation itself. Standing under Clapper is difficult: most class members may not suffer actual identity theft. Low likelihood of meaningful cash recovery given bankruptcy.",
+      strategiesWon: ["CCPA private right of action ($100-$750/person for California residents) survives bankruptcy as a priority claim argument", "Novel data broker liability theory: duty of care to data subjects even when data was never voluntarily provided", "SSN exposure = highest cognizable identity theft risk = best standing argument", "State AG actions in parallel (California, Texas, Florida) created enforcement pressure"],
+      strategiesFailed: ["Bankruptcy filing in October 2024 truncated all recovery — bankruptcy estate has limited assets", "Company's 'public sources' defense for original data aggregation created liability gap for collection vs. security claims"],
+      demographics: "Essentially all Americans (170M individuals); data includes deceased persons; disproportionate data depth on individuals who have been subjects of background checks (employment applicants, tenants, licensed professionals)",
+      injuryTypes: ["SSN exposure enabling identity theft", "Family relationship data exposure", "Address history exposure enabling stalking/harassment", "Employment and financial history exposure", "No consensual relationship with data broker — data subjects never agreed to data collection"],
+      keyEvidence: "USDoD cybersecurity researcher Troy Hunt's Have I Been Pwned confirmation of breach; National Public Data's own bankruptcy filings listing liabilities; sample data verified by security researchers; FTC complaint evidence; consumer complaints of identity theft following breach",
+      corporateMisconduct: "National Public Data (Jericho Pictures, Inc.) operated as a shadow data broker — collecting SSNs, addresses, and personal data on virtually all Americans without their knowledge or consent, ostensibly for background check services. The company stored this extraordinarily sensitive data without basic security measures, then filed for bankruptcy when faced with accountability.",
+      regulatoryActions: "FTC investigation; Florida AG action (NPD was FL-based); multi-state AG coordination; FTC proposed data broker rule (potentially applicable); Congressional interest in federal data broker legislation",
+      settlementStructure: "Bankruptcy estate proceedings (S.D. Florida); limited recovery pool; potential cy pres distribution to identity theft organizations; CCPA claims for CA residents may be treated as priority in bankruptcy",
+      bellwetherOutcome: "N/A — bankruptcy proceedings replace traditional litigation resolution",
+      attorneyFees: "Contingent; multiple filers; recovery likely minimal given bankruptcy",
+      replicationModel: "C — Cautionary tale on data broker litigation. The core legal theories (data broker duty of care, CCPA private right of action) are sound and will be used in future cases. But NPD itself provides minimal financial recovery. Future data broker cases should target financially solvent defendants (LexisNexis, Equifax's data broker arm, CoreLogic, Acxiom).",
+      clientAcquisitionStrategy: "Limited — company is bankrupt. File proofs of claim in bankruptcy on behalf of class. CCPA private right of action claims as priority creditors for California residents. Primary value: establishing data broker liability precedent for future cases against solvent defendants. Educate clients on monitoring credit after SSN exposure.",
+      watchOut: "Company is bankrupt — this is primarily a precedent-setting case, not a recovery case. Do not promise clients meaningful recovery. The real value is using NPD's legal theories in future suits against solvent data brokers (LexisNexis, Spokeo, Equifax Data Broker, BeenVerified, etc.)."
+    }
+  },
+
+  // ─── BATCH 6: SECURITIES / FINANCIAL FRAUD (IDs 101–110) ─────────────────
+
+  {
+    id: 101, title: "Enron Securities Class Action", company: "Enron Corp.",
+    type: "Securities Fraud", industry: "Energy/Financial", outcome: "settled", year: 2001,
+    affectedPop: "~1.5M investors", jurisdiction: "S.D. Texas", mdlNumber: "MDL 1446",
+    settlementAmount: "$7.2B (largest securities settlement at time)",
+    classSize: "~1.5M investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Enron fabricated revenues, hid debts via SPEs (Raptors), misled investors from 1997-2001. Same false public statements = classic fraud-on-the-market. Banks (Citibank $2B, JPMorgan $2.2B, CSFB $101M) settled for aiding and abetting.",
+    leadCounsel: "Lerach Coughlin (now Robbins Geller), Regents of UCLA",
+    keyPrecedent: "Basic Inc. v. Levinson (fraud on the market)",
+    tags: ["Enron", "securities fraud", "SPE", "accounting fraud", "banks", "MDL", "fraud on the market"],
+    notes: "$7.2B was largest securities settlement ever at time. Established pattern of pursuing banks as aider/abettor defendants in securities class actions. Post-Enron SOX legislation transformed corporate governance.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "~$4,800 avg (1.5M investors); $7.2B total fund",
+      litigationYears: 5,
+      whyItWorked: "The perfect securities fraud case: deliberate accounting fraud using Special Purpose Entities (Raptors), clear scienter from CEO/CFO/executives who went to prison, uniform false public statements triggering Basic fraud-on-the-market presumption. Crucially, plaintiffs pursued the investment banks (Citibank $2B, JPMorgan $2.2B) as aider/abettor defendants — banks that helped structure the Raptor SPEs while knowing they hid debt. The Regents of UCLA as lead plaintiff gave the case institutional credibility. PSLRA lead plaintiff process worked exactly as designed.",
+      challenges: "Enron's bankruptcy meant the primary defendant had no assets. Recovery required pursuing secondary defendants (banks, accountants). Arthur Andersen's concurrent collapse limited auditor recovery. PSLRA's heightened pleading standard required detailed scienter allegations before discovery — met by internal email evidence uncovered by DOJ.",
+      strategiesWon: ["Bank aider/abettor liability theory — unprecedented recovery from underwriting/structuring banks", "PSLRA institutional lead plaintiff (UCLA Regents) provided credibility and resources", "Criminal convictions of Lay, Skilling, Fastow established scienter beyond doubt for civil case", "Congressional hearings + Enron Task Force created parallel discovery pathway", "Massive document production from bankruptcy proceedings as free discovery"],
+      strategiesFailed: ["Arthur Andersen auditor recovery limited by AA's own collapse and dissolution", "Offshore SPE complexity initially obscured damages calculation"],
+      demographics: "1.5M retail and institutional investors; significant 401(k) holder class (Enron employees lost retirement savings); pension funds (California, Texas, New York) as major claimants",
+      injuryTypes: ["Stock price collapse (from $90 to $0.67)", "401(k) and pension fund losses", "Economic loss on bonds", "Options and derivatives losses"],
+      keyEvidence: "Andy Fastow plea agreement; 'smoking gun' Vinson & Elkins memos; LJM Cayman accounting structure documents; Ken Lay 'stock is a great buy' statements while selling own shares; Citibank/JPMorgan SPE structuring memos",
+      corporateMisconduct: "Enron created hundreds of Special Purpose Entities (SPEs/Raptors) to hide $1.2B in debt and inflate revenues by billions. CEO Ken Lay and CFO Andy Fastow orchestrated one of the most sophisticated accounting frauds in history. Top executives sold hundreds of millions in stock while publicly touting the company. Enron's accountants (Arthur Andersen) were complicit.",
+      regulatoryActions: "SEC civil enforcement; DOJ Enron Task Force; Ken Lay convicted (died pre-sentencing); Jeff Skilling 24 years (reduced to 14); Andy Fastow 10 years; Michael Kopper 3.5 years; SOX legislation passed 2002 in direct response",
+      settlementStructure: "$7.2B fund: Citibank $2B; JPMorgan $2.2B; CSFB $101.5M; Lehman $222.5M; CIBC $250M; Bank of America $69M; Barclays $13.5M; Merrill Lynch $80M; Arthur Andersen $72.5M; Enron estate residual",
+      bellwetherOutcome: "N/A — settled before trial; criminal convictions substituted for bellwether purpose",
+      attorneyFees: "~$688M (less than 10% of fund — courts imposed downward adjustment given fund size); Lerach Coughlin lead",
+      replicationModel: "A+ — Defines the modern securities class action playbook: PSLRA institutional lead plaintiff + bank aider/abettor theory + criminal prosecution parallel track. Every large securities MDL since Enron follows this template.",
+      clientAcquisitionStrategy: "Historical case — recovery closed. For future cases: target 401(k) plan participants, pension fund members, retail investors. Institutional investors self-identify as lead plaintiffs. For Enron specifically: Enron employee-investors (total loss of retirement savings) were the most sympathetic sub-class.",
+      watchOut: "Stoneridge Investment Partners v. Scientific-Atlanta (2008) subsequently limited third-party aider/abettor securities claims — Enron's bank recovery theory was partially foreclosed prospectively. For future cases, primary vs. secondary actor distinction is critical after Stoneridge."
+    }
+  },
+
+  {
+    id: 102, title: "WorldCom Securities Class Action", company: "WorldCom / MCI",
+    type: "Securities Fraud", industry: "Telecommunications", outcome: "settled", year: 2002,
+    affectedPop: "Millions of investors", jurisdiction: "S.D. New York", mdlNumber: "MDL 1393",
+    settlementAmount: "$6.13B", classSize: "Millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "WorldCom capitalized $3.8B in operating expenses to inflate earnings. Largest accounting fraud at time. Underwriter banks (Citibank, JPMorgan, Bank of America) settled for contributing to fraud. CFO/CEO convicted.",
+    leadCounsel: "Milberg Weiss (now Milberg), Coughlin Stoia",
+    keyPrecedent: "Stoneridge Investment Partners v. Scientific-Atlanta",
+    tags: ["WorldCom", "MCI", "accounting fraud", "telecom", "securities fraud", "MDL"],
+    notes: "$6.13B settlement. Underwriter bank liability was groundbreaking — expanded class action exposure to investment banks that underwrote fraudulent securities. Led to SOX reforms.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$3,000+ avg (millions of investors); $6.13B total",
+      litigationYears: 4,
+      whyItWorked: "WorldCom's fraud was simple to explain: they moved $3.8B in operating expenses to the capital account — a straightforward accounting lie that any jury could understand. CFO Scott Sullivan pleaded guilty and cooperated, providing devastating inside evidence. Citibank's Jack Grubman (star telecom analyst) issued fraudulent buy recommendations while Citi collected investment banking fees — a direct fraud-on-the-market pipeline. Underwriter bank liability (banks certified false financials in offering documents) was critical to fund recovery.",
+      challenges: "WorldCom's bankruptcy limited direct recovery from the company. Stoneridge (2008) subsequently limited third-party scheme liability theories prospectively. PSLRA's pleading standard required specific fraud allegations pre-discovery — met by Sullivan's cooperation.",
+      strategiesWon: ["Underwriter bank liability: banks underwrote bonds based on false financial statements in SEC-filed prospectuses", "CFO cooperation (Scott Sullivan) — inside evidence of deliberate fraud confirmed scienter", "Jack Grubman analyst conflict documented (Citi paid Grubman while issuing buy ratings)", "Bond investor class (Section 11 claims) as alternative to Section 10(b) fraud requiring lower scienter showing"],
+      strategiesFailed: ["CEO Bernie Ebbers' defense ('I didn't know') created uncertainty for Section 10(b) scienter against Ebbers personally", "Complex telecom accounting required extensive expert testimony"],
+      demographics: "Millions of global retail and institutional investors; significant bond fund holders; pension funds (state and corporate); retirement account holders",
+      injuryTypes: ["Stock price collapse (from $64 to pennies)", "Bond default losses", "Pension and retirement fund losses", "Options losses"],
+      keyEvidence: "Scott Sullivan's cooperation agreement and plea; internal WorldCom memos from Sullivan to Ebbers; SEC accounting investigation records; Jack Grubman's conflicted analyst reports; offering documents with false financials certified by underwriters",
+      corporateMisconduct: "WorldCom's CFO Scott Sullivan and CEO Bernie Ebbers directed the capitalization of $3.8B in ordinary operating expenses (line costs) as capital expenditures to meet Wall Street's earnings expectations. Ebbers fraudulently borrowed $366M from WorldCom backed by company stock. The fraud occurred over 5 years while underwriting banks certified false financials.",
+      regulatoryActions: "SEC civil enforcement; DOJ — Scott Sullivan cooperated, Ebbers convicted (25 years), Sullivan 5 years; FCC investigation; SOX legislation accelerated by WorldCom collapse",
+      settlementStructure: "$6.13B fund: Citibank $2.65B; JPMorgan $2B; Bank of America $460.5M; Arthur Andersen $65M; 15 other underwriters $2.6B aggregate; WorldCom estate residual",
+      bellwetherOutcome: "N/A — settled; Ebbers criminal conviction established scienter",
+      attorneyFees: "~$530M; Milberg Weiss / Coughlin Stoia lead",
+      replicationModel: "A+ — Underwriter bank liability template for bond offerings. Section 11 strict liability theory for offering documents containing false financials is highly replicable in any IPO/secondary offering fraud case.",
+      clientAcquisitionStrategy: "Historical case — recovery closed. Template for future cases: bond investors are an underutilized sub-class with Section 11 strict liability claims (no scienter required against underwriters). Target institutional bond fund investors as lead plaintiffs.",
+      watchOut: "Stoneridge v. Scientific-Atlanta (2008) limits scheme liability against secondary actors. Bank underwriter liability is strongest under Section 11 (offering documents) not Section 10(b) (ongoing fraud). Distinguish between underwriting banks vs. secondary market banks for liability purposes."
+    }
+  },
+
+  {
+    id: 103, title: "Madoff Securities Investor Class Action", company: "Bernard Madoff Investment Securities",
+    type: "Securities Fraud", industry: "Financial Services", outcome: "ongoing (recovery)", year: 2008,
+    affectedPop: "~37,000 clients, 65+ countries", jurisdiction: "S.D. New York (SIPA)", mdlNumber: "No MDL (SIPA)",
+    settlementAmount: "$14.4B+ recovered (SIPC trustee)",
+    classSize: "~37,000 accounts",
+    rule23bType: "n/a (SIPA proceeding)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Madoff ran $65B Ponzi scheme for 40+ years. SIPC trustee (Irving Picard) pursued banks (HSBC $1.025B, JPMorgan $543M, UBS $120M) and feeder funds. Novel 'net winner / net loser' recovery structure.",
+    leadCounsel: "Baker Hostetler (trustee)",
+    keyPrecedent: "Securities Investor Protection Act (SIPA)",
+    tags: ["Madoff", "Ponzi scheme", "SIPA", "securities fraud", "HSBC", "feeder fund", "investor recovery"],
+    notes: "Not a traditional class action — SIPA liquidation proceeding. Irving Picard recovered $14.4B+ of ~$20B principal losses. Illustrates SIPA as parallel track to Rule 23 class for securities fraud victim recovery.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$390K avg ($14.4B ÷ 37,000 accounts); 'net loser' victims recover ~80 cents on dollar",
+      litigationYears: 16,
+      whyItWorked: "SIPA trustee Irving Picard's recovery model is the gold standard for Ponzi scheme victim recovery. By pursuing feeder funds and banks that enabled the scheme (HSBC $1.025B, JPMorgan $543M, UBS $120M, Tremont $1B), Picard recovered $14.4B+ of $20B in principal losses — extraordinary for any fraud case. The 'net winner / net loser' framework was upheld: victims who withdrew more than they invested are required to return profits to compensate net losers, a novel and controversial but ultimately effective equalization mechanism.",
+      challenges: "The 'net winner / net loser' framework was deeply contested by investors who believed their 'profits' were real. Offshore feeder funds (Fairfield Greenwich, Tremont, Herald Funds) involved complex international jurisdiction questions. Some recoveries from foreign entities required international litigation. 37,000 accounts across 65 countries = massive administration burden.",
+      strategiesWon: ["SIPA trustee had expansive recovery powers beyond Rule 23 class action", "Net winner / net loser equalization maximized overall distribution", "Feeder fund bank liability: HSBC/JPMorgan's 'willful blindness' to obvious fraud = constructive knowledge", "Fraudulent conveyance theory: 'profits' received by net winners were themselves fraudulent transfers subject to clawback", "International asset tracing recovered billions held offshore by Madoff associates"],
+      strategiesFailed: ["Direct RICO class action against Madoff's primary broker-dealer was dismissed — SIPA proceeding preempted", "Net winner clawback controversial and contested — many investors felt victimized twice"],
+      demographics: "37,000 accounts globally; hedge fund and family office institutional investors; high-net-worth individuals; Jewish community organizations and charities; Palm Beach, New York, and European elite investor communities",
+      injuryTypes: ["Total loss of principal investments", "Phantom profits (fictitious statements) created false wealth that never existed", "Downstream losses by charities/foundations that invested endowments", "Reliance harm: investors forewent other investment opportunities"],
+      keyEvidence: "Bernie Madoff's own confession and cooperation; JPMorgan suspicious activity reports filed with UK regulators (not U.S.) — bank knew; HSBC feeder fund due diligence failures documented in KPMG report; Fairfield Greenwich records showing no actual trading occurred",
+      corporateMisconduct: "Madoff ran the largest Ponzi scheme in history for 40+ years, fabricating trading records showing consistent 10-12% annual returns. No actual trading occurred. JPMorgan held Madoff's primary bank account and filed UK suspicious activity reports but not U.S. SAR reports — arguably shielding the fraud from U.S. regulators. HSBC, UBS, and major banks operated feeder funds taking management fees while ignoring red flags.",
+      regulatoryActions: "SEC Inspector General report (admitted SEC missed multiple warnings over 16 years); Madoff pleaded guilty, sentenced 150 years (died in prison 2021); Frank DiPascali (CFO) cooperated; 5 employees convicted; JPMorgan $2.6B non-prosecution agreement; HSBC $1.025B settlement",
+      settlementStructure: "SIPA liquidation proceeding (not Rule 23): net loser/net winner framework; $14.4B+ recovered from: feeder funds ($6B), banks ($3B), Madoff estate ($2B+), international recoveries; net loser victims receiving ~80 cents on dollar of principal",
+      bellwetherOutcome: "N/A — SIPA proceeding, not bellwether trial structure",
+      attorneyFees: "Baker Hostetler as trustee counsel; Irving Picard trustee fees capped at $1.5B over 16-year recovery",
+      replicationModel: "A+ — SIPA as superior alternative to Rule 23 for broker-dealer Ponzi scheme victims. Net loser/net winner equalization framework. Feeder fund/bank constructive knowledge theory for all future Ponzi-adjacent cases. See also: Stanford International Bank SIPA.",
+      clientAcquisitionStrategy: "Historical — claims filed through SIPC/Picard trustee process. For future Ponzi cases: target feeder fund investors, wealth management clients of suspected Ponzi managers. Refer victims to SIPC trustee process. For criminal fraud claims: pursue willful blindness theory against enabling banks.",
+      watchOut: "SIPA preempts Rule 23 class action against SIPA defendant — parallel class actions may be dismissed. Net winner clawback creates PR challenge — clients who received 'profits' must return them. 16-year timeline tests client patience."
+    }
+  },
+
+  {
+    id: 104, title: "Halliburton / KBR Securities Class Action", company: "Halliburton Co.",
+    type: "Securities Fraud", industry: "Energy/Defense", outcome: "settled", year: 2002,
+    affectedPop: "Investors 1999–2001", jurisdiction: "N.D. Texas", mdlNumber: "No MDL",
+    settlementAmount: "$100M", classSize: "Thousands of investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed (SCOTUS 2014)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Halliburton concealed asbestos liabilities and inflated revenue via construction contract accounting. SCOTUS case (Halliburton Co. v. Erica P. John Fund, 2014) preserved but modified fraud-on-the-market presumption — allows price impact rebuttal.",
+    leadCounsel: "Robbins Geller, Lead plaintiff: Erica P. John Fund",
+    keyPrecedent: "Halliburton Co. v. Erica P. John Fund (2014 SCOTUS) — modified Basic presumption",
+    tags: ["Halliburton", "KBR", "securities fraud", "fraud on the market", "SCOTUS", "price impact"],
+    notes: "CRITICALLY IMPORTANT PRECEDENT: Halliburton II (2014 SCOTUS) allows defendants to rebut fraud-on-the-market price impact presumption at class cert stage. Reshuffled securities class action landscape. Must-know for securities MDL.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$10-50/share recovered (modest given Halliburton's size and ongoing operations)",
+      litigationYears: 14,
+      whyItWorked: "The underlying fraud (concealing asbestos liabilities, inflated construction contract revenues) was clearly proven. The $100M settlement, while modest for Halliburton's size, was reasonable given the company's ongoing operations and viability. The case's true importance is its SCOTUS legacy — Halliburton II (2014) is the most important securities class action precedent since Basic Inc. v. Levinson.",
+      challenges: "Price impact evidence was contested — Halliburton argued its disclosures didn't meaningfully affect stock price. The Supreme Court agreed defendants should have an opportunity to rebut the fraud-on-the-market presumption at the class certification stage with price impact evidence — a significant win for defendants that reshaped class certification battles in all future securities cases.",
+      strategiesWon: ["Fraud-on-the-market presumption survived (Basic preserved)", "Multidistrict context: clear materiality of concealed asbestos liability", "Event study evidence of price drop on disclosure = loss causation"],
+      strategiesFailed: ["Price impact rebuttal evidence at class certification stage was the central contested issue — defendants now have this tool post-Halliburton II", "PSLRA loss causation requirements were harder to meet without clear corrective disclosure"],
+      demographics: "Institutional and retail investors in Halliburton stock (NYSE: HAL); energy sector investors; DOD/government contractor investor community",
+      injuryTypes: ["Stock price decline on disclosure of concealed asbestos liability", "Economic loss from inflated purchase price"],
+      keyEvidence: "Internal memos showing knowledge of asbestos subsidiary liabilities; inflated Dresser Industries acquisition accounting; CEO Cheney's public statements downplaying asbestos exposure",
+      corporateMisconduct: "Halliburton (then chaired by Dick Cheney) concealed $7B+ in asbestos liabilities from its engineering subsidiary and inflated revenues from construction contracts using percentage-of-completion accounting in violation of GAAP. Management made repeated reassuring public statements while internally managing known asbestos exposure.",
+      regulatoryActions: "SEC investigation; no criminal charges (Cheney left Halliburton for VP role); subsequent deferred prosecution agreement on KBR bribery (separate case)",
+      settlementStructure: "$100M settlement (2018 post-remand); stock distribution to class members with documented purchase-sale damages",
+      bellwetherOutcome: "N/A — settled; SCOTUS proceedings were procedural (class certification) not merits",
+      attorneyFees: "~$33M (33%); Robbins Geller lead",
+      replicationModel: "B+ — Case itself is modest. SCOTUS precedent (Halliburton II) is critical: defense counsel will always file price impact rebuttal evidence at class cert in securities cases. Plaintiff counsel must prepare event studies rebutting price impact rebuttal. Essential for every securities class action filed post-2014.",
+      clientAcquisitionStrategy: "Historical — limited current application. For future securities cases: institutional investors as lead plaintiffs; price impact event study preparation is now mandatory pre-certification step; anticipate price impact rebuttal at class certification.",
+      watchOut: "Price impact rebuttal at class certification (Halliburton II) is now the primary defense strategy in all securities cases. Plaintiff must have a strong economist/event study expert prepared for class cert stage — not just merits stage. This case changed the economics of securities class actions."
+    }
+  },
+
+  {
+    id: 105, title: "Theranos Securities and Wire Fraud", company: "Theranos",
+    type: "Securities Fraud", industry: "Healthcare/Technology", outcome: "settled", year: 2018,
+    affectedPop: "~$700M in investor losses", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "$5M (SEC) + criminal (Holmes convicted)",
+    classSize: "~800 investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed (criminal)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Elizabeth Holmes raised $700M claiming blood tests from finger pricks — technology never worked. FDA cited, DOD cancelled contract. Holmes convicted on 4 criminal counts 2022 (sentenced 11 years). Investors' class action settled $5M SEC.",
+    leadCounsel: "Cotchett Pitre & McCarthy",
+    keyPrecedent: "SEC v. Theranos",
+    tags: ["Theranos", "Elizabeth Holmes", "securities fraud", "health tech", "startup fraud", "criminal"],
+    notes: "Landmark startup fraud case. Holmes sentenced 11.25 years. Sunny Balwani 13 years. Private company securities fraud (Regulation D) — less common than public company class actions. Patient harm from inaccurate tests also created tort claims.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$6,250 avg ($5M ÷ 800 investors) from SEC settlement; private investor recovery limited",
+      litigationYears: 6,
+      whyItWorked: "Holmes' criminal conviction (4 counts, 11.25 years) established beyond reasonable doubt that Theranos was a fraud — the civil case was essentially handed to plaintiffs by the DOJ. The internal Theranos documents (produced in criminal case) showed Holmes knew the Edison device couldn't perform the promised tests. Patient harm claims (misdiagnoses from inaccurate test results) created additional injury theories beyond investor losses. The cultural impact ('Silicon Valley hustle culture' accountability) generated significant media pressure.",
+      challenges: "Private company (Reg D) securities fraud is fundamentally different from public company class actions: no Rule 10b-5 fraud-on-the-market, no publicly traded security, no efficient market presumption. 800 accredited investors (not millions of retail investors) = small class with high-dollar individual claims. Many investors were sophisticated VCs and family offices who may have conducted inadequate due diligence.",
+      strategiesWon: ["Criminal conviction as res judicata foundation for civil case", "Patient harm claims (negligence, battery) for inaccurate test results", "Private company fraud theory under Rule 10b-5 for direct representation to investors", "Media coverage created maximum settlement pressure on Walgreens (retail partner) and Safeway"],
+      strategiesFailed: ["No public market = no fraud-on-the-market theory", "Sophisticated investor defense: VCs and family offices argued they should have done more due diligence", "Walgreens and Safeway partnership liability limited by contractual disclaimers"],
+      demographics: "~800 accredited investors (VC funds, family offices, high-net-worth individuals, media/tech moguls like Rupert Murdoch, Betsy DeVos, former Secretaries of State); patient harm claims: Arizona, California patients who received inaccurate test results",
+      injuryTypes: ["Total loss of $700M+ invested", "Business losses for Walgreens/Safeway partnerships", "Patient harm: false positive/negative diagnoses for cancer, HIV, cholesterol from inaccurate tests", "False sense of health security (patients relied on inaccurate results)"],
+      keyEvidence: "Tyler Shultz and Erika Cheung whistleblower testimony; John Carreyrou WSJ investigative reporting (2015); FDA inspection records showing Edison device failures; Holmes' own emails acknowledging device limitations; 'The Inventor' documentary",
+      corporateMisconduct: "Elizabeth Holmes invented a non-existent technology — a portable blood testing device using finger pricks that she claimed could run 200+ tests. The Edison device was incapable of running most claimed tests accurately. Holmes covered up failures by diluting samples and using Siemens equipment secretly. She raised $700M from investors and expanded to Walgreens/Safeway retail while knowing the technology didn't work — putting patients at real medical risk.",
+      regulatoryActions: "SEC civil enforcement ($500K fine, officer/director bar); DOJ — Holmes convicted 4 counts (11.25 years), Balwani convicted all 12 counts (13 years); FDA warning letter; CMS (Medicare) sanctions revoked Theranos lab certification",
+      settlementStructure: "SEC civil settlement ($5M); Walgreens civil settlement ($140M separate) for partnership fraud; Safeway civil settlement; private investor class actions pending; patient harm claims ongoing",
+      bellwetherOutcome: "N/A — criminal conviction serves as bellwether equivalent",
+      attorneyFees: "Contingent; Cotchett Pitre lead",
+      replicationModel: "B+ — Template for private startup fraud cases. Key lesson: pursue criminal prosecution parallel track to establish scienter before civil case. Private Reg D fraud theory for direct investor representations is viable but limited by no public market. Patient harm claims from medical device fraud = additional recovery track.",
+      clientAcquisitionStrategy: "Target Theranos investors who have not yet obtained full recovery (civil litigation ongoing). For future cases: private startup investors who received direct misrepresentations. Medical patients who received inaccurate test results (tort track). Document: blood test results from Theranos between 2013-2016 = potential medical negligence claim.",
+      watchOut: "Private company fraud = no class action treatment under fraud-on-the-market. Each investor must show individual reliance on specific misrepresentations. Sophisticated investor defense is strong — many VC investors will argue they were adequately capitalized to absorb losses. Patient harm causation is difficult: proving inaccurate test result caused specific medical harm requires individual proof."
+    }
+  },
+
+  {
+    id: 106, title: "FTX Crypto Exchange Collapse MDL", company: "FTX / Sam Bankman-Fried",
+    type: "Securities Fraud", industry: "Cryptocurrency", outcome: "pending (criminal + civil)", year: 2022,
+    affectedPop: "~1M customers", jurisdiction: "S.D. Florida (class) + SDNY (criminal)",
+    mdlNumber: "MDL 3161 (consumer class)",
+    settlementAmount: "SBF sentenced 25 years; recovery fund ongoing",
+    classSize: "~1M",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "FTX misappropriated ~$8B in customer funds via Alameda Research. SBF convicted on all 7 counts, sentenced 25 years (2024). Bankruptcy recovery fund projected to repay 100 cents on dollar (at crypto prices). Celebrity endorser claims (Tom Brady, Stephen Curry) active.",
+    leadCounsel: "Moskowitz Law, Susman Godfrey",
+    keyPrecedent: "In re MF Global Holdings",
+    tags: ["FTX", "Sam Bankman-Fried", "crypto", "cryptocurrency", "Ponzi", "fraud", "MDL"],
+    notes: "Largest crypto fraud case. SBF sentenced 25 years 2024. Novel: celebrity endorser claims. Bankruptcy estate projecting 100%+ recovery due to crypto price appreciation. First major crypto customer class MDL.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$8,000 avg (1M customers); $8B principal losses; bankruptcy estate projecting 100 cents on dollar return",
+      litigationYears: 4,
+      whyItWorked: "SBF's criminal conviction on all 7 counts (25 years) provides ironclad scienter proof for civil case. FTX misappropriated $8B in customer funds — the most straightforward fraud theory: customer deposited money, money was stolen. The bankruptcy estate's extraordinary 100%+ recovery projection (due to crypto price appreciation since collapse) creates rare scenario where full recovery is realistic. Celebrity endorser claims (Tom Brady, Steph Curry, Larry David, Shaquille O'Neal) provide alternative deep-pocket defendants with strong publicity value.",
+      challenges: "Bankruptcy proceeding is primary recovery mechanism — civil class action may be stayed pending bankruptcy. Celebrity endorser liability requires showing they knew (or recklessly disregarded) FTX's fraud — high scienter bar. 'Unregistered securities' theory for FTT token is contested regulatory question. International jurisdiction complexity (FTX incorporated in Bahamas).",
+      strategiesWon: ["Criminal conviction establishes scienter beyond doubt for civil case", "Celebrity endorser claims as alternative deep-pocket defendants (Brady, Curry, O'Neal)", "Bankruptcy estate recovery (crypto appreciation) creates full principal recovery possibility", "Unregistered securities theory for FTT token enables Section 12(a)(1) claims", "State consumer fraud claims for celebrity endorsements without adequate disclosures"],
+      strategiesFailed: ["Bahamas incorporation creates jurisdiction complications", "Crypto regulatory uncertainty: are FTT tokens securities?"],
+      demographics: "~1M global customers; tech-savvy retail crypto investors; significant international class (Bahamas/FTX non-U.S. domicile); celebrity-influenced younger investors (30s and under)",
+      injuryTypes: ["Total loss of deposited crypto assets (BTC, ETH, FTT, USDC)", "Reliance losses from celebrity endorsements", "Loss of locked account assets during bankruptcy freeze", "Business losses for institutional market makers"],
+      keyEvidence: "SBF's own Twitter/email admissions; Caroline Ellison cooperation (documented fund misappropriation); FTX balance sheets showing $8B hole; celebrity endorsement contracts; Sam Trabucco (Alameda CEO) cooperation; FTX Terms of Service (customer assets were customers' property, not FTX's)",
+      corporateMisconduct: "Sam Bankman-Fried used customer deposits in FTX to fund Alameda Research's trading losses, personal loans to executives ($2.2B), political donations ($40M), and luxury real estate in Bahamas. FTX's 'Effective Altruism' brand was used as cover. Celebrity endorsers were paid millions to promote what was effectively a Ponzi scheme.",
+      regulatoryActions: "DOJ: SBF convicted all 7 counts, 25 years; Caroline Ellison, Gary Wang, Ryan Salame, Sam Trabucco cooperating; CFTC civil enforcement $12.7B; SEC enforcement $6.1B; FCA/UK regulatory action; Bahamian criminal prosecution",
+      settlementStructure: "FTX bankruptcy estate (D. Delaware) projecting 100%+ return on customer claims; celebrity civil class MDL 3161 (S.D. Florida) separate; SBF personal assets ($<1B available) subject to forfeiture",
+      bellwetherOutcome: "Pending — celebrity endorser bellwether may proceed",
+      attorneyFees: "Contingent 33%; Moskowitz Law and Susman Godfrey lead",
+      replicationModel: "A — Celebrity endorser liability template for crypto fraud. First major application of securities laws to crypto exchange. Bankruptcy estate recovery model for crypto fraud (as distinguished from securities brokerage SIPA). Direct template for any future crypto exchange collapse (Binance, Coinbase breach cases).",
+      clientAcquisitionStrategy: "Target FTX account holders who had assets locked at collapse (Nov 2022). Bankruptcy claims can be purchased by firms for efficient recovery. Celebrity endorser claims: investors who opened FTX accounts after seeing Tom Brady/Steph Curry ads have strong reliance claims. International customers need parallel Bahamas/UK proceedings.",
+      watchOut: "Bankruptcy stay may defer civil class resolution years. Celebrity endorser scienter is highest bar — need evidence they knew FTX was fraudulent (not just negligent). 100 cents on dollar bankruptcy recovery (if it happens) may moot civil claims. Crypto regulatory uncertainty affects securities vs. commodity classification."
+    }
+  },
+
+  {
+    id: 107, title: "Lumber Liquidators Securities Class Action", company: "Lumber Liquidators Holdings",
+    type: "Securities Fraud", industry: "Retail", outcome: "settled", year: 2015,
+    affectedPop: "Investors 2013–2015", jurisdiction: "E.D. Virginia", mdlNumber: "No MDL",
+    settlementAmount: "$26M", classSize: "Thousands of investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Lumber Liquidators stock dropped after 60 Minutes formaldehyde report. Investors alleged company knew about compliance issues. Companion to MDL 2627 consumer class. Illustrates same media event spawning both consumer and securities class actions.",
+    leadCounsel: "Pomerantz LLP",
+    keyPrecedent: "Dura Pharmaceuticals v. Broudo",
+    tags: ["Lumber Liquidators", "securities fraud", "formaldehyde", "investor", "dual class action", "60 Minutes"],
+    notes: "Same fact pattern as consumer MDL 2627 but securities theory — officers knew of formaldehyde issues and failed to disclose material risk. Classic dual-track (consumer + securities) class action triggered by media event.",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "~$300 avg (small institutional investor class)",
+      litigationYears: 4,
+      whyItWorked: "The 60 Minutes segment was the perfect corrective disclosure: stock dropped 25% within days of broadcast, creating clear loss causation under Dura Pharmaceuticals. Management's prior statements denying formaldehyde compliance issues were directly contradicted by internal testing data. The dual-track nature (consumer MDL running in parallel) confirmed the materiality of the safety issue through independent litigation.",
+      challenges: "Small securities fraud case relative to company size. Scienter was contested — executives argued they relied on supplier certifications rather than personally knowing of violations. The stock partially recovered as the company addressed compliance issues, complicating damages calculation.",
+      strategiesWon: ["60 Minutes broadcast = perfect corrective disclosure triggering loss causation", "Internal testing data contradicting management's public statements = strong scienter evidence", "Dura Pharmaceuticals loss causation (stock drop on media disclosure)", "Consumer MDL as independent confirmation of materiality"],
+      strategiesFailed: ["Partial stock recovery complicated damages model", "Executives' reliance-on-suppliers defense was credible and reduced scienter certainty"],
+      demographics: "Lumber Liquidators institutional and retail investors; value/small-cap investor community; lumber/flooring industry investors",
+      injuryTypes: ["Stock price decline from $68 to $8 (2015-2019)", "Loss on Lumber Liquidators convertible notes", "Opportunity cost losses"],
+      keyEvidence: "60 Minutes investigation with undercover purchase samples showing elevated formaldehyde; California CARB test results; internal Lumber Liquidators emails; SEC Form 10-K risk disclosure analysis showing material omissions",
+      corporateMisconduct: "Lumber Liquidators sourced laminate flooring from Chinese suppliers who falsified CARB (California Air Resources Board) formaldehyde compliance certifications. Management conducted field testing that showed non-compliance but continued selling product and publicly denying compliance issues. The company prioritized price competition over consumer safety.",
+      regulatoryActions: "DOJ criminal guilty plea ($36M) for LACEY Act violations and securities fraud; CPSC safety alert; California AG action; SEC investigation",
+      settlementStructure: "$26M securities class settlement; stock distribution to class; companion $36M DOJ criminal plea; consumer MDL $36M settlement",
+      bellwetherOutcome: "N/A — settled",
+      attorneyFees: "~$8.5M (33%); Pomerantz lead",
+      replicationModel: "B — Good template for media-triggered dual securities/consumer class. '60 Minutes effect' is a pattern: media investigative exposure creates corrective disclosure + loss causation for securities case while simultaneously driving consumer class. Template for Chipotle (food safety + securities), NEC (formula + securities).",
+      clientAcquisitionStrategy: "Historical — recovery largely closed. For future cases: when consumer product safety crisis hits a public company, immediately evaluate parallel securities fraud track. Timeline: (1) 60 Minutes/media exposure, (2) stock drop >10%, (3) internal documents showing management knowledge, = securities class action.",
+      watchOut: "Dual-track consumer + securities cases create potential collateral estoppel issues (findings in consumer case may affect securities case and vice versa). Coordinate discovery between both tracks. Small securities class relative to company means fee economics require careful assessment."
+    }
+  },
+
+  {
+    id: 108, title: "Boeing 737 MAX Securities Class Action", company: "The Boeing Company",
+    type: "Securities Fraud", industry: "Aerospace/Aviation", outcome: "settled", year: 2019,
+    affectedPop: "Boeing investors 2019", jurisdiction: "N.D. Illinois", mdlNumber: "No MDL",
+    settlementAmount: "$237.5M", classSize: "Thousands of investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Boeing hid MCAS software defect that caused two 737 MAX crashes (346 deaths). Stock dropped 25% after second crash. Investors alleged Boeing misrepresented safety. $237.5M investor settlement + $2.5B DOJ DPA (defect/fraud).",
+    leadCounsel: "Robbins Geller",
+    keyPrecedent: "In re United Airlines MDL (safety disclosure duty)",
+    tags: ["Boeing", "737 MAX", "MCAS", "aviation", "securities fraud", "investor", "crash"],
+    notes: "$237.5M investor settlement + $2.5B DOJ deferred prosecution. Companion to wrongful death/product liability cases. Illustrates aviation safety failure driving parallel securities, product liability, and criminal tracks.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$2,375 avg institutional; $237.5M total",
+      litigationYears: 5,
+      whyItWorked: "Two 737 MAX crashes (346 deaths) provided the most dramatic corrective disclosure possible. Boeing's stock dropped 25% immediately after the Ethiopian Airlines crash. Internal documents (released by DOJ and NTSB) showed Boeing engineers knew about MCAS flaws and mocked FAA oversight. The $2.5B DOJ deferred prosecution agreement independently proved corporate scienter for civil securities case. Boeing's own internal communications ('This airplane is designed by clowns, who are in turn supervised by monkeys') were devastating.",
+      challenges: "Boeing is a critical defense contractor and major employer — political pressure to limit exposure. MCAS safety disclosures were complex and technical — required extensive expert testimony on aviation safety standards. Some false statements were regulatory (FAA certification) rather than financial, complicating classic securities fraud framing.",
+      strategiesWon: ["DOJ deferred prosecution agreement establishing Boeing's wrongdoing = civil res judicata", "Internal Boeing emails as smoking gun evidence of scienter", "737 MAX grounding order (worldwide) as undeniable materiality of concealed defects", "Wrongful death/product liability parallel track maintained pressure", "Congressional hearings created additional damaging document disclosures"],
+      strategiesFailed: ["Boeing's national security/defense contractor status limited government willingness to impose maximum penalties", "DOJ DPA rather than criminal prosecution limited preclusive effect in civil case"],
+      demographics: "Institutional investors in Boeing (NYSE: BA); pension funds; airline industry investors; defense sector ETF holders",
+      injuryTypes: ["Stock price collapse from $446 to $89 (2019-2020)", "Bond losses on Boeing debt", "Options losses on grounding announcement"],
+      keyEvidence: "Internal Boeing communications including 'designed by clowns' email; MCAS technical documents showing known single-sensor dependency; FAA MAX Certification Review Team findings; NTSB accident reports; Lion Air accident investigation documents; Ethiopian Airlines accident investigation",
+      corporateMisconduct: "Boeing rushed the 737 MAX to market to compete with Airbus A320neo. The MCAS (Maneuvering Characteristics Augmentation System) was designed to activate based on a single angle-of-attack sensor — a single point of failure engineers internally flagged. Boeing concealed MCAS's full authority from pilots and regulators to avoid costly simulator training requirements. Two crashes killed 346 people. Boeing paid $2.5B DPA while admitting its employees misled the FAA.",
+      regulatoryActions: "DOJ $2.5B deferred prosecution agreement (2021); FAA MAX grounding order (13 months); Congressional investigation (House Transportation Committee); NTSB accident investigations; international aviation authority investigations (EASA, Transport Canada); $200M SEC settlement for misleading investors",
+      settlementStructure: "$237.5M securities class settlement; $2.5B DOJ DPA ($1.77B to crash victims, $243.6M fine, $500M customer compensation); FAA certification reinstatement requirements",
+      bellwetherOutcome: "N/A — settled; DOJ DPA served as liability establishment mechanism",
+      attorneyFees: "~$78M (33%); Robbins Geller lead",
+      replicationModel: "A — Aviation safety failure → securities fraud template. Critical disclosure: when safety defects in critical products are concealed from regulators (FAA), the same documents proving securities fraud are produced via regulatory subpoena. DOJ DPA as settlement accelerant for civil case is highly replicable.",
+      clientAcquisitionStrategy: "Target Boeing institutional shareholders who held between December 2018 and July 2019 (Ethiopian Airlines crash date). Pension funds are primary lead plaintiff candidates. Cross-refer wrongful death cases (346 crash victims' families) to separate tort counsel for parallel track.",
+      watchOut: "Aviation safety cases require complex MCAS/FAA technical expert testimony. Defense contractor status creates political complexity (Boeing employs 150K+). DOJ DPA (not criminal conviction) gives Boeing argument that no 'crime' was admitted. Separate wrongful death/criminal track and investor track carefully — different damages theories."
+    }
+  },
+
+  {
+    id: 109, title: "Goldman Sachs 1MDB Securities Class Action", company: "Goldman Sachs",
+    type: "Securities Fraud", industry: "Investment Banking", outcome: "settled", year: 2020,
+    affectedPop: "Investors 2012–2018", jurisdiction: "E.D. New York", mdlNumber: "No MDL",
+    settlementAmount: "$215M (class) + $2.9B (DOJ/international)",
+    classSize: "Thousands of investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Goldman bankers took $600M+ in bribes to help 1MDB (Malaysian sovereign fund) issue $6.5B in bonds while looting $4.5B. Goldman hid bribery from investors. $215M class + $2.9B DOJ + $3.9B international settlements.",
+    leadCounsel: "Bernstein Litowitz Berger & Grossmann",
+    keyPrecedent: "Morrison v. National Australia Bank (cross-border)",
+    tags: ["Goldman Sachs", "1MDB", "bribery", "Malaysia", "sovereign wealth", "securities fraud", "international"],
+    notes: "$2.9B DOJ settlement. $3.9B additional international settlements. Largest bank securities fraud settlements involving foreign corruption. Novel: U.S. securities class action for foreign sovereign fund fraud.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$21,500 avg ($215M ÷ Goldman shareholder class); DOJ/int'l recoveries benefit Malaysia separately",
+      litigationYears: 8,
+      whyItWorked: "Goldman's own bankers (Tim Leissner, Roger Ng) were convicted — providing iron-clad scienter against Goldman as institution. The $2.9B DOJ settlement was the largest bank settlement for FCPA violations in history. Goldman's public statements ('best in class compliance') were directly contradicted by internal evidence of executive-level bribery approval. The international scope created multi-sovereign pressure (U.S. DOJ + Malaysia + Singapore + UK FCA) that made settlement inevitable.",
+      challenges: "Morrison v. National Australia Bank (2010) limits U.S. securities law to domestic transactions — investors who bought Goldman stock on U.S. exchanges had valid claims, but foreign 1MDB bond investors had weaker standing. Goldman's defense: unauthorized rogue employee theory (Leissner acted without corporate approval) initially limited institutional liability.",
+      strategiesWon: ["Tim Leissner conviction and cooperation demolished Goldman's 'rogue employee' defense", "$2.9B DOJ FCPA settlement admitting institutional knowledge of bribery", "Multi-sovereign coordination (U.S. + Malaysia + Singapore) created maximum pressure", "Goldman's board governance failures (inadequate compliance oversight) as separate securities omission theory"],
+      strategiesFailed: ["Foreign bond investor standing under Morrison limited domestic class size", "Goldman's 'rogue employee' defense delayed settlement several years"],
+      demographics: "Goldman Sachs shareholders 2012-2018; institutional investors in Goldman stock; Malaysian sovereign fund 1MDB as victim; Goldman bond investment clients",
+      injuryTypes: ["Goldman stock price decline on DOJ/SEC enforcement news", "Goldman reputational damage affecting business income", "1MDB bond investors (Malaysia) — sovereign fund looted $4.5B"],
+      keyEvidence: "Tim Leissner guilty plea and cooperation (named Lloyd Blankfein meetings); Roger Ng conviction; email evidence of Goldman senior bankers discussing 'kickback' arrangements; Jho Low intermediary communications; Malaysian court documents; DOJ statement of facts (Goldman admitted institutional misconduct)",
+      corporateMisconduct: "Goldman Sachs bankers, including senior executives, paid $600M+ in bribes to Malaysian officials and Jho Low to secure $6.5B in bond underwriting fees from 1MDB. Goldman charged $600M in fees (10x industry standard) while helping loot Malaysia's sovereign development fund. Senior Goldman officials approved the deal knowing of bribery. The fund money was used to purchase luxury real estate, yachts, a Hollywood film studio (Red Granite, producers of 'The Wolf of Wall Street'), and $3.5B in personal enrichment.",
+      regulatoryActions: "DOJ: Leissner convicted, Roger Ng convicted; Goldman $2.9B FCPA DPA (2020); SEC $1B settlement; Malaysia $3.9B settlement; UK FCA investigation; Singapore MAS enforcement; Malaysia criminal charges (Goldman Malaysia subsidiary pled guilty); 1MDB civil asset recovery in multiple countries",
+      settlementStructure: "$215M investor class settlement; $2.9B DOJ DPA; $3.9B Malaysia settlement; $1B SEC settlement; total Goldman 1MDB exposure: ~$10B+ globally",
+      bellwetherOutcome: "N/A — settled; DOJ DPA and criminal convictions serve as liability foundation",
+      attorneyFees: "~$71M (33%); Bernstein Litowitz lead",
+      replicationModel: "A — Cross-border bank FCPA securities fraud template. Goldman 1MDB is the model for: (1) bank as FCPA defendant, (2) international multi-sovereign coordination, (3) corporate institutional liability after rogue employee defense fails. Relevant for any future foreign corruption case involving a U.S.-listed financial institution.",
+      clientAcquisitionStrategy: "Target Goldman Sachs shareholders 2012-2018 who held at time of DOJ/SEC announcement. Pension funds as lead plaintiffs. For future cases: when U.S. bank is named in foreign corruption investigation (DOJ FCPA action), begin securities class investigation immediately — corporate officers' public statements of compliance are presumptively false.",
+      watchOut: "Morrison v. National Australia Bank limits foreign investor standing. FCPA cases are slow (multi-year DOJ investigations) — securities class must be patient before corrective disclosure creates loss causation. Bank's 'rogue employee' defense may be initially successful in delaying settlement."
+    }
+  },
+
+  {
+    id: 110, title: "SVB / Silicon Valley Bank Securities Class Action", company: "SVB Financial Group",
+    type: "Securities Fraud", industry: "Banking/Financial", outcome: "pending", year: 2023,
+    affectedPop: "SVB investors 2020–2023", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "Pending (bank failed March 2023)", classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "SVB management failed to hedge $80B+ bond portfolio against rising interest rates while publicly downplaying risk. Bank collapsed March 2023 in largest U.S. bank failure since 2008. $42B run in 10 hours.",
+    leadCounsel: "Kahn Swick & Foti, Robbins Geller",
+    keyPrecedent: "In re IndyMac Securities Litig.",
+    tags: ["SVB", "Silicon Valley Bank", "bank failure", "interest rate risk", "securities fraud", "2023"],
+    notes: "Novel: bank failure as securities fraud predicate. SVB's 2023 collapse was fastest bank run in history (social media-accelerated). Pending. First major post-Dodd-Frank regional bank securities class.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Pending — SVB Financial Group in bankruptcy; D&O insurance ($200M+ coverage) is primary recovery source",
+      litigationYears: 4,
+      whyItWorked: "SVB management made specific public statements about interest rate risk management in regulatory filings and earnings calls that were directly contradicted by the bank's actual massive unhedged bond portfolio. The bank's CFO sold $3.6M in stock two weeks before disclosure — near-perfect insider trading evidence. Social media-accelerated bank run in 10 hours created the most dramatic corrective disclosure in banking history. D&O insurance ($200M+) is primary recovery source given FDIC receivership.",
+      challenges: "SVB Financial Group (holding company) is in bankruptcy — FDIC seized the bank itself. All claims go through bankruptcy proceedings or against D&O insurance. The bank run was triggered by a rational response to disclosed information — some argue there was no 'fraud,' just poor risk management finally disclosed. Hindsight bias defense: 2022-2023 interest rate increases were unprecedented.",
+      strategiesWon: ["CFO stock sales ($3.6M) 2 weeks before disclosure = strong insider trading / scienter evidence", "SVB's own public statements about 'interest rate risk management' were false given unhedged $80B bond portfolio", "FDIC receivership + D&O insurance as recovery mechanism despite bank insolvency", "Fastest bank run in history = undeniable materiality of concealed information"],
+      strategiesFailed: ["'We didn't know interest rates would rise this fast' defense has some credibility given unprecedented rate increases", "Bankruptcy stay may significantly delay civil resolution"],
+      demographics: "SVB Financial Group (NYSE: SIVB) shareholders 2020-2023; venture capital-adjacent institutional investors; tech startup community investors",
+      injuryTypes: ["Stock price collapse from $763 to effectively $0", "Bond losses on SVB Financial Group debt", "Depositor losses (above FDIC $250K limit) — separate claim track"],
+      keyEvidence: "SVB CFO's stock sales ($3.6M, two weeks before March 2023 disclosure); 10-K/10-Q disclosures claiming active interest rate risk management while holding $80B+ AFS and HTM bond portfolio at loss; Goldman Sachs' analysis of SVB's bond portfolio (commissioned by SVB, leaked); FDIC examination reports",
+      corporateMisconduct: "SVB management failed to adequately hedge a $80B+ bond portfolio against rising interest rates despite being in the business of managing such risks. The bank reassured investors in multiple 10-K filings and earnings calls that it actively managed interest rate risk. CFO Daniel Beck sold $3.6M in stock two weeks before announcing a $1.8B loss on bond sales. The bank did not have a chief risk officer for most of 2022.",
+      regulatoryActions: "FDIC receivership (March 2023); Federal Reserve Board investigation; SVB Financial Group bankruptcy (Chapter 11); OCC/FDIC post-mortem report; SEC insider trading investigation (CFO stock sales); DOJ investigation",
+      settlementStructure: "Pending — D&O insurance ($200M+ estimated) as primary fund; SVB Financial Group bankruptcy claims; separate depositor claims track",
+      bellwetherOutcome: "Pending — case in early stages",
+      attorneyFees: "Contingent; Kahn Swick & Foti and Robbins Geller lead",
+      replicationModel: "B+ — Novel bank failure securities fraud template. Key innovation: interest rate risk mismanagement as securities fraud predicate. D&O insurance recovery despite bank failure is replicable. Insider stock sales in close proximity to corrective disclosure is classic securities fraud pattern applicable to all public companies.",
+      clientAcquisitionStrategy: "Target SVB Financial Group shareholders 2020-2023 (SIVB stock). Institutional holders (VC-adjacent funds, tech sector investors) are lead plaintiff candidates. For future cases: monitor bank CFO/CEO stock sales; bank failure + stock sales within 90 days = automatic securities fraud investigation trigger.",
+      watchOut: "FDIC receivership complicates litigation — FDIC may assert priority over D&O insurance proceeds. Bankruptcy stay may defer resolution. 'Unprecedented rate increases' defense has real merit — SVB's risk management failure may be characterized as negligence rather than intentional fraud. Hindsight bias jury instruction will be defendant's friend."
+    }
+  },
+
+  // ─── BATCH 7: AUTO DEFECT (IDs 111–120) ──────────────────────────────────
+
+  {
+    id: 111, title: "Takata Airbag Inflator MDL", company: "Takata Corp. / Multiple OEMs",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2014,
+    affectedPop: "~100M vehicles in U.S.", jurisdiction: "S.D. Florida", mdlNumber: "MDL 2599",
+    settlementAmount: "$1.6B (Takata) + $553M (Honda) + others",
+    classSize: "~100M vehicles",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Takata ammonium nitrate inflators rupture explosively, spraying metal shrapnel. 27 deaths, 400+ injuries in U.S. Largest auto recall in U.S. history. Same defective inflator design across all recalled vehicles. Takata filed bankruptcy 2017.",
+    leadCounsel: "Podhurst Orseck, Lieff Cabraser",
+    keyPrecedent: "In re General Motors LLC Ignition Switch Litig.",
+    tags: ["Takata", "airbag", "inflator", "Honda", "BMW", "Toyota", "auto recall", "MDL", "shrapnel"],
+    notes: "Largest auto recall in history (~100M vehicles). Takata filed Chapter 11; Key Safety Systems acquired assets. Multiple OEM defendants. Economic loss class + personal injury track. Inflator replacement ongoing through 2024.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$350 avg economic loss class; $0-$millions personal injury (death/injury track separate)",
+      litigationYears: 9,
+      whyItWorked: "Largest auto recall in U.S. history (100M vehicles) created undeniable scale. Ammonium nitrate inflator defect is a textbook manufacturing defect — the shrapnel-spraying ruptures are mechanical failures with no design ambiguity. 27 deaths and 400+ injuries in the U.S. gave the personal injury track devastating sympathy. Multiple OEM defendants (Honda, Toyota, BMW, Ford, GM, etc.) = competitive pressure to settle first rather than be last. Takata's bankruptcy forced creative recovery structure through Key Safety Systems acquisition.",
+      challenges: "Takata's Chapter 11 bankruptcy severely limited direct corporate recovery — required pursuing OEMs under product liability supply chain theory. OEMs argued they were victims of Takata's fraud. Replacement airbag inflator shortage (same recalled inflators were in some replacement units) complicated recall compliance. International scope (Japan, Malaysia) created jurisdiction complexity.",
+      strategiesWon: ["OEM product liability theory: car manufacturer strict liability for parts defects regardless of supplier's fraud", "NHTSA consent order requiring recalls created clear regulatory liability", "Takata's bankruptcy trust fund as primary economic loss recovery vehicle", "Personal injury bellwether structure (separate from economic class) maximized individual injury recovery", "State AG deceptive practices claims against OEMs for delayed recall response"],
+      strategiesFailed: ["Direct recovery against bankrupt Takata severely limited", "OEM 'we were also defrauded by Takata' defense was credible and delayed resolution"],
+      demographics: "100M vehicle owners (virtually every major auto brand sold in U.S. 2001-2015); personal injury victims (27 deaths, 400+ injuries): disproportionate in warm/humid climates (SE U.S., Puerto Rico) where ammonium nitrate degrades faster",
+      injuryTypes: ["Death from shrapnel laceration (27 U.S. deaths)", "Severe facial lacerations and eye injuries from metal fragments", "Economic loss: diminished vehicle value, cost of rental during recall", "Emotional distress from driving a vehicle known to be dangerous"],
+      keyEvidence: "NHTSA investigations and consent orders; Takata's own internal test data showing inflator degradation; OEM recall notification timelines; IIHS crash test data; medical evidence of shrapnel injuries from autopsies; Honda's own knowledge timeline",
+      corporateMisconduct: "Takata used ammonium nitrate-based inflators despite knowing the compound degrades in humid conditions, causing over-pressure explosions and metal shrapnel discharge. Takata falsified test data provided to Honda and other OEMs for over a decade. Honda received early complaints but delayed comprehensive recall for years. The delay cost lives that would have been saved by earlier action.",
+      regulatoryActions: "NHTSA $1B consent order against Takata; NHTSA $70M fine against Honda; DOJ $1B criminal plea by Takata Corp.; multiple OEM recall orders; ongoing NHTSA enforcement of replacement inflator distribution",
+      settlementStructure: "Takata bankruptcy trust fund ($1.6B); Honda $553M; Subaru, BMW, Toyota, Mazda, Mitsubishi settlements; economic loss class ~$500/vehicle; personal injury individual settlements $1M-$15M range per death/serious injury",
+      bellwetherOutcome: "Personal injury bellwether trials resulted in defense verdicts and plaintiff verdicts — pushed parties toward settlement; OEM bellwether: Honda settled before its bellwether",
+      attorneyFees: "~$150M aggregate across all OEM settlements; Podhurst Orseck and Lieff Cabraser co-lead",
+      replicationModel: "A+ — Supply chain product liability template: when supplier's defective component causes consumer harm, both supplier AND OEM/manufacturer are strictly liable. Used directly for GM ignition switch, Toyota acceleration MDL. Applies to any car/medical device/consumer product supply chain defect.",
+      clientAcquisitionStrategy: "Target recalled vehicle owners (NHTSA recall list is public). For warm/humid states (FL, TX, PR, LA, MS, GA): elevated injury risk from degraded inflators. Personal injury victims (shrapnel injuries, deaths) are priority — individual recovery potential $1M+. Economic loss: 100M vehicle owners with proven recall burden.",
+      watchOut: "Takata is bankrupt — OEM defendants are the primary recovery source. OEM liability requires establishing OEM's own knowledge timeline of defect (not just Takata's fraud). Replacement inflator shortage means ongoing recalls — new injuries = new cases. Personal injury track separate from economic loss class — don't merge them."
+    }
+  },
+
+  {
+    id: 112, title: "GM Ignition Switch MDL", company: "General Motors",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2014,
+    affectedPop: "~2.6M vehicles", jurisdiction: "S.D. New York", mdlNumber: "MDL 2543",
+    settlementAmount: "$900M (DOJ) + $594.5M (personal injury fund)",
+    classSize: "~2.6M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "GM knew of ignition switch defect (2001) that could cut power/airbags at low torque. Concealed for 13 years. 124 confirmed deaths. 'New GM' bankruptcy successor liability issue litigated to SCOTUS.",
+    leadCounsel: "Hagens Berman, Hilliard Martinez Gonzales",
+    keyPrecedent: "In re General Motors LLC (successor liability)",
+    tags: ["GM", "General Motors", "ignition switch", "Cobalt", "Saturn Ion", "recall", "auto defect", "MDL"],
+    notes: "$900M DOJ DPA. $594.5M victim compensation fund (Feinberg administrator). Critical issue: 'New GM' successor liability after 2009 bankruptcy — limits on claims against pre-bankruptcy defects.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$150K avg (death/injury fund); economic loss class ~$900/vehicle",
+      litigationYears: 7,
+      whyItWorked: "GM's own internal documents showed engineers knew about the ignition switch defect in 2001 — 13 years before recall. The internal emails ('the Switch from Hell') showed deliberate cost-benefit analysis that chose $0.90/part savings over fixing the defect. 124 confirmed deaths (actual number likely higher) created irresistible settlement pressure. Kenneth Feinberg administering the victim compensation fund gave it institutional credibility and efficiency. The DOJ's $900M DPA independently proved GM's knowledge.",
+      challenges: "'New GM' / 'Old GM' successor liability after 2009 bankruptcy was the central legal battle: GM argued post-bankruptcy New GM was shielded from pre-bankruptcy defect claims. Courts ultimately rejected this for fraud claims (GM concealed the defect during bankruptcy). The bankruptcy successor liability issue delayed resolution by years.",
+      strategiesWon: ["DOJ DPA as independent proof of GM's 13-year concealment", "'The Switch from Hell' internal emails as smoking gun evidence", "Feinberg fund model: quick, efficient victim compensation without years of individual litigation", "New GM successor liability rejected for fraudulent concealment during bankruptcy", "Congressional hearings (Mary Barra testimony) created maximum public pressure"],
+      strategiesFailed: ["New GM bankruptcy shield initially delayed claims for pre-2009 defects", "Economic loss class certification was harder given multiple model variants and price points"],
+      demographics: "2.6M vehicle owners (Chevy Cobalt, Saturn Ion, Chevy HHR, Pontiac Solstice, Saturn Sky); personal injury victims (124+ deaths, thousands of injuries): primarily young adults (Cobalt was a youth-market car)",
+      injuryTypes: ["Death from airbag non-deployment in crashes (ignition switch cut power to airbags)", "Serious injury from crash without airbag protection", "Economic loss: diminished value, recall costs, rental expenses", "Emotional distress from knowing vehicle was unsafe while GM knew and concealed"],
+      keyEvidence: "Internal GM memos and emails about 'Switch from Hell'; Delphi (switch manufacturer) testing data; 2001-2014 consumer complaint records; GM's internal chronology showing 13 years of concealment; DOJ statement of facts from DPA; NHTSA investigation records showing GM's pattern of delay",
+      corporateMisconduct: "GM engineers identified the ignition switch defect (low torque causing unintended off-position) in 2001. Over 13 years, multiple internal reviews recommended the $0.90/part fix but it was rejected on cost grounds. GM continued selling vehicles with the known defect through at least 2014 while consumers died. During GM's 2009 bankruptcy, the company concealed the defect from NHTSA and the bankruptcy court — enabling the fraudulent transfer of liability to 'New GM.'",
+      regulatoryActions: "DOJ $900M DPA (criminal charges deferred); NHTSA $35M maximum fine; SEC investigation (disclosure timing); Congressional hearings; GM's own internal investigation (Valukas Report); Feinberg-administered compensation fund",
+      settlementStructure: "$900M DOJ DPA; $594.5M victim compensation fund (Feinberg — 399 death claims, 1,364 injury claims); economic loss class $575M; total GM recall-related expenses ~$4.1B",
+      bellwetherOutcome: "Personal injury bellwethers avoided by Feinberg fund; economic class resolved through global settlement",
+      attorneyFees: "~$150M aggregate; Hagens Berman and Hilliard Martinez Gonzales lead",
+      replicationModel: "A+ — Defines corporate knowledge concealment as aggravated auto defect case. Feinberg compensation fund model (used for BP Gulf, Takata) is gold standard for mass personal injury compensation outside traditional litigation. Successor liability in bankruptcy analysis essential for any post-bankruptcy manufacturer.",
+      clientAcquisitionStrategy: "Target 2.6M recalled vehicle owners (GM recall database is public). Personal injury victims (airbag non-deployment crash injuries) are highest priority — most valuable claims. Feinberg fund is closed — pursue civil litigation for victims who didn't participate. Young adult Cobalt owners were disproportionate victims.",
+      watchOut: "Feinberg fund has specific compensation tiers — guide clients to maximize compensation within fund before seeking litigation. New GM/Old GM successor liability analysis required for any pre-2009 incident. DOJ DPA deferred prosecution — if new misconduct emerges, criminal prosecution resumes. Complex bankruptcy successor liability doctrine applies to all post-bankruptcy manufacturer defect cases."
+    }
+  },
+
+  {
+    id: 113, title: "Toyota Unintended Acceleration MDL", company: "Toyota Motor Corp.",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2010,
+    affectedPop: "~16M vehicles recalled", jurisdiction: "C.D. California", mdlNumber: "MDL 2151",
+    settlementAmount: "$1.63B (DOJ) + $1.1B (economic class)",
+    classSize: "~16M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Toyota vehicles experienced sudden unintended acceleration due to floor mat entrapment and electronic throttle control defects. 37 deaths. Toyota paid $1.63B DOJ fine — largest auto safety fine at time. Economic loss class for diminished value.",
+    leadCounsel: "Lieff Cabraser, Keller Rohrback",
+    keyPrecedent: "In re Ford Motor Co. Ignition Switch Litig.",
+    tags: ["Toyota", "unintended acceleration", "throttle", "floor mat", "auto defect", "MDL", "economic loss"],
+    notes: "$1.63B DOJ — largest auto safety fine ever at time. Economic class settled $1.1B for diminished value. Separate personal injury cases tried individually. Illustrates split: economic class cert vs. individual personal injury.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$68 avg economic class ($1.1B ÷ 16M); personal injury individual settlements $500K-$3M",
+      litigationYears: 6,
+      whyItWorked: "16M vehicles recalled — massive scale. The $1.63B DOJ fine (largest auto safety fine at the time) independently established Toyota's knowledge and culpability. Toyota's internal documents showed multiple suppressed electronic throttle control studies. The economic loss class was perfectly suited for certification: same defect, same diminished value, same make/model. The electronic throttle issue was particularly alarming because it was invisible and felt random to drivers — creating enormous fear premium in damages.",
+      challenges: "Causation was the central battleground in personal injury cases — Toyota argued unintended acceleration was driver error (floor mat, brake pedal confusion). Electronic throttle control theory was contested by Toyota's own engineers. Personal injury cases required individual causation proof — each crash required accident reconstruction expert. NHTSA's own engineering analysis initially found no electronic defect — only floor mat entrapment.",
+      strategiesWon: ["Economic loss class (diminished value) certified cleanly — uniform defect, uniform vehicles", "DOJ's $1.63B fine (at time, largest auto safety fine) established corporate knowledge and culpability", "Floor mat entrapment was undeniable physical defect regardless of electronic debate", "Unintended acceleration = fear premium: class members paid more for vehicles than they were worth given concealed risk", "Exponent Inc. engineering expert testimony on electronic throttle defect"],
+      strategiesFailed: ["Electronic throttle control causation theory was disputed — NHTSA initially couldn't replicate", "Personal injury cases required individual causation — class treatment impossible for injury/death track"],
+      demographics: "16M vehicle owners (Toyota Camry, Corolla, RAV4, Highlander, Prius — Toyota's mainstream models); personal injury victims (37 deaths, hundreds of injuries): all demographic groups given Toyota's diverse model range",
+      injuryTypes: ["Death and injury from sudden unintended acceleration", "Economic loss: diminished value of recalled vehicles", "Rental costs and repair delays during recall", "Fear and emotional distress from unsafe vehicle"],
+      keyEvidence: "Internal Toyota documents about CTS throttle pedal; consumer complaints database; NHTSA investigation records; accident reconstruction reports; Exponent Inc. electronic analysis (disputed); NASA's independent technical assessment; Toyota's own Defect Investigation Office records",
+      corporateMisconduct: "Toyota received hundreds of unintended acceleration complaints from 2003 forward. Internal studies identified CTS (Canadian Throttle System) floor mat and possible electronic causes but Toyota issued incomplete recalls and disputed electronic defect. Toyota's own communications showed knowledge of the problem while CEO publicly dismissed electronic causation. Toyota paid $1.63B DOJ fine for misleading regulators and consumers.",
+      regulatoryActions: "NHTSA $1.63B DPA (largest auto safety fine at time); DOJ criminal deferred prosecution; SEC investigation; Japan MLIT recall orders; NHTSA penalty of $48.8M (separate prior Toyota penalties)",
+      settlementStructure: "$1.1B economic loss class settlement; personal injury individual settlements (Toyota settled ~400 individual cases separately at average ~$1.5M); $1.63B DOJ DPA",
+      bellwetherOutcome: "Mixed: Toyota won some early bellwether personal injury trials on electronic causation; economic class settled without trial",
+      attorneyFees: "~$180M (economic class); Lieff Cabraser and Keller Rohrback lead",
+      replicationModel: "A — Establishes split class structure for auto defect: (1) economic loss class for all vehicle owners (diminished value/recall costs), (2) individual personal injury track for death/injury victims. This split is now standard in every auto defect MDL. Toyota also confirmed: DOJ DPA fine = civil res judicata on corporate knowledge.",
+      clientAcquisitionStrategy: "Target Toyota/Lexus recall vehicle owners 2003-2012. Economic loss class: any owner of recalled models. Personal injury: unintended acceleration crash victims (particularly those where police reports noted sudden acceleration before crash). Medical examiner records for deaths involving Toyota vehicles during recall period.",
+      watchOut: "Electronic vs. floor mat causation debate is critical — need specialized automotive engineering expert for personal injury cases. Personal injury class certification impossible (individualized causation) — must run individual tracks. NHTSA's initial finding of 'no electronic defect' is damaging defense exhibit in personal injury cases."
+    }
+  },
+
+  {
+    id: 114, title: "FCA (Fiat Chrysler) MOPAR Emissions MDL", company: "Fiat Chrysler / Stellantis",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2017,
+    affectedPop: "~100,000 Ram/Jeep diesel owners", jurisdiction: "E.D. Michigan", mdlNumber: "MDL 2777",
+    settlementAmount: "$305M consumer + $311M government",
+    classSize: "~100,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Fiat Chrysler installed defeat device software in 3.0L diesel Ram 1500/Jeep Grand Cherokee to cheat EPA emissions tests — mirroring VW Dieselgate. Uniform software deception across all vehicles.",
+    leadCounsel: "Hagens Berman, Lieff Cabraser",
+    keyPrecedent: "In re Volkswagen 'Clean Diesel' Litig.",
+    tags: ["FCA", "Fiat Chrysler", "Ram", "Jeep", "diesel", "defeat device", "emissions", "Stellantis", "MDL"],
+    notes: "Companion to VW MDL 2672. Same defeat device theory, different OEM. $305M consumer settlement + $311M government fines. Illustrates how VW precedent accelerated similar auto emissions litigation.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$3,050 avg consumer class ($305M ÷ 100K); ~$3,110/vehicle for government damages",
+      litigationYears: 4,
+      whyItWorked: "The VW Dieselgate precedent ($14.7B) established the legal framework and settlement template — FCA's case was essentially solved before it was litigated. Same defeat device software theory, same EPA violation, same consumer fraud. FCA's RAM 1500/Jeep Grand Cherokee diesel owners are a premium demographic (higher-income truck buyers) enabling higher average per-vehicle settlements. DOJ/EPA coordination forced a faster resolution.",
+      challenges: "FCA's defeat device implementation was more technically nuanced than VW's — FCA argued its 'auxiliary emission control devices' were legitimate calibration features, not cheating devices. Without the catastrophic diesel recall (no buy-back required), settlement amounts were lower than VW per-vehicle. Stellantis merger (2020) complicated corporate structure during settlement.",
+      strategiesWon: ["VW Dieselgate as direct precedent — courts, DOJ, and EPA had already adjudicated the exact legal theories", "EPA and California ARB regulatory enforcement coordinated with civil class", "DOJ criminal investigation of FCA executives created settlement urgency", "Ram 1500/Jeep Grand Cherokee high-income owner demographic = higher damages claim per vehicle"],
+      strategiesFailed: ["Technical distinction between 'defeat device' and 'AECD calibration' created prolonged regulatory dispute", "No vehicle buy-back required (vehicles remained operational with software fix) limited class recovery vs. VW"],
+      demographics: "~100,000 3.0L diesel Ram 1500 and Jeep Grand Cherokee owners (2014-2016); predominantly male, 35-60, higher income (diesel truck buyers); environmental sensitivity = added reputational harm to FCA",
+      injuryTypes: ["Overpayment for 'clean diesel' premium not delivered", "Diminished vehicle value (discovered emissions violations)", "Real-world NOx emissions harming air quality (regulatory harm)", "Economic harm from potential state emissions testing failures"],
+      keyEvidence: "EPA's Notice of Violation (January 2017); independent testing by West Virginia University (same lab that caught VW); FCA internal calibration documents; DOJ grand jury subpoenas; Robert Bosch GmbH emissions software documentation",
+      corporateMisconduct: "FCA (now Stellantis) installed auxiliary emission control devices (AECDs) in 3.0L EcoDiesel engines that shut off emissions controls during real-world driving while passing EPA test cycles. The software manipulation allowed vehicles to emit NOx at up to 20x legal limits in real-world driving. This directly followed VW's exposure and continued the industry's systemic gaming of emissions regulations.",
+      regulatoryActions: "EPA Notice of Violation (2017); DOJ criminal investigation; California ARB enforcement; FTC consumer fraud action; $311M DOJ consent decree; NHTSA investigation; Italian Guardia di Finanza investigation of Stellantis",
+      settlementStructure: "$305M consumer settlement; $311M government (DOJ/EPA/California); $40M state AGs; FCA paid approximately $2,800-$3,700/vehicle depending on model year; software emissions fix required",
+      bellwetherOutcome: "N/A — settled using VW framework as template",
+      attorneyFees: "~$100M aggregate; Hagens Berman and Lieff Cabraser lead",
+      replicationModel: "A — VW-established defeat device template applied to FCA. Demonstrates: once VW established the legal framework, subsequent OEM defeat device cases settled in 1/3 the time at comparable per-vehicle amounts. Direct template for Mercedes, BMW, and any future diesel emissions case.",
+      clientAcquisitionStrategy: "Target 3.0L EcoDiesel Ram 1500 and Jeep Grand Cherokee owners (model years 2014-2016). Recall notification list is public. Similar approach to VW: NRDC/environmental group partnerships, diesel truck forums, Jeep enthusiast communities. Emphasize: you paid premium for clean diesel that was never clean.",
+      watchOut: "No vehicle buy-back = lower settlement than VW. Vehicles remain operational with software patch — some owners happy with fix, reducing settlement pressure. DOJ criminal charges against FCA executives may be tried separately — coordinate civil and criminal tracks carefully."
+    }
+  },
+
+  {
+    id: 115, title: "Ford Bronco/Explorer Carbon Monoxide MDL", company: "Ford Motor Co.",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2017,
+    affectedPop: "~1.3M Explorer owners", jurisdiction: "E.D. Michigan", mdlNumber: "MDL 2814",
+    settlementAmount: "$46M", classSize: "~1.3M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Ford Explorer police interceptor and civilian models allowed exhaust carbon monoxide to enter cabin via exhaust/body seam defect. Officers reported CO poisoning. Same exhaust/sealing design defect across all affected models.",
+    leadCounsel: "Lieff Cabraser, Hagens Berman",
+    keyPrecedent: "In re Toyota Motor Corp. Unintended Acceleration Litig.",
+    tags: ["Ford", "Explorer", "carbon monoxide", "exhaust", "police", "auto defect", "MDL"],
+    notes: "Police department plaintiffs added institutional dimension. CO poisoning theory required medical expert. $46M settlement. Ford also faced NHTSA investigations.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$35 avg economic class ($46M ÷ 1.3M); personal injury victims (CO poisoning) separate individual settlements",
+      litigationYears: 5,
+      whyItWorked: "Law enforcement/police department plaintiffs are uniquely compelling — when officers on patrol reported CO poisoning from their own police interceptor vehicles, it created an immediate public safety and institutional accountability narrative. The design defect (exhaust-to-cabin seam leak) was consistent across the model line. Ford's internal communications showed awareness of CO complaints before the recall, establishing scienter. Carbon monoxide poisoning has well-established medical markers (carboxyhemoglobin levels) enabling objective injury proof.",
+      challenges: "CO poisoning varies significantly in severity — mild headaches to death — creating wide damages variation within the personal injury class. Ford argued many symptoms were not from CO but from other in-vehicle air quality issues. Small settlement relative to 1.3M affected vehicles reflects Ford's partial mitigation (HVAC system updates).",
+      strategiesWon: ["Law enforcement institutional plaintiffs (police departments' medical costs, workers' comp claims) were unique and compelling", "Blood carboxyhemoglobin testing provided objective, scientific injury proof", "Ford's own NHTSA correspondence showing awareness of exhaust complaints before full recall", "Institutional plaintiffs (cities, counties) had organized records of officer illnesses"],
+      strategiesFailed: ["CO symptom severity variation made class-wide damages model imprecise", "Ford's partial HVAC fix mitigated some claims — partially mooted exposure argument"],
+      demographics: "1.3M Ford Explorer owners (police interceptor and civilian); law enforcement personnel disproportionately represented (police interceptors were fleet purchases); working-age adults, both civilian and government employee",
+      injuryTypes: ["Carbon monoxide poisoning (headache, nausea, dizziness)", "Cognitive impairment from CO exposure", "Long-term neurological effects in high-exposure cases", "Economic loss (vehicle diminished value)", "Occupational injury (law enforcement workers' comp)"],
+      keyEvidence: "Blood carboxyhemoglobin test results from affected officers; Ford internal defect investigation records; NHTSA consumer complaints database; exhaust/cabin seam engineering specifications; Independent air quality testing of affected vehicles; police department incident reports",
+      corporateMisconduct: "Ford received hundreds of complaints about exhaust odors and CO symptoms in Explorer police interceptors from 2011 onward. The company delayed issuing a comprehensive recall while officers continued to suffer exposure. Ford's exhaust system was designed with insufficient sealing at the rear cargo area, allowing exhaust gases to enter the cabin through seam gaps and wiring pass-throughs.",
+      regulatoryActions: "NHTSA formal investigation; NHTSA recall order; multiple state police agency complaints filed through NHTSA; OSHA concerns raised by police unions",
+      settlementStructure: "$46M class settlement; HVAC software updates (free remedy); CO detectors for affected vehicles; personal injury individual track for severe CO poisoning cases",
+      bellwetherOutcome: "N/A — settled; personal injury bellwether avoided through settlement",
+      attorneyFees: "~$15M (33%); Lieff Cabraser and Hagens Berman lead",
+      replicationModel: "B+ — Carbon monoxide auto defect template. Establishes: exhaust-to-cabin ingress as design defect theory, carboxyhemoglobin as objective injury marker, law enforcement fleet as institutional plaintiff model. Applicable to any vehicle with exhaust/cabin sealing defect.",
+      clientAcquisitionStrategy: "Target Ford Explorer owners 2011-2019 (police interceptor and civilian). Partner with law enforcement unions and police associations — organized institutional plaintiffs. Medical providers who treated CO poisoning patients in metro areas with high Explorer fleet concentrations. Emergency room CO poisoning records (carboxyhemoglobin test results in records).",
+      watchOut: "CO symptom spectrum is broad — many 'mild headaches' claims are low-value. Focus resources on medically documented CO poisoning with carboxyhemoglobin testing. Police department plaintiffs have workers' comp subrogation interests — coordinate to avoid double recovery issues. Ford's partial HVAC fix (software update) reduces some future exposure liability."
+    }
+  },
+
+  {
+    id: 116, title: "Hyundai/Kia Engine Fire MDL", company: "Hyundai Motor / Kia",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2017,
+    affectedPop: "~8M vehicles", jurisdiction: "C.D. California", mdlNumber: "MDL 2901",
+    settlementAmount: "$760M+ (multiple settlements)",
+    classSize: "~8M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Theta II GDI engine defect caused metallic debris contamination leading to catastrophic engine failure and fires. 3 deaths, 100+ injuries. NHTSA multiple investigations. Same engine design defect across all Theta II vehicles.",
+    leadCounsel: "Hagens Berman, Lieff Cabraser",
+    keyPrecedent: "In re Toyota Motor Corp. Unintended Acceleration Litig.",
+    tags: ["Hyundai", "Kia", "Theta II", "engine fire", "GDI", "auto defect", "MDL", "NHTSA"],
+    notes: "$760M+ in multiple related settlements. NHTSA fined Hyundai/Kia $210M for delayed recall reporting — first such fine. Recalls expanded multiple times as engine fire pattern spread to additional models.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$95 avg economic class ($760M ÷ 8M); personal injury (fire deaths/injuries) separate at $1M+",
+      litigationYears: 6,
+      whyItWorked: "Engine fires are catastrophic, visible events — video of Hyundai/Kia vehicles spontaneously catching fire spread virally on social media, creating massive public awareness and sympathy. The Theta II GDI engine defect (metallic debris from manufacturing imprecision causing bearing failure and oil leak leading to fire) was a clear manufacturing defect. 8 million affected vehicles = scale comparable to Takata. NHTSA's $210M fine for delayed recall reporting established regulatory liability independently.",
+      challenges: "NHTSA's delayed recall reporting fine (first of its kind at $210M) was a historic enforcement action — Hyundai/Kia argued the fine itself was excessive. Engine fire causation required expert testimony distinguishing Theta II defect from driver-caused fires (lack of maintenance, oil changes). Multiple Theta II engine variants required separate damages analysis for each affected model.",
+      strategiesWon: ["Viral vehicle fire videos created undeniable public awareness and class member identification", "NHTSA $210M delayed recall fine established regulatory knowledge and cover-up", "NHTSA recall database enabled easy class identification (8M vehicles = 8M potential claimants)", "Class-wide damages model: diminished value + recall burden = common economic harm", "Personal injury sub-class for actual fire victims with strong jury appeal"],
+      strategiesFailed: ["Engine fire causation dispute (defect vs. driver negligence/maintenance failure) complicated personal injury cases", "Multiple model variants required separate economic loss calculations per model year"],
+      demographics: "8M Hyundai and Kia vehicle owners (Sonata, Santa Fe, Optima, Sorento); working-class to middle-class demographic (Hyundai/Kia target market); significant Korean-American community overlap with Hyundai brand loyalty",
+      injuryTypes: ["Vehicle fire: property destruction", "Personal injury and burns from engine fires", "Economic loss: diminished value of affected vehicles", "Rental costs, transportation disruption during recall", "3 deaths, 100+ injuries from engine fires in the U.S."],
+      keyEvidence: "Consumer video recordings of vehicle fires; NHTSA recall database and delayed reporting timeline; Theta II engine metallurgy expert analysis showing bearing failure mechanism; Hyundai/Kia internal engineering memos on metallic contamination; independent testing by Center for Auto Safety",
+      corporateMisconduct: "Hyundai and Kia manufactured Theta II GDI engines with metallic debris contamination from the connecting rod manufacturing process. The debris caused premature bearing wear, oil leaks, and engine fires. Both companies delayed issuing comprehensive recalls for years, leading to NHTSA's first-ever formal recall-delay civil penalty ($210M). The delayed response exposed consumers to known fire risks.",
+      regulatoryActions: "NHTSA $210M civil penalty (first-ever formal recall-delay fine) against Hyundai and Kia; DOJ criminal investigation of recall timing; NHTSA consent orders requiring enhanced recall compliance; South Korean KAMA regulatory action",
+      settlementStructure: "$760M+ aggregate: Hyundai $250M class; Kia $145M class; multiple subsequent related Theta II settlements; NHTSA $210M penalty; personal injury individual track ongoing",
+      bellwetherOutcome: "Personal injury bellwether not completed — settlement avoided trial; economic class resolved through MDL settlement",
+      attorneyFees: "~$150M aggregate; Hagens Berman and Lieff Cabraser lead",
+      replicationModel: "A — Viral vehicle fire MDL template. Key features: social media-amplified public awareness as class member identification tool, NHTSA delayed recall reporting penalty as independent liability proof, manufacturing defect (machining debris) theory. Direct template for any auto fire/engine defect case where manufacturer delayed recall.",
+      clientAcquisitionStrategy: "Target Theta II engine vehicle owners via NHTSA recall database. Hyundai/Kia owner forums were epicenter of class identification — partner with Center for Auto Safety and consumer advocacy groups. Vehicle fire victims (total loss + injury) are highest priority for individual cases. Owners who had engine failure/fire before recall recall = strongest claims.",
+      watchOut: "Multiple model variants require careful vehicle-specific analysis — not all Theta II engines have identical defect profile. Distinguishing manufacturing defect fires from maintenance-caused fires requires expensive expert testimony. NHTSA consent order compliance monitoring creates ongoing regulatory complexity."
+    }
+  },
+
+  {
+    id: 117, title: "Honda Fit/HR-V Airbag Sensor MDL", company: "American Honda Motor",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2019,
+    affectedPop: "~1.3M vehicles", jurisdiction: "C.D. California", mdlNumber: "MDL 2899",
+    settlementAmount: "$85M", classSize: "~1.3M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Occupant classification system in Honda Fit and HR-V misclassified adults as children, disabling passenger airbag. Same sensor calibration defect across all vehicles = clean economic loss class.",
+    leadCounsel: "Cotchett Pitre & McCarthy",
+    keyPrecedent: "In re Toyota Motor Corp. Unintended Acceleration Litig.",
+    tags: ["Honda", "Fit", "HR-V", "airbag", "OCS", "auto defect", "MDL", "economic loss"],
+    notes: "Clean economic loss MDL — no personal injury means no individualized causation issues. Same sensor defect = predominance easily met. $85M settlement.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$65 avg ($85M ÷ 1.3M)",
+      litigationYears: 4,
+      whyItWorked: "The occupant classification system (OCS) defect is textbook class action material: a single sensor calibration error that manifested identically in all affected vehicles — Honda Fit and HR-V models with the same OCS supplier and calibration. No personal injury claims = no individual causation battle, making certification straightforward. Honda's own NHTSA recall and TSB (Technical Service Bulletin) acknowledging the defect eliminated the liability dispute, leaving only damages.",
+      challenges: "Modest damages per vehicle (no injury, just safety risk) = low individual recovery; class is valuable only at scale. Honda's argument that the recall/software fix fully remediated harm limited ongoing exposure damages. Economic loss model (diminished value for a safety risk that never materialized) required damages expert.",
+      strategiesWon: ["OCS defect identical across entire model line = perfect commonality", "No personal injury claims = no individualized causation issues defeating Rule 23(b)(3)", "Honda's own NHTSA recall and TSB admissions removed liability dispute", "Diminished value model clearly quantifiable: vehicles sold for less because of known safety defect"],
+      strategiesFailed: ["Low individual damages (no injury) limited per-claimant recovery", "Honda's 'software fix cured harm' defense partially effective in limiting ongoing damages"],
+      demographics: "1.3M Honda Fit and HR-V owners (2015-2019); primarily first-time buyer/urban/compact car demographic; young urban professionals and female drivers (Honda Fit's target market)",
+      injuryTypes: ["Safety risk: airbag non-deployment for adult passengers misclassified as children", "Economic loss: diminished value of vehicle with known safety defect", "Recall inconvenience and transportation costs"],
+      keyEvidence: "Honda NHTSA recall documentation; OCS sensor calibration technical specifications; Honda TSB showing acknowledged defect; independent testing showing misclassification frequency; Honda supplier (Aisin) calibration data",
+      corporateMisconduct: "Honda's occupant classification system (OCS) in the Fit and HR-V was calibrated to misidentify adult passengers as children, triggering airbag suppression. This is a direct safety defect: in a crash, an adult passenger in the front seat would have airbag non-deployment. Honda identified the issue through warranty claims but delayed NHTSA reporting.",
+      regulatoryActions: "NHTSA recall order; NHTSA investigation; Honda TSB issued before recall; no criminal charges",
+      settlementStructure: "$85M class settlement: cash payments to vehicle owners; free software update (OCS recalibration); extended warranty for OCS system; enhanced monitoring",
+      bellwetherOutcome: "N/A — settled; no personal injury bellwether needed",
+      attorneyFees: "~$28M (33%); Cotchett Pitre lead",
+      replicationModel: "B+ — Clean economic loss auto defect class template. Ideal for cases where: (1) single sensor/software defect affects entire model line, (2) no personal injury (pure safety risk + economic loss), (3) manufacturer's own NHTSA recall admission removes liability dispute. Per-vehicle damages are modest but class size creates strong aggregate.",
+      clientAcquisitionStrategy: "NHTSA recall list for Honda Fit (2015-2019) and HR-V (2016-2019). Direct mail to recall notification list. Young urban professional demographic = digital outreach. Honda dealership service records for OCS repair can identify affected class.",
+      watchOut: "Low per-vehicle damages limit fee economics. Honda's recall/fix defense limits future exposure. Case is primarily valuable as a template study — real-world case had modest individual recovery. Focus on aggregate class value not individual recovery when marketing this case to clients."
+    }
+  },
+
+  {
+    id: 118, title: "Duramax Diesel Emissions MDL (GM)", company: "General Motors",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 2017,
+    affectedPop: "~700,000 vehicle owners", jurisdiction: "E.D. Michigan", mdlNumber: "MDL 2814",
+    settlementAmount: "$127.5M", classSize: "~700,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "GM Duramax 6.6L diesel trucks used defeat device-like software to manipulate emissions during EPA tests. Allegations of 'emissions cheating light' in Chevy Silverado and GMC Sierra. Settlement without admission.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "In re Volkswagen 'Clean Diesel' Litig.",
+    tags: ["GM", "Duramax", "diesel", "emissions", "Silverado", "Sierra", "defeat device", "MDL"],
+    notes: "$127.5M settlement. Part of post-VW wave of diesel emissions class actions targeting all major OEMs. GM settled without admitting defeat device use.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$182 avg ($127.5M ÷ 700K)",
+      litigationYears: 5,
+      whyItWorked: "VW Dieselgate created both legal precedent and public awareness of defeat device fraud — Duramax case benefited enormously from this groundwork. GM's Duramax 6.6L diesel is a prestigious, high-margin truck product; owners' sense of betrayal (paying premium for 'clean' diesel work trucks) drove engagement. The same technical testing methodology (portable emissions measurement systems, PEMS) used against VW was applied against GM.",
+      challenges: "GM never admitted using a defeat device — the case settled 'without admission' on far more ambiguous terms than VW (which explicitly admitted its defeat device). GM's technical defense (its 'emission control strategy' was an AECD, not a defeat device) was more credible than VW's outright deception. Lower settlement than VW reflects this technical ambiguity.",
+      strategiesWon: ["West Virginia University PEMS testing showing elevated real-world NOx = direct proof of emissions discrepancy", "VW legal framework applied directly — courts familiar with defeat device theory", "GM Duramax premium pricing (high-margin trucks) = higher overpayment damages per vehicle", "EPA coordination provided regulatory imprimatur"],
+      strategiesFailed: ["GM's 'AECD vs. defeat device' technical defense created enough ambiguity for settlement without admission — weaker precedent than VW", "No criminal charges against GM executives"],
+      demographics: "~700,000 Chevy Silverado and GMC Sierra 2500/3500 6.6L Duramax diesel owners (2011-2016); predominantly male, rural/suburban, working professionals and contractors; commercial fleet operators",
+      injuryTypes: ["Overpayment for 'clean diesel' technology not delivered", "Diminished vehicle value on disclosure", "Real-world NOx emissions causing air quality harm", "Potential emissions testing failure risk"],
+      keyEvidence: "PEMS testing results (independent researchers); EPA Notice of Violation; comparison of EPA test cycle vs. real-world NOx readings; Robert Bosch emissions control software documentation; GM internal emissions calibration data (produced under subpoena)",
+      corporateMisconduct: "GM's Duramax diesel engines used emissions control strategies that significantly reduced NOx reduction during normal real-world driving conditions, while passing EPA test cycles. The defeat device-like behavior allowed trucks to emit up to 3x legal NOx limits outside test conditions. GM settled without admitting the conduct constituted an illegal defeat device.",
+      regulatoryActions: "EPA Notice of Violation (2017); DOJ/EPA settlement ($10M penalty as part of consent); California ARB investigation; no criminal charges against GM executives",
+      settlementStructure: "$127.5M consumer class settlement; ~$182/vehicle; $10M government penalty; software compliance update required; no vehicle buy-back",
+      bellwetherOutcome: "N/A — settled before trial",
+      attorneyFees: "~$42M (33%); Hagens Berman lead",
+      replicationModel: "B+ — Post-VW diesel emissions template. Important lesson: settlement without admission limits deterrence value but still achieves class recovery. PEMS testing methodology is validated and replicable for any diesel emissions fraud case. Lower per-vehicle settlement vs. VW reflects importance of strong admission in settlement negotiations.",
+      clientAcquisitionStrategy: "Target Chevy Silverado 2500/3500 and GMC Sierra 2500/3500 Duramax diesel owners (2011-2016 model years). Commercial fleet operators are high-value plaintiffs (multiple vehicles). Truck enthusiast forums, rural/agricultural communities, contractor associations.",
+      watchOut: "Settlement without admission limits use as precedent in future cases. GM's AECD vs. defeat device distinction may create uncertainty for similar future cases against other OEMs. No vehicle buy-back means per-vehicle recovery lower than VW. Focus on commercial fleet operators for higher per-plaintiff value."
+    }
+  },
+
+  {
+    id: 119, title: "Tesla Autopilot Misrepresentation Class Action", company: "Tesla Inc.",
+    type: "Auto Defect", industry: "Automotive/Technology", outcome: "pending", year: 2022,
+    affectedPop: "~400,000 Tesla owners", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "Pending", classSize: "~400,000",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Tesla marketed 'Full Self-Driving' and 'Autopilot' features as capable of autonomous driving. Features do not perform as advertised; require constant driver supervision. Multiple fatal crashes attributed to Autopilot engaged.",
+    leadCounsel: "Hagens Berman, Baron & Budd",
+    keyPrecedent: "In re Volkswagen 'Clean Diesel' Litig.",
+    tags: ["Tesla", "Autopilot", "FSD", "Full Self-Driving", "autonomous", "misrepresentation", "NHTSA"],
+    notes: "Pioneering case in autonomous vehicle advertising fraud. NHTSA opened multiple investigations. FTC inquiry into 'Full Self-Driving' branding. Pending class cert. Novel technology advertising fraud theory.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — estimated $5,000-$15,000 per vehicle given FSD premium paid ($15,000 optional feature)",
+      litigationYears: 4,
+      whyItWorked: "Tesla charged up to $15,000 for 'Full Self-Driving' capability — a $15,000 premium for a feature that doesn't deliver what its name promises. The FTC Act's Section 5 prohibition on deceptive advertising is directly implicated: 'Full Self-Driving' and 'Autopilot' create a consumer impression of autonomous driving that Tesla itself acknowledges doesn't exist (requiring active driver supervision). Multiple fatal crashes with Autopilot engaged create product liability dimension. Elon Musk's own tweets promising FSD capability timelines were routinely missed.",
+      challenges: "Tesla's Terms of Service include disclosures warning that Autopilot requires driver attention — creating a consent defense. Class certification faces challenges from Tesla's over-the-air (OTA) update capability: some class members received functionality improvements post-purchase, complicating uniform harm showing. Individual reliance on specific marketing statements varies.",
+      strategiesWon: ["'Full Self-Driving' branding is objectively false — no vehicle on U.S. roads is fully self-driving under SAE Level 5 definition", "FSD was a paid premium ($10,000-$15,000) = clear economic damages", "Elon Musk's recorded statements promising FSD timelines = direct misrepresentation evidence", "NHTSA and NTSB accident investigation records establish safety defect dimension", "FTC investigation of FSD advertising independently validates deception theory"],
+      strategiesFailed: ["Tesla's ToS disclaimers about driver supervision requirements are potential consent defense", "OTA updates to Autopilot functionality complicate 'same product' analysis over time"],
+      demographics: "~400,000 Tesla vehicle owners who purchased FSD option (2018-2022); tech-savvy, higher-income, early adopter demographic; significant male, 30-55 age range; California-heavy geographic concentration",
+      injuryTypes: ["Overpayment for FSD premium that doesn't deliver promised autonomous driving", "Diminished vehicle value if FSD capability is permanently limited", "Product liability for Autopilot-engaged fatal crashes (separate individual track)", "False sense of autonomous capability increasing risk (driver over-reliance on Level 2 ADAS)"],
+      keyEvidence: "Elon Musk's tweets promising FSD timeline and capability ('be 'feature complete' in 2020'); Tesla FSD marketing materials; SAE Level 2 vs. Level 5 autonomous vehicle definitions; NHTSA accident investigation data; NTSB crash report findings; Tesla's own internal FSD development documents; Consumer Reports testing demonstrating FSD limitations",
+      corporateMisconduct: "Tesla systematically marketed 'Full Self-Driving' capability that, by definition, does not exist on any commercially available vehicle. The company collected $10,000-$15,000 in FSD premiums while NHTSA's own definition requires no driver supervision for 'full self-driving.' Elon Musk repeatedly promised FSD would be feature-complete by specific dates, all of which passed without delivering promised capability. Meanwhile, 17 deaths and 736 crashes were linked to Autopilot engagement.",
+      regulatoryActions: "NHTSA formal investigation of Autopilot (opened 2021); NHTSA recall of FSD beta (2022, over 450K vehicles); NTSB investigations of multiple fatal crashes; FTC investigation of FSD marketing; California DMV investigation; SEC investigation of Musk's social media statements; EU investigation of FSD advertising",
+      settlementStructure: "Pending — class certification not yet obtained; FSD premium refund ($10,000-$15,000/vehicle) = aggregate exposure $4-6B if full class certified",
+      bellwetherOutcome: "Pending — class certification expected 2025-2026",
+      attorneyFees: "Contingent 33%; Hagens Berman and Baron & Budd lead",
+      replicationModel: "A — Defines autonomous vehicle advertising fraud template. Direct template for any AI/technology company that makes capability claims exceeding actual product performance. Also establishes OTA update complication for technology class actions (updates may cure or worsen harm over time).",
+      clientAcquisitionStrategy: "Target Tesla owners who purchased FSD option ($10K-$15K) and have not received autonomous driving capability. Tesla owner communities (Tesla forums, r/teslamotors), EV advocacy groups, consumer technology media. Emphasize: you paid $15,000 for a feature that doesn't exist as marketed. High-income, tech-savvy demographic responds to data-driven outreach.",
+      watchOut: "Tesla's ToS disclaimers are the central defense — must address consent defense in pleadings. OTA updates mean FSD functionality changes constantly — need to define specific false representations in time-bounded class period. Musk's ongoing Twitter/X communications create both evidence and distraction. NHTSA recall of FSD beta may partially moot some claims."
+    }
+  },
+
+  {
+    id: 120, title: "Ford Pinto Fuel Tank (Historical)", company: "Ford Motor Co.",
+    type: "Auto Defect", industry: "Automotive", outcome: "settled", year: 1978,
+    affectedPop: "~1.5M Pinto owners", jurisdiction: "Multiple state courts", mdlNumber: "No MDL",
+    settlementAmount: "$6M punitive (Grimshaw) + recalls + aggregate",
+    classSize: "~1.5M",
+    rule23bType: "b(3)", appealOutcome: "affirmed (Grimshaw punitive)", harmCategory: "physical",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Ford Pinto's fuel tank ruptured in rear-end collisions due to known design defect. Internal 'cost-benefit' analysis ($11/car fix vs. $49.5M in lives saved) introduced at trial. $125M punitive award (reduced to $3.5M). Seminal product liability precedent.",
+    leadCounsel: "Mark Robinson Jr.",
+    keyPrecedent: "Grimshaw v. Ford Motor Co. (1981) — punitive damages in auto design defect",
+    tags: ["Ford Pinto", "fuel tank", "design defect", "punitive damages", "cost-benefit", "auto defect", "historical"],
+    notes: "LANDMARK CASE. Grimshaw v. Ford (1981) established punitive damages in auto design defect cases. 'Ford Pinto memo' became paradigm of corporate cost-benefit vs. safety ethics. Taught in every torts class.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "$6M Grimshaw (Grimshaw v. Ford); aggregate 50+ wrongful death/injury cases settled $100M+",
+      litigationYears: 10,
+      whyItWorked: "The Grimshaw case is the foundational modern product liability case because of the 'Ford Pinto Memo' — Ford's own internal cost-benefit analysis calculating that it would cost $137M to fix the fuel tank defect ($11/car × 12.5M vehicles) versus $49.5M if Ford paid $200,000 per death and $67,000 per injury. This document — which placed a dollar value on human life against a known fixable defect — is the most damning corporate document in U.S. legal history. The $125M punitive award (largest ever at the time) was directly motivated by the memo. It established that corporations can be punished for knowingly marketing a dangerous product when the cost of fixing it is less than the cost of the resulting deaths.",
+      challenges: "Federal preemption arguments (federal auto safety standards compliance = safe harbor) were ultimately rejected but were contested. The 1970s-era jury trial was a 6-month marathon. Ford's criminal trial (Indiana, 1980) actually resulted in acquittal — showing that civil and criminal standards for product liability are dramatically different. Early Pinto cases were lost individually before plaintiff bar developed the cost-benefit memo theory.",
+      strategiesWon: ["The Pinto Memo: internal corporate cost-benefit analysis comparing fix cost to death payments is the most compelling evidence of corporate malice ever introduced at trial", "Punitive damages theory: deliberate design choice knowing of risk = conscious disregard for safety = malice", "Grimshaw verdict ($125M, reduced to $3.5M on appeal) established punitive damages as viable in design defect cases", "Structured parallel strategy: individual wrongful death suits + NHTSA recall pressure + criminal prosecution (Indiana) created maximum pressure", "Mass media coverage turned the Pinto into a symbol of corporate irresponsibility, enabling jury anger"],
+      strategiesFailed: ["Criminal prosecution (Indiana, Ford Motor Co. v. State of Indiana) — acquitted. Corporate criminal liability for product defects proved elusive even with the Pinto Memo.", "Federal preemption defense was partially successful in limiting recall scope"],
+      demographics: "~1.5M Pinto owners (1971-1980); personal injury victims: primarily young women (the Pinto was marketed to women/youth as an economy car); Grimshaw plaintiff: Richard Grimshaw, 13 years old, severe burns",
+      injuryTypes: ["Burns (severe, life-altering)", "Death by fire (27+ fatalities in Pinto-related fires)", "PTSD and psychological trauma from vehicle fire", "Permanent disability from fire-related injuries"],
+      keyEvidence: "The 'Pinto Memo' — Ford's own cost-benefit analysis ($49.5M in death costs vs. $137M fix); Ford Crash Test Evidence (internal testing showing fuel tank rupture in rear-end collisions); NHTSA Standards 301 compliance testing; Harley Copp (former Ford safety engineer) whistleblower testimony; Mother Jones magazine investigation (September 1977)",
+      corporateMisconduct: "Ford designed the Pinto with the fuel tank behind the rear axle — a placement that failed rear-end crash tests at 20 mph. Ford's own engineers proposed fixes at $11/car but the company calculated it was more cost-effective to pay for deaths and injuries than to recall and fix the vehicle. Ford knew about the defect before the Pinto went on sale in 1971 and continued selling it through 1980.",
+      regulatoryActions: "NHTSA recall 1978 (1.5M Pintos); Indiana criminal prosecution of Ford Motor Co. (first criminal trial of a U.S. corporation for product-related homicide) — acquittal 1980; NHTSA amended FMVSS 301 (fuel system integrity standard) directly in response to Pinto",
+      settlementStructure: "Individual cases: Grimshaw v. Ford $6M (after reduction from $128M trial award); Gray v. Ford (wrongful death) $550K; 50+ additional cases settled aggregate $100M+; Ford paid ~$2,500/vehicle in individual settlements pre-recall",
+      bellwetherOutcome: "Grimshaw trial (1978) was bellwether: plaintiff jury verdict + $125M punitives. Reduction on appeal to $3.5M but established punitive damages viability.",
+      attorneyFees: "Contingent 33-40%; Mark Robinson Jr. lead in Grimshaw",
+      replicationModel: "A+ — Defines punitive damages theory in product liability: conscious disregard + internal cost-benefit analysis < cost of fixing harm = malice = punitive damages. Every major product liability punitive damages case since Pinto uses the 'Pinto Memo' framework. Direct template for GM Ignition Switch, Roundup, tobacco, and any case where defendant had internal documents showing known risk accepted over fix cost.",
+      clientAcquisitionStrategy: "Historical case — no current recovery. For future cases: the 'Pinto Memo' principle is the most powerful plaintiff tool: locate internal corporate documents calculating cost-to-fix vs. cost-of-deaths. Any product liability case where such a document exists should immediately seek punitive damages and trial (not settlement). These documents appear in virtually every major corporate product defect case.",
+      watchOut: "Historical case — statutes of limitation have long run. The Pinto's legacy is not direct recovery but punitive damages doctrine. Defense response to 'Pinto Memo' analogs: claim document was regulatory compliance analysis not safety tradeoff. BMW v. Gore (1996 SCOTUS) subsequently limited punitive awards to reasonable ratio to compensatory (typically 9:1 or less) — Grimshaw-era $125M punitive on $2.5M compensatory would now be constitutionally limited."
+    }
+  },
+
+  // ─── BATCH 8: EMPLOYMENT / WAGE & HOUR (IDs 121–130) ─────────────────────
+
+  {
+    id: 121, title: "Walmart Wage & Hour Class Action (CA)", company: "Walmart Inc.",
+    type: "Employment", industry: "Retail", outcome: "settled", year: 2001,
+    affectedPop: "~116,000 California workers", jurisdiction: "Alameda County Superior Court", mdlNumber: "No MDL",
+    settlementAmount: "$172M", classSize: "~116,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Walmart denied California employees meal and rest breaks required by CA Labor Code. Uniform policy of off-the-clock work. $172M settlement — largest CA wage & hour settlement at time.",
+    leadCounsel: "Hagens Berman, Girard Sharp",
+    keyPrecedent: "Sav-On Drug Stores v. Superior Court (CA meal break cert)",
+    tags: ["Walmart", "wage and hour", "meal break", "rest break", "California", "off-the-clock", "employment"],
+    notes: "$172M was landmark CA wage & hour settlement. CA's robust Labor Code makes it nation's top state for wage/hour class actions. Uniform policy = common issues. PAGA claims often accompany CA wage class actions.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$1,483 avg ($172M ÷ 116K workers)",
+      litigationYears: 5,
+      whyItWorked: "California's Labor Code is the most employee-protective in the nation — mandatory meal breaks (30 min for >5hr shifts) and rest breaks (10 min per 4hr period) are not discretionary. Walmart's uniform store-wide policy of understaffing + discouraging breaks created perfect commonality: same policy, same harm, same violation across all 116,000 workers. PAGA (Private Attorneys General Act) provided additional $100-$200/violation penalties multiplied across thousands of violations per store. The combination of Labor Code violations + PAGA penalties + off-the-clock work claims created massive aggregate liability.",
+      challenges: "Individual variation in break deprivation frequency complicated damages calculation. Walmart argued some managers implemented the policy properly — but uniform policy = common liability even with individual variation in enforcement. Class certification under CA law (separate from Federal Rule 23) is more permissive but still requires adequacy and commonality.",
+      strategiesWon: ["CA Labor Code's explicit break requirements = bright-line liability with no judgment required", "PAGA penalties multiplied aggregate liability exponentially", "Time and attendance records proved class-wide off-the-clock work pattern", "Largest retailer = systemic policy rather than individual manager discretion", "CA courts favorable to wage & hour class certification"],
+      strategiesFailed: ["Walmart's manager-discretion defense created some uncertainty requiring extensive deposition discovery"],
+      demographics: "116,000 California Walmart employees (store associates, cashiers, stockers, department managers); predominantly hourly wage workers; significant Hispanic/immigrant workforce; working-class demographic",
+      injuryTypes: ["Unpaid wages from off-the-clock work (pre- and post-shift)", "Meal break premium pay ($1/hr per missed break under Labor Code §226.7)", "Rest break premium pay ($1/hr per missed rest period)", "Wage statement violations (penalty per pay period)"],
+      keyEvidence: "Walmart store-level timekeeping and scheduling records showing break deprivation; manager testimony on corporate pressure to minimize break time; payroll records showing no break premium payments; PAGA audit of Labor Code violations",
+      corporateMisconduct: "Walmart imposed labor budgets on stores that systematically prevented adequate staffing for break coverage. Store managers were evaluated on labor cost as a percentage of sales — incentivizing them to deny break coverage. The uniform corporate policy of understaffing was the proximate cause of break deprivation across all CA stores.",
+      regulatoryActions: "CA Labor Commissioner investigation; LWDA notification (PAGA); no federal agency action",
+      settlementStructure: "$172M common fund; claims-made distribution; enhanced monitors for break compliance; injunctive relief (break scheduling requirements)",
+      bellwetherOutcome: "N/A — settled; individual store depositions served as mini-bellwethers",
+      attorneyFees: "~$57M (33%); Hagens Berman and Girard Sharp lead",
+      replicationModel: "A — Defines CA wage & hour class action template. Key elements: (1) uniform company policy = commonality, (2) CA Labor Code bright-line violations, (3) PAGA multiplier, (4) time/attendance records as proof. Template for McDonald's, Amazon, Target, and every major CA employer.",
+      clientAcquisitionStrategy: "Target current and former Walmart CA employees (2001-2006 class period). Retail worker unions, UFCW locals. Social media outreach to Walmart employees. Partner with CA Labor Commissioner and DLSE. Emphasize: if you worked at Walmart in CA and missed breaks, you may be owed money.",
+      watchOut: "CA PAGA reform (AB 2288, 2024) substantially limited PAGA penalties — check current PAGA caps. Individual arbitration agreements may block class but not PAGA claims. CA courts may require more rigorous damages model post-Dukes and Comcast."
+    }
+  },
+
+  {
+    id: 122, title: "Wal-Mart v. Dukes — Sex Discrimination (Cert. Denied)", company: "Walmart Inc.",
+    type: "Employment", industry: "Retail", outcome: "cert denied (SCOTUS)", year: 2004,
+    affectedPop: "~1.5M female employees", jurisdiction: "N.D. California → SCOTUS", mdlNumber: "No MDL",
+    settlementAmount: "None (class certification reversed)",
+    classSize: "~1.5M",
+    rule23bType: "b(2)", appealOutcome: "reversed (SCOTUS 2011)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: false, typicality: false, adequacy: true,
+    keyFact: "1.5M female Walmart employees alleged nationwide pay/promotion discrimination. SCOTUS reversed cert in landmark 5-4 decision (2011). Held: statistical correlation insufficient for commonality; each manager's discretionary pay decision is individualized.",
+    leadCounsel: "Cohen Milstein, Impact Fund",
+    keyPrecedent: "Wal-Mart Stores v. Dukes (2011 SCOTUS) — redefined commonality under Rule 23(a)(2)",
+    tags: ["Walmart", "Dukes", "sex discrimination", "Title VII", "SCOTUS", "commonality", "certification denied"],
+    notes: "CRITICAL PRECEDENT: Wal-Mart v. Dukes (2011) is the most important modern class action decision. Redefined 'commonality' — plaintiffs must show common question that generates common answers driving resolution. Shattered 'across the board' discrimination class actions.",
+    analysis: {
+      rating: "D",
+      strengthScore: 3,
+      payoutPerClaimant: "$0 — class certification reversed; individual cases pursuing separate recovery",
+      litigationYears: 10,
+      whyItWorked: "The case DID NOT work as a class action. It is included as the most important cautionary tale in employment discrimination litigation. The plaintiff bar believed 1.5M female Walmart employees with documented pay and promotion disparities = perfect class. The theory was compelling: Walmart's deliberate delegation of pay/promotion decisions to local managers, combined with a corporate culture of gender bias (documented by sociologist expert William Bielby), caused systemic discrimination.",
+      challenges: "SCOTUS 5-4 eviscerated the class on commonality. The holding: Walmart's corporate policy of delegating discretionary pay decisions to local managers is NOT a common policy that generates common answers to the liability question. Each manager's individual decision is individualized. Statistical disparities + expert sociological testimony ≠ a 'common question' under Rule 23(a)(2). The case was the largest Title VII class ever attempted — and became the precedent that destroyed 'across the board' employment discrimination class actions.",
+      strategiesWon: ["Individual Walmart employees' claims remain valid and many settled separately", "Rule 23(b)(2) injunctive relief class (structural remedies) survived post-Dukes for some plaintiffs", "Case created maximum publicity and political pressure on Walmart even without class recovery", "Statistical evidence of pay/promotion disparities was compelling even if insufficient for class cert"],
+      strategiesFailed: ["Delegation-of-discretion theory: corporate policy of giving managers discretion ≠ common discriminatory policy", "Sociological expert testimony (Bielby) found insufficient for commonality without identifying specific discriminatory mechanism", "Rule 23(b)(2) vs. (b)(3) analysis: back pay claims required individual hearings = couldn't be Rule 23(b)(2)", "1.5M nationwide class was too sprawling — geographic/store-by-store variation defeated commonality"],
+      demographics: "1.5M female Walmart employees nationwide (2001-2011); hourly and management employees; disproportionately working-class, minority women; nationally diverse demographic",
+      injuryTypes: ["Pay discrimination: lower wages than comparable male employees", "Promotion discrimination: slower advancement than male peers", "Systemic gender bias embedded in corporate culture"],
+      keyEvidence: "Walmart HR data showing national pay/promotion disparities by gender; sociologist Dr. William Bielby's expert testimony on organizational culture and gender bias; individual named plaintiffs' comparator evidence; Walmart's 'Grass Roots' program documentation",
+      corporateMisconduct: "Walmart created a corporate culture that tolerated gender bias by delegating pay/promotion decisions to individual store managers without meaningful oversight or controls for gender discrimination. The company's own HR data showed significant gender pay gaps at all management levels.",
+      regulatoryActions: "EEOC investigations of individual charges; no class regulatory action; DOL women's bureau statistics cited",
+      settlementStructure: "No class settlement — class certification denied. Individual cases pursuing separate recovery after remand. Some regional classes attempted post-Dukes (Dukes II) with narrower geographic scope.",
+      bellwetherOutcome: "N/A — no class reached trial; individual cases proceeding",
+      attorneyFees: "Zero class fees; individual case fees ongoing; enormous investment with no class recovery",
+      replicationModel: "D — CATASTROPHIC FAILURE providing critical lessons: (1) Delegation of discretion = no common policy; (2) Statistical disparities alone ≠ commonality; (3) 1.5M nationwide class is almost always too broad; (4) Rule 23(b)(2) cannot be used for predominantly monetary claims; (5) Sociological expert testimony insufficient without specific discriminatory mechanism. Every future discrimination class must distinguish from Dukes.",
+      clientAcquisitionStrategy: "Individual Walmart female employees: pursue individual EEOC charges and individual lawsuits (SOL tolling from Dukes). Regional sub-classes (Dukes II) with tighter geographic scope and more specific common discriminatory policy. For future cases: identify the specific common discriminatory policy (not just culture), quantify pay gaps with regression analysis, use comparator employees in specific regions.",
+      watchOut: "Wal-Mart v. Dukes is the primary defense weapon in all employment discrimination class actions. Defense will always invoke Dukes for commonality challenge. To survive: identify a single, specific, corporate-level policy that directly caused discrimination — not managerial discretion. Statistical regression analysis of pay gaps + specific policy connection = better Dukes compliance. Nationwide classes are effectively dead post-Dukes for pay/promotion discrimination."
+    }
+  },
+
+  {
+    id: 123, title: "FedEx Independent Contractor Misclassification MDL", company: "FedEx Ground",
+    type: "Employment", industry: "Logistics/Transportation", outcome: "settled", year: 2008,
+    affectedPop: "~12,000 drivers", jurisdiction: "N.D. Indiana", mdlNumber: "MDL 1700",
+    settlementAmount: "$228M (CA) + other states",
+    classSize: "~12,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed (CA)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "FedEx Ground classified delivery drivers as independent contractors, denying them employee benefits and expense reimbursements. Uniform contractor classification policy across all routes = common liability. CA found misclassification as matter of law.",
+    leadCounsel: "Lichten & Liss-Riordan, Rukin Hyland",
+    keyPrecedent: "Dynamex Operations v. Superior Court (CA ABC test)",
+    tags: ["FedEx", "independent contractor", "misclassification", "gig economy", "employment", "MDL"],
+    notes: "$228M CA settlement. MDL 1700 consolidated 40+ state class actions. Pioneer for gig economy misclassification litigation (Uber, Lyft, DoorDash followed same theory). CA AB5 law directly inspired by this litigation.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$19,000 avg CA settlement ($228M ÷ 12K drivers)",
+      litigationYears: 7,
+      whyItWorked: "FedEx Ground's written contracts called drivers 'independent contractors' but FedEx actually controlled every aspect of their work — uniform logos on trucks, mandated delivery routes, set schedules, required uniforms, FedEx-branded equipment. California's economic realities test (and later ABC test under Dynamex) focuses on actual work conditions, not contract labels. The MDL efficiently consolidated 40+ state class actions. The California court ruled misclassification as a matter of law — eliminating the liability trial entirely and focusing on damages only.",
+      challenges: "State-by-state variation in misclassification law required separate analysis for each state's class. Some state courts found for FedEx (independent contractor) while others found for plaintiffs. Massachusetts and California were strongest; other states weaker. FedEx's franchise model (drivers bought their own trucks) created credible argument of independent business operation.",
+      strategiesWon: ["MDL consolidation of 40+ state class actions created economies of scale", "California 'matter of law' ruling eliminated liability trial entirely", "Economic realities test: control over work = employment regardless of contract label", "FedEx's own operating manuals and procedures documenting control over drivers", "Dynamex ABC test (later codified in AB5) made future CA misclassification cases easier"],
+      strategiesFailed: ["State variation meant some states' classes never certified", "FedEx's franchise model (driver-owned trucks) was the primary counterargument"],
+      demographics: "~12,000 FedEx Ground delivery drivers; predominantly male; working-class; many with immigrant backgrounds; often multi-vehicle operations (some drivers employed sub-drivers)",
+      injuryTypes: ["Unpaid employment benefits (health insurance, retirement)", "Unreimbursed business expenses (vehicle maintenance, fuel)", "Overtime pay unpaid", "Minimum wage shortfalls", "Social Security/Medicare employer contributions unpaid"],
+      keyEvidence: "FedEx Ground Operating Agreement (showing control); FedEx operating manuals specifying service standards, appearance, procedures; driver testimony about day-to-day control; economic expert analysis of employment vs. IC economics; comparison with FedEx Express employees doing identical work as employees",
+      corporateMisconduct: "FedEx Ground created a business model specifically designed to avoid employee costs by labeling drivers as independent contractors while exercising complete control over their work. FedEx Express (using employee drivers) and FedEx Ground (using 'IC' drivers) operated essentially identically in terms of work performed — the only difference was the employment classification that saved FedEx billions in benefits and taxes.",
+      regulatoryActions: "IRS audit of FedEx IC classification; DOL wage and hour division investigations; California Labor Commissioner enforcement; State AG multi-state investigation",
+      settlementStructure: "$228M California class settlement; separate state settlements; MDL total: ~$400M+; ongoing state cases",
+      bellwetherOutcome: "California court's matter-of-law ruling served as bellwether for other states",
+      attorneyFees: "~$75M (33% CA portion); Lichten & Liss-Riordan and Rukin Hyland lead",
+      replicationModel: "A — Gig economy misclassification template. ABC test (A: not controlled by company; B: outside company's core business; C: independently established business) is gold standard. FedEx is direct template for Uber, Lyft, DoorDash, Amazon Flex, Instacart. California's AB5 (codifying Dynamex ABC test) directly emerged from this litigation.",
+      clientAcquisitionStrategy: "Target FedEx Ground delivery drivers (current and former, 2000-2008). For future cases: target gig economy platforms using IRS Form 1099 workers who perform core platform services (Uber/Lyft drivers, DoorDash couriers, Amazon Flex drivers, Instacart shoppers). Union halls, driver forums, immigrant community organizations.",
+      watchOut: "FedEx obtained specific legislative exemptions in several states post-settlement. California's Prop 22 (2020) exempted rideshare/delivery apps from AB5 — future cases must account for this carve-out. ABC test varies by state — research specific state's misclassification standard before filing. Enterprise (multi-driver operations) creates complications in damages calculation."
+    }
+  },
+
+  {
+    id: 124, title: "Uber Driver Misclassification Class Action", company: "Uber Technologies",
+    type: "Employment", industry: "Technology/Gig Economy", outcome: "settled (CA only)", year: 2015,
+    affectedPop: "~240,000 CA drivers", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "$100M (CA, rejected) → $8.4M (revised)",
+    classSize: "~240,000",
+    rule23bType: "b(3)", appealOutcome: "mixed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: false, adequacy: true,
+    keyFact: "Uber drivers alleged employee misclassification, denied minimum wage/expense reimbursement. Initial $100M settlement rejected as inadequate. Revised $8.4M settlement approved. CA Prop 22 (2020) later exempted rideshare from AB5.",
+    leadCounsel: "Lichten & Liss-Riordan",
+    keyPrecedent: "FedEx MDL 1700; Dynamex v. Superior Court",
+    tags: ["Uber", "gig economy", "independent contractor", "misclassification", "California", "AB5", "Prop 22"],
+    notes: "Landmark gig economy case. CA Prop 22 (2020) — Uber/Lyft spent $200M to pass ballot measure exempting them from AB5 employee classification. Illustrates legislative response to class action litigation. Class cert arbitration battle ongoing in other states.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "~$35 avg ($8.4M ÷ 240K; original $100M rejected)",
+      litigationYears: 5,
+      whyItWorked: "Uber driver misclassification is one of the most important class actions of the 2010s — but the actual recovery was dismal. The case itself is a cautionary tale of how legislative response can undercut a strong class action. The underlying legal theory is sound: Uber drivers are economically dependent employees under every multi-factor test. Shannon Liss-Riordan (lead counsel) is the preeminent gig economy misclassification attorney.",
+      challenges: "Uber enforced arbitration clauses in its driver agreements — court had to determine whether the clause was enforceable. Judge Chen rejected the $100M settlement as inadequate (too low for 240K drivers). The revised $8.4M settlement was approved. Most importantly: California Proposition 22 (2020), funded by $225M from Uber, Lyft, DoorDash and Instacart, exempted rideshare/delivery apps from AB5 — effectively nullifying the class action theory prospectively. Arbitration clauses in other states continue to block class treatment.",
+      strategiesWon: ["Initial court ruling that arbitration clause was unenforceable for this class (later partially reversed)", "PAGA claims survived arbitration waiver (Viking River Cruises v. Moriana, 2022 SCOTUS, was later limited by CA Adolph v. Uber)", "Massachusetts AG enforcement of state misclassification laws under ABC test provided parallel recovery"],
+      strategiesFailed: ["$100M settlement rejected by court as inadequate — forced renegotiation to $8.4M", "California Prop 22 (2020) legislative response effectively reversed the litigation outcome prospectively", "Arbitration clause enforcement (Epic Systems, 2018 SCOTUS) blocked class treatment in most states", "Only 240K CA drivers — most U.S. Uber drivers in states with no similar case"],
+      demographics: "~240,000 California Uber drivers; gig-dependent workers; many immigrants and non-traditional workers; demographic diversity mirrors broader CA labor market",
+      injuryTypes: ["Unpaid minimum wage", "Unreimbursed vehicle expenses (mileage, maintenance, insurance)", "Benefits deprivation (health insurance, unemployment)", "Overtime pay lost"],
+      keyEvidence: "Uber's driver onboarding materials; Uber's pricing, surge, and route algorithms controlling driver income; economic expert testimony on driver hourly net earnings below minimum wage after expenses; comparison with taxi driver employee classification",
+      corporateMisconduct: "Uber built its entire business model on labor cost arbitrage — using 'independent contractor' classification to avoid minimum wage, expense reimbursement, workers' compensation, and unemployment insurance. Drivers have no control over pricing, surge, or route algorithms; they are economically dependent employees in every meaningful sense. Uber then spent $225M on Prop 22 to permanently exempt itself from employee classification laws.",
+      regulatoryActions: "California AB5 (2019) — codified ABC test making Uber drivers presumptive employees; CA Prop 22 (2020) — industry referendum exempting rideshare/delivery; Massachusetts AG investigation; UK Supreme Court ruling (2021) classifying UK Uber drivers as workers; EU Platform Work Directive (2024)",
+      settlementStructure: "$8.4M CA class settlement (approx $35/driver); some CA drivers retained limited independent contractor benefits; Prop 22 framework governs ongoing CA rideshare worker status",
+      bellwetherOutcome: "N/A — settled before trial",
+      attorneyFees: "~$2.8M (33%); Lichten & Liss-Riordan lead",
+      replicationModel: "C — Gig economy legislative capture cautionary tale. Litigation succeeded in establishing legal theory but was neutralized by $225M ballot measure. For future cases: pursue states without Prop 22-type exemptions (Massachusetts, New Jersey, New York). UK/EU precedents suggest international parallel litigation. NLRA unfair labor practice charges as alternative federal track.",
+      clientAcquisitionStrategy: "Target current/former Uber drivers in states without Prop 22-type exemptions. Massachusetts, New Jersey, New York, Illinois, Colorado have stronger misclassification protections. Amazon Flex, DoorDash, Instacart follow same theory in non-exempted states. PAGA claims still available in CA for Labor Code violations (limited by AB 2288 reform, 2024).",
+      watchOut: "California's Prop 22 exempts rideshare/delivery companies from AB5 — California class theory is essentially foreclosed for Uber/Lyft/DoorDash going forward. Arbitration clauses still enforce in most states (Epic Systems). Only PAGA (CA) and Massachusetts ABC test provide viable current class tracks. Prop 22 is a warning: massive funded opposition can nullify class action victories through ballot initiatives."
+    }
+  },
+
+  {
+    id: 125, title: "Google Tech Worker Pay Equity Settlement", company: "Google / Alphabet",
+    type: "Employment", industry: "Technology", outcome: "settled", year: 2022,
+    affectedPop: "~15,550 female employees", jurisdiction: "Santa Clara Superior Court", mdlNumber: "No MDL",
+    settlementAmount: "$118M", classSize: "~15,550",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Female Google employees in California, New York, and Washington alleged systematic pay discrimination (lower starting salaries, slower promotions). CA Equal Pay Act + Title VII. $118M settlement + pay equity audit.",
+    leadCounsel: "Lieff Cabraser",
+    keyPrecedent: "California Equal Pay Act",
+    tags: ["Google", "pay equity", "gender discrimination", "tech worker", "Equal Pay Act", "employment"],
+    notes: "$118M settlement + mandatory pay equity audit. Tech industry pay equity litigation wave. Settlement required Google to conduct third-party pay audit. Growing area: tech company equal pay class actions.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$7,600 avg ($118M ÷ 15,550 female employees)",
+      litigationYears: 7,
+      whyItWorked: "California's Equal Pay Act is the strongest equal pay law in the nation — it requires equal pay for 'substantially similar work' regardless of job title, closing the historic equal pay gap that companies exploited through different job titles. Google's own HR data (produced in discovery) showed systematic pay gaps: female software engineers in the same role, same level, same location earned measurably less than comparable male engineers. The $118M settlement also required a third-party pay equity audit — structural relief forcing Google to change practices.",
+      challenges: "Technology company pay structures are complex — Google uses 'leveling' systems (SWE L3-L9) where ostensibly same-level engineers have different compensation due to performance bonuses, stock refreshes, and hiring negotiation. Distinguishing legitimate pay variation (performance, tenure) from discriminatory variation required sophisticated statistical regression analysis controlling for confounders.",
+      strategiesWon: ["CA Equal Pay Act 'substantially similar work' standard closed job-title definitional loophole", "Regression analysis controlling for legitimate pay factors (level, tenure, performance) isolated discriminatory component", "Third-party pay audit as structural relief is more valuable than cash settlement", "Google's own internal pay equity studies (produced in discovery) showed company knew about the gap", "Class certification based on Google's own uniform HR system (same leveling, same pay bands, same performance review system)"],
+      strategiesFailed: ["Google's 'pay for performance' defense required extensive expert battle over what counts as legitimate variation"],
+      demographics: "~15,550 female Google employees in California, New York, and Washington (2017-2020); predominantly software engineers, product managers, and technical roles; college-educated professionals; higher-income demographic",
+      injuryTypes: ["Pay discrimination: lower base salary, bonus, and stock compensation than comparable male employees", "Promotion discrimination: slower advancement through Google's leveling system"],
+      keyEvidence: "Google's own HR compensation database; Google's internal pay equity analysis (showing company was aware of gap); regression analysis by plaintiff expert; comparator employee pay data for matched male/female employees at same level in same role",
+      corporateMisconduct: "Google's compensation system — despite using a sophisticated structured leveling approach — produced systematic gender pay gaps. Google's own internal analysis documented the gap. The company publicly touted its commitment to pay equity while internal data showed ongoing disparity. Negotiation-based starting salaries amplified initial gender gaps, which then compounded through annual performance reviews and stock refresh cycles.",
+      regulatoryActions: "OFCCP (federal contractor) audit of Google's pay practices; California DFEH investigation; class litigation served as primary enforcement mechanism",
+      settlementStructure: "$118M common fund: $97.5M cash distribution (avg $7,600/employee); $20.5M attorneys' fees; mandatory third-party pay audit (Google's primary reform obligation)",
+      bellwetherOutcome: "N/A — settled",
+      attorneyFees: "~$39M (33%); Lieff Cabraser lead",
+      replicationModel: "A — Tech company equal pay class template. Key elements: (1) CA Equal Pay Act's 'substantially similar work' standard, (2) regression analysis of HR database, (3) company's own internal pay equity studies as evidence, (4) structural relief (third-party audit) as settlement requirement. Template for Amazon, Meta, Apple, Microsoft, and any large tech company with documented pay gaps.",
+      clientAcquisitionStrategy: "Target female software engineers and technical staff at large tech companies in California, New York, Washington. LinkedIn data shows demographic and pay patterns. Tech worker communities (Women in Tech groups, Lean In circles, Code Like a Girl). Emphasize: if you're a female engineer at a major tech company earning less than male peers with similar experience and level, you may have a claim.",
+      watchOut: "Tech company pay complexity (performance bonuses, stock refreshes, sign-on bonuses, RSU vesting) requires sophisticated regression analysis to isolate discriminatory component. Google's post-settlement pay equity audit may pre-empt future claims at Google specifically. States without CA Equal Pay Act 'substantially similar work' standard have weaker claims."
+    }
+  },
+
+  {
+    id: 126, title: "Amazon Warehouse Worker Wage Theft", company: "Amazon.com",
+    type: "Employment", industry: "E-Commerce/Logistics", outcome: "settled", year: 2021,
+    affectedPop: "~100,000 warehouse workers", jurisdiction: "N.D. California / Multiple states", mdlNumber: "No MDL",
+    settlementAmount: "$8.7M+ (CA) + multi-state ongoing",
+    classSize: "~100,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Amazon failed to pay warehouse workers for mandatory security screening time (up to 25 min/day). Portal-to-Portal Act defense tested. SCOTUS ruled (Integrity Staffing v. Busk) security screening not compensable federal — but CA law more protective.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "Integrity Staffing Solutions v. Busk (2014 SCOTUS); CA Labor Code",
+    tags: ["Amazon", "warehouse", "wage theft", "security screening", "Portal-to-Portal", "California", "employment"],
+    notes: "Illustrates federal/state divide in wage & hour. SCOTUS Portal-to-Portal bars federal claim; CA law still requires pay for security screening. CA's employee-protective Labor Code creates parallel state wage claims.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$87 avg (CA portion); PAGA penalties multiplied potential",
+      litigationYears: 7,
+      whyItWorked: "Amazon's security screening time (20-25 minutes daily for warehouse workers) represents real work time for which workers were not compensated. California's Labor Code, unlike federal law (Portal-to-Portal Act), requires pay for time employees are under employer control. The class is perfectly common: every Amazon warehouse worker in CA went through the same security screening queue at shift end. Amazon's own records showed the time spent (badge swipe to exit records).",
+      challenges: "SCOTUS ruled in Integrity Staffing v. Busk (2014) that Amazon security screening time is NOT compensable under the federal Fair Labor Standards Act — a major defense victory. Plaintiffs had to pivot entirely to California law, limiting class to CA workers. Amazon's warehouse workers often signed arbitration agreements, complicating class certification.",
+      strategiesWon: ["CA Labor Code is more protective than federal FLSA — covers security screening time that SCOTUS exempted federally", "Badge swipe records provided perfect objective time evidence", "Amazon's own security line design (bottleneck) created systematic delay easily documented", "PAGA penalties for CA Labor Code violations survived arbitration waiver"],
+      strategiesFailed: ["SCOTUS Integrity Staffing decision gutted federal FLSA claims entirely", "Arbitration clauses complicated class certification in CA and blocked class treatment in other states"],
+      demographics: "~100,000+ California Amazon warehouse workers (fulfillment centers, sort centers, delivery stations); predominantly working-class; significant immigrant workforce; hourly workers in high-turnover environment",
+      injuryTypes: ["Unpaid wages for security screening time (20-25 min/day × 5 days = 100-125 min/week)", "Overtime miscalculation (unpaid security time affects overtime threshold calculation)", "Wage statement violations (not listing all compensable time)"],
+      keyEvidence: "Badge swipe exit records showing time from last productive task to exit; Amazon security queue design documentation; time-study expert analysis of security screening duration; CA Labor Code §226 wage statement analysis",
+      corporateMisconduct: "Amazon required all warehouse workers to pass through mandatory security screening at shift end — a process that took 20-25 minutes due to security queue bottlenecks. Amazon designed its security systems to create this delay while refusing to compensate workers for the time. The unpaid time amounted to 100+ minutes per week per worker.",
+      regulatoryActions: "California Labor Commissioner investigation; DOL Wage and Hour Division investigation (pre-Integrity Staffing SCOTUS decision); OSHA citations for separate warehouse safety issues",
+      settlementStructure: "$8.7M CA class settlement; additional state settlements ongoing; PAGA penalties resolved; injunctive relief (time/attendance system updates)",
+      bellwetherOutcome: "N/A — settled; CA court ruling (pre-Integrity Staffing) served as bellwether",
+      attorneyFees: "~$2.9M (33% CA portion); Hagens Berman lead",
+      replicationModel: "B+ — CA vs. Federal wage & hour template. Key lesson: when federal law (FLSA) forecloses a claim (Integrity Staffing), pivot to CA Labor Code. CA is always more protective. Template: identify time employees are under employer control but not compensated; use employer's own time records as evidence; file in CA for class + PAGA.",
+      clientAcquisitionStrategy: "Target Amazon warehouse workers at California fulfillment centers (ONT2, LAX9, SMF7, etc.). Partner with Amazon warehouse worker unions (ALU). Focus on security screening time and other off-clock mandatory activities (safety meetings, equipment checks). PAGA notices to LWDA are public record — monitor for patterns.",
+      watchOut: "SCOTUS Integrity Staffing eliminates federal FLSA claims for security screening — only state law claims viable. Amazon's mandatory arbitration agreements may block class treatment (Epic Systems) — PAGA is the primary workaround. CA PAGA reform (AB 2288, 2024) limits PAGA penalties — recalculate damages under current statute."
+    }
+  },
+
+  {
+    id: 127, title: "McDonald's Franchise Sexual Harassment MDL", company: "McDonald's Corp.",
+    type: "Employment", industry: "Fast Food/Restaurant", outcome: "settled", year: 2021,
+    affectedPop: "~100 named plaintiffs + broader class", jurisdiction: "Multiple / N.D. Illinois",
+    mdlNumber: "No MDL",
+    settlementAmount: "$8M pilot settlement + $25M framework (2023)",
+    classSize: "Thousands",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic + physical",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "McDonald's workers filed coordinated sexual harassment claims alleging corporate HQ knew about rampant workplace harassment at franchises and failed to act. EEOC coordinated charges. Raises franchisor joint employer liability theory.",
+    leadCounsel: "Fight for $15, ACLU, SEIU",
+    keyPrecedent: "Browning-Ferris Industries v. NLRB (joint employer)",
+    tags: ["McDonald's", "sexual harassment", "franchise", "joint employer", "EEOC", "#MeToo", "employment"],
+    notes: "Novel joint employer theory — corporate franchisor liability for franchise employee harassment. $25M systemwide policy change framework. Intersection of #MeToo movement and franchise employment law.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$80K avg for named plaintiffs; $25M systemwide framework",
+      litigationYears: 5,
+      whyItWorked: "McDonald's is the largest employer of minimum wage workers in the U.S. The #MeToo movement gave momentum to workplace sexual harassment claims that previously went unaddressed. The joint employer theory — that McDonald's corporate HQ is jointly liable for franchise employee harassment because it controls franchise operations through its Quality, Service, Cleanliness (QSC) standards — was legally novel but gaining ground after Browning-Ferris (NLRB joint employer ruling). EEOC coordination of nationwide charges created an efficient pathway for hundreds of individual harassments at franchises.",
+      challenges: "Joint employer liability for franchise companies is contested — McDonald's argued each franchise is independently owned. The $25M 'framework' was more policy change than cash. Individual claim values are lower than product liability or securities cases — each McDonald's worker's harassment claim individually is modest. Class certification for sexual harassment requires overcoming individualization concerns (different harassers, different incidents).",
+      strategiesWon: ["#MeToo media environment created maximum corporate reputational pressure", "EEOC coordination of coordinated charges across multiple cities/franchises", "Joint employer theory: McDonald's QSC system controls daily operations = joint employment", "Organized SEIU/Fight for $15 infrastructure provided efficient client acquisition", "McDonald's national compliance training requirement as injunctive relief = structural change"],
+      strategiesFailed: ["Joint employer liability for individual franchise harassment is legally uncertain", "Modest individual damages per worker limit per-plaintiff recovery", "McDonald's 'franchisee independence' defense limits corporate liability"],
+      demographics: "~100 named plaintiffs + potential thousands across McDonald's 14,000+ U.S. locations; predominantly women, ages 16-30; disproportionately women of color; minimum wage workers in high-turnover environment",
+      injuryTypes: ["Sexual harassment (quid pro quo and hostile work environment)", "Retaliation for reporting harassment", "Constructive discharge (quitting due to intolerable conditions)", "Emotional distress and psychological harm"],
+      keyEvidence: "EEOC charge data documenting pattern across franchises; McDonald's corporate training materials (showing what corporate controls); individual employee statements; HR system records showing corporate monitoring of franchise operations; media investigation records",
+      corporateMisconduct: "McDonald's corporate knew from EEOC charges and internal HR systems that sexual harassment was pervasive across its franchises. Despite controlling every aspect of franchise operations through its QSC standards — including employee training, scheduling, and HR policies — McDonald's failed to implement meaningful anti-harassment training or accountability systems at the franchise level.",
+      regulatoryActions: "EEOC coordinated charges across multiple cities (Chicago, LA, Miami, New Orleans, St. Louis, Kansas City, Durham); state AG investigations; DOL investigation of wage theft as companion claim",
+      settlementStructure: "$25M systemwide policy change framework: mandatory anti-harassment training, enhanced HR reporting systems, $8M pilot program for named plaintiffs; individual claims settling separately",
+      bellwetherOutcome: "Individual EEOC charge resolutions served as bellwether; pilot settlement informed broader framework",
+      attorneyFees: "Contingent; ACLU Women's Rights Project, SEIU, Fight for $15 led (non-traditional attorney structure)",
+      replicationModel: "B+ — Franchise joint employer sexual harassment template. Key elements: (1) EEOC coordinated charge strategy for pattern evidence, (2) joint employer theory based on operational control, (3) #MeToo media pressure as settlement accelerant, (4) organized union infrastructure for client acquisition. Template for any major franchise operator (Subway, Pizza Hut, hotel chains, retail franchises).",
+      clientAcquisitionStrategy: "Partner with union organizations (SEIU, Fight for $15, Restaurant Opportunities Centers). EEOC charge records are public — identify patterns at specific franchise locations. Food worker advocacy organizations. Target female workers in 16-25 age range (most common harassment victims). Bilingual outreach (significant Spanish-speaking workforce).",
+      watchOut: "Joint employer liability for franchise companies is legally uncertain — post-NLRB 2023 joint employer rule complications. Individual claim values are modest without aggregate class certification. McDonald's corporate 'we don't control franchisee employment' defense is legally credible in some circuits. Coordination with EEOC is essential but can slow case resolution."
+    }
+  },
+
+  {
+    id: 128, title: "Wells Fargo Employee Unauthorized Account Wage Claim", company: "Wells Fargo",
+    type: "Employment", industry: "Financial Services", outcome: "settled", year: 2017,
+    affectedPop: "~45,000 former employees", jurisdiction: "N.D. California", mdlNumber: "No MDL",
+    settlementAmount: "$142M (consumer) + $35M (wrongful termination)",
+    classSize: "~45,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Wells Fargo employees who refused to open fake accounts or reported fraud were fired or demoted. Whistleblower retaliation under Dodd-Frank + California Labor Code. Uniform retaliation policy = common liability.",
+    leadCounsel: "Keller Rohrback",
+    keyPrecedent: "Wells Fargo Consumer MDL 2724",
+    tags: ["Wells Fargo", "whistleblower", "retaliation", "Dodd-Frank", "fake accounts", "employment"],
+    notes: "Parallel to consumer MDL. Same corporate policy (pressure to open fake accounts) created both consumer fraud and employee retaliation liability. $35M employee settlement. Dodd-Frank whistleblower retaliation claims.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$778 avg employee settlement ($35M ÷ 45K employees)",
+      litigationYears: 4,
+      whyItWorked: "Wells Fargo's illegal accounts scandal is the textbook corporate retaliation case. Employees who refused to open fake accounts or reported the fraud through internal ethics hotlines were fired or demoted. The evidence was overwhelming: Wells Fargo maintained specific sales quota systems (8 accounts per customer = 'Gr-Eight') that drove the behavior, internal HR records showed terminations correlating with ethics hotline calls, and Dodd-Frank's whistleblower retaliation provisions provided a federal statutory hook for damages. The same corporate policy that created consumer fraud also created employment retaliation — dual recovery tracks from identical facts.",
+      challenges: "Individual variation in retaliation methods (some fired, some demoted, some relocated) complicated uniform damages. Wells Fargo's arbitration agreements tried to block class treatment. Parallel CFPB/OCC regulatory enforcement created some preclusion arguments.",
+      strategiesWon: ["Dodd-Frank whistleblower retaliation (Section 1057) provides federal claim with attorney fees", "Wells Fargo's own ethics hotline records showing who reported + subsequent terminations = perfect evidence", "Gr-Eight sales quota documented in Wells Fargo training materials = common corporate policy", "Parallel consumer MDL's $142M settlement created pressure for employee settlement", "John Stumpf Congressional testimony + $185M CFPB/OCC fine = admitted institutional misconduct"],
+      strategiesFailed: ["Wells Fargo's arbitration agreement initially blocked class treatment in federal court", "Individual retaliation damages vary significantly (some fired, some transferred, some just demoted)"],
+      demographics: "~45,000 former Wells Fargo retail bank employees (branch bankers, personal bankers, tellers); predominantly female (retail banking is female-heavy workforce); middle-income professionals",
+      injuryTypes: ["Wrongful termination (fired for refusing fake account quotas)", "Constructive discharge (forced out for ethics hotline reporting)", "Demotion and adverse employment action", "Lost wages and benefits from termination", "Emotional distress from retaliation"],
+      keyEvidence: "Wells Fargo ethics hotline records (who reported fraud → subsequent adverse actions); Gr-Eight sales quota documentation; HR termination records correlated with ethics reports; CFPB/OCC enforcement findings; John Stumpf Congressional testimony; California Labor Commissioner complaint records",
+      corporateMisconduct: "Wells Fargo imposed aggressive sales quotas ('Gr-Eight' — 8 products per customer) that employees knew were unachievable through legitimate sales. Employees who refused to open fake accounts or reported the fraud were systematically retaliated against through terminations, demotions, and hostile work environments. Wells Fargo's internal ethics hotline specifically directed employees' fraud reports to the same managers who were imposing the quotas.",
+      regulatoryActions: "CFPB/OCC $185M fine (2016); California AG investigation; DOJ/SEC investigation; Federal Reserve asset cap on Wells Fargo (still in place 2024); Dodd-Frank Section 1057 whistleblower program",
+      settlementStructure: "$35M employee retaliation settlement; $142M consumer MDL settlement (separate); Wells Fargo fired 5,300 employees for fake accounts (those employees may have been wrongfully pressured themselves)",
+      bellwetherOutcome: "N/A — settled",
+      attorneyFees: "~$11.5M (33%); Keller Rohrback lead",
+      replicationModel: "A — Corporate retaliation class template. When institutional misconduct (fake accounts, fraud, environmental violations) drives internal retaliation against employees, the Dodd-Frank whistleblower framework creates federal class action. Template: (1) corporate fraud → (2) employee who reports → (3) adverse employment action → (4) Dodd-Frank Section 1057 + state whistleblower statutes + CA Labor Code.",
+      clientAcquisitionStrategy: "Target former Wells Fargo retail bank employees (2011-2016) who reported fake accounts through ethics hotlines or HR. CFPB released employee termination data. Wells Fargo internal documents (produced in consumer MDL) identify who was fired for refusing quotas. Partner with former employee networks and banking unions (IBEW, AWU-CWA for tech workers).",
+      watchOut: "Dodd-Frank Section 1057 whistleblower claims require demonstrating 'reasonable belief' of violation at time of report — not actual violation. Wells Fargo's arbitration agreements complicated class treatment in some circuits. Statute of limitations: 180-day CFPB window for Dodd-Frank whistleblower + state limitations for state law claims. Coordinate with ongoing OCC monitoring."
+    }
+  },
+
+  {
+    id: 129, title: "Ernst & Young Forced Arbitration Sex Discrimination", company: "Ernst & Young (EY)",
+    type: "Employment", industry: "Accounting/Professional Services", outcome: "ongoing", year: 2019,
+    affectedPop: "~100,000+ EY employees", jurisdiction: "Multiple (arbitration)", mdlNumber: "No MDL",
+    settlementAmount: "Pending (individual arbitrations)", classSize: "~100,000",
+    rule23bType: "n/a (arbitration forced)", appealOutcome: "mixed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "EY enforced mandatory individual arbitration for all employment claims, blocking class action. NLRA Section 7 challenge to waiver rejected (Epic Systems SCOTUS 2018). Mass arbitration filed by 12,000+ individual claimants. PAGA carve-out in CA.",
+    leadCounsel: "Lichten & Liss-Riordan, Outten & Golden",
+    keyPrecedent: "Epic Systems Corp. v. Lewis (2018 SCOTUS) — class action waiver enforced",
+    tags: ["Ernst & Young", "EY", "arbitration", "class waiver", "Epic Systems", "NLRA", "employment"],
+    notes: "CRITICAL LESSON: Epic Systems (2018 SCOTUS) enforced class action waivers in employment arbitration. Mass arbitration filings (thousands of individual arbitrations) as counter-strategy. CA PAGA claims survive arbitration waivers under Viking River (2022 SCOTUS, partially).",
+    analysis: {
+      rating: "B",
+      strengthScore: 6,
+      payoutPerClaimant: "Pending individual arbitrations — varies widely; PAGA CA claims more valuable",
+      litigationYears: 7,
+      whyItWorked: "The underlying sex discrimination claims at EY are real and well-documented. However, this case is primarily studied as an Epic Systems cautionary tale: EY's mandatory individual arbitration agreements block the class action entirely. The mass arbitration counter-strategy (filing 12,000+ simultaneous individual arbitrations to overwhelm EY's arbitration process) was a creative response that created leverage — arbitration fees and administrative costs ($1,900+ per arbitration filing) created enormous financial pressure on EY.",
+      challenges: "Epic Systems Corp. v. Lewis (2018 SCOTUS) definitively enforced class action waivers in employment arbitration agreements. Only PAGA (California) provides a meaningful carve-out. Mass arbitration backfires: while theoretically creating costs for EY, it also requires firm to fund thousands of individual cases at reduced individual recovery. Some states have passed arbitration reform laws but Epic Systems federal supremacy limits them.",
+      strategiesWon: ["Mass arbitration (12,000+ filings) as leverage — created $22M+ in AAA filing fees for EY", "California PAGA claims survive arbitration waiver (partially, under Viking River)", "NLRB unfair labor practice charges as parallel federal track outside arbitration", "Publicity and reputational harm from mass arbitration filing created settlement pressure"],
+      strategiesFailed: ["Epic Systems (2018 SCOTUS) enforced class action waiver — no traditional class certification", "Individual arbitration = fragmented recovery; no class-wide precedent or injunctive relief", "Mass arbitration economics are unfavorable: each case requires individual merits presentation at high cost"],
+      demographics: "~100,000+ Ernst & Young U.S. employees; professional services demographic (accountants, consultants, advisory staff); female employees systematically underpaid and slower-promoted",
+      injuryTypes: ["Pay discrimination (lower compensation than comparable male employees)", "Promotion discrimination (slower advancement to manager/partner)", "Hostile work environment"],
+      keyEvidence: "EY compensation data showing gender pay gap; promotion timeline analysis; EY partner demographic data; individual employee comparator analyses; EY's own diversity reports",
+      corporateMisconduct: "Ernst & Young imposed mandatory individual arbitration agreements that effectively immunized the firm from class-wide accountability for sex discrimination, while simultaneously maintaining pay and promotion disparities. The firm used arbitration to divide and conquer employees who collectively had strong systemic claims.",
+      regulatoryActions: "EEOC investigations; NLRB unfair labor practice charges; DOL OFCCP (federal contractor) audit",
+      settlementStructure: "Individual arbitration settlements vary; mass arbitration filing forcing EY to fund thousands of $1,900+ AAA fees; PAGA claims in California proceeding separately",
+      bellwetherOutcome: "Individual arbitrations proceeding; no class-wide bellwether possible",
+      attorneyFees: "Contingent; Lichten & Liss-Riordan and Outten & Golden lead",
+      replicationModel: "B — Arbitration avoidance template. Key lessons: (1) Epic Systems means class waivers enforce — must file in CA for PAGA, or use NLRA ULP charges; (2) Mass arbitration as leverage strategy works for large companies with many potential claimants; (3) AAA filing fee economics can create settlement pressure. Template for any large employer with class waiver arbitration agreements.",
+      clientAcquisitionStrategy: "Target female EY employees (current and former) for individual PAGA claims (CA) and individual arbitration. California employees have strongest claims (PAGA + CA Equal Pay Act). For other states: EEOC charges + individual arbitration. Mass arbitration only viable with large volume of claimants and coordinated firm.",
+      watchOut: "Epic Systems is settled law — class action waivers enforce in employment. PAGA is the only California carve-out, and AB 2288 (2024) limits PAGA penalties. Mass arbitration requires enormous firm resources. Viking River Cruises v. Moriana (2022 SCOTUS) limited PAGA delegation waiver enforcement — check current CA Adolph v. Uber case (CA Supreme Court) for current PAGA arbitration status."
+    }
+  },
+
+  {
+    id: 130, title: "Starbucks Tip-Pooling Class Action", company: "Starbucks Corp.",
+    type: "Employment", industry: "Food & Beverage", outcome: "settled", year: 2008,
+    affectedPop: "~100,000 CA baristas", jurisdiction: "San Diego Superior Court", mdlNumber: "No MDL",
+    settlementAmount: "$18M", classSize: "~100,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Starbucks required baristas to share tips with shift supervisors, who are classified as management under CA law. CA Labor Code §351 prohibits employer and agent from taking employee tips. Same tip-pooling policy across all CA stores.",
+    leadCounsel: "Various CA plaintiffs' firms",
+    keyPrecedent: "Chau v. Starbucks (CA Labor Code §351)",
+    tags: ["Starbucks", "tip pooling", "barista", "California", "Labor Code", "wage", "employment"],
+    notes: "$18M settlement. Companion NY case ($3M). Starbucks changed tip-pooling policy nationally. Clean wage & hour class: uniform policy, same harm calculation (% of tips per shift).",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$180 avg ($18M ÷ 100K baristas)",
+      litigationYears: 3,
+      whyItWorked: "California Labor Code §351 is explicit: it is unlawful for an employer or agent to take any part of gratuities left by customers for employees. Starbucks' shift supervisors are classified as management 'agents' under CA law — therefore including them in tip pools violates §351. The entire Starbucks CA tip-pooling policy was uniform: every store ran the same tip-sharing system that distributed barista tips to shift supervisors. Zero individualization needed — same policy, same harm, same calculation.",
+      challenges: "Modestly sized settlement relative to 100,000 baristas reflects the modest per-tip-period dollar amounts. The harm per person per shift is perhaps $5-15 in tip diversion — significant only at scale. New York had a separate tip case ($3M) illustrating geographic fragmentation of wage & hour class actions.",
+      strategiesWon: ["CA Labor Code §351 bright-line violation: shift supervisors = management agents = cannot participate in tip pools", "Starbucks' own payroll system provided perfect audit trail of tip distribution amounts", "Uniform store-level tip-pooling policy = clean commonality and typicality", "Policy change (national tip policy reform) as valuable structural injunctive relief"],
+      strategiesFailed: ["Low per-shift harm amount requires strict aggregate analysis to make case economically viable"],
+      demographics: "~100,000 California Starbucks baristas (2006-2008 class period); predominantly young (18-25), college students, female, urban; minimum-wage-adjacent demographic",
+      injuryTypes: ["Lost tips wrongfully redirected to shift supervisors", "Unjust enrichment of shift supervisors at baristas' expense"],
+      keyEvidence: "Starbucks tip-pooling policy documents; payroll system tip distribution records; CA Labor Code §351 analysis; deposition of Starbucks HR executives on shift supervisor classification",
+      corporateMisconduct: "Starbucks implemented a tip-pooling system that included shift supervisors — employees who are management agents under California law — in violation of Labor Code §351. Starbucks maintained this policy systemwide knowing CA law prohibited it.",
+      regulatoryActions: "CA Labor Commissioner investigation; no criminal charges",
+      settlementStructure: "$18M California class settlement; $3M New York settlement; national tip-pooling policy reform (shift supervisors excluded nationwide post-settlement)",
+      bellwetherOutcome: "N/A — settled",
+      attorneyFees: "~$6M (33%); multiple CA plaintiffs' firms",
+      replicationModel: "A — Clean wage & hour class template. Perfect for: uniform pay policy violations, bright-line CA Labor Code violation, employer's own payroll records as proof. Template for McDonald's, Chipotle, and any restaurant chain with tip pool practices that include management. Also: any retail employer with uniform break or overtime policy violations.",
+      clientAcquisitionStrategy: "Target current/former Starbucks baristas in CA (and NY for separate case). Coffee shop worker communities, barista forums. Starbucks has a high employee turnover — large historical class. For future cases: monitor new tip-pooling policies at Peet's, Dutch Bros, local chains. Any restaurant tip pool including supervisors/managers = CA Labor Code §351 violation.",
+      watchOut: "Federal FLSA tip pooling rules differ from CA Labor Code — federal standards are more lenient (managers can be included in some circumstances since 2018 FLSA amendment). CA state law is still more protective. Per-shift damages are modest — only viable at class scale with large number of class members."
+    }
+  },
+
+  // ─── BATCH 9: FOOD SAFETY / AGRICULTURE (IDs 131–140) ────────────────────
+
+  {
+    id: 131, title: "Chipotle E. coli / Norovirus Outbreak Class Action", company: "Chipotle Mexican Grill",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 2015,
+    affectedPop: "~500+ sickened; investor class ~millions", jurisdiction: "Multiple + C.D. Cal. (securities)",
+    mdlNumber: "No MDL (securities MDL 2680)",
+    settlementAmount: "$6.5M (consumer) + $97.5M (securities class)",
+    classSize: "Hundreds (consumer) + investors",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Multiple E. coli, Salmonella, and Norovirus outbreaks at Chipotle restaurants 2015-2016. Securities class alleged Chipotle misrepresented food safety systems. Dual consumer injury + securities fraud tracks from same event.",
+    leadCounsel: "Robbins Geller (securities); various (consumer)",
+    keyPrecedent: "In re Jack in the Box E. coli Litigation",
+    tags: ["Chipotle", "E. coli", "Norovirus", "food safety", "foodborne illness", "securities", "restaurant"],
+    notes: "Dual-track: consumer personal injury (small) + securities class (large). Illustrates how food safety failures create both injury claims and securities fraud claims (company misrepresented safety protocols to investors).",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$13K avg investor ($97.5M securities ÷ thousands); personal injury individual ($50K-$500K per sick person)",
+      litigationYears: 5,
+      whyItWorked: "Chipotle's 2015-2016 crisis was a perfect storm: E. coli O157:H7, Salmonella Newport, and Norovirus outbreaks at multiple locations across the U.S. within months. The dual-track litigation strategy captured both injury claims (small, personal injury sub-class) and the much more valuable securities fraud class (Chipotle misrepresented its food safety systems to investors in SEC filings). CDC outbreak investigation reports linked specific Chipotle locations to specific pathogen exposures — providing clean causation proof. The stock dropped from $750 to $400 on the outbreak news.",
+      challenges: "Consumer personal injury class was small (direct victims of specific outbreaks); most economic loss class members (who bought Chipotle food that was safe) had de minimis individual harm. The securities class needed to prove Chipotle's food safety statements were materially false — which required showing management knew the systems were inadequate before the outbreaks.",
+      strategiesWon: ["CDC outbreak investigation linked specific locations to specific pathogens — objective causation proof", "Securities class: Chipotle's 'Food With Integrity' marketing vs. actual food safety failures = securities misrepresentation", "Dual-track maximized aggregate recovery from same fact pattern", "Stock price drop on outbreak news = clear loss causation for investor class"],
+      strategiesFailed: ["Broad consumer economic loss class (all Chipotle purchasers) failed — most bought unaffected food", "Defense argued food safety is not a 'material' representation for securities purposes"],
+      demographics: "Personal injury: victims of specific CDC-confirmed outbreaks (E. coli: ~60, Norovirus: 234+, Salmonella: 80+); Securities class: Chipotle institutional and retail investors 2015",
+      injuryTypes: ["E. coli O157:H7 hemolytic uremic syndrome (HUS)", "Salmonella gastroenteritis", "Norovirus gastroenteritis", "Economic loss on Chipotle stock (securities class)"],
+      keyEvidence: "CDC Morbidity and Mortality Weekly Reports linking outbreaks to Chipotle; FDA/state health department inspection records; Chipotle's own internal food safety audit records; Chipotle SEC filings touting 'Food With Integrity' food safety standards",
+      corporateMisconduct: "Chipotle's 'Food With Integrity' brand was built on claims of superior food sourcing and safety. Despite this branding, the company's food safety systems were inadequate — using fresh, uncooked produce without sufficient pathogen reduction steps. Multiple outbreaks across different pathogens at different locations demonstrated systemic failures. Chipotle's SEC filings continued to tout food safety while outbreaks were occurring.",
+      regulatoryActions: "CDC multi-state outbreak investigations; FDA inspection and warning letters; state health department investigations; USDA review of supplier practices",
+      settlementStructure: "$6.5M personal injury settlement; $97.5M securities class settlement; Chipotle also implemented food safety improvement program (high-resolution irradiation, enhanced produce washing)",
+      bellwetherOutcome: "Individual personal injury cases settled; securities class resolved",
+      attorneyFees: "~$32M securities class (33%); Robbins Geller securities lead",
+      replicationModel: "A — Dual-track food safety + securities template. Key: when a food company's outbreak contradicts its public safety claims, both consumer injury and securities investor claims arise simultaneously. Template for McDonald's, Dole, Denny's, Subway, and any publicly traded food company where outbreak contradicts marketing.",
+      clientAcquisitionStrategy: "Target CDC-confirmed outbreak victims through health department notification records. Securities class: institutional investors holding Chipotle stock during outbreak period. For future food safety cases: monitor CDC FoodNet outbreak investigations + public company stock price drops simultaneously — dual-track opportunity.",
+      watchOut: "Consumer economic loss class (all purchasers) fails without showing actual contamination exposure. Only direct outbreak victims have viable personal injury claims. Securities class needs specific false statements in SEC filings — 'Food With Integrity' branding is marketing, not financial disclosure. Need specific 10-Q/10-K statements about food safety systems to be materially false."
+    }
+  },
+
+  {
+    id: 132, title: "Blue Bell Creameries Listeria Outbreak", company: "Blue Bell Creameries",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 2015,
+    affectedPop: "10 deaths/illnesses; millions of consumers",
+    jurisdiction: "Multiple states + W.D. Texas (class)",
+    mdlNumber: "No MDL",
+    settlementAmount: "$60M DOJ guilty plea + consumer class pending",
+    classSize: "Millions of purchasers",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical + economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Blue Bell ice cream contaminated with Listeria monocytogenes caused 10 illnesses (3 deaths). Company recalled all products. CEO pleaded guilty to federal charges. Consumer class for economic loss of purchased products.",
+    leadCounsel: "Napoli Shkolnik",
+    keyPrecedent: "In re Peanut Corporation of America Litigation",
+    tags: ["Blue Bell", "Listeria", "ice cream", "food safety", "recall", "criminal", "foodborne illness"],
+    notes: "$60M DOJ plea — criminal prosecution of food company executives increasingly common. Consumer economic loss class for recalled products (bought and thrown away). CEO criminal plea strengthened civil cases.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Injury class: $50K-$500K per Listeria victim (3 deaths, 10 total); Economic loss class: ~$30/purchaser",
+      litigationYears: 6,
+      whyItWorked: "Listeria monocytogenes causes death and serious illness in the immunocompromised, pregnant women, and elderly — the most serious foodborne pathogen for vulnerable populations. The CEO's $60M DOJ criminal plea (introducing adulterated and misbranded ice cream into interstate commerce) established corporate culpability beyond any civil litigation doubt. Total product recall (all Blue Bell ice cream) meant every purchaser had an economic loss claim for contaminated or potentially contaminated products they bought and threw away. The criminal plea made the civil case essentially unopposable on liability.",
+      challenges: "The personal injury class is small (only 10 victims) — most recovery came from economic loss for purchasers. Proving Listeria in a specific product batch requires traceability that isn't always available. Private company (Blue Bell is privately held) made financial discovery harder.",
+      strategiesWon: ["CEO criminal plea ($60M DOJ) established definitive liability for civil case", "Total recall (all products) = economic loss class covers all purchasers", "Listeria traceability to specific production facility documented by FDA", "Vulnerable population victims (elderly, immunocompromised, pregnant) = high jury sympathy", "Criminal plea included admission that Blue Bell knew of positive Listeria tests and continued distributing"],
+      strategiesFailed: ["Private company limited financial discovery for settlement valuation", "Small personal injury sub-class (only 10 victims) limits aggregate personal injury recovery"],
+      demographics: "Injury class: 10 victims (3 deaths) — predominantly elderly and immunocompromised patients in Kansas hospital; Economic loss: millions of Blue Bell purchasers in 23-state distribution area; Blue Bell is iconic in the South/Midwest — high brand loyalty",
+      injuryTypes: ["Listeria meningitis and septicemia (death and severe illness)", "HUS (hemolytic uremic syndrome) in severe cases", "Economic loss for recalled ice cream purchases", "Emotional distress for consumers who unknowingly ate contaminated product"],
+      keyEvidence: "FDA investigation reports identifying Listeria-contaminated production environments; CDC whole-genome sequencing linking outbreak Listeria strains to Blue Bell facility; internal Blue Bell testing records showing positive Listeria tests before recall; CEO's criminal plea factual basis admitting knowing distribution after positive tests",
+      corporateMisconduct: "Blue Bell Creameries received positive Listeria test results from their production facilities in January 2015 and continued producing and distributing ice cream. The company recalled only some products rather than all products, and continued operations in contaminated production environments. CEO Paul Kruse pleaded guilty to introducing adulterated ice cream into interstate commerce with knowledge of contamination.",
+      regulatoryActions: "FDA mandatory recall (all products); DOJ criminal prosecution — CEO Paul Kruse $60M plea; facility remediation requirements; Blue Bell suspended operations for months; FDA consent decree",
+      settlementStructure: "$60M DOJ settlement (criminal plea); consumer economic loss class pending settlement (expected $100-$200M for millions of purchasers); individual personal injury cases settled at confidential amounts ($500K-$2M per death/serious illness)",
+      bellwetherOutcome: "Individual Listeria victim cases settled; economic loss class awaiting certification",
+      attorneyFees: "Contingent; Napoli Shkolnik lead",
+      replicationModel: "A — Criminal plea as civil liability accelerant for food recall class actions. Pattern: (1) FDA contamination finding, (2) criminal prosecution with plea admitting knowledge, (3) total recall = economic loss class, (4) personal injury sub-class for actual illness victims. Template for any food recall with criminal prosecution (PCA peanut butter, Dole salad).",
+      clientAcquisitionStrategy: "Target Blue Bell purchasers in 23 distribution states (2015). Listeria illness victims: work with infectious disease physicians and hospitals in outbreak area. Hospital records + CDC WGS confirmation = strongest individual cases. Economic loss: any consumer who bought Blue Bell ice cream and discarded it during recall period.",
+      watchOut: "Blue Bell is a private company — financial discovery and valuation more difficult. Personal injury cases require CDC WGS confirmation of outbreak strain match to Blue Bell. Statute of limitations varies by state for food injury claims — 2-3 years in most states from date of illness. Economic loss claims require proof of purchase (receipt, loyalty card, credit card) for damages calculation."
+    }
+  },
+
+  {
+    id: 133, title: "ConAgra Wesson Oil 'All Natural' False Labeling", company: "ConAgra Foods",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "cert denied (7th Cir.)", year: 2014,
+    affectedPop: "~200M U.S. purchasers", jurisdiction: "N.D. Illinois → 7th Cir.", mdlNumber: "No MDL",
+    settlementAmount: "None (class certification reversed on appeal)",
+    classSize: "~200M",
+    rule23bType: "b(3)", appealOutcome: "reversed (7th Cir. 2016)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: false, typicality: false, adequacy: true,
+    keyFact: "Wesson cooking oil labeled 'All Natural' though made from GMO crops. District court certified class. 7th Circuit reversed — 'price premium' damages model failed because plaintiffs didn't uniformly pay premium. Key damages model lesson.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "Comcast Corp. v. Behrend (damages model must match liability theory)",
+    tags: ["ConAgra", "Wesson", "natural", "GMO", "food labeling", "class denied", "damages model"],
+    notes: "CRITICAL LESSON: Comcast v. Behrend (2013 SCOTUS) requires damages model to match liability theory at cert stage. 7th Circuit applied this to reject 'price premium' model because not all class members paid premium price. Key food labeling failure.",
+    analysis: {
+      rating: "D",
+      strengthScore: 3,
+      payoutPerClaimant: "$0 — class certification reversed on appeal",
+      litigationYears: 7,
+      whyItWorked: "This case did NOT work — it is a critical cautionary tale. Wesson cooking oil labeled 'All Natural' but made from GMO crops represents a technically viable false advertising theory. The theory is compelling: consumers pay a price premium for 'natural' products. GMO crops are not natural. Therefore, 'All Natural' labeling on GMO oil is deceptive and consumers are owed the premium they paid.",
+      challenges: "The 7th Circuit reversed class certification on damages: not all class members paid a price premium for 'All Natural' — some bought Wesson oil at the same price as non-'natural' competitors. Comcast Corp. v. Behrend (2013 SCOTUS) requires the damages model to match the liability theory precisely. If only some class members paid a premium, a class-wide damages model averaging across all purchasers fails Comcast. The case illustrates the central tension in false advertising classes: how to prove that every class member paid a price premium when products are sold at varying prices through multiple channels.",
+      challenges: "Comcast v. Behrend damages model mismatch; retailer pricing variation means not all purchasers paid same price; FDA's undefined 'natural' standard (FDA had not formally defined 'natural' for food) created regulatory ambiguity; GMO ≠ non-natural ruling was contested (some courts disagree)",
+      strategiesWon: ["'All Natural' label on GMO product = false representation is legally compelling as pure theory", "Consumer expectations evidence: surveys showing consumers believe 'natural' means no GMOs", "FDA's failure to define 'natural' created regulatory vacuum enabling deception"],
+      strategiesFailed: ["Price premium damages model failed because not all class members paid the premium (Comcast issue)", "Retailer/channel variation in pricing defeated uniform damages calculation", "FDA's undefined 'natural' standard gave ConAgra regulatory ambiguity defense"],
+      demographics: "~200M potential U.S. purchasers of Wesson cooking oil; primarily female household shoppers; health-conscious consumers who selected 'natural' products",
+      injuryTypes: ["Price premium overpayment for 'natural' product not as described", "Consumer deception and loss of informed purchasing choice"],
+      keyEvidence: "Wesson oil packaging and label; ConAgra's own marketing materials for 'All Natural'; FDA regulations (absence of definition); GMO crop supply chain documentation; consumer survey evidence on 'natural' meaning",
+      corporateMisconduct: "ConAgra labeled Wesson cooking oil as '100% Natural' while using GMO crops for the oil. The company used the 'natural' label as a marketing premium while knowing GMO crops are excluded from USDA organic standards and are not considered natural by most consumer definitions.",
+      regulatoryActions: "FDA warning letters for similar companies; FTC guidance on food advertising; no ConAgra-specific regulatory action",
+      settlementStructure: "No class settlement — class certification reversed. Individual consumer claims worth only cents — no practical individual recovery possible.",
+      bellwetherOutcome: "N/A — never reached trial",
+      attorneyFees: "$0 class fees; years of investment with no recovery",
+      replicationModel: "D — CRITICAL FAILURE providing essential lessons: (1) Comcast v. Behrend — damages model MUST match liability theory and apply to ALL class members, not just some; (2) Price premium model fails if not all class members paid premium; (3) FDA's undefined 'natural' standard creates regulatory ambiguity defense; (4) Need hedonic regression analysis showing every class member paid a premium at every retail channel. All future food labeling class actions must solve the Comcast/pricing variation problem.",
+      clientAcquisitionStrategy: "Do not bring this case without solving the damages model problem. For future 'natural' labeling cases: (1) identify product with specific, uniform premium price across all retail channels, (2) obtain scanner data showing uniform premium, (3) use conjoint analysis damages model showing willingness-to-pay premium for 'natural' claim, (4) avoid Comcast by showing ALL class members paid premium at ALL channels.",
+      watchOut: "Comcast v. Behrend (2013) is the primary defense weapon in all false advertising/food labeling class actions. Defense will always challenge the price premium model at class certification. Must prepare hedonic regression or conjoint analysis expert showing uniform premium across all retail channels. Retailers who don't charge premium = class members who paid no premium = Comcast problem."
+    }
+  },
+
+  {
+    id: 134, title: "Peanut Corporation of America Salmonella MDL", company: "Peanut Corporation of America",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 2008,
+    affectedPop: "~714 sickened (9 deaths)", jurisdiction: "M.D. Georgia", mdlNumber: "No MDL (state)",
+    settlementAmount: "Bankruptcy liquidation; criminal convictions",
+    classSize: "~714 injured",
+    rule23bType: "b(3)", appealOutcome: "affirmed (criminal)", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "PCA knowingly shipped Salmonella-contaminated peanut butter causing 714 illnesses and 9 deaths. CEO Stewart Parnell convicted 2014 (35 years). Landmark criminal food safety prosecution. Company filed bankruptcy.",
+    leadCounsel: "Various plaintiffs' firms",
+    keyPrecedent: "U.S. v. Parnell (criminal food safety)",
+    tags: ["PCA", "peanut butter", "Salmonella", "food safety", "criminal", "CEO prosecution", "recall"],
+    notes: "Parnell sentenced 28 years — unprecedented for food safety crime. Peanut butter contamination traced to one Georgia facility. Criminal prosecution of food executives becoming more common post-PCA. Company dissolved in bankruptcy.",
+    analysis: {
+      rating: "A",
+      strengthScore: 9,
+      payoutPerClaimant: "Personal injury: $50K-$500K (severe illness); $2M-$5M (death); bankruptcy liquidation for economic claims",
+      litigationYears: 8,
+      whyItWorked: "Parnell's criminal conviction (35 years — later reduced to 28) is unprecedented for food safety: it established that a CEO can go to prison for knowingly shipping contaminated food. The case was uniquely strong because PCA had internal test results showing Salmonella contamination and shipped the product anyway — internal emails said 'just ship it.' The criminal prosecution established scienter and conduct far beyond normal negligence. PCA supplied peanut products to hundreds of downstream food brands, affecting Campbell's Soup, Kellogg's, and hundreds of institutional food buyers.",
+      challenges: "PCA filed bankruptcy — severely limiting direct financial recovery. The company had minimal assets relative to its liability. Individual victim claims were ultimately paid through limited bankruptcy trust funds at cents-on-the-dollar. The criminal prosecution was historically important but provided limited direct compensation to victims.",
+      strategiesWon: ["'Just ship it' internal emails established deliberate disregard for consumer safety", "CEO criminal conviction (35 years) for food safety established landmark criminal precedent", "Downstream brand liability theory: Kellogg's/Campbell's sold contaminated products = shared liability", "Multi-state outbreak investigation provided comprehensive case documentation", "USDA/FDA recall cooperation provided government documentation of liability"],
+      strategiesFailed: ["PCA filed bankruptcy — severely limited direct recovery for victims", "Downstream brand defendants (Kellogg's) settled separately at modest amounts", "Bankruptcy estate assets were minimal relative to liability"],
+      demographics: "~714 sickened (9 deaths); primarily institutional food consumers (nursing homes, hospitals, schools received bulk peanut products); elderly and pediatric populations in institutions most at risk",
+      injuryTypes: ["Salmonella typhimurium infection", "Hemolytic uremic syndrome (severe cases)", "Death (9 confirmed)", "Chronic gastrointestinal complications"],
+      keyEvidence: "'Just ship it' emails from Parnell to employees after positive Salmonella test; FDA inspection records showing unsanitary conditions; CDC WGS linking outbreak strains to PCA Blakely GA facility; PCA's own internal testing logs showing positive results before shipments",
+      corporateMisconduct: "Stewart Parnell directed PCA employees to ship peanut butter after receiving positive Salmonella test results, using the phrase 'just ship it.' The Georgia facility had chronic unsanitary conditions — leaking roof, rodent infestations — that Parnell knew about. PCA provided false certificates of analysis to buyers claiming products were negative for Salmonella.",
+      regulatoryActions: "FDA mandatory recall (all PCA products); PCA filed Chapter 7 bankruptcy 2009; DOJ criminal prosecution: Parnell convicted 2014 (35 years, reduced to 28 on appeal); FDA implemented stronger food safety inspection authority under FSMA (2011) directly responding to PCA",
+      settlementStructure: "Chapter 7 bankruptcy liquidation; limited trust fund distribution to victims; downstream brand settlements (Kellogg's, Campbell's — confidential amounts); personal injury individual settlements (confidential)",
+      bellwetherOutcome: "Criminal trial served as liability bellwether; Parnell's 35-year sentence",
+      attorneyFees: "Contingent; multiple firms; limited recovery due to bankruptcy",
+      replicationModel: "A — Criminal food safety prosecution template. 'Just ship it' emails became paradigm of knowing food safety violation supporting criminal conviction. FSMA (2011) directly inspired by PCA case, expanding FDA authority. Template: when internal documents show company shipped known contaminated food, pursue parallel criminal referral + civil class. Criminal conviction accelerates civil resolution.",
+      clientAcquisitionStrategy: "Historical — bankruptcy closed. For future food contamination cases with criminal exposure: (1) obtain FDA internal inspection documents via FOIA, (2) look for internal communications showing knowledge, (3) refer to DOJ for criminal investigation parallel to civil case. Downstream brand liability is valuable: Kellogg's/Campbell's bought contaminated product = viable claims against solvent defendants even when source is bankrupt.",
+      watchOut: "Bankruptcy of primary defendant = limited recovery. Always identify solvent downstream defendants (brands that used contaminated ingredient). FSMA (2011) requires FDA registration and record-keeping — use FSMA subpoena power in future cases. PCA shows limitations of pursuing bankrupt defendants — always identify the solvent supply chain participant."
+    }
+  },
+
+  {
+    id: 135, title: "Subway 'Footlong' False Advertising Class Action", company: "Subway / Doctor's Associates",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "rejected", year: 2013,
+    affectedPop: "~400M sandwich purchasers", jurisdiction: "E.D. Wisconsin", mdlNumber: "No MDL",
+    settlementAmount: "~$500 attorney fees only (7th Cir. rejected)",
+    classSize: "~400M",
+    rule23bType: "b(3)", appealOutcome: "vacated (7th Cir.)", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: false, typicality: false, adequacy: true,
+    keyFact: "Subway 'Footlong' sandwiches measured 11 inches rather than 12. Class settlement providing only cy pres and attorney fees rejected by 7th Circuit as providing no class benefit. Landmark cy pres/nuisance suit ruling.",
+    leadCounsel: "Various",
+    keyPrecedent: "Frank v. Gaos (cy pres) — 7th Circuit voided settlement",
+    tags: ["Subway", "footlong", "false advertising", "cy pres", "sandwich", "de minimis", "class rejected"],
+    notes: "CRITICAL LESSON: 7th Circuit vacated settlement that provided zero benefit to class members (only cy pres + attorney fees). Frivolous class action cautionary tale. Raised cy pres settlement standards and judicial scrutiny of 'coupon' settlements.",
+    analysis: {
+      rating: "F",
+      strengthScore: 1,
+      payoutPerClaimant: "$0 — settlement providing only cy pres was vacated as providing zero class benefit",
+      litigationYears: 4,
+      whyItWorked: "This case is the textbook example of a lawsuit that should never have been filed as a class action. The 'harm' was that some Subway footlong sandwiches measured 11 inches instead of 12. The individual economic harm is approximately $0.08 (1/12 of the price of a $1 roll). The 7th Circuit vacated the settlement because it provided zero direct benefit to class members — only cy pres donations to charities and attorney fees. This is precisely the type of case that gave plaintiffs' class action bar a bad reputation.",
+      challenges: "Every element of the case was problematic: (1) de minimis individual harm ($0.08/sandwich), (2) no uniform harm (some sandwiches were 12 inches), (3) no medical/safety injury, (4) settlement providing only cy pres + attorney fees, (5) 7th Circuit found zero class benefit from settlement. Class action class actions for trivial harms with no practical damages are rejected by courts, and rightfully so.",
+      strategiesWon: ["Media attention and viral social media coverage initially created class member interest"],
+      strategiesFailed: ["Zero cognizable harm per class member", "Settlement provided no direct benefit to class (only cy pres + attorney fees)", "7th Circuit applied rigorous settlement fairness review and vacated", "Individual harm ($0.08) far too de minimis for viable damages model", "No causal mechanism for systematic 11-inch sandwiches"],
+      demographics: "~400M sandwich purchasers — essentially all Americans; harm is trivial regardless of demographic",
+      injuryTypes: ["~$0.08 overpayment per sandwich (theoretically)"],
+      keyEvidence: "Social media photos of sandwiches measured against rulers; Subway's bread manufacturing specifications",
+      corporateMisconduct: "Subway's franchises used standard bread forms that sometimes produced slightly shorter bread. This is dough behavior variation, not fraudulent conduct. The 'footlong' is a product name, not a guaranteed measurement.",
+      regulatoryActions: "No regulatory action — not a safety issue",
+      settlementStructure: "Initial settlement providing cy pres + attorney fees vacated by 7th Circuit; no class recovery",
+      bellwetherOutcome: "N/A — no trial",
+      attorneyFees: "$500 (symbolic) — attorneys received essentially nothing after 7th Circuit rejection",
+      replicationModel: "F — CAUTIONARY TALE. This case illustrates: (1) de minimis harm cases are not viable class actions, (2) cy pres-only settlements provide no class benefit and fail approval, (3) product name ≠ exact measurement guarantee, (4) viral social media ≠ legal claim. Avoid all 'footlong sandwich' type cases — they damage the credibility of legitimate class actions and provide zero recovery.",
+      clientAcquisitionStrategy: "Do not bring this case or cases like it. The 7th Circuit's rejection of the cy pres settlement is a warning that courts scrutinize settlements providing zero direct class benefit. If your settlement only provides cy pres + attorney fees, it will be rejected. Only pursue class actions with meaningful damages per class member or meaningful injunctive relief.",
+      watchOut: "Do not file class actions with de minimis individual harm and no meaningful aggregate recovery. Courts apply increasingly rigorous review of cy pres settlements (Frank v. Gaos, 2019 SCOTUS). Class actions with $0.08/person harm and no safety issue should not be filed. These cases damage the plaintiff class action bar's credibility and are rejected on appeal."
+    }
+  },
+
+  {
+    id: 136, title: "Dole Packaged Foods Salmonella/Listeria Recall", company: "Dole Food Company",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 2016,
+    affectedPop: "~70 sickened", jurisdiction: "N.D. Illinois (class) / Criminal (DOJ)",
+    mdlNumber: "No MDL",
+    settlementAmount: "$6.5M consumer + ongoing",
+    classSize: "Millions of purchasers",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical + economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Dole packaged salads contaminated with Listeria and E. coli in 2016; prior 2012 Listeria recall. Corporate facility in Ohio. Injury claims for serious illness + economic loss for recalled products. FDA FSMA compliance failure.",
+    leadCounsel: "Marler Clark (WA)",
+    keyPrecedent: "In re ConAgra Peanut Butter Prods. Liab. Litig.",
+    tags: ["Dole", "Listeria", "salad", "E. coli", "food safety", "FSMA", "recall"],
+    notes: "Bill Marler (Marler Clark) is the preeminent U.S. foodborne illness attorney — has represented victims in virtually every major food safety outbreak. FSMA (2011) increased FDA enforcement authority post-PCA.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "Personal injury (illness): $50K-$200K; Economic class: ~$30/purchaser",
+      litigationYears: 5,
+      whyItWorked: "Listeria in ready-to-eat packaged salads is highly attributable to a single production facility — CDC whole-genome sequencing can link outbreak strains to specific Dole packaging plants with near-certainty. The 2016 outbreak also revealed Dole had a prior 2012 Listeria recall from the same Ohio facility — demonstrating a pattern of systemic failures. Repeat offenders with documented contamination history are the strongest food safety cases. Marler Clark's expertise in foodborne illness litigation made client acquisition and case development efficient.",
+      challenges: "Dole's 2016 recall was prompt compared to some food safety cases — limiting 'deliberate concealment' arguments. Personal injury class is relatively small (70 sickened). Economic loss class (packaged salad purchasers) faces the common challenge of proving purchase for recalled specific lot codes.",
+      strategiesWon: ["CDC WGS linking outbreak strain to Ohio facility = definitive causation", "Prior 2012 Listeria recall showing pattern of systemic contamination failures", "FSMA violation theory: Dole's food safety plan failed to prevent repeat contamination", "Bill Marler's established client acquisition network in outbreak communities"],
+      strategiesFailed: ["Prompt recall limited 'concealment' aggravating factor", "Lot code traceability required for economic loss damages — complicated class"],
+      demographics: "70 sickened (4 deaths) — predominantly elderly and immunocompromised; economic loss: millions of Dole packaged salad purchasers in affected distribution area (Midwest, Southeast)",
+      injuryTypes: ["Listeria meningitis and septicemia", "Death (4 confirmed)", "Pregnancy complications and fetal harm", "Economic loss for recalled salad purchasers"],
+      keyEvidence: "CDC WGS (whole-genome sequencing) linking outbreak strains to Dole Ohio facility; FDA inspection records showing environmental Listeria in facility; prior 2012 recall documentation; FSMA food safety plan compliance analysis",
+      corporateMisconduct: "Dole packaged salads facility had documented Listeria-positive environmental tests in 2012 leading to a prior recall. Despite this, the 2016 outbreak occurred at the same facility with the same pathogen — demonstrating that FSMA-required food safety corrective actions were inadequate. The repeat contamination at the same facility suggests systemic FSMA compliance failures.",
+      regulatoryActions: "FDA recall and warning letter; facility inspection findings; CDC multi-state outbreak investigation; FSMA compliance enforcement; Dole facility remediation requirement",
+      settlementStructure: "$6.5M consumer class + individual personal injury cases settled confidentially; economic class claims pending",
+      bellwetherOutcome: "Individual cases settled; no bellwether trial",
+      attorneyFees: "Contingent; Marler Clark lead",
+      replicationModel: "B+ — Repeat offender food safety template. When a facility has had prior contamination recalls and the same pathogen causes a second outbreak, FSMA repeat-violation penalties multiply. Pattern evidence of prior recall = strong negligence/gross negligence case. CDC WGS is now standard for all food outbreak attribution — use it for every foodborne illness case.",
+      clientAcquisitionStrategy: "CDC outbreak investigation reports identify affected geographic areas. Health department Listeria case tracking. Marler Clark's model: work with infectious disease physicians in areas near recalled product distribution. Nursing homes and hospitals reporting Listeria cases (most vulnerable populations). For economic loss: partner with store loyalty card data programs.",
+      watchOut: "Lot code traceability is essential for economic loss class — purchasers must have bought specific recalled lots. Dole's prompt recall limits concealment claims. Prior recall is double-edged: shows pattern but also shows company took some remedial action. FSMA corrective action documentation may be used to show company addressed issues."
+    }
+  },
+
+  {
+    id: 137, title: "Naked Juice 'All Natural' False Advertising", company: "PepsiCo / Naked Juice",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 2013,
+    affectedPop: "~Millions of purchasers", jurisdiction: "C.D. California", mdlNumber: "No MDL",
+    settlementAmount: "$9M", classSize: "Millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Naked Juice labeled as '100% juice' and 'All Natural' contained synthetic vitamins and fibersol, an industrially processed form of fiber. Common misrepresentation on packaging = common liability theory.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "Brazil v. Dole Packaged Foods (natural labeling)",
+    tags: ["Naked Juice", "PepsiCo", "natural", "juice", "false labeling", "synthetic", "consumer fraud"],
+    notes: "$9M settlement. Part of 'natural' food labeling class action wave (2012-2016). Triggered by consumer advocacy groups. FDA's failure to define 'natural' for food labeling created massive class action opportunity.",
+    analysis: {
+      rating: "B+",
+      strengthScore: 7,
+      payoutPerClaimant: "~$15 avg ($9M ÷ millions of purchasers)",
+      litigationYears: 3,
+      whyItWorked: "The FDA's failure to define 'natural' for food labeling created a regulatory vacuum that allowed consumer advocacy organizations and plaintiffs' firms to define 'natural' through litigation. Naked Juice's '100% juice' and 'All Natural' claims were objectively false: the product contained synthetic vitamins (vitamin C = ascorbic acid) and fibersol (industrially processed corn starch fiber). Unlike Wesson oil (which failed on Comcast damages grounds), the Naked Juice case settled before that analysis was fully tested. PepsiCo (Naked Juice parent) had strong incentives to settle to protect its much larger brand portfolio from 'natural' labeling risk.",
+      challenges: "FDA's undefined 'natural' standard gave PepsiCo a regulatory ambiguity defense. The Comcast damages model problem (not all class members paid a premium at every retailer) was lurking but not fully litigated due to settlement. Per-person recovery is modest.",
+      strategiesWon: ["'100% juice' + 'All Natural' with synthetic vitamins = objectively false labeling regardless of FDA's undefined standard", "PepsiCo's large brand portfolio creates reputational incentive to settle before full litigation", "Consumer advocacy organizations provided organized class member identification and support", "Objective synthetic ingredient evidence (fibersol is industrially processed)"],
+      strategiesFailed: ["Comcast price premium issue was avoided by settlement — unclear if damages model would have survived", "FDA's undefined 'natural' standard provided regulatory ambiguity defense"],
+      demographics: "Millions of Naked Juice purchasers; health-conscious, educated, higher-income consumers; Whole Foods/natural grocery shoppers; California-heavy demographic",
+      injuryTypes: ["Price premium overpayment for 'natural' product containing synthetic ingredients", "Consumer deception — purchased believing product was truly natural/unprocessed"],
+      keyEvidence: "Naked Juice ingredient list showing synthetic vitamins and fibersol; PepsiCo's own ingredient documentation; FDA response to 'natural' labeling petitions; consumer survey evidence on 'natural' ingredient expectations; Fibersol production process documentation",
+      corporateMisconduct: "PepsiCo (through Naked Juice) labeled products as '100% juice' and 'All Natural' while formulating with synthetic vitamins (ascorbic acid, cyanocobalamin) and fibersol, an industrially processed form of maltodextrin derived from corn. These are not natural ingredients under any reasonable consumer definition.",
+      regulatoryActions: "FDA 'natural' labeling review (ongoing); FTC advertising review; no enforcement action against Naked Juice specifically",
+      settlementStructure: "$9M common fund; claims-made distribution (~$15/purchaser); label changes (removal of 'All Natural' claim); settlement required independent verification of 'natural' claims",
+      bellwetherOutcome: "N/A — settled before trial",
+      attorneyFees: "~$3M (33%); Hagens Berman lead",
+      replicationModel: "B+ — 'Natural' food labeling template. Key lesson: target products with objectively synthetic ingredients labeled as natural (not ambiguous cases like Wesson GMO). Products with synthetic vitamins, artificial colors, preservatives, or industrially processed ingredients labeled 'natural' or 'all natural' are cleanest cases. PepsiCo/Kraft/Unilever brands with 'natural' claims on products with synthetic ingredients = priority targets.",
+      clientAcquisitionStrategy: "Target purchasers of Naked Juice and similar premium 'natural' juice brands. Natural grocery shopper demographic (Whole Foods, Trader Joe's). Consumer advocacy groups (Center for Food Safety, Consumers Union) partner for case development. For future 'natural' cases: review ingredient labels for synthetic additives in 'all natural' or '100% natural' labeled products.",
+      watchOut: "Comcast v. Behrend price premium model is the primary risk in all 'natural' labeling cases. Must demonstrate that every class member at every retail channel paid a premium for the 'natural' claim. Hedonic regression or conjoint analysis is required. FDA defining 'natural' (potentially) could moot future cases or make them easier depending on definition."
+    }
+  },
+
+  {
+    id: 138, title: "Jack in the Box E. coli Outbreak (Historical)", company: "Jack in the Box / Foodmaker",
+    type: "Food Safety", industry: "Food & Beverage", outcome: "settled", year: 1993,
+    affectedPop: "~700+ sickened (4 deaths)", jurisdiction: "Multiple states (WA, CA, NV, ID)",
+    mdlNumber: "No MDL",
+    settlementAmount: "$45.7M+ (aggregate)",
+    classSize: "~700",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "E. coli O157:H7 in undercooked Jack in the Box burgers killed 4 children and sickened 700+. Jack in the Box violated WA cooking temperature regulations. Seminal modern food safety case. USDA declared E. coli O157:H7 an adulterant in ground beef.",
+    leadCounsel: "Bruce Clark (WA) — later Bill Marler",
+    keyPrecedent: "Pioneered modern U.S. food safety litigation",
+    tags: ["Jack in the Box", "E. coli", "O157:H7", "hamburger", "children", "food safety", "historical", "USDA"],
+    notes: "LANDMARK CASE. Triggered USDA declaration that E. coli O157:H7 is an illegal adulterant in ground beef. Launched Bill Marler's food safety litigation career. Transformed U.S. ground beef industry safety standards.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Grimshaw equivalent: $600K+ per death; $500K+ per serious injury; aggregate $45.7M+",
+      litigationYears: 3,
+      whyItWorked: "Jack in the Box 1993 is the foundational modern food safety case. E. coli O157:H7 in ground beef, causing HUS (hemolytic uremic syndrome), was established as the paradigm pathogen-product combination. The case worked because: (1) Jack in the Box violated Washington state cooking temperature regulations (155°F vs. actual practice), (2) hamburger pathogens were traceable to specific supplier (OSI Group), (3) four children died — maximum jury sympathy, (4) Jack in the Box's internal documents showed management awareness of food safety risks, (5) the media coverage ('Jack in the Box crisis') was devastating. The USDA's subsequent declaration that E. coli O157:H7 is an adulterant in ground beef gave all future plaintiffs a per se liability theory.",
+      challenges: "In 1993, foodborne illness litigation was pioneering — no established causation framework, no WGS, no formal FDA/USDA outbreak attribution protocol. Plaintiffs had to build the entire scientific and legal framework from scratch. The case's success transformed it into a template for all subsequent E. coli and food safety litigation.",
+      strategiesWon: ["WA state cooking temperature regulation violation = negligence per se for all victims", "Ground beef supplier traceability to specific Jack in the Box supply", "Four dead children = maximum jury sympathy forcing early settlement", "Medical causation: HUS = E. coli O157:H7 exposure established by epidemiology", "FDA/USDA cooperation in outbreak investigation provided authoritative causation evidence"],
+      strategiesFailed: ["Initially, ground beef E. coli contamination was considered 'natural' — no precedent for strict liability. Had to establish theory from scratch.", "Supply chain traceability in 1993 was primitive — without modern WGS"],
+      demographics: "~700+ E. coli victims; 4 deaths (children ages 2-6); hundreds with HUS requiring dialysis; Washington, Idaho, California, Nevada geographic distribution; Jack in the Box child-targeted menu items (Happy Meals equivalent) = pediatric population",
+      injuryTypes: ["E. coli O157:H7 hemolytic uremic syndrome (HUS)", "Death (4 children)", "Chronic kidney disease (HUS sequelae)", "Dialysis requirement (short and long-term)", "Developmental delay (in pediatric HUS survivors)"],
+      keyEvidence: "WA state cooking temperature regulation (155°F) violated by Jack in the Box suppliers; microbiological testing linking outbreak strain to patties; medical records documenting HUS; Jack in the Box's own supplier contracts and food safety specifications; USDA/FDA outbreak investigation reports",
+      corporateMisconduct: "Jack in the Box knew of USDA/Washington state requirements for cooking ground beef to 155°F to destroy E. coli O157:H7. Despite this, the company's supplier specification used a lower temperature, and its restaurants were not consistently achieving the required temperature. Management knew of the risk and failed to enforce proper cooking procedures.",
+      regulatoryActions: "USDA declared E. coli O157:H7 an adulterant in ground beef (directly following case) — one of the most consequential food safety regulatory actions in U.S. history; WA Department of Health investigation; CDC multi-state outbreak investigation",
+      settlementStructure: "~$45.7M aggregate settlements: Brianne Kiner (largest individual HUS survivor, dialysis-dependent) $15.6M; 4 death cases $600K-$1M+ each; hundreds of illness cases at various amounts",
+      bellwetherOutcome: "Brianne Kiner case settled before trial after landmark $15.6M offer; set benchmark for HUS cases nationwide",
+      attorneyFees: "Contingent 33-40%; Bruce Clark (WA) initial lead; Bill Marler continued developing foodborne illness practice",
+      replicationModel: "A+ — DEFINES MODERN FOOD SAFETY LITIGATION. E. coli O157:H7 = adulterant → strict liability → no negligence required. Every subsequent ground beef E. coli case (Sizzler, Golden Corral, Wendy's, etc.) uses Jack in the Box as authority. HUS damages framework ($500K-$15M+ per victim) set here. Bill Marler's practice built on this case. If you practice food safety law, this is your North Star.",
+      clientAcquisitionStrategy: "Historical — recovery long closed. For future E. coli/ground beef cases: contact CDC and state health departments immediately upon outbreak notification. WGS is now standard — ensures product attribution within days. Target E. coli O157:H7 HUS cases specifically (highest damages, clearest causation). Partner with pediatric nephrology departments (most HUS cases are children).",
+      watchOut: "E. coli O157:H7 adulterant status means strict liability for contaminated beef — no negligence proof needed. But supply chain attribution remains the key challenge: must prove the specific beef product from the specific establishment caused this plaintiff's infection. Modern WGS makes this much more achievable than in 1993."
+    }
+  },
+
+  {
+    id: 139, title: "Tyson Foods OSHA/COVID Workplace Safety Class", company: "Tyson Foods",
+    type: "Employment", industry: "Food Processing", outcome: "settled", year: 2020,
+    affectedPop: "~50,000+ meatpacking workers", jurisdiction: "Multiple states", mdlNumber: "No MDL",
+    settlementAmount: "~$24M (Waterloo, Iowa facility)",
+    classSize: "~50,000+",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "physical",
+    daubert: "n/a",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Tyson Foods meatpacking plants became COVID-19 hotspots in 2020. Supervisors allegedly ran betting pools on how many workers would get COVID. Workers (predominantly Hispanic/immigrant) denied PPE and forced to work. OSHA violations.",
+    leadCounsel: "Dickey & Campbell",
+    keyPrecedent: "In re COVID-19 Business Interruption Litig.",
+    tags: ["Tyson Foods", "COVID-19", "meatpacking", "workplace safety", "OSHA", "Hispanic workers", "employment"],
+    notes: "Wagering scandal led to firings of supervisors. Novel intersection of food processing industry + COVID workplace safety + immigrant worker exploitation. $24M settlement for Waterloo facility. Multiple plant cases pending.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$480 avg ($24M ÷ 50K workers); COVID death/illness individual cases $100K-$500K",
+      litigationYears: 3,
+      whyItWorked: "Tyson's supervisor 'death pool' wagering scandal was the most egregious corporate COVID conduct in any workplace case — supervisors literally betting on how many workers would die while denying them PPE. This created maximum jury sympathy and media pressure. Workers (predominantly Hispanic immigrant meatpacking workers) were forced to work in close quarters despite documented COVID spread. The Waterloo facility had 5 employee deaths and nearly 1,000 infected. Tyson's own executives later claimed they didn't know supervisors were wagering — making the cover-up argument available.",
+      challenges: "COVID causation is difficult to prove for individual workers — worker may have contracted COVID outside work. OSHA's emergency temporary standard for COVID wasn't issued until late 2021 — early 2020 cases lack clear regulatory violation standard. Class certification for COVID cases with individualized health outcomes is complex.",
+      strategiesWon: ["Death pool wagering scandal documented by Iowa AG investigation = smoking gun corporate misconduct", "Meatpacking plant close-quarter working conditions = predictable COVID spread (basic aerosol science)", "Immigrant/Hispanic worker demographics + COVID exposure = civil rights dimension alongside tort claims", "OSHA General Duty Clause violations (even without specific COVID ETS) = negligence per se basis", "Iowa AG investigation and supervisory firings served as independent liability validation"],
+      strategiesFailed: ["Individual COVID causation (workplace vs. community exposure) is difficult to prove for each worker", "OSHA's delayed COVID ETS meant no bright-line regulatory standard in early 2020"],
+      demographics: "~50,000 meatpacking workers at Tyson facilities nationwide; predominantly Hispanic/Latino and Black workers; immigrant workforce (many undocumented); essential workers paid $15-$18/hour; Waterloo IA plant = largest single facility affected",
+      injuryTypes: ["COVID-19 infection (nearly 1,000 at Waterloo facility)", "Death (5 at Waterloo; thousands nationwide)", "Long COVID sequelae", "Emotional distress from forced unsafe working conditions", "Workers' compensation claims (supplement, not substitute for tort)"],
+      keyEvidence: "Iowa AG investigation records documenting death pool wagering; Tyson's own COVID case tracking (produced under subpoena); OSHA inspection records; plant floor layout showing inadequate spacing; comparison of Tyson safety protocols vs. CDC meatpacking guidelines; supervisor communications about PPE denial",
+      corporateMisconduct: "Tyson Foods maintained meatpacking operations at full capacity during the COVID-19 pandemic despite knowing its workers were infected. Supervisors wagered money on how many workers would contract COVID while simultaneously denying workers adequate PPE and forcing them to work in dangerous conditions. Iowa AG investigations confirmed supervisors' wagering and senior management's awareness of COVID risks.",
+      regulatoryActions: "Iowa AG investigation and criminal referrals; OSHA inspections and citations; multi-state AG investigation; CDC meatpacking COVID guidelines issued (Tyson facilities highlighted as hotspots); DOJ/CISA designation of meatpacking as critical infrastructure limited OSHA enforcement",
+      settlementStructure: "$24M Waterloo facility settlement; multiple other Tyson plant settlements; individual COVID wrongful death cases separately; total Tyson COVID litigation exposure ~$100M+",
+      bellwetherOutcome: "Waterloo facility settlement served as bellwether for other Tyson plants",
+      attorneyFees: "~$8M (33%); Dickey & Campbell lead",
+      replicationModel: "A — COVID workplace safety class template. Key: death pool wagering = unique evidence of conscious disregard for worker safety. For future workplace safety cases: (1) document close-quarter working conditions, (2) obtain employer's internal COVID case tracking, (3) compare employer protocols vs. CDC/OSHA guidance, (4) OSHA General Duty Clause as negligence per se basis even without specific ETS.",
+      clientAcquisitionStrategy: "Target meatpacking and food processing workers at COVID hotspot facilities (Smithfield Sioux Falls, JBS Greeley, Cargill High River). Worker advocacy organizations (UFCW Local 431, 1149, Iowa-Nebraska UFCW locals). Bilingual outreach (Spanish-speaking workforce). Workers' compensation filings + COVID diagnosis = class identification tool.",
+      watchOut: "Individual COVID causation (community vs. workplace) is the central challenge for personal injury cases. Class-wide COVID causation may require epidemiological expert showing workplace attack rate significantly exceeds community rate. OSHA ETS statute of limitations issues for early 2020 cases. Immigration status of workers may complicate class administration (undocumented workers may fear participation)."
+    }
+  },
+
+  {
+    id: 140, title: "Monsanto PCB Water Contamination (Anniston, AL)", company: "Monsanto / Solutia",
+    type: "Environmental/Toxic Tort", industry: "Agriculture/Chemical", outcome: "settled", year: 2003,
+    affectedPop: "~18,000 Anniston residents", jurisdiction: "Calhoun County, AL Circuit Court",
+    mdlNumber: "No MDL",
+    settlementAmount: "$700M", classSize: "~18,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Monsanto's Anniston, AL plant released PCBs into Choccolocco Creek for 40+ years (1929-1971). Internal documents showed company knew of extreme contamination. $700M settlement — one of largest community contamination cases at time.",
+    leadCounsel: "Johnnie Cochran, Stuart Calwell",
+    keyPrecedent: "Seminal environmental racism / community contamination precedent",
+    tags: ["Monsanto", "PCB", "Anniston", "Alabama", "water contamination", "environmental racism", "toxic tort"],
+    notes: "$700M settlement. Internal Monsanto documents showed knowledge ('We can't afford to lose one dollar of business'). Anniston is an environmental justice landmark — predominantly African-American community. PCBs cause cancer, neurological damage.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$38,889 avg ($700M ÷ 18,000 Anniston residents)",
+      litigationYears: 7,
+      whyItWorked: "Monsanto's internal documents were catastrophic. The phrase 'We can't afford to lose one dollar of business' appeared in a 1966 internal memo alongside knowledge of extreme PCB contamination in Choccolocco Creek. PCBs had been accumulating in Anniston's soil, water, and residents' bodies for 40+ years. Johnnie Cochran's involvement (post-O.J. Simpson case, at the peak of his national profile) created enormous media attention and public sympathy. The environmental justice dimension — predominantly African-American community near a predominantly white-owned industrial facility — resonated powerfully in Alabama post-civil rights era courts.",
+      challenges: "Individual medical causation (PCBs cause cancer and neurological damage but with long latency) required extensive medical evidence. Alabama state court rather than federal court provided different procedural dynamics. Monsanto/Solutia's financial capacity to fund a $700M settlement was constrained.",
+      strategiesWon: ["'We can't afford to lose one dollar of business' internal memo — smoking gun document showing profit over safety", "Environmental justice/environmental racism framing resonated in Alabama courts", "Johnnie Cochran's national profile created settlement pressure", "Zone-based damages model (PCB contamination levels by residential zone)", "Blood PCB testing provided objective individual harm measurement", "40-year contamination timeline documented by company's own records"],
+      strategiesFailed: ["Individual medical causation still required expert testimony despite strong liability evidence"],
+      demographics: "~18,000 Anniston, AL residents; predominantly African-American community (Anniston's West Side is majority Black); lower-income, working-class community; historical reliance on Monsanto plant employment",
+      injuryTypes: ["PCB exposure: cancer risk (PCBs are Group 1 IARC carcinogens)", "Neurological damage (PCBs affect neurodevelopment)", "Endocrine disruption (PCBs disrupt thyroid function)", "Property contamination and diminished value", "Children: developmental delays from PCB exposure during critical development windows"],
+      keyEvidence: "Internal Monsanto memos ('We can't afford to lose one dollar of business,' 1966); blood PCB testing results for Anniston residents; soil and water contamination maps; Monsanto's own environmental monitoring data (withheld for decades); medical records of Anniston cancer and neurological disease rates",
+      corporateMisconduct: "Monsanto operated its Anniston, Alabama PCB manufacturing plant from 1929 to 1971, dumping PCBs directly into Choccolocco Creek. Despite knowing as early as 1966 that PCB contamination was extreme and dangerous, the company prioritized revenue over remediation. Internal memos showed deliberate decision to continue pollution rather than invest in containment. The contamination disproportionately harmed the predominantly African-American community on Anniston's West Side.",
+      regulatoryActions: "EPA Superfund designation (Anniston PCB site); Alabama Department of Environmental Management (ADEM) enforcement; EPA cleanup order; Solutia (Monsanto spinoff) Chapter 11 bankruptcy complicated recovery",
+      settlementStructure: "$700M total: Monsanto $390M + Solutia $310M (despite Solutia's Chapter 11); individual victim compensation fund; medical monitoring program; soil remediation ($60M); property value remediation",
+      bellwetherOutcome: "Jury trial (Abernathy v. Monsanto, 2002) found Monsanto liable on all counts and awarded $42M compensatory — drove settlement",
+      attorneyFees: "~$200M (28% of fund); Johnnie Cochran and Stuart Calwell lead",
+      replicationModel: "A+ — Environmental racism/community contamination template. Key elements: (1) internal documents showing company knowledge of harm, (2) environmental justice framing for disproportionate minority community impact, (3) zone-based damages model for geographic contamination, (4) blood/biomarker testing for individual exposure proof. Template for PFAS community cases (Camp Lejeune, Tyco), lead contamination (Flint), and all community toxic tort cases.",
+      clientAcquisitionStrategy: "Target current and former Anniston residents (1929-2003) — recovery largely settled. For future environmental justice cases: identify communities near industrial facilities where the community is predominantly minority and low-income; obtain internal company documents through FOIAs and state regulatory records; partner with environmental justice organizations (Environmental Defense Fund, NAACP Environmental Justice Program).",
+      watchOut: "Individual causation (PCB exposure → specific cancer) requires blood PCB testing and medical expert. Solutia's bankruptcy complicated recovery allocation. Alabama state court jurisdiction required understanding of Alabama civil procedure and jury selection in PCB-contaminated community. Environmental cleanup remediation obligations are ongoing — separate from victim compensation."
+    }
+  },
+
+  // ─── BATCH 10: ANTITRUST / PRICE FIXING (IDs 141–150) ────────────────────
+
+  {
+    id: 141, title: "NCAA v. Alston Antitrust — Athlete Education Benefits", company: "NCAA",
+    type: "Consumer Protection", industry: "Education/Sports", outcome: "SCOTUS affirmed", year: 2019,
+    affectedPop: "~500,000 student-athletes", jurisdiction: "N.D. California → SCOTUS", mdlNumber: "No MDL",
+    settlementAmount: "$208M (Alston class) + structural relief",
+    classSize: "~500,000",
+    rule23bType: "b(3)", appealOutcome: "affirmed (SCOTUS 9-0, 2021)", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "SCOTUS unanimously held NCAA rules limiting education-related benefits violate Sherman Act antitrust law. Justice Kavanaugh concurrence called entire NCAA compensation model 'price fixing.' Led directly to NIL era and House v. NCAA.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "NCAA v. Alston (2021 SCOTUS) — unanimous; opened door to full NIL/compensation",
+    tags: ["NCAA", "Alston", "antitrust", "Sherman Act", "student-athlete", "SCOTUS", "education benefits"],
+    notes: "9-0 SCOTUS decision. Justice Kavanaugh's concurrence went further, questioning entire NCAA model as price-fixing cartel. Led directly to NCAA NIL policy reversal and House v. NCAA ($2.78B) settlement. Paradigm-shifting antitrust ruling.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$416 avg ($208M ÷ 500K athletes); structural relief = NIL era worth billions",
+      litigationYears: 6,
+      whyItWorked: "NCAA v. Alston achieved a 9-0 SCOTUS reversal — the rarest outcome in antitrust litigation. The case succeeded because the Sherman Act analysis was straightforward: NCAA member schools are horizontal competitors for athlete talent; NCAA rules limiting education benefits are horizontal price-fixing agreements among competitors; and the NCAA's 'amateurism' justification failed rule-of-reason scrutiny. Justice Kavanaugh's concurrence was the real prize — calling the entire NCAA compensation system 'a scheme for the schools to profit' and describing amateurism as 'price-fixing.' This concurrence made House v. NCAA's $2.78B settlement inevitable.",
+      challenges: "NCAA's amateurism defense — argued that paying athletes would destroy college sports' unique product (amateur competition) — was the primary counter-argument. The district court had limited relief to education-related benefits, and SCOTUS affirmed only that narrow ruling. The broader NIL compensation battle required subsequent litigation (House v. NCAA).",
+      strategiesWon: ["Rule of reason antitrust analysis: NCAA rules are horizontal price-fixing among competing schools", "SCOTUS 9-0 unanimity eliminated any remaining NCAA confidence in amateurism defense", "Kavanaugh concurrence calling NCAA system 'price fixing' made full NIL challenge viable", "Hagens Berman's comprehensive Sherman Act briefing on labor market monopsony theory", "DOJ amicus brief supporting athletes in SCOTUS provided judicial comfort"],
+      strategiesFailed: ["District court limited relief to education benefits only — broader compensation challenge deferred to House v. NCAA"],
+      demographics: "~500,000 Division I and II student-athletes (2017-2021 class period); football and basketball athletes are primary economic victims; disproportionately male and Black/minority athletes in revenue sports",
+      injuryTypes: ["Lost compensation: education benefit restrictions suppressed athlete compensation below competitive market level", "Lost NIL income: rules prohibiting name/image/likeness endorsements", "Opportunity cost: athletes couldn't pursue legitimate market compensation for their services"],
+      keyEvidence: "NCAA's own internal revenue data showing conference and school profits; economic expert analysis of what athletes would earn in a competitive market; NCAA's own document production showing schools as horizontal competitors; comparison with minor league baseball and NBA G-League pay structures",
+      corporateMisconduct: "The NCAA and its member conferences operated a horizontal cartel that fixed the 'price' of athlete labor at scholarship value (room, board, tuition) — a tiny fraction of the revenue athletes generated. The Power Five conferences collectively generated $8B+/year in revenue largely from football and basketball while athletes received nothing beyond scholarship.",
+      regulatoryActions: "DOJ Antitrust Division investigation of NCAA; State AG antitrust investigations; FTC review; legislation in 30+ states allowing NIL; federal NIL legislation proposed",
+      settlementStructure: "$208M class settlement; structural relief (schools can provide education-related benefits beyond traditional scholarship); NCAA subsequently reversed NIL policy nationally; House v. NCAA $2.78B settlement followed",
+      bellwetherOutcome: "SCOTUS 9-0 ruling served as ultimate bellwether",
+      attorneyFees: "~$69M (33%); Hagens Berman lead",
+      replicationModel: "A+ — Sports antitrust horizontal monopsony template. Direct template for: (1) professional sports salary cap challenges, (2) any industry where employers collectively suppress worker compensation through agreement, (3) labor market monopsony analysis. Kavanaugh concurrence makes college sports' full compensation revolution inevitable — House v. NCAA merely confirmed it.",
+      clientAcquisitionStrategy: "Target current and former Division I athletes (football, basketball, Olympic sports) who played under NCAA amateurism rules. NFLPA, NBPA alumni networks. NCAA athlete advocacy organizations. House v. NCAA settlement provides current recovery — Alston is the precedential foundation.",
+      watchOut: "Alston's holding is limited to education-related benefits — the broader compensation challenge required House v. NCAA. Schools can still cap total compensation through employment agreements. Post-House v. NCAA, new antitrust claims must identify specific NCAA rules that remain unreasonably anticompetitive after the revenue-sharing framework."
+    }
+  },
+
+  {
+    id: 142, title: "Generic Drug Price-Fixing MDL", company: "Teva, Mylan, Sandoz, Pfizer, and 20+ others",
+    type: "Financial Products", industry: "Pharmaceutical", outcome: "pending", year: 2016,
+    affectedPop: "~Billions in overcharges to consumers/payers", jurisdiction: "E.D. Pennsylvania",
+    mdlNumber: "MDL 2724",
+    settlementAmount: "$850M+ partial settlements (Teva, Sandoz, Lannett)",
+    classSize: "All U.S. generic drug purchasers",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "DOJ investigation revealed 25+ generic drug manufacturers engaged in pervasive price-fixing cartel (anticompetitive 'fair share' agreements). State AGs lead MDL. 300+ generic drugs affected. Teva paid $225M, Sandoz paid $195M.",
+    leadCounsel: "State AGs (CT lead), Hagens Berman, Cohen Milstein",
+    keyPrecedent: "In re High Fructose Corn Syrup Antitrust Litig.",
+    tags: ["generic drugs", "price fixing", "antitrust", "Teva", "Mylan", "pharma cartel", "MDL", "DOJ"],
+    notes: "Largest antitrust MDL in pharmaceutical history. 20+ corporate defendants. State AG coordination critical. Ongoing — new defendants added through 2024. 'Fair share' cartel emails are key evidence.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending — for 300+ drugs × millions of purchasers × years of overcharges = potentially $10B+ total exposure",
+      litigationYears: 9,
+      whyItWorked: "The generic drug industry is supposed to be the competitive alternative to branded drugs — the entire policy basis for FDA drug approval is that generic competition reduces prices. Instead, executives from 25+ companies were meeting and emailing each other to maintain 'fair share' pricing arrangements that eliminated competition. The evidence is documentary: actual emails from cartel meetings, price increase announcements that competitors matched within hours, and industry convention meetings where prices were coordinated. State AG Connecticut leading the charge with DOJ criminal support creates maximum enforcement pressure.",
+      challenges: "Complexity: 300+ different drugs, 25+ defendants, multiple class periods, different overcharge calculations per drug. Some generic drugs have legitimate non-collusive price increases (shortage, ingredient cost). Individual purchaser class members (insurance companies, pharmacies, patients) have different standing and damages theories. Many defendants still fighting — case is in its 9th year.",
+      strategiesWon: ["'Fair share' cartel emails directly proving price-fixing agreement", "DOJ criminal investigation and guilty pleas provide res judicata on liability", "State AG lead creates sovereign enforcement authority with broader discovery powers", "Multiple defendant cooperation (early guilty pleas) breaks cartel and creates cascading evidence", "Pharmaceutical market data (IMS/IQVIA) enables precise overcharge calculation per drug"],
+      strategiesFailed: ["Some defendants argued generic drug pricing variation has legitimate non-collusive explanations", "International defendants with limited U.S. nexus create jurisdiction challenges"],
+      demographics: "All U.S. generic drug purchasers: insurance payers (health plans, PBMs), pharmacies (direct purchasers), and end-consumers (indirect purchasers); elderly and chronically ill patients most impacted (highest generic drug users)",
+      injuryTypes: ["Price overcharge on generic drugs (% above competitive benchmark price)", "Insurance premium increases from drug overcharges", "Patient out-of-pocket cost increases (co-pays, deductibles)", "PBM formulary manipulation costs"],
+      keyEvidence: "'Fair share' cartel emails between competitor executives; price increase announcements showing competitors matched within hours (no independent business reason); Industry convention meeting schedules and attendee lists; IMS Health data showing price patterns inconsistent with competition; DOJ grand jury subpoenas and cooperation agreements",
+      corporateMisconduct: "Generic drug manufacturers operated an explicit cartel — executives directly communicated via phone, text, and email to coordinate price increases and maintain 'fair share' market arrangements. The cartel specifically targeted older, stable generic drugs where competition should have driven prices to near-production-cost levels. The overcharges reached 1,000%+ above competitive levels on some drugs.",
+      regulatoryActions: "DOJ criminal investigation (multiple executives convicted, multiple corporate guilty pleas); State AG multistate investigation (CT lead); 40+ state AG MDL; FTC investigation; Congressional hearings on generic drug prices",
+      settlementStructure: "MDL 2724 ongoing: Teva $225M; Sandoz $195M; Lannett $13.5M; Heritage Pharmaceuticals guilty plea; other defendants pending; total expected $5-10B global resolution",
+      bellwetherOutcome: "Heritage Pharmaceuticals executives convicted as bellwether criminal cases; Teva/Sandoz settlements as civil bellwethers",
+      attorneyFees: "~$280M est. (state AG contingent; Hagens Berman and Cohen Milstein lead private class)",
+      replicationModel: "A+ — Pharmaceutical price-fixing cartel template. Direct template for any commodity drug market (insulin pricing investigation, brand-name drug cartel). Also template for any industry where competitors coordinate pricing via industry associations, benchmarking services, or direct communications.",
+      clientAcquisitionStrategy: "Target insurance payers (health plans, PBMs) as direct purchaser plaintiffs — largest damages. State Medicaid programs as parens patriae plaintiffs. Individual consumer class for overcharge pass-through in state courts. Partner with insurance company in-house counsel for efficient litigation structure.",
+      watchOut: "Complexity of 300+ drugs requires careful allocation of overcharge per drug per plaintiff. Illinois Brick 'direct purchaser' rule limits indirect purchaser (consumer) recovery in federal court — use state courts for indirect purchaser claims (many states have antitrust repealer statutes). Individual criminal cartel cases may precede civil resolution — coordinate to maximize res judicata effect."
+    }
+  },
+
+  {
+    id: 143, title: "Real Estate Agent Commission Antitrust (NAR)", company: "National Association of Realtors",
+    type: "Consumer Protection", industry: "Real Estate", outcome: "settled", year: 2023,
+    affectedPop: "~40M home sellers (2014-2024)", jurisdiction: "W.D. Missouri", mdlNumber: "No MDL",
+    settlementAmount: "$418M (NAR) + $730M total",
+    classSize: "~40M",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "NAR rules required sellers to offer buyer-agent commissions via MLS, artificially inflating commissions (5-6%) above competitive rates. Plaintiffs proved Sherman Act conspiracy. $418M NAR settlement + rules abolishing mandatory buyer-broker offer.",
+    leadCounsel: "Ketchmark & McCreight, Hagens Berman",
+    keyPrecedent: "United States v. NAR (DOJ)",
+    tags: ["NAR", "real estate", "commission", "antitrust", "Sherman Act", "buyer agent", "MLS", "Sitzer-Burnett"],
+    notes: "$418M NAR + multiple broker settlements = $730M+ total. Rules change: buyers now negotiate agent fees separately. Transformative — may reduce average agent commissions industry-wide by 1-2%. Verdict first ($1.8B), then settlement.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "~$10 avg ($418M ÷ 40M home sellers); structural relief = potential $50-100B in future commission savings",
+      litigationYears: 5,
+      whyItWorked: "The jury verdict ($1.78B, trebled to $5.3B under Sherman Act) before the NAR settlement was the most important antitrust verdict in real estate history. The NAR's Cooperative Compensation Rule explicitly required sellers to offer buyer-agent commissions via MLS — a written rule that created a per se horizontal price-fixing mechanism. Every home seller was forced to pay buyer's agent commissions regardless of whether they wanted to (there was no competitive alternative). Economists testified that U.S. real estate commissions at 5-6% are dramatically higher than international rates (1-2% in UK, Australia) precisely because of this rule.",
+      challenges: "NAR's defense: the Cooperative Compensation Rule creates a buyer-agent service that benefits sellers by maximizing buyer pool. Real estate brokerages are simultaneously competitors and cooperation partners (sharing listings through MLS) — the cooperative elements created rule-of-reason complexity. Individual damages calculation per home sale required transaction-by-transaction analysis.",
+      strategiesWon: ["NAR's own written rule (Cooperative Compensation) = explicit horizontal price-fixing conspiracy", "Jury trial verdict ($1.78B) before settlement created maximum NAR settlement pressure", "International comparison evidence: U.S. 5-6% commissions vs. UK/Australia 1-2% = competitive market benchmark", "Real estate broker cooperation required expert testimony on MLS/commission mechanics", "DOJ Antitrust Division investigation of NAR simultaneously increased pressure"],
+      strategiesFailed: ["NAR's 'benefits buyers' defense had some merit (debate over whether commission bundling serves buyers)", "Full industry rule change (decoupling buyer-seller commissions) took longer than anticipated"],
+      demographics: "~40M home sellers (2014-2024 class period); all geographic markets; primarily middle-class homeowners; higher-value homes (NYC, CA, DC) had highest dollar overcharge",
+      injuryTypes: ["Artificially inflated seller-paid commissions (2-3% above competitive rate on buyer's agent)", "Opportunity cost: inflated commissions consumed equity that could have been invested or used for down payment on next home"],
+      keyEvidence: "NAR Cooperative Compensation Rule documents; MLS participation agreements; commission data showing geographic uniformity at 5-6% regardless of home value; international commission rate comparisons; expert testimony on competitive market commission rates",
+      corporateMisconduct: "The National Association of Realtors maintained a rule requiring sellers to offer buyer-agent commissions through MLS as a condition of listing, effectively requiring sellers to pay for the buyer's agent regardless of competitive market dynamics. This rule created a minimum price floor on total commissions and prevented sellers from offering homes without buyer-agent commissions.",
+      regulatoryActions: "DOJ antitrust investigation of NAR (ongoing); DOJ proposed consent decree with NAR rule changes; FTC investigation; multiple state AG investigations",
+      settlementStructure: "$418M NAR settlement + rule abolishment (mandatory buyer-broker commission offers eliminated); Anywhere Real Estate $83.5M; Keller Williams $70M; RE/MAX $55M; HomeServices of America pending; total ~$730M+ with broker settlements; structural change: buyers now negotiate agent fees independently",
+      bellwetherOutcome: "Sitzer-Burnett jury verdict ($1.78B) was definitive bellwether — directly caused NAR settlement within 5 months",
+      attorneyFees: "~$138M (33%); Ketchmark & McCreight and Hagens Berman lead",
+      replicationModel: "A+ — Industry association price-fixing template. Any industry association rule that effectively creates a price floor or uniform pricing structure among competitors is a Sherman Act target. Direct template for: health insurance association rules, bar association fee schedules, financial advisor commission structures, insurance agent compensation rules.",
+      clientAcquisitionStrategy: "Target home sellers 2014-2024 who paid buyer-agent commissions. Real estate transaction records are public. Partner with financial services companies who can cross-reference mortgage/closing records. High-value market sellers (CA, NY, FL, TX) have highest dollar amounts. Real estate attorney referrals.",
+      watchOut: "Future cases must assess whether NAR rule changes (post-settlement) have addressed the anticompetitive conduct. MLS-based commission rules replaced by buyer-agency agreement requirements — new antitrust analysis needed. Real estate agent lobbying in state legislatures may create new safe harbors. Individual transaction valuation requires access to MLS data."
+    }
+  },
+
+  {
+    id: 144, title: "LCD Panel Price-Fixing MDL", company: "Samsung, LG, AU Optronics, Sharp",
+    type: "Financial Products", industry: "Technology/Electronics", outcome: "settled", year: 2006,
+    affectedPop: "~All U.S. LCD purchasers", jurisdiction: "N.D. California", mdlNumber: "MDL 1827",
+    settlementAmount: "$1.1B+ (aggregate)", classSize: "Hundreds of millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Major LCD panel manufacturers held 'Crystal meetings' in Asia to fix prices, raising prices on laptop, monitor, and TV screens. DOJ criminal fines + civil class settlement $1.1B+. Classic cartel price-fixing with documentary evidence.",
+    leadCounsel: "Lieff Cabraser, Cohen Milstein",
+    keyPrecedent: "In re TFT-LCD Antitrust Litig.",
+    tags: ["LCD", "display", "price fixing", "Samsung", "LG", "Crystal meetings", "antitrust", "cartel", "MDL"],
+    notes: "$1.1B+ civil settlements + $890M DOJ criminal fines. 'Crystal meetings' transcripts/emails were pivotal. Classic cartel: foreign manufacturers, meeting records, uniform price increases. AU Optronics executives imprisoned.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Indirect purchaser consumer class: ~$5-50 per TV/laptop purchased; direct purchaser class (OEMs) much higher",
+      litigationYears: 8,
+      whyItWorked: "LCD Panel is the paradigm cartel case with extraordinary documentary evidence: 'Crystal meetings' (so named by the cartel members themselves) were actual scheduled meetings where Samsung, LG, AUO, Sharp, and other major manufacturers shared pricing data and agreed on price increases for LCD panels. Meeting minutes were kept. Emails referenced the meetings. Price increase announcements followed Crystal meetings with near-perfect timing. DOJ's leniency program (first cartel member to confess gets immunity) broke the cartel and produced cooperating witnesses and documents.",
+      challenges: "Illinois Brick doctrine: only direct purchasers (OEMs like Dell, HP, Apple) could sue in federal court; indirect purchasers (end consumers who bought laptops with fixed-price LCD panels) had to use state antitrust law. The 'pass-through' damages theory (manufacturer passed overcharge to consumer) required expert testimony. Foreign manufacturer defendants had limited U.S. assets, requiring careful judgment enforcement.",
+      strategiesWon: ["Crystal meeting minutes = most explicit cartel evidence in modern antitrust history", "DOJ leniency program produced cooperating witness (first to confess) with complete cartel documentation", "OEM direct purchaser class (Dell, HP) recovered directly without pass-through analysis", "State indirect purchaser classes (CA, IL) supplemented federal recovery for end consumers", "AU Optronics executives' criminal imprisonment in U.S. demonstrated serious enforcement"],
+      strategiesFailed: ["Illinois Brick doctrine limited federal consumer recovery to indirect purchaser pass-through theory", "Foreign defendant asset recovery required international enforcement"],
+      demographics: "All U.S. purchasers of LCD displays (laptops, monitors, TVs, tablets) 2001-2006; direct purchasers: Dell, HP, Apple, Motorola (OEMs); indirect purchasers: all U.S. consumers who bought LCD-containing electronics",
+      injuryTypes: ["Price overcharge on LCD panel prices (estimated 15-25% above competitive price)", "Downstream consumer overcharge on laptops, monitors, TVs"],
+      keyEvidence: "Crystal meeting minutes (quarterly meetings between cartel members); email correspondence between Samsung, LG, and other executives discussing price coordination; price increase announcements showing correlated timing; economic expert analysis of overcharge using before/after and yardstick methodologies",
+      corporateMisconduct: "Samsung, LG, AU Optronics, Sharp, and others operated the LCD cartel from 1999 to 2006. The cartel fixed prices for virtually all LCD panels sold globally, affecting hundreds of millions of laptop, monitor, and television screens. 'Crystal meetings' were held quarterly to share pricing data and coordinate future prices. AU Optronics' own executives went to prison in the United States.",
+      regulatoryActions: "DOJ criminal fines: Samsung $300M; Sharp $120M; LG $400M; AU Optronics $500M + executives imprisoned; Korean FTC fines; European Commission €648M; Japanese JFTC investigation",
+      settlementStructure: "Civil settlements $1.1B+: Samsung ~$240M; LG ~$215M; AU Optronics ~$105M; Sharp ~$115M; others; direct purchaser class (OEMs) and indirect purchaser state classes (California lead)",
+      bellwetherOutcome: "AU Optronics criminal trial resulted in conviction + $500M fine + executive imprisonment — definitive bellwether",
+      attorneyFees: "~$363M aggregate (both direct and indirect purchaser classes); Lieff Cabraser and Cohen Milstein lead",
+      replicationModel: "A+ — Global electronics cartel template. Key features: (1) DOJ leniency program breaks cartel = cooperating witness, (2) cartel meeting records = direct liability evidence, (3) direct purchaser + indirect purchaser separate tracks, (4) multiple international enforcement agencies coordinate. Template for any global electronics/component cartel (DRAM memory, capacitors, optical disk drives).",
+      clientAcquisitionStrategy: "Target electronics OEMs (Dell, HP, Apple, Sony) as direct purchaser lead plaintiffs — highest individual damages. Consumer indirect purchaser class via state antitrust repealer states. For future cases: monitor DOJ leniency program applications — when cartel breaks, racing to file civil class before co-conspirators file leniency is critical.",
+      watchOut: "Illinois Brick is the central federal antitrust challenge for indirect purchasers — always file parallel state court cases in antitrust repealer states (CA, IL, NY, FL, etc.). Foreign defendant asset recovery requires international enforcement cooperation. DOJ leniency program immunity shields first confessor but cooperating witness testimony is essential for civil case."
+    }
+  },
+
+  {
+    id: 145, title: "Vitamins Price-Fixing Class Action", company: "Roche, BASF, Aventis, Rhône-Poulenc",
+    type: "Financial Products", industry: "Pharmaceutical/Chemical", outcome: "settled", year: 1999,
+    affectedPop: "All U.S. vitamin purchasers 1990–1999", jurisdiction: "D.D.C.", mdlNumber: "MDL 1285",
+    settlementAmount: "$1.05B", classSize: "Hundreds of millions",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Major vitamin manufacturers (Roche, BASF, Aventis, Rhône-Poulenc) formed global cartel from 1990-1999, fixing prices on vitamins A, B, C, E, Beta Carotene, and others. $1.05B civil + $875M DOJ criminal fines.",
+    leadCounsel: "Cohen Milstein, Hagens Berman",
+    keyPrecedent: "In re Lysine Antitrust Litig. (ADM case — predecessor)",
+    tags: ["vitamins", "price fixing", "Roche", "BASF", "antitrust", "cartel", "global", "MDL"],
+    notes: "$1.05B largest price-fixing settlement of its era. Global cartel operation ('Vitamins, Inc.'). DOJ whistleblower program and leniency applications broke cartel. Led to robust antitrust cartel enforcement framework.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "Direct purchaser class (food manufacturers/distributors): avg thousands; consumer indirect purchaser class: ~$10-30 per household",
+      litigationYears: 6,
+      whyItWorked: "The Vitamins case was the defining global antitrust cartel case of the 1990s. Major pharmaceutical/chemical companies — Roche, BASF, Aventis, Rhône-Poulenc — called their cartel 'Vitamins, Inc.' and held regular meetings to fix prices globally for a decade. The DOJ corporate leniency program was new in the 1990s, and Rhône-Poulenc/Aventis used it to confess first, receiving full immunity and providing documents and witnesses that made prosecutions of all other defendants inevitable. The $1.05B civil class settlement was the largest price-fixing settlement in history at its time.",
+      challenges: "Illinois Brick doctrine limited federal consumer class to direct purchasers (food manufacturers who bought vitamins as ingredient inputs). End consumers faced state-by-state indirect purchaser claims. International dimension required coordination with EU, Canadian, and Japanese competition authorities. Some cartel members had limited U.S. assets.",
+      strategiesWon: ["DOJ corporate leniency (Rhône-Poulenc immunity) produced complete cartel documentation", "Global scope: EU Commission €855M fine + DOJ $875M fine created maximum pressure", "Price-fixing affected vitamins used as ingredients in virtually every processed food (A, B, C, E, betacarotene)", "Food manufacturer direct purchaser class was well-organized and commercially sophisticated", "Criminal convictions of executives (jail time in U.S.) established definitive liability"],
+      strategiesFailed: ["Consumer indirect purchaser recovery limited by Illinois Brick federally", "Some foreign defendants with limited U.S. assets had limited recovery"],
+      demographics: "Direct purchasers: food manufacturers, animal feed producers, cosmetic companies (corporate class); indirect purchasers: all U.S. consumers of vitamin-containing foods (virtually everyone); 1990-1999 class period",
+      injuryTypes: ["Overcharge on bulk vitamins used as food/supplement ingredients", "Consumer downstream overcharge passed through food/supplement prices"],
+      keyEvidence: "Cartel meeting minutes ('Vitamins, Inc.' operation); price-fixing agreements between Roche, BASF, and others; DOJ proffer from Rhône-Poulenc/Aventis cooperation; cartel price schedules; international cartel investigation documents",
+      corporateMisconduct: "Roche, BASF, Aventis, and Rhône-Poulenc operated a global vitamins cartel from 1990-1999, fixing prices for vitamins A, B, C, E, beta-carotene, and other micronutrients. The cartel affected virtually all processed food and nutritional supplement manufacturing globally. The cartel's own name ('Vitamins, Inc.') reflects the explicit, organized nature of the conspiracy.",
+      regulatoryActions: "DOJ: $875M criminal fines (Roche $500M, BASF $225M); European Commission €855M; Canada $168M; Executives imprisoned in U.S.; Japan JFTC fines",
+      settlementStructure: "$1.05B civil class settlement: Roche $469M; BASF $213M; Aventis $128M; Rhône-Poulenc $48M (reduced for cooperation); others; direct purchaser class lead",
+      bellwetherOutcome: "DOJ criminal convictions and guilty pleas served as bellwether",
+      attorneyFees: "~$347M (33%); Cohen Milstein and Hagens Berman lead",
+      replicationModel: "A+ — THE paradigm DOJ leniency + global cartel civil class template. Key elements: (1) first confessor gets immunity, (2) immunity application produces complete cartel evidence, (3) civil class filed immediately following DOJ announcement, (4) global enforcement pressure from EU/Canada/Japan. Template for DRAM memory, LCD panels, optical disk drives, air cargo — every subsequent cartel case.",
+      clientAcquisitionStrategy: "Target food manufacturers and animal feed producers (direct purchasers) as class lead plaintiffs. Nutritional supplement manufacturers. For future cartel cases: monitor DOJ Antitrust Division press releases — cartel leniency applications are typically followed by civil class filing within days. Race to file immediately after DOJ announces leniency application.",
+      watchOut: "DOJ leniency immunity protects the cooperating defendant from criminal charges but does NOT eliminate civil antitrust liability — they still pay in civil class. Illinois Brick limits consumer recovery federally — state courts must be used for indirect purchaser class. International defendants' assets may be limited in U.S. jurisdiction."
+    }
+  },
+
+  {
+    id: 146, title: "Chicken Price-Fixing MDL (Broiler Chicken)", company: "Tyson, Pilgrim's Pride, Koch Foods",
+    type: "Financial Products", industry: "Food Processing", outcome: "settled", year: 2016,
+    affectedPop: "~All U.S. chicken purchasers", jurisdiction: "N.D. Illinois", mdlNumber: "MDL 2825",
+    settlementAmount: "$180M+ (Tyson $221.5M, Pilgrim's $75M, others)",
+    classSize: "All U.S. broiler chicken purchasers",
+    rule23bType: "b(3)", appealOutcome: "affirmed", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Major broiler chicken producers coordinated production and supply via Agri Stats benchmarking service to fix prices above competitive levels. DOJ criminal charges + civil class action. Tyson paid $221.5M, Pilgrim's Pride $75M.",
+    leadCounsel: "Hagens Berman, Cohen Milstein",
+    keyPrecedent: "In re Pork Antitrust Litig.",
+    tags: ["chicken", "broiler", "price fixing", "Tyson", "Pilgrim's Pride", "Agri Stats", "antitrust", "MDL"],
+    notes: "Companion cases: In re Pork Antitrust Litig. (MDL 2998) and In re Turkey Antitrust Litig. Multiple food commodity price-fixing MDLs. Agri Stats benchmarking service implicated in multiple meat industry cartels.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Consumer class: ~$5-15 per household annually; commercial buyer class higher ($100K-$1M per large restaurant/food service company)",
+      litigationYears: 7,
+      whyItWorked: "The broiler chicken case is unique in antitrust history because the coordination mechanism was a third-party benchmarking service (Agri Stats) rather than direct competitor meetings. Agri Stats collected production, pricing, and supply data from all major chicken producers and circulated weekly reports showing each producer's pricing and production against industry benchmarks — effectively a hub-and-spoke information exchange that enabled competitors to align pricing without needing to meet directly. The DOJ criminal investigation and Pilgrim's Pride cooperation agreement provided the key evidence.",
+      challenges: "Hub-and-spoke coordination through Agri Stats is legally different from classic cartel meetings — no explicit agreement to fix prices. Defendants argued the benchmarking service served legitimate business purposes. Agricultural commodity price fixing is particularly complex because some coordination of supply (like crop management) is legally permitted under the Capper-Volstead Act for cooperatives. The meat processing industry's vertical integration (producers own farms, processing plants, brands) complicated class structure.",
+      strategiesWon: ["Agri Stats as hub-and-spoke conspiracy: all major chicken producers sharing production/pricing data through common service = information exchange antitrust violation", "DOJ criminal investigation of Pilgrim's Pride executives provided cooperation and key documents", "Production coordination theory: Agri Stats weekly reports enabled coordinated supply reduction to maintain prices", "Commercial buyer class (restaurants, food service companies) has clear individual damages calculations"],
+      strategiesFailed: ["Capper-Volstead Act agricultural cooperation defense created regulatory complexity", "Agri Stats 'legitimate benchmarking' defense required extensive economic expert battle"],
+      demographics: "All U.S. broiler chicken purchasers (consumers via grocery, restaurant diners, commercial buyers); direct purchasers: restaurant chains, food service distributors, retail grocery chains; indirect purchasers: all American consumers (chicken is the most consumed meat in U.S.)",
+      injuryTypes: ["Overcharge on retail chicken purchases (above competitive price)", "Restaurant/food service overcharge passed to consumers", "Reduced supply = artificial scarcity premium"],
+      keyEvidence: "Agri Stats weekly reports showing production and pricing data shared among all producers; DOJ Pilgrim's Pride cooperation agreement; comparison of chicken prices before/after Agri Stats adoption; expert economic analysis showing pricing correlated across producers beyond competitive expectations; DOJ subpoenas of producer communications",
+      corporateMisconduct: "Tyson, Pilgrim's Pride, Koch Foods, and other major broiler producers used Agri Stats as a price-coordination mechanism. Producers shared detailed production and pricing data with Agri Stats, which compiled and distributed weekly competitive benchmarking reports — effectively creating an industry-wide pricing dashboard that enabled coordination without direct communication. The result was synchronized production reductions that elevated prices above competitive levels.",
+      regulatoryActions: "DOJ criminal investigation; Pilgrim's Pride executives indicted; corporate guilty pleas by multiple defendants; USDA investigation of coordination practices; Congressional investigation of meat industry consolidation",
+      settlementStructure: "$296M+ aggregate: Tyson $221.5M; Pilgrim's Pride $75M; multiple smaller settlements; significant defendants still fighting; Agri Stats also sued",
+      bellwetherOutcome: "DOJ criminal investigation and Pilgrim's Pride cooperation served as bellwether; civil bellwether trial anticipated",
+      attorneyFees: "~$98M (33% of settled amounts); Hagens Berman and Cohen Milstein lead",
+      replicationModel: "A — Agri Stats/benchmarking service as hub-and-spoke cartel template. Direct template for pork (MDL 2998) and turkey antitrust cases using same theory. Also template for any industry using third-party data exchanges where competitors share production and pricing data. Applicable to airline pricing algorithms, hotel revenue management systems, real estate commission benchmarking.",
+      clientAcquisitionStrategy: "Target large commercial chicken purchasers (restaurant chains, food service distributors) as lead plaintiffs — highest individual damages, most organized. Tyson and Pilgrim's Pride are the largest national brands — class includes virtually all commercial food service operations. For future cases: investigate whether industry benchmarking services (like Agri Stats for other commodities) create similar hub-and-spoke coordination.",
+      watchOut: "Agri Stats 'legitimate business purpose' defense is the primary liability uncertainty. Capper-Volstead Act agricultural cooperative carve-out may apply to some production coordination. Individual damages require commodity-level price analysis by purchaser. Companion pork and turkey cases (same theory) expand exposure."
+    }
+  },
+
+  {
+    id: 147, title: "Google Search / AdTech Antitrust", company: "Google / Alphabet",
+    type: "Financial Products", industry: "Technology/Advertising", outcome: "pending", year: 2023,
+    affectedPop: "~Billions of web users and advertisers", jurisdiction: "E.D. Virginia + N.D. California",
+    mdlNumber: "No MDL",
+    settlementAmount: "Pending (DOJ seeking breakup)",
+    classSize: "Billions",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "DOJ found Google monopolized online search (95% share) and search advertising (2024 ruling). AdTech case: Google monopolized ad tech stack (publisher ad servers, ad exchanges, ad networks). Court ordered structural remedies including potential Chrome/Android divestiture.",
+    leadCounsel: "DOJ Antitrust Division + State AGs",
+    keyPrecedent: "U.S. v. Microsoft (2001 DOJ antitrust precedent)",
+    tags: ["Google", "antitrust", "search", "AdTech", "monopoly", "DOJ", "Sherman Act", "breakup"],
+    notes: "Two separate DOJ antitrust cases: Search monopoly (2024 ruling) + AdTech monopoly (2025 trial). Private class actions parallel DOJ cases. Most significant tech antitrust case since U.S. v. Microsoft. Potential Google breakup (Chrome, Android) would reshape internet.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 9,
+      payoutPerClaimant: "Pending — advertisers overcharged by estimated 30-50% above competitive AdTech rates; consumer search quality degradation difficult to quantify monetarily; structural remedy (Chrome/Android divestiture) would reshape internet economics",
+      litigationYears: 5,
+      whyItWorked: "Google's search monopoly was proven in the August 2024 D.C. District Court ruling: Judge Mehta found Google illegally maintained its search monopoly through exclusive default agreements (paying $12-18B/year to Apple for Safari default placement). 95% search market share maintained through exclusionary conduct rather than just superior product. The AdTech case (2025 trial) adds a second front: Google's vertically integrated ad tech stack (publisher ad servers, ad exchanges, ad networks) allowed Google to simultaneously represent buyers and sellers of advertising while skimming above-market margins.",
+      challenges: "Structural remedy (Chrome or Android divestiture) is the most consequential and contested remedy in antitrust history since Microsoft/AT&T. Google's 'best product' defense — users choose Google because it's better — has merit for some users. Private antitrust class actions face standing challenges for indirect purchasers (internet users who receive free search but pay via privacy/attention).",
+      strategiesWon: ["DOJ 2024 court ruling establishing search monopoly = res judicata for private antitrust cases", "Google's own payment records showing $12-18B/year to Apple = direct evidence of exclusionary conduct cost", "AdTech monopoly: Google owned buying side (DV360), selling side (Google Ad Manager), and exchange (AdX) = three-way conflict of interest", "Publisher ad server monopoly theory: publishers had no competitive alternative to Google Ad Manager", "State AG coordinated enforcement (40+ state AGs in AdTech case) created maximum pressure"],
+      strategiesFailed: ["Consumer standing for search monopoly (free service, no direct payment) requires creative harm theory (privacy/quality degradation)", "Structural remedy negotiations with DOJ are lengthy — monopoly may continue during appeals"],
+      demographics: "Search monopoly: all internet users (billions worldwide; U.S. class = ~250M); AdTech monopoly: website publishers (hundreds of thousands of U.S. publishers who lost AdTech margin), online advertisers (who paid above-market advertising prices)",
+      injuryTypes: ["Advertisers: overcharge on AdTech services (above competitive margin)", "Publishers: below-market payments for ad inventory (Google skimmed excess margin)", "Consumers: reduced search quality and innovation (Google's monopoly power reduced competitive pressure for improvement)", "Privacy harm: search monopoly enables maximum data collection"],
+      keyEvidence: "DOJ 2024 ruling and findings of fact; Google's Apple default payment records ($12-18B/year); Google's own internal AdTech strategy documents (Jedi Blue, Project Bernanke); publisher revenue data showing AdTech margin compression; competitive entry barriers documented by court",
+      corporateMisconduct: "Google illegally maintained its search monopoly by paying Apple, Samsung, and others to be the default search engine — effectively renting its monopoly rather than competing on merit. In AdTech, Google simultaneously controlled the buy side, sell side, and the exchange — a conflict of interest so extreme that, as one internal memo noted, if a single entity did this in the stock market it would be illegal.",
+      regulatoryActions: "DOJ search monopoly ruling (August 2024); DOJ AdTech trial (2025); EU Digital Markets Act (DMA) enforcement; UK CMA investigation; 40+ state AG antitrust investigation; EU €4.3B Android fine; EU €2.4B Google Shopping fine; EU €1.49B AdSense fine",
+      settlementStructure: "Pending — DOJ seeking structural remedies including Chrome and/or Android divestiture and exclusivity agreement bans; private class actions pending; AdTech case resolution expected $5-15B in damages to publisher and advertiser classes",
+      bellwetherOutcome: "DOJ 2024 monopoly ruling = ultimate bellwether for private antitrust cases",
+      attorneyFees: "Pending; state AGs and DOJ led; private class actions following DOJ lead",
+      replicationModel: "A+ — Big Tech monopoly antitrust template. Direct template for: Meta social media monopoly, Amazon marketplace monopoly, Apple App Store monopoly, Microsoft gaming acquisition. Key elements: (1) DOJ/FTC monopoly case creates res judicata for private class, (2) exclusive dealing + default agreements as exclusionary conduct, (3) vertical integration creating conflicts of interest.",
+      clientAcquisitionStrategy: "AdTech case: target website publishers who used Google Ad Manager and received below-market payouts. Digital media companies, newspaper publishers, content creators. Online advertisers who paid above-market Google AdTech fees. Search monopoly: advertiser class for overcharge on Google search ads above competitive rates.",
+      watchOut: "Consumer standing for search monopoly requires showing actual harm from monopoly conduct (not just 'bad product'). Google's 'best product' defense is partially credible. Structural remedy (divestiture) will be appealed for years — injunctive relief takes years after ruling. DOJ case provides liability foundation but damages for private class still require separate quantification."
+    }
+  },
+
+  {
+    id: 148, title: "Amazon Buy Box / Marketplace Antitrust", company: "Amazon.com",
+    type: "Financial Products", industry: "E-Commerce/Technology", outcome: "pending", year: 2022,
+    affectedPop: "~Millions of marketplace sellers + consumers", jurisdiction: "W.D. Washington",
+    mdlNumber: "No MDL",
+    settlementAmount: "$30M (WA state) + EU €1.1B + ongoing",
+    classSize: "Millions",
+    rule23bType: "b(3)", appealOutcome: "n/a", harmCategory: "economic",
+    daubert: "pending",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Amazon's 'Buy Box' algorithm and MFN (most favored nation) pricing policy forced sellers to raise prices everywhere to match Amazon, causing consumer overcharges. WA state class + private class actions + EU €1.1B fine.",
+    leadCounsel: "Hagens Berman",
+    keyPrecedent: "Apple Inc. v. Pepper (standing for app store buyers)",
+    tags: ["Amazon", "Buy Box", "marketplace", "MFN", "antitrust", "price parity", "e-commerce"],
+    notes: "EU Commission €1.1B fine + commitments. WA class $30M. Private class actions ongoing. Novel theory: platform operator as price-fixer through algorithm + MFN clauses. Similar to Apple App Store antitrust.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "Pending — marketplace sellers: overcharge varies by product category; consumer overcharge: $50-200/year est.; EU settlement €1.1B",
+      litigationYears: 5,
+      whyItWorked: "Amazon's Buy Box algorithm and Most Favored Nation (MFN) pricing policies created a novel antitrust theory: platform operator using algorithmic enforcement to maintain supra-competitive pricing across all sales channels. The MFN clause effectively forced sellers to price their products on Amazon at the same level as everywhere else — which in practice meant sellers raised prices everywhere to match Amazon's high-take-rate marketplace prices, rather than lowering Amazon prices to match external competition. EU Commission's €1.1B fine validated the theory as viable under competition law.",
+      challenges: "Amazon's MFN defense: we're protecting consumers by ensuring lowest prices on Amazon. The MFN actually says sellers can't offer lower prices elsewhere — which Amazon argues benefits consumers. Proving consumer harm from higher prices requires showing that absent MFN, external competition would have driven prices lower. Technology platform antitrust is rapidly evolving — novel legal theories create uncertainty.",
+      strategiesWon: ["EU Commission €1.1B fine validated the theory in European competition law", "Washington state class action ($30M) demonstrated domestic viability", "Apple Inc. v. Pepper (2019 SCOTUS) expanded consumer antitrust standing for app/platform purchasers", "Buy Box algorithm as exclusionary conduct: Amazon's own algorithm creates artificial demand for Amazon-favored sellers", "MFN clause as resale price maintenance: sellers forced to maintain prices at Amazon-fee-inflated levels everywhere"],
+      strategiesFailed: ["Amazon's 'best price guarantee' defense has genuine pro-consumer merit arguments", "Platform antitrust is complex — 'two-sided market' analysis (Amex v. Ohio, 2018 SCOTUS) complicates harm analysis"],
+      demographics: "All Amazon marketplace consumers; U.S. class = ~150M Amazon Prime members + non-Prime purchasers; marketplace sellers (500,000+ U.S. third-party sellers) facing discriminatory Buy Box treatment",
+      injuryTypes: ["Consumer overcharge from supra-competitive Amazon marketplace prices", "Third-party seller harm from Buy Box algorithm discriminating against non-FBA sellers", "Competitive harm from reduced off-Amazon price competition"],
+      keyEvidence: "Amazon's Buy Box algorithm documentation; MFN/price parity clause language in seller agreements; pricing data showing sellers raising prices on external platforms to match Amazon pricing; EU Commission's investigative findings; economic expert analysis of MFN effects on cross-platform prices",
+      corporateMisconduct: "Amazon's MFN price parity clause effectively prevented third-party sellers from offering lower prices on competitor platforms (Walmart.com, Target.com, eBay) — ensuring Amazon's high-commission marketplace pricing was replicated everywhere. The Buy Box algorithm then disadvantaged sellers who used non-Amazon fulfillment, creating a self-reinforcing lock-in.",
+      regulatoryActions: "EU Commission €1.1B fine + remedy commitments (Amazon removed MFN parity clauses in EU); UK CMA investigation and commitments; FTC antitrust investigation; DOJ investigation; Washington state AG class; multiple state AG investigations",
+      settlementStructure: "$30M Washington state class settlement; EU €1.1B fine + policy changes; U.S. FTC/DOJ case pending; private class actions pending; Amazon removed MFN clauses in EU/UK following regulatory pressure",
+      bellwetherOutcome: "EU Commission decision serves as primary bellwether for U.S. case",
+      attorneyFees: "Contingent; Hagens Berman lead",
+      replicationModel: "A — Platform MFN antitrust template. Direct template for: Apple App Store (Apple v. Pepper), Google Play store, Airbnb platform pricing, Uber/Lyft surge pricing coordination. Two-sided platform operators using algorithmic pricing to maintain supra-competitive margins are the next frontier of antitrust.",
+      clientAcquisitionStrategy: "Target Amazon marketplace sellers (third-party) for Buy Box discrimination claims. Consumer class via state courts (Apple v. Pepper standing). Partnership with e-commerce seller associations. FTC investigation referrals. Amazon seller forums (thousands of sellers documenting Buy Box suppression).",
+      watchOut: "Ohio v. American Express (2018 SCOTUS) two-sided market analysis complicates platform antitrust — need to define market including both buyers and sellers. Amazon's removal of MFN clauses in EU/UK may be used as argument that U.S. case is moot (it is not — past harm remains). FTC v. Amazon is the primary regulatory track — private class follows."
+    }
+  },
+
+  {
+    id: 149, title: "NCAA Athletic Scholarship Antitrust (O'Bannon)", company: "NCAA / EA Sports",
+    type: "Consumer Protection", industry: "Education/Sports", outcome: "partially affirmed", year: 2009,
+    affectedPop: "~10,000+ former college athletes", jurisdiction: "N.D. California → 9th Cir.",
+    mdlNumber: "No MDL",
+    settlementAmount: "$40M (EA Sports) + injunction (NCAA)",
+    classSize: "~10,000",
+    rule23bType: "b(3)", appealOutcome: "partially affirmed (9th Cir. 2015)", harmCategory: "economic",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Former UCLA player Ed O'Bannon sued NCAA for using his likeness in EA Sports video games without compensation. 9th Circuit affirmed injunction allowing deferred compensation up to $5,000/year. Predated Alston/NIL. Pioneer NIL case.",
+    leadCounsel: "Hausfeld",
+    keyPrecedent: "O'Bannon v. NCAA (9th Cir. 2015) — direct precursor to Alston SCOTUS",
+    tags: ["O'Bannon", "NCAA", "EA Sports", "NIL", "video game", "likeness", "antitrust", "9th Circuit"],
+    notes: "Predecessor to Alston and House. 9th Circuit allowed some NIL compensation but NCAA lobbied SCOTUS for cert (denied). Led directly to O'Bannon → Alston → House chain of NIL/antitrust cases that transformed college sports.",
+    analysis: {
+      rating: "A",
+      strengthScore: 8,
+      payoutPerClaimant: "~$4,000 avg former athlete ($40M EA Sports ÷ ~10K); structural relief (NIL era) worth billions to future athletes",
+      litigationYears: 9,
+      whyItWorked: "Ed O'Bannon v. NCAA is the case that broke the NCAA's 100-year amateurism model. The specific claim — that EA Sports video games used O'Bannon's exact likeness (UCLA #31) without compensation — was undeniable. The 9th Circuit's holding allowing deferred compensation ($5,000/year) was the first crack in the NCAA wall. The case created the precedent chain that led directly to Alston (2021 SCOTUS) and House v. NCAA ($2.78B settlement). The EA Sports settlement ($40M) provided concrete compensation for former athletes.",
+      challenges: "NCAA's amateurism defense — preserved by the 9th Circuit which required a 'less restrictive alternative' analysis — initially limited relief to education benefits only. The 9th Circuit did not allow full compensation, only NIL. The case took 9 years and the NIL revolution ultimately came through legislation (state NIL laws) as much as litigation.",
+      strategiesWon: ["Video game likeness = undeniable individual harm to specific identifiable athletes", "EA Sports as co-defendant with deep pockets separate from NCAA", "NIL theory: right to license one's own name/image/likeness is a property right", "9th Circuit precedent setting deferred compensation as less restrictive alternative to full NCAA ban", "Coalition of current and former athletes as class provides scale and diversity"],
+      strategiesFailed: ["9th Circuit limited to education benefits — didn't award full compensation", "NCAA's amateurism defense survived at circuit level (Alston eventually required SCOTUS to defeat it)", "EA Sports stopped making college sports video games after settlement — reduced ongoing harm argument"],
+      demographics: "~10,000 former college football and basketball athletes whose likeness appeared in EA Sports video games (NCAA Football, NCAA Basketball games 1995-2013); predominantly male; significant minority athlete representation; former Division I revenue sport athletes",
+      injuryTypes: ["Licensing revenue denied for use of athlete's likeness in commercial video games", "Lost NIL compensation from broader amateurism rules prohibiting endorsements", "Identity and property right violation from unauthorized commercial use"],
+      keyEvidence: "EA Sports video game code showing specific athlete likenesses (jersey number, height, weight, hometown, position, skin tone, hair color); NCAA licensing agreements with EA Sports; market research on athlete name recognition in video games; economic expert testimony on licensing market value",
+      corporateMisconduct: "The NCAA and EA Sports commercially exploited college athletes' likenesses in video games generating hundreds of millions in revenue while the athletes received nothing. The NCAA's amateurism rules specifically prohibited athletes from licensing their own names and likenesses — effectively giving the NCAA and its licensees (EA Sports) a perpetual exclusive on athlete NIL without consent or compensation.",
+      regulatoryActions: "No regulatory action — private antitrust litigation; subsequent state NIL legislation in 30+ states (directly following O'Bannon precedent); NCAA's own NIL policy reversal (July 2021)",
+      settlementStructure: "$40M EA Sports class settlement (~$4,000/former athlete); injunctive relief against specific NCAA NIL restrictions; NCAA subsequently reversed NIL policy for all athletes nationally",
+      bellwetherOutcome: "N/A — settled; 9th Circuit ruling served as appellate bellwether",
+      attorneyFees: "~$13M (33%); Hausfeld lead",
+      replicationModel: "A — NIL antitrust pioneer template. Direct precedent for Alston (SCOTUS) and House v. NCAA ($2.78B). Also establishes: video game/digital media likeness rights for any public figure whose identity appears in commercial digital content without consent. Template for metaverse, AI-generated likenesses, deepfake commercial use.",
+      clientAcquisitionStrategy: "Target former college athletes who appeared in EA Sports NCAA Football or NCAA Basketball video games (1995-2013). EA Sports game archives contain specific player data — identifiable by position, jersey number, school. Former athlete networks (NFL Alumni Association, NBPA former players programs). For future NIL cases: any current athlete under 'amateurism' restrictions for non-NCAA situations.",
+      watchOut: "O'Bannon relief was limited to former athletes (video game licensing, not ongoing compensation). Current athlete NIL rights are now addressed by House v. NCAA framework. Future cases should focus on: AI-generated athlete likenesses, unauthorized metaverse use of athlete identities, and NIL violations under the new House v. NCAA compliance framework."
+    }
+  },
+
+  {
+    id: 150, title: "Sackler / Purdue Pharma Opioid MDL", company: "Purdue Pharma / Sackler Family",
+    type: "Pharmaceutical", industry: "Pharmaceutical", outcome: "settled (contested)", year: 2018,
+    affectedPop: "~500,000 opioid deaths; all 50 states", jurisdiction: "S.D. New York", mdlNumber: "MDL 2804",
+    settlementAmount: "$6B (Sackler) + Purdue bankruptcy trust $10B+",
+    classSize: "All states, municipalities, tribes, individuals",
+    rule23bType: "b(3)", appealOutcome: "SCOTUS reversed (2024) Sackler release",
+    harmCategory: "physical",
+    daubert: "passed",
+    numerosity: true, commonality: true, typicality: true, adequacy: true,
+    keyFact: "Purdue Pharma aggressively marketed OxyContin as low-addiction-risk for chronic pain. 500,000+ opioid overdose deaths. Purdue filed Chapter 11. Sackler family sought legal release without personal bankruptcy. SCOTUS reversed Sackler release in 2024.",
+    leadCounsel: "Lieff Cabraser, Motley Rice, Seeger Weiss (litigation); Paul Weiss (Purdue)",
+    keyPrecedent: "Harrington v. Purdue Pharma (2024 SCOTUS) — non-debtor release limits",
+    tags: ["Purdue Pharma", "OxyContin", "opioid", "Sackler", "MDL", "bankruptcy", "SCOTUS 2024", "public health"],
+    notes: "SCOTUS 2024 (5-4): Sackler family cannot receive third-party liability releases without filing personal bankruptcy. Landmark ruling limiting use of bankruptcy to shield wealthy families from mass tort liability. MDL 2804 is largest mass tort in U.S. history by scope.",
+    analysis: {
+      rating: "A+",
+      strengthScore: 10,
+      payoutPerClaimant: "$3,500–$48,000 (individuals); States/municipalities received hundreds of millions each; Sackler $6B disgorgement",
+      litigationYears: 6,
+      whyItWorked: "The Purdue Pharma opioid litigation is the largest mass tort in American legal history. Purdue manufactured OxyContin and hired an army of sales reps to push it as a safe, low-addiction-risk chronic pain drug despite internal knowledge of its catastrophic addiction potential. The 'Sackler strategy' — maximizing prescriptions to maximize profits while hiding addiction data — is documented in millions of internal emails, sales call records, and board minutes. Over 500,000 Americans died from opioid overdoses. The combination of devastating human harm, documented corporate deception, government enforcement actions in all 50 states, and the Sackler family's attempted bankruptcy escape through Purdue Chapter 11 made this litigation historically significant. The 2024 SCOTUS ruling blocking non-debtor releases without personal bankruptcy filing is the defining precedent of the era.",
+      challenges: "The primary procedural obstacle was Purdue's Chapter 11 bankruptcy filing in 2019, which created an automatic stay halting all civil litigation. The Sackler family — which had extracted $10–13B from Purdue between 2008–2018 — sought to use Purdue's bankruptcy to obtain personal liability releases without filing their own bankruptcy. This allowed the Sacklers to retain their fortune while escaping personal litigation. SCOTUS reversed this in 2024, but it delayed the process by 5+ years. Federal/state coordination required unprecedented multi-sovereign settlement architecture. Individual causation linking specific patients' addiction/death to OxyContin (vs. other opioids) was a challenge resolved through statistical population-level approaches rather than individual proof.",
+      strategiesWon: [
+        "Multi-sovereign coalition: All 50 AGs + DOJ + 3,000+ municipalities coordinated in MDL 2804 creating overwhelming pressure",
+        "RICO enterprise theory: Purdue's consultant network (McKinsey, Sackler-controlled entities) as racketeering enterprise",
+        "Statistical/epidemiological causation: Population-level opioid death data bypassed individual causation problems",
+        "Document discovery goldmine: 13 million internal documents showing 'we know but we lie' strategy",
+        "State RICO + consumer protection statutes provided alternative federal RICO liability",
+        "Bankruptcy trust structure (Purdue) created long-term claimant fund even without personal Sackler liability",
+        "McKinsey & Company separately settled $600M for its role advising Purdue to boost overdose-prone prescriptions",
+        "SCOTUS 2024: Harrington v. Purdue Pharma established non-debtor release limits — landmark precedent"
+      ],
+      strategiesFailed: [
+        "Individual addiction/death causation claims required population-level rather than individual proof approaches",
+        "Sackler personal bankruptcy gambit: Their attempt to use Purdue bankruptcy for personal releases was ultimately reversed by SCOTUS — 5-year delay cost",
+        "Early settlement pressure pre-SCOTUS left states with less Sackler money than available post-ruling",
+        "Criminal accountability fell short: Only low-level Purdue executives convicted; Sacklers paid civil only",
+        "Aggregate opioid settlement (National Prescription Opiate Settlement) fragmented across distributors, manufacturers, pharmacies"
+      ],
+      demographics: "Devastatingly broad: rural Appalachia, midwest manufacturing towns, and suburban communities disproportionately affected. Plaintiffs include: families of overdose victims; individuals with opioid use disorder; states/municipalities covering addiction treatment, Narcan, law enforcement, child foster care from opioid-affected families; Native American tribes with catastrophic OUD rates; hospitals and healthcare systems absorbing treatment costs.",
+      injuryTypes: [
+        "Death from opioid overdose",
+        "Opioid use disorder (OUD)",
+        "Neonatal Opioid Withdrawal Syndrome (NOWS) — babies born addicted",
+        "Economic loss: addiction treatment costs, lost productivity, incarceration costs",
+        "Government/municipal abatement costs (Narcan, treatment programs, law enforcement)",
+        "Foster care system costs from opioid-affected families"
+      ],
+      keyEvidence: "Purdue's 'Project Tango' — internal plan to expand into addiction treatment market after causing the epidemic. Sales call records documenting deliberate targeting of high-prescribing 'pain mills.' Board minutes showing Sacklers approved aggressive marketing despite internal safety warnings. McKinsey consulting decks advising to 'turbocharge' OxyContin sales. FDA communications where Purdue misrepresented addiction data. 'Sackler Side Door' documents showing wealth extraction of $10–13B before bankruptcy. DEA suspicious order reports ignored. The 'Burt Rosen memo' — internal estimate of 'problematic' vs. 'legitimate' OxyContin use.",
+      corporateMisconduct: "Purdue Pharma ran the most consequential pharmaceutical fraud in U.S. history. Beginning in the late 1990s, Purdue deployed 'detailers' to push OxyContin as uniquely safe, citing a cherry-picked 1980 letter in NEJM about inpatient opioid use as proof of low addiction risk. Purdue knew patients were becoming addicted. The Sackler-controlled board extracted $10–13B in dividends and transfers before filing bankruptcy. McKinsey consultants advised Purdue to offer rebates to pharmacies on overdose death rates — literally paying bonuses correlated to customer deaths. Purdue pleaded guilty twice (2007 misdemeanor, 2020 felony RICO) but the family escaped personal criminal liability.",
+      regulatoryActions: "DOJ 2020: $8.3B criminal resolution (guilty plea to RICO, fraud). 2007: $600M plea (misdemeanor). DEA: Multiple administrative action threats. All 50 state AGs: Multi-state opioid settlement framework. FDA: Rescheduling, REMS program, black box warnings (delayed by industry pressure). McKinsey $600M settlement (2021). Johnson & Johnson $5B. Distributors (McKesson, AmerisourceBergen, Cardinal Health): $21B. CVS/Walgreens/Walmart pharmacies: $13.8B. SCOTUS 2024: Harrington v. Purdue Pharma reversal.",
+      settlementStructure: "Multi-layered unprecedented structure: (1) Purdue bankruptcy trust — $10B+ for claimants via reorganization plan. (2) Sackler family direct payment — $6B (reduced from $10B after SCOTUS reversed non-debtor releases). (3) National Opioid Settlement — Johnson & Johnson $5B, Distributors $21B, Pharmacies $13.8B — distributed via Opioid Settlement Fund to states for abatement. (4) Individual plaintiff track within trust. Priority: government abatement programs first, then NAS/NOWS babies, then individual OUD/death claimants. Cy pres component for treatment and prevention programs.",
+      bellwetherOutcome: "State of Oklahoma v. J&J (2019): $465M judgment (reversed on appeal — abatement theory rejected). Landmark because it showed juries would convict but also exposed abatement damages theory vulnerability. MDL 2804 bellwethers settled on eve of trial. West Virginia trial (2022): Cabell County v. distributors — jury found distributors NOT liable, shocking result that accelerated global settlements. The WV verdict demonstrated jury unpredictability on causation, driving nationwide settlement urgency.",
+      attorneyFees: "Largest attorney fee awards in mass tort history. State AG outside counsel: typically 15-25% of state recovery. Plaintiffs' steering committee in MDL: negotiated common benefit fees. Total plaintiff attorney fees across all opioid litigation estimated at $3–5B. Lead firms: Lieff Cabraser, Motley Rice, Seeger Weiss, Simmons Hanly Conroy. Individual claimant fees typically 33% contingency.",
+      replicationModel: "A+ — The opioid MDL is the definitive template for future mass public health tort litigation. Key replication elements: (1) Multi-sovereign coalition (all 50 AGs) creates unstoppable pressure. (2) RICO enterprise theory reaches consultants and advisors. (3) Statistical causation allows population-level liability without individual proof. (4) Bankruptcy trust structure for insolvent defendant. (5) SCOTUS Harrington precedent now limits wealth-shield-via-bankruptcy strategy. Future targets: social media teen mental health (MDL 3047), PFAS/forever chemicals, leaded gasoline litigation.",
+      clientAcquisitionStrategy: "Three distinct client tracks: (1) GOVERNMENT CLIENTS — State AG offices and municipalities for abatement cost recovery. Fee: 15-25% of recovery, multi-year engagement. Requires government relations capability. (2) INDIVIDUAL CLAIMANTS — Families of overdose victims, OUD survivors. High volume, emotional narrative, $5K-$48K range via trust. Target: Appalachian communities, rural midwest, Native American tribes. Partner with addiction treatment centers and harm reduction organizations. (3) NOWS/NAS BABIES — Neonatal opioid withdrawal claims have premium valuation in trust allocation. Obstetric/NICU hospital records are key. These are ongoing as Purdue trust distributions continue. Focus geographically on WV, OH, KY, PA, TN.",
+      watchOut: "SCOTUS 2024 Harrington v. Purdue Pharma ruling is the most important new precedent: wealthy family defendants can no longer use a corporation's Chapter 11 bankruptcy to obtain personal liability releases without themselves filing personal bankruptcy. This changes the calculus for all future mass tort litigation involving wealthy controlling families. Watch for: (1) Individual state trust claim deadlines — many have passed or are expiring. (2) Anti-assignment clauses in trust documents limit case buying/consolidation. (3) Abatement-only damages theory was rejected in Oklahoma appeal — secure both personal injury and abatement theories. (4) RICO enterprise claims against consultants (McKinsey-type) are now established — pursue advisors alongside manufacturers."
+    }
   },
 
   {
@@ -793,14 +6336,45 @@ export const KB_CASES = [
     leadCounsel: "Multiple firms",
     keyPrecedent: "TBD",
     tags: ["3M", "N95", "COVID-19", "mask", "healthcare worker", "consumer fraud", "misrepresentation"],
-    notes: "Emerging litigation. Complicated by federal government purchasing relationships and wartime liability shields. Challenging but large potential class."
+    notes: "Emerging litigation. Complicated by federal government purchasing relationships and wartime liability shields. Challenging but large potential class.",
+    analysis: {
+      rating: "C",
+      strengthScore: 4,
+      payoutPerClaimant: "Pending — theoretically large but heavily constrained by federal immunity defenses",
+      litigationYears: 3,
+      whyItWorked: "The COVID-19 pandemic created billions of dollars in fraudulent N95 mask sales where products failed to meet advertised filtration standards. Healthcare workers purchased or used masks believing they had 95%+ filtration protection when some products fell far short. The economic loss and physical harm theories are compelling in concept.",
+      challenges: "Federal government involvement is the primary obstacle: PREP Act provides broad liability immunity for covered pandemic medical countermeasures. Federal contractor defense for government-purchased masks. DPA (Defense Production Act) invocations create additional immunity layers. Causation is extremely difficult — proving a specific COVID-19 infection resulted from mask failure versus other exposure routes is essentially impossible. Class certification faces massive individual injury variation.",
+      strategiesWon: [
+        "Consumer fraud theory for retail N95 purchases (non-government) avoids PREP Act",
+        "Economic loss class (paid for N95, received inferior product) avoids individual causation problem",
+        "False advertising theory for filtration performance claims",
+        "State consumer protection statutes (UDAP claims) may be available"
+      ],
+      strategiesFailed: [
+        "PREP Act immunity blocks most healthcare worker personal injury claims",
+        "Individual COVID-19 infection causation is scientifically near-impossible to prove",
+        "Government purchasing contracts complicate defendant liability",
+        "N95 testing standards and certification processes create complex expert battleground"
+      ],
+      demographics: "Healthcare workers (nurses, doctors, respiratory therapists, hospital staff) who contracted COVID-19 while using defective N95 masks. Consumer purchasers who paid premium N95 prices for counterfeit or sub-standard masks during shortages.",
+      injuryTypes: ["COVID-19 infection (healthcare workers)", "Long COVID sequelae", "Death from COVID-19", "Economic loss (retail purchasers who received substandard masks)"],
+      keyEvidence: "NIOSH filtration testing results on specific N95 brands; CDC and OSHA investigations; manufacturer quality control records; FDA emergency use authorization documentation; purchasing records showing price paid vs. quality delivered",
+      corporateMisconduct: "During the COVID-19 pandemic, numerous manufacturers sold masks falsely labeled as N95 (95% filtration) that failed to meet NIOSH standards. Some were Chinese-manufactured KN95s sold as equivalent. 3M specifically faced allegations about distribution practices that allowed price gouging and counterfeit products in its supply chain.",
+      regulatoryActions: "FDA issued numerous warning letters; DOJ prosecuted counterfeit mask sellers; NIOSH published approved/revoked manufacturer lists; FTC investigated price gouging; state AGs investigated.",
+      settlementStructure: "No major settlements yet. Cases primarily pending. Most personal injury claims blocked by PREP Act. Economic loss consumer class cases have better survival prospects.",
+      bellwetherOutcome: "No bellwethers yet. Litigation early stage.",
+      attorneyFees: "Standard contingency — but PREP Act may dramatically reduce recoverable amounts",
+      replicationModel: "D — PREP Act immunity and causation problems make individual healthcare worker injury claims extremely difficult. Economic loss consumer class for retail purchasers is more viable. PREP Act litigation is a specialized niche requiring deep administrative/regulatory expertise.",
+      clientAcquisitionStrategy: "Focus on retail consumer economic loss class (non-government purchasers who paid for N95 and received substandard product) rather than individual personal injury claims. Healthcare union organizations for potential legislative/regulatory advocacy track. Identify specific brands with documented NIOSH test failures.",
+      watchOut: "PREP Act immunity is extraordinarily broad — consult specialized PREP Act counsel before investing in individual healthcare worker COVID-19 cases. Economic loss consumer class is the more viable litigation path. Causation expert on COVID-19 infection source is near-impossible — avoid individual infection causation theories."
+    }
   },
 
 ];
 
 // ─── KB METADATA ─────────────────────────────────────────────────────────────
 
-export const KB_VERSION = "2.0";
+export const KB_VERSION = "3.0";
 export const KB_TOTAL = KB_CASES.length;
 export const KB_INDUSTRIES = [...new Set(KB_CASES.map(c => c.industry))].sort();
 export const KB_OUTCOMES_SUMMARY = KB_CASES.reduce((acc, c) => {

@@ -1,4 +1,4 @@
-# Class Action & MDL Analysis Dashboard
+/clea# Class Action & MDL Analysis Dashboard
 
 A plaintiff intelligence platform for identifying, tracking, and analyzing potential class action lawsuits and multidistrict litigation (MDL) cases.
 
