@@ -8,11 +8,15 @@ import AIScanner from "./tabs/AIScanner.jsx";
 import KnowledgeBase from "./tabs/KnowledgeBase.jsx";
 import CaseIntelligence from "./tabs/CaseIntelligence.jsx";
 import DailyFeed from "./tabs/DailyFeed.jsx";
+import LeadsInbox from "./tabs/LeadsInbox.jsx";
+import Trends from "./tabs/Trends.jsx";
 import Chat from "./tabs/Chat.jsx";
 import Sources from "./tabs/Sources.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
+  { id: "leads",        label: "Leads Inbox" },
+  { id: "trends",       label: "Trends" },
   { id: "feed",         label: "Daily Feed" },
   { id: "cases",        label: "Case Tracker" },
   { id: "scanner",      label: "AI Scanner" },
@@ -107,6 +111,8 @@ export default function App() {
       {/* Content */}
       <div style={{ padding: "28px 32px", maxWidth: 1400, margin: "0 auto" }}>
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} />}
+        {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
+        {tab === "trends"       && <Trends />}
         {tab === "feed"         && <DailyFeed cases={cases} setCases={setCases} setTab={setTab} kbCases={kbCases} setKbCases={setKbCases} />}
         {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} />}
         {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}
