@@ -42,7 +42,38 @@ const GOV_RSS_FEEDS = [
 ];
 
 const GOOGLE_NEWS_QUERIES = [
-  // Existing
+  // ── PREDICTIVE TIER 1: Regulatory investigations (pre-lawsuit) ──
+  "FDA warning letter company product safety 2026",
+  "FDA adverse event reports spike drug device 2026",
+  "NHTSA investigation opened vehicle defect safety 2026",
+  "OSHA investigation workplace injury fatality company 2026",
+  "FTC investigation company deceptive practices consumers 2026",
+  "CFPB investigation financial company consumers harmed 2026",
+  "CDC outbreak investigation product food contamination 2026",
+  "EPA enforcement company toxic contamination community 2026",
+
+  // ── PREDICTIVE TIER 2: Consumer harm clustering before cases file ──
+  "consumers reporting injuries complaints product 2026",
+  "patients adverse effects drug device hospitalizations 2026",
+  "whistleblower complaint company safety fraud concealed 2026",
+  "internal documents reveal company knew harm 2026",
+  "cancer cluster residents contamination investigation 2026",
+  "product removed shelves safety concern 2026",
+  "company under investigation fraud consumers workers 2026",
+  "hospital reports increase adverse events drug 2026",
+
+  // ── PREDICTIVE TIER 3: Corporate misconduct pre-filing ──
+  "company concealed safety data internal documents 2026",
+  "executives knew product dangerous memo 2026",
+  "price fixing investigation antitrust 2026",
+  "data exposed company customers personal information 2026",
+  "wage theft unpaid workers investigation 2026",
+  "environmental contamination community residents sick 2026",
+  "mass complaints product injury viral 2026",
+  "whistleblower complaint FDA corporate fraud 2026",
+  "internal documents leak corporate harm 2026",
+
+  // ── REACTIVE: Cases already forming ──
   "class action lawsuit filed",
   "MDL mass tort consolidation",
   "product recall injury lawsuit",
@@ -51,29 +82,20 @@ const GOOGLE_NEWS_QUERIES = [
   "auto defect recall NHTSA",
   "PFAS toxic contamination lawsuit",
   "securities fraud class action filed",
-  // Regulatory enforcement
   "NHTSA investigation safety defect 2026",
   "state attorney general lawsuit consumer protection 2026",
-  "FDA warning letter recall enforcement 2026",
   "DOJ investigation corporate fraud consumer harm 2026",
   "EEOC discrimination class action 2026",
-  "OSHA workplace injury violation 2026",
-  // Emerging case types
   "social media addiction mental health lawsuit 2026",
   "cryptocurrency fraud investor class action 2026",
   "AI artificial intelligence discrimination lawsuit 2026",
   "gig worker employee misclassification lawsuit 2026",
   "PFAS firefighting foam contamination lawsuit 2026",
-  "talcum powder asbestos lawsuit 2026",
   "nursing home neglect abuse lawsuit 2026",
   "insulin pricing antitrust class action 2026",
   "toxic baby food heavy metals lawsuit 2026",
   "rideshare sexual assault class action 2026",
   "data broker privacy class action 2026",
-  // Social/consumer signals
-  "mass complaints product injury viral 2026",
-  "whistleblower complaint FDA corporate fraud 2026",
-  "internal documents leak corporate harm 2026",
   "product liability wrongful death settlement 2026",
 
   // DOJ criminal enforcement → civil plaintiff pipeline
@@ -146,11 +168,23 @@ const REDDIT_SUBS = [
 ];
 
 const REDDIT_KEYWORDS = [
+  // Already-legal signals
   "recall", "lawsuit", "class action", "mdl", "settlement", "injury", "defective",
   "toxic", "fraud", "compensation", "contaminated", "misrepresented", "overcharged",
   "discrimination", "harassment", "adverse reaction", "side effects", "malfunction",
   "dangerous", "unsafe", "cover up", "whistleblower", "attorney", "mass tort",
   "personal injury", "product liability", "negligence", "data breach", "privacy violation",
+  // Pre-litigation behavioral signals — people venting before they sue
+  "anyone else", "same problem", "same issue", "making me sick", "made me sick",
+  "hospital", "emergency room", "ER visit", "doctor said", "diagnosed after",
+  "stopped working", "caught fire", "exploded", "leaked", "mold", "contamination",
+  "rash", "allergic reaction", "severe reaction", "hospitalized", "permanent damage",
+  "unauthorized charge", "billed without", "charged twice", "overcharge", "scam",
+  "cancer cluster", "cluster of cases", "multiple people", "neighbors also",
+  "investigation opened", "under investigation", "probe", "warning letter",
+  "former employee", "insider", "leaked document", "internal memo", "covered up",
+  "price gouging", "price fixing", "monopoly", "antitrust",
+  "misclassified", "unpaid wages", "wage theft", "denied claim",
 ];
 
 // Behavioral complaint subs — NO keyword filter, fetched broadly for cluster analysis
@@ -175,65 +209,73 @@ const COMPLAINT_CLUSTER_SUBS = [
   "renting", "FirstTimeHomeBuyer", "HomeImprovement",
 ];
 
-// Complaint-behavior web searches — looking for PATTERNS not legal action
+// Complaint-behavior web searches — predictive pre-litigation signals
 const COMPLAINT_WEB_SEARCHES = [
-  // Consumer complaint spikes
-  "hundreds of complaints users reporting product injury 2026",
-  "reddit users reporting same problem product defect 2026",
-  "social media users complaining about drug side effects 2026",
-  "consumers reporting financial harm company overcharge 2026",
-  // Platform-specific complaint searches
-  "site:reddit.com complaints injury side effects product 2026",
-  "TikTok users complaining product caused injury harm 2026",
-  "Twitter users reporting same defect company problem 2026",
-  // Review site complaint spikes
-  "consumer complaints spike product safety 2026 site:bbb.org OR site:trustpilot.com OR site:consumeraffairs.com",
-  // Medical complaint patterns
-  "patients reporting adverse effects drug device 2026",
-  "doctors reporting unusual side effects medication 2026",
-  // Whistleblower / insider complaint patterns
-  "employees reporting unsafe product internal company 2026",
-  "former employees warning about product safety 2026",
+  // Consumer complaint volume spikes (before lawsuits form)
+  "hundreds consumers reporting same injury product 2026",
+  "surge complaints product side effects adverse reactions 2026",
+  "social media users reporting same defect product injury 2026",
+  "consumers reporting financial harm unauthorized charges company 2026",
+  // Platform complaint cluster searches
+  "site:reddit.com \"anyone else\" injury side effects product 2026",
+  "site:reddit.com \"same problem\" defective product company 2026",
+  "TikTok viral complaints product causing injury harm users 2026",
+  // Review site complaint spikes (pre-litigation signal)
+  "consumer complaints spike safety 2026 site:bbb.org",
+  "consumer complaints spike safety 2026 site:consumeraffairs.com",
+  // Medical / clinical complaint patterns
+  "physicians reporting unusual pattern adverse events drug 2026",
+  "FAERS adverse event reports spike drug device FDA 2026",
+  "hospital admissions increase drug device reaction pattern 2026",
+  // Environmental pre-litigation
+  "residents reporting illness contamination source 2026",
+  "community meeting contamination sick neighbors 2026",
+  // Whistleblower & insider signals
+  "former employee warning product safety cover up 2026",
+  "internal company documents reveal concealed harm 2026",
+  "SEC whistleblower complaint company fraud employees 2026",
 ];
 
 const CLAUDE_WEB_SEARCHES = [
-  // Plaintiff intel sites
+  // ── PREDICTIVE: Pre-litigation investigative signals ──
+  "investigative report corporate fraud concealed harm consumers 2026 site:propublica.org OR site:revealnews.org OR site:icij.org",
+  "FDA adverse event reports pattern emerging drug device 2026",
+  "NHTSA investigation opened new vehicle defect complaint spike 2026",
+  "company knew product dangerous internal documents revealed 2026",
+  "whistleblower complaint company fraud harm cover up 2026",
+  "cancer cluster community investigation contamination source 2026",
+  "patients reporting same adverse reaction drug device pattern 2026",
+  "employees reporting unsafe working conditions company 2026",
+
+  // ── PREDICTIVE: Regulatory pre-enforcement signals ──
+  "FDA warning letter company product 2026",
+  "state attorney general investigation company consumers opened 2026",
+  "OSHA investigation workplace fatality injury company 2026",
+  "FTC investigation company deceptive marketing consumers 2026",
+  "DOJ investigation corporate fraud healthcare finance 2026",
+  "SEC investigation company fraud executives 2026",
+
+  // ── PREDICTIVE: Emerging harm patterns ──
+  "new study links drug device product harm injury 2026",
+  "doctors warning patients drug device risk 2026",
+  "surge reports adverse events FDA FAERS drug 2026",
+  "social media complaint cluster product injury company 2026",
+  "AI bias discrimination employment housing healthcare 2026",
+  "cryptocurrency exchange fraud investors harmed 2026",
+
+  // ── REACTIVE: Confirm forming cases ──
   "new class action lawsuit filed 2026 site:classaction.org OR site:topclassactions.com OR site:aboutlawsuits.com",
   "new MDL consolidation JPML transfer order 2026",
-  // Social media complaint signals
-  "complaints injury recall product Twitter Reddit 2026",
-  "TikTok viral product injury complaint class action 2026",
-  "YouTube product recall warning consumers 2026",
-  // Mass tort filings
   "pharmaceutical mass tort new filing 2026",
   "medical device MDL new class action 2026",
-  // Investigative journalism
-  "investigative report corporate fraud consumer harm 2026 site:propublica.org OR site:revealnews.org OR site:icij.org",
-  // Regulatory signals
-  "state attorney general investigation consumer protection lawsuit 2026",
-  "NHTSA investigation opened vehicle defect 2026",
-  "FDA warning letter adverse events class action potential 2026",
-  // Emerging litigation fronts
-  "AI bias discrimination lawsuit class action 2026",
-  "cryptocurrency exchange fraud investor lawsuit 2026",
-  "data broker stalkerware privacy class action 2026",
-  // Whistleblower / inside info
-  "whistleblower complaint SEC DOJ FDA corporate misconduct 2026",
-
-  // DOJ/AG criminal enforcement → civil victim pipeline
-  "DOJ criminal fraud conviction guilty plea company victims civil lawsuit damages 2026",
-  "multistate attorney general enforcement settlement consumer fraud victims compensation 2026",
-  "False Claims Act qui tam relator settlement healthcare fraud victim patients 2026",
-
-  // SEC / securities fraud
-  "securities fraud stock drop class action complaint filed securities.stanford.edu 2026",
-  "company disclosed SEC DOJ subpoena 8-K securities class action investor loss 2026",
-  "accounting restatement securities fraud class action investor damages 2026",
-
-  // Plaintiff firm intelligence sites
-  "site:millerandzois.com new settlement verdict injury product liability pharmaceutical 2026",
-  "site:classaction.com new investigation lawsuit filed consumer drugs automobile 2026",
-  "site:classaction.com new investigation tech data breach workers rights environmental 2026",
+  "DOJ criminal fraud conviction guilty plea victims civil lawsuit 2026",
+  "multistate attorney general settlement consumer fraud victims 2026",
+  "False Claims Act qui tam settlement healthcare fraud 2026",
+  "securities fraud class action complaint filed 2026",
+  "company disclosed SEC subpoena 8-K securities class action 2026",
+  "accounting restatement securities fraud class action 2026",
+  "site:millerandzois.com new settlement verdict injury product liability 2026",
+  "site:classaction.com new investigation lawsuit filed consumer drugs 2026",
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -784,45 +826,42 @@ async function fetchYouTube() {
 // Requires TWITTER_BEARER_TOKEN env var. Uses recent search (last 7 days).
 // Searches in batches to stay within rate limits (15 req / 15 min on Basic).
 const TWITTER_QUERIES = [
-  // Class action filings & MDL
-  "\"class action\" lawsuit filed -is:retweet lang:en",
-  "\"MDL\" OR \"mass tort\" consolidation lawsuit -is:retweet lang:en",
-  "\"class action\" certified OR settlement announced -is:retweet lang:en",
-  "\"multidistrict litigation\" filed OR pending -is:retweet lang:en",
+  // ── PRE-LITIGATION: Consumer harm clustering (people venting before they sue) ──
+  "\"anyone else\" \"side effects\" OR \"reaction\" OR \"injured\" product -is:retweet lang:en",
+  "\"making me sick\" OR \"made me sick\" product company -is:retweet lang:en",
+  "\"same problem\" OR \"same issue\" product defective injury -is:retweet lang:en",
+  "\"adverse reaction\" OR \"adverse event\" drug device hospital -is:retweet lang:en",
+  "\"has anyone\" experienced injury \"side effects\" drug OR device OR product -is:retweet lang:en",
 
-  // Plaintiff attorney intelligence
-  "\"seeking plaintiffs\" OR \"accepting clients\" injury lawsuit -is:retweet lang:en",
-  "plaintiff attorney lawsuit investigation \"sign up\" OR \"join\" -is:retweet lang:en",
+  // ── PRE-LITIGATION: Regulatory investigation signals (before lawsuit) ──
+  "\"FDA warning letter\" OR \"FDA investigation\" company product safety -is:retweet lang:en",
+  "\"NHTSA investigation\" OR \"NHTSA probe\" vehicle defect safety -is:retweet lang:en",
+  "\"OSHA investigation\" OR \"OSHA citation\" workplace injury workers -is:retweet lang:en",
+  "\"SEC investigation\" OR \"SEC subpoena\" company fraud executives -is:retweet lang:en",
+  "\"attorney general\" investigation company consumers fraud -is:retweet lang:en",
 
-  // Product liability & recalls
-  "product recall injury lawsuit compensation -is:retweet lang:en",
-  "\"FDA recall\" OR \"CPSC recall\" injury lawsuit -is:retweet lang:en",
-  "\"side effects\" injury \"class action\" OR lawsuit -is:retweet lang:en",
-  "\"defective\" product injury lawsuit settlement -is:retweet lang:en",
+  // ── PRE-LITIGATION: Corporate misconduct before it goes public ──
+  "\"internal documents\" OR \"leaked documents\" company harm consumers -is:retweet lang:en",
+  "\"whistleblower\" company safety fraud harm cover -is:retweet lang:en",
+  "\"employees warned\" OR \"insiders say\" company product unsafe -is:retweet lang:en",
+  "\"covered up\" OR \"concealed\" company harm injury consumers -is:retweet lang:en",
 
-  // Government enforcement → civil
-  "\"DOJ\" OR \"attorney general\" fraud settlement victims compensation -is:retweet lang:en",
-  "\"guilty plea\" fraud victims lawsuit compensation -is:retweet lang:en",
-  "state \"attorney general\" lawsuit settlement consumers -is:retweet lang:en",
-  "\"FTC\" OR \"CFPB\" enforcement action consumers harmed -is:retweet lang:en",
+  // ── PRE-LITIGATION: Environmental & community harm ──
+  "residents \"contaminated\" OR \"toxic\" OR \"cancer cluster\" neighborhood -is:retweet lang:en",
+  "\"water contamination\" OR \"air quality\" residents sick hospital -is:retweet lang:en",
+  "\"PFAS\" OR \"forever chemicals\" detected water community -is:retweet lang:en",
 
-  // Securities & financial
-  "\"securities class action\" OR \"securities fraud\" lawsuit filed -is:retweet lang:en",
-  "\"SEC subpoena\" OR \"SEC investigation\" stock drop lawsuit -is:retweet lang:en",
-  "\"stock drop\" \"class action\" shareholder lawsuit -is:retweet lang:en",
+  // ── PRE-LITIGATION: Financial & consumer fraud before filing ──
+  "\"unauthorized charge\" OR \"overcharged\" OR \"billed without\" company consumers -is:retweet lang:en",
+  "\"price gouging\" OR \"price fixing\" company consumers investigation -is:retweet lang:en",
+  "\"data exposed\" OR \"data leaked\" company users customers -is:retweet lang:en",
 
-  // Environmental & mass tort
-  "\"PFAS\" OR \"forever chemicals\" contamination lawsuit -is:retweet lang:en",
-  "\"toxic\" OR \"chemical exposure\" injury lawsuit settlement -is:retweet lang:en",
-  "\"water contamination\" OR \"air pollution\" lawsuit residents -is:retweet lang:en",
-
-  // Data breach & privacy
-  "\"data breach\" \"class action\" OR lawsuit settlement -is:retweet lang:en",
-  "\"privacy violation\" OR \"CCPA\" OR \"BIPA\" class action lawsuit -is:retweet lang:en",
-
-  // Pharma & medical device
-  "\"drug recall\" OR \"device recall\" injury \"class action\" -is:retweet lang:en",
-  "\"bellwether trial\" OR \"MDL trial\" verdict OR settlement -is:retweet lang:en",
+  // ── REACTIVE (confirm what's forming into cases) ──
+  "\"class action\" filed OR forming OR investigating pharmaceutical device -is:retweet lang:en",
+  "\"MDL\" OR \"mass tort\" consolidation new filing -is:retweet lang:en",
+  "\"seeking plaintiffs\" OR \"accepting clients\" injury investigation -is:retweet lang:en",
+  "\"bellwether\" OR \"trial date\" MDL mass tort verdict -is:retweet lang:en",
+  "\"settlement\" announced \"class action\" consumers victims -is:retweet lang:en",
 ];
 
 async function fetchTwitter() {
