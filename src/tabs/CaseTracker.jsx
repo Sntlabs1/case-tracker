@@ -59,7 +59,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
               </div>
               <div style={{ textAlign: "right", minWidth: 100 }}>
                 <div style={{ fontSize: 11, color: "#666" }}>{c.dateAdded}</div>
-                {c.jurisdiction && <div style={{ fontSize: 11, color: "#8b5cf6", marginTop: 4 }}>{c.jurisdiction}</div>}
+                {c.jurisdiction && <div style={{ fontSize: 11, color: "#B83E2C", marginTop: 4 }}>{c.jurisdiction}</div>}
               </div>
             </div>
             {selectedCase?.id === c.id && (

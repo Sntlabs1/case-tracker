@@ -1,0 +1,13 @@
+{
+  "crons": [
+    { "path": "/api/scan", "schedule": "0 * * * *" }
+  ],
+  "functions": {
+    "api/scan.js": {
+      "maxDuration": 300
+    },
+    "api/leads.js": {
+      "maxDuration": 30
+    }
+  }
+}

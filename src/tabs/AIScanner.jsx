@@ -58,7 +58,7 @@ export default function AIScanner({ onAddCase }) {
       </Card>
       <div style={{ marginTop: 16 }}>
         <Card>
-          <h3 style={{ margin: "0 0 12px", fontSize: 15, color: "#c4b5fd" }}>Quick Add from Scan</h3>
+          <h3 style={{ margin: "0 0 12px", fontSize: 15, color: "#F07868" }}>Quick Add from Scan</h3>
           <p style={{ color: "#888", fontSize: 12, marginBottom: 12 }}>Found something promising? Add it to your case tracker.</p>
           <Btn onClick={onAddCase}>+ Add New Case from Scan Results</Btn>
         </Card>
