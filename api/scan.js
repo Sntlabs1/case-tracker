@@ -19,7 +19,7 @@ const TRIAGE_THRESHOLD = 55; // only deep-analyze items that score >= this
 const GOV_RSS_FEEDS = [
   // FDA
   { name: "FDA Recalls",          url: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/recalls/rss.xml",                   category: "Federal" },
-  { name: "FDA Safety Alerts",    url: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch-safety-alerts/rss.xml",    category: "Federal" },
+  { name: "FDA Safety Alerts",    url: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/medwatch/rss.xml",                      category: "Federal" },
   { name: "FDA Drug Safety",      url: "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/drug-safety-podcast/rss.xml",       category: "Federal" },
   // CPSC, USDA
   { name: "CPSC Recalls",         url: "https://www.cpsc.gov/Recalls.rss",                                                                     category: "Federal" },
@@ -29,12 +29,11 @@ const GOV_RSS_FEEDS = [
   { name: "SEC Enforcement",      url: "https://www.sec.gov/rss/divisions/enforce/administrativeproceedings.xml",                              category: "Federal" },
   { name: "FTC Actions",          url: "https://www.ftc.gov/rss.xml",                                                                          category: "Federal" },
   // DOJ, EEOC, DOL, HHS
-  { name: "DOJ Press Releases",   url: "https://www.justice.gov/feeds/opa/justice-news.xml",                                                   category: "Federal" },
-  { name: "EEOC News",            url: "https://www.eeoc.gov/newsroom/rss.xml",                                                                category: "Federal" },
-  { name: "DOL News",             url: "https://blog.dol.gov/feed/",                                                                           category: "Federal" },
+  { name: "DOJ Press Releases",   url: "https://www.justice.gov/news/rss",                                                                     category: "Federal" },
+  { name: "EEOC News",            url: "https://www.eeoc.gov/rss/newsroom",                                                                    category: "Federal" },
+  { name: "DOL News",             url: "https://blog.dol.gov/rss.xml",                                                                         category: "Federal" },
   { name: "HHS News",             url: "https://www.hhs.gov/rss/news.xml",                                                                     category: "Federal" },
-  // EPA, CFPB
-  { name: "EPA Enforcement",      url: "https://www.epa.gov/newsreleases/search/rss",                                                          category: "Federal" },
+  // CFPB
   { name: "CFPB",                 url: "https://www.consumerfinance.gov/about-us/newsroom/feed/",                                              category: "Federal" },
   // Courts
   { name: "JPML MDL Orders",      url: "https://ecf.jpml.uscourts.gov/cgi-bin/rss_outside.pl",                                                category: "Judicial" },
@@ -265,9 +264,17 @@ function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ─── SOURCE FETCHERS ─────────────────────────────────────────────────────────
 
 async function fetchRSS(feed) {
-  const parser = new Parser({ timeout: TIMEOUT_MS, customFields: { item: ["summary", "description"] } });
+  const parser = new Parser({ customFields: { item: ["summary", "description"] } });
   try {
-    const parsed = await parser.parseURL(feed.url);
+    const res = await fetchWithTimeout(feed.url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; LegalIntelligenceBot/1.0; +https://mdl-business.vercel.app)",
+        "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+      },
+    });
+    if (!res.ok) throw new Error(`Status code ${res.status}`);
+    const xml = await res.text();
+    const parsed = await parser.parseString(xml);
     return (parsed.items || []).slice(0, 20).map(item => ({
       id: hash(item.link || item.title || ""),
       title: item.title || "",
