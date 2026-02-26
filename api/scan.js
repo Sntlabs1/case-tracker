@@ -784,21 +784,45 @@ async function fetchYouTube() {
 // Requires TWITTER_BEARER_TOKEN env var. Uses recent search (last 7 days).
 // Searches in batches to stay within rate limits (15 req / 15 min on Basic).
 const TWITTER_QUERIES = [
-  // Direct lawsuit / class action signals
+  // Class action filings & MDL
   "\"class action\" lawsuit filed -is:retweet lang:en",
-  "\"MDL\" OR \"mass tort\" lawsuit settlement -is:retweet lang:en",
-  // Product / drug complaint clusters (pre-litigation signals)
+  "\"MDL\" OR \"mass tort\" consolidation lawsuit -is:retweet lang:en",
+  "\"class action\" certified OR settlement announced -is:retweet lang:en",
+  "\"multidistrict litigation\" filed OR pending -is:retweet lang:en",
+
+  // Plaintiff attorney intelligence
+  "\"seeking plaintiffs\" OR \"accepting clients\" injury lawsuit -is:retweet lang:en",
+  "plaintiff attorney lawsuit investigation \"sign up\" OR \"join\" -is:retweet lang:en",
+
+  // Product liability & recalls
+  "product recall injury lawsuit compensation -is:retweet lang:en",
+  "\"FDA recall\" OR \"CPSC recall\" injury lawsuit -is:retweet lang:en",
   "\"side effects\" injury \"class action\" OR lawsuit -is:retweet lang:en",
-  "product recall injury compensation lawsuit -is:retweet lang:en",
-  // Criminal → civil pipeline
-  "\"guilty plea\" fraud victims compensation lawsuit -is:retweet lang:en",
-  "\"DOJ\" OR \"attorney general\" lawsuit settlement fraud victims -is:retweet lang:en",
-  // Securities fraud
-  "\"stock drop\" \"class action\" OR \"securities fraud\" lawsuit filed -is:retweet lang:en",
+  "\"defective\" product injury lawsuit settlement -is:retweet lang:en",
+
+  // Government enforcement → civil
+  "\"DOJ\" OR \"attorney general\" fraud settlement victims compensation -is:retweet lang:en",
+  "\"guilty plea\" fraud victims lawsuit compensation -is:retweet lang:en",
+  "state \"attorney general\" lawsuit settlement consumers -is:retweet lang:en",
+  "\"FTC\" OR \"CFPB\" enforcement action consumers harmed -is:retweet lang:en",
+
+  // Securities & financial
+  "\"securities class action\" OR \"securities fraud\" lawsuit filed -is:retweet lang:en",
   "\"SEC subpoena\" OR \"SEC investigation\" stock drop lawsuit -is:retweet lang:en",
-  // Consumer / data breach
-  "\"data breach\" \"class action\" settlement OR lawsuit -is:retweet lang:en",
-  "\"PFAS\" OR \"toxic\" contamination lawsuit settlement -is:retweet lang:en",
+  "\"stock drop\" \"class action\" shareholder lawsuit -is:retweet lang:en",
+
+  // Environmental & mass tort
+  "\"PFAS\" OR \"forever chemicals\" contamination lawsuit -is:retweet lang:en",
+  "\"toxic\" OR \"chemical exposure\" injury lawsuit settlement -is:retweet lang:en",
+  "\"water contamination\" OR \"air pollution\" lawsuit residents -is:retweet lang:en",
+
+  // Data breach & privacy
+  "\"data breach\" \"class action\" OR lawsuit settlement -is:retweet lang:en",
+  "\"privacy violation\" OR \"CCPA\" OR \"BIPA\" class action lawsuit -is:retweet lang:en",
+
+  // Pharma & medical device
+  "\"drug recall\" OR \"device recall\" injury \"class action\" -is:retweet lang:en",
+  "\"bellwether trial\" OR \"MDL trial\" verdict OR settlement -is:retweet lang:en",
 ];
 
 async function fetchTwitter() {
@@ -808,7 +832,7 @@ async function fetchTwitter() {
 
   for (const query of TWITTER_QUERIES) {
     try {
-      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=10&tweet.fields=created_at,public_metrics,text&expansions=author_id&user.fields=name,username`;
+      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=100&tweet.fields=created_at,public_metrics,text,context_annotations,entities&expansions=author_id&user.fields=name,username,verified,public_metrics`;
       const res = await fetchWithTimeout(url, {
         headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` },
       });
@@ -819,7 +843,7 @@ async function fetchTwitter() {
       for (const tweet of tweets) {
         // Only surface tweets with meaningful engagement (signal vs noise filter)
         const metrics = tweet.public_metrics || {};
-        if ((metrics.retweet_count || 0) + (metrics.like_count || 0) < 2) continue;
+        if ((metrics.retweet_count || 0) + (metrics.like_count || 0) < 1) continue;
 
         const author = users[tweet.author_id] || {};
         results.push({
@@ -835,7 +859,7 @@ async function fetchTwitter() {
     } catch (e) {
       console.error(`Twitter search failed [${query.slice(0, 40)}]:`, e.message);
     }
-    await delay(1500); // stay within rate limits
+    await delay(500); // paid tier — higher rate limit
   }
   console.log(`Twitter: ${results.length} tweets found across ${TWITTER_QUERIES.length} queries`);
   return results;
