@@ -832,7 +832,7 @@ async function fetchTwitter() {
 
   for (const query of TWITTER_QUERIES) {
     try {
-      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=100&tweet.fields=created_at,public_metrics,text,context_annotations,entities&expansions=author_id&user.fields=name,username,verified,public_metrics`;
+      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=25&tweet.fields=created_at,public_metrics,text,context_annotations,entities&expansions=author_id&user.fields=name,username,verified,public_metrics`;
       const res = await fetchWithTimeout(url, {
         headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` },
       });
