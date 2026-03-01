@@ -1157,6 +1157,8 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   const [opportunities, setOpportunities] = useState([]);
   const [oppsLoading, setOppsLoading] = useState(false);
   const [oppsGeneratedAt, setOppsGeneratedAt] = useState(null);
+  const [newAvailable, setNewAvailable] = useState(0);
+  const [countdown, setCountdown] = useState(0);
 
   const fetchOpportunities = useCallback(async (forceRefresh = false) => {
     setOppsLoading(true);
@@ -1200,7 +1202,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
-  // Silent auto-refresh: poll stats every 30s, silently refetch if new leads arrived
+  // Poll stats every 30s — show banner when new leads arrive
   const kvTotalRef = useRef(null);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -1210,14 +1212,25 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
           if (!d) return;
           const latest = d.total ?? 0;
           if (kvTotalRef.current !== null && latest > kvTotalRef.current) {
-            fetchLeads();
+            setNewAvailable(latest - kvTotalRef.current);
           }
           kvTotalRef.current = latest;
+          // Update countdown to next hourly scan
+          if (d.lastScan?.timestamp) {
+            const next = new Date(d.lastScan.timestamp).getTime() + 60 * 60 * 1000;
+            setCountdown(Math.max(0, Math.round((next - Date.now()) / 1000)));
+          }
         })
         .catch(() => {});
     }, 30000);
     return () => clearInterval(interval);
   }, [fetchLeads]);
+
+  // Countdown ticker
+  useEffect(() => {
+    const t = setInterval(() => setCountdown(c => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   // Auto-push leads scoring ≥ 75 to Case Tracker (only if not already tracked by leadId)
   useEffect(() => {
@@ -1316,10 +1329,28 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
             {stats?.lastScan?.sourcesQueried ? ` · ${stats.lastScan.sourcesQueried} sources queried` : ""}
           </p>
         </div>
-        <Btn onClick={triggerScan} style={{ flexShrink: 0 }}>
-          {scanning ? "Scanning..." : "Run Scan Now"}
-        </Btn>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+          <Btn onClick={triggerScan} style={{ flexShrink: 0 }}>
+            {scanning ? "Scanning..." : "Run Scan Now"}
+          </Btn>
+          {countdown > 0 && !scanning && (
+            <span style={{ fontSize: 11, color: "#555" }}>
+              Next auto-scan in {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, "0")}
+            </span>
+          )}
+        </div>
       </div>
+
+      {newAvailable > 0 && (
+        <div onClick={() => { fetchLeads(); setNewAvailable(0); }} style={{
+          marginBottom: 12, padding: "10px 16px", borderRadius: 10,
+          background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)",
+          fontSize: 13, color: "#86efac", cursor: "pointer", display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
+          {newAvailable} new lead{newAvailable > 1 ? "s" : ""} available — click to load
+        </div>
+      )}
 
       {scanResult && (
         <div style={{ marginBottom: 16, padding: "10px 16px", background: "rgba(34,197,94,0.08)", borderRadius: 10, border: "1px solid rgba(34,197,94,0.2)", fontSize: 13, color: "#86efac" }}>

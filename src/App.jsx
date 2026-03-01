@@ -7,7 +7,6 @@ import CaseTracker from "./tabs/CaseTracker.jsx";
 import AIScanner from "./tabs/AIScanner.jsx";
 import KnowledgeBase from "./tabs/KnowledgeBase.jsx";
 import CaseIntelligence from "./tabs/CaseIntelligence.jsx";
-import DailyFeed from "./tabs/DailyFeed.jsx";
 import LeadsInbox from "./tabs/LeadsInbox.jsx";
 import Trends from "./tabs/Trends.jsx";
 import Chat from "./tabs/Chat.jsx";
@@ -17,7 +16,6 @@ const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
   { id: "trends",       label: "Trends" },
-  { id: "feed",         label: "Daily Feed" },
   { id: "cases",        label: "Case Tracker" },
   { id: "scanner",      label: "AI Scanner" },
   { id: "intelligence", label: "Case Intelligence" },
@@ -38,10 +36,6 @@ const PAGE_META = {
   trends:       {
     title: "Trends",
     desc:  "Emerging patterns across the plaintiff litigation landscape. Track rising case types, filing volume trends, and settlement activity over time.",
-  },
-  feed:         {
-    title: "Daily Feed",
-    desc:  "Live intelligence feed powered by the hourly backend scanner — runs 24/7 on Vercel whether your browser is open or not. Leads accumulate automatically while you're offline. Auto-refreshes every 5 minutes when the tab is open. Click 'Run Scan Now' to trigger an immediate scan outside the hourly schedule.",
   },
   cases:        {
     title: "Case Tracker",
@@ -171,8 +165,7 @@ export default function App() {
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
         {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
         {tab === "trends"       && <Trends />}
-        {tab === "feed"         && <DailyFeed cases={cases} setCases={setCases} setTab={setTab} kbCases={kbCases} setKbCases={setKbCases} />}
-        {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
+{tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
         {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}
         {tab === "intelligence" && <CaseIntelligence />}
         {tab === "knowledge"    && <KnowledgeBase cases={kbCases} setCases={setKbCases} />}
