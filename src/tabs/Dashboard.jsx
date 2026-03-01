@@ -334,6 +334,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const [oppsLoading, setOppsLoading] = useState(true);
   const [totalLeads, setTotalLeads] = useState(null);
   const [lastScanTime, setLastScanTime] = useState(null);
+  const [lastRefreshed, setLastRefreshed] = useState(null);
 
   const kvTotalRef = useRef(null);
 
@@ -374,6 +375,8 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       })
       .catch(() => {})
       .finally(() => { if (!silent) setOppsLoading(false); });
+
+    setLastRefreshed(new Date());
   }, []);
 
   useEffect(() => {
@@ -416,6 +419,14 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+      {/* ── Live indicator ── */}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 6, marginBottom: -12 }}>
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
+        <span style={{ fontSize: 11, color: "#555" }}>
+          LIVE · refreshed {lastRefreshed ? lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "…"}
+        </span>
+      </div>
 
       {/* ── Alert banner — only shown when high-priority leads exist ── */}
       {!leadsLoading && highPriorityLeads.length > 0 && (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card } from "../components/UI.jsx";
 
 // ─── COLOR HELPERS ────────────────────────────────────────────────────────────
@@ -152,21 +152,25 @@ export default function Trends() {
   const [error, setError] = useState("");
   const [activeChart, setActiveChart] = useState("leads"); // leads | avgScore | clusters
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/trends");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
-        setData(json);
-      } catch (e) {
-        setError("Cannot load trends. Deploy to Vercel and run at least one scan.");
-      }
-      setLoading(false);
+  const load = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
+    try {
+      const res = await fetch("/api/trends");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      setData(json);
+      setError("");
+    } catch (e) {
+      if (!silent) setError("Cannot load trends. Deploy to Vercel and run at least one scan.");
     }
-    load();
+    if (!silent) setLoading(false);
   }, []);
+
+  useEffect(() => {
+    load(false);
+    const interval = setInterval(() => load(true), 5 * 60 * 1000); // refresh every 5 min
+    return () => clearInterval(interval);
+  }, [load]);
 
   if (loading) {
     return (
