@@ -4,6 +4,22 @@
 export const KB_RUBRIC = `
 CLASS ACTION VIABILITY RUBRIC — derived from 150 historical cases
 
+══════════════════════════════════════════════════════════════
+LITIGATION OUTCOME SCORES — THESE OVERRIDE THE ADDITIVE RUBRIC
+If any of these conditions are present, SET the score to at least
+this value regardless of other factors. These represent cases where
+liability has already been established or strongly signaled by a
+court, government, or defendant — do not score below these floors.
+══════════════════════════════════════════════════════════════
+= 100  Corporate defendant found guilty at trial (criminal or civil)
+= 100  Corporate defendant paying a fine or penalty to the government (DOJ, SEC, CFPB, FTC, state AG)
+= 100  Settlement where defendant explicitly admits guilt or liability
+= 95   Trial verdict against defendant (civil judgment entered)
+= 90   Settlement where defendant does not admit guilt (no-admit settlement) — liability strongly implied
+= 90   Any government recall (FDA Class I/II/III, CPSC, NHTSA, USDA/FSIS) — government already determined product is defective
+= 70   Complaint survived a motion to dismiss — court found sufficient facts to proceed; viable claim confirmed
+══════════════════════════════════════════════════════════════
+
 WINNING FACTORS (score starts at 50; add points for each present):
 +25  Uniform product defect or identical defendant conduct across all class members (Philips CPAP, Roundup, Takata Airbag)
 +20  FDA recall, CPSC recall, NHTSA recall, or government enforcement action already issued
@@ -64,7 +80,13 @@ MOST VALUABLE CASE TYPES BY HISTORICAL PAYOUT:
 export const QUICK_TRIAGE_PROMPT = `You are a class action attorney screening new leads. Apply the viability rubric and return ONLY a JSON object with no markdown:
 {"score":<0-100>,"classification":"CREATE"|"INVESTIGATE"|"PASS","caseType":"<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Criminal Enforcement → Civil|Securities Fraud / Stock Drop|False Claims Act / Qui Tam|Other>"}
 
-RUBRIC SUMMARY:
+OUTCOME FLOORS (apply first — these set minimum scores):
+100 = Defendant found guilty (criminal/civil) OR paying government fine OR settlement with admission of guilt
+95  = Trial verdict against defendant
+90  = No-admit settlement OR any government recall (FDA/CPSC/NHTSA/USDA)
+70  = Complaint survived motion to dismiss
+
+RUBRIC SUMMARY (use when no outcome floor applies):
 Score 75+: Uniform defect/conduct + government action + physical injury + large class + damages model
 Score 50-74: Some signals present but missing key elements
 Score <50: Causation unproven, individual issues predominate, economic-only loss, bankruptcy risk, or preemption
