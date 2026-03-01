@@ -1,186 +1,13 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+// DailyFeed — reads from the backend Vercel KV (same data as Leads Inbox).
+// The hourly Vercel cron (api/scan.js) populates KV automatically 24/7.
+// "Run Scan Now" triggers the backend scanner and polls for completion.
+
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, Badge, Btn } from "../components/UI.jsx";
-import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT } from "../lib/kbRubric.js";
 
-const API_KEY         = import.meta.env.VITE_ANTHROPIC_API_KEY;
-const LEADS_KEY       = "mdl-feed-leads";
-const SEEN_KEY        = "mdl-feed-seen";
-const LAST_SCAN_KEY   = "mdl-feed-last-scan";
-const INTERVAL_KEY    = "mdl-feed-interval";
-const THIRTY_DAYS     = 30 * 24 * 60 * 60 * 1000;
-const MAX_LEADS       = 300;
-
-const SCAN_INTERVALS  = [
-  { short: "15m", hours: 0.25 },
-  { short: "30m", hours: 0.5  },
-  { short: "1h",  hours: 1    },
-  { short: "2h",  hours: 2    },
-  { short: "4h",  hours: 4    },
-];
-
-const FEED_QUERIES = [
-  // ── Plaintiff intelligence sites — highest signal ──────────────────────────
-  "new class action lawsuit filed 2026 site:classaction.org OR site:topclassactions.com OR site:aboutlawsuits.com",
-  "new MDL mass tort consolidation JPML transfer order 2026",
-  "new settlement verdict product liability pharmaceutical site:millerandzois.com 2026",
-  "new investigation lawsuit filed consumer drugs devices site:classaction.com 2026",
-  "new investigation lawsuit class action site:hbsslaw.com OR site:levinlaw.com OR site:motleyrice.com 2026",
-  "new investigation mass tort class action site:seegerweiss.com OR site:lieffcabraser.com OR site:wisnerbaum.com 2026",
-  "new case filing investigation MDL site:jdsupra.com OR site:masstortnews.org OR site:lawsuit-information-center.com 2026",
-  "class action lawsuit filed 2026 site:reuters.com OR site:bloomberg.com OR site:law360.com",
-
-  // ── FDA / Drug / Medical Device ───────────────────────────────────────────
-  "FDA recall Class I dangerous defective product injury death 2026",
-  "FDA warning letter pharmaceutical drug consumer patient injury 2026",
-  "FDA adverse event drug injury spike complaint class action 2026",
-  "FDA black box warning serious injury death lawsuit class action 2026",
-  "pharmaceutical drug injury lawsuit FDA warning 2026",
-  "medical device defect recall injury lawsuit 2026",
-  "GLP-1 Ozempic Wegovy semaglutide gastroparesis paralysis injury lawsuit 2026",
-  "SSRI antidepressant birth defect infant injury class action 2026",
-  "surgical mesh hernia pelvic implant injury recall class action 2026",
-  "hip knee replacement metal implant recall injury class action 2026",
-  "CPAP BIPAP contaminated foam lung injury recall class action 2026",
-  "talcum powder asbestos ovarian cancer mesothelioma class action 2026",
-  "compounding pharmacy contaminated drug injury death class action 2026",
-  "insulin pump glucose monitor defect injury class action 2026",
-  "IUD contraceptive device injury perforation class action 2026",
-
-  // ── NHTSA / Auto / Vehicle Defect ─────────────────────────────────────────
-  "NHTSA vehicle defect recall investigation class action 2026",
-  "vehicle defect recall products liability class action automotive 2026",
-  "EV electric vehicle battery fire defect explosion class action 2026",
-  "autonomous self-driving vehicle accident defect class action 2026",
-  "airbag inflator defect shrapnel injury recall class action 2026",
-  "car truck SUV fire rollover transmission defect class action 2026",
-  "used car dealership fraud misrepresentation class action 2026",
-
-  // ── Data Breach / Privacy ─────────────────────────────────────────────────
-  "data breach settlement class action 2026",
-  "healthcare hospital data breach HIPAA patients class action 2026",
-  "biometric data Illinois BIPA facial recognition fingerprint class action 2026",
-  "AI deepfake voice cloning identity fraud class action lawsuit 2026",
-  "data broker personal information sold without consent class action 2026",
-  "website pixel tracker unauthorized health data collection class action 2026",
-  "ransomware healthcare patient data exposure class action 2026",
-
-  // ── Social Media / Big Tech ───────────────────────────────────────────────
-  "social media addiction youth mental health lawsuit 2026",
-  "Meta Facebook Instagram teen mental health harm class action 2026",
-  "TikTok algorithm addiction minor children class action 2026",
-  "Google Apple antitrust app store monopoly class action 2026",
-  "AI training data copyright scraping class action 2026",
-
-  // ── Environmental / Toxic Exposure / PFAS ────────────────────────────────
-  "EPA environmental contamination PFAS toxic lawsuit 2026",
-  "PFAS forever chemicals water contamination class action 2026",
-  "chemical plant industrial contamination cancer class action 2026",
-  "lead contamination water supply infrastructure class action 2026",
-  "wildfire utility company negligence class action settlement 2026",
-  "toxic mold asbestos contamination building exposure class action 2026",
-  "pesticide herbicide cancer exposure class action Roundup 2026",
-  "oil pipeline spill groundwater contamination class action 2026",
-
-  // ── Consumer Products / Food Safety ──────────────────────────────────────
-  "product recall personal injury class action filed 2026",
-  "CPSC dangerous consumer product recall injury children class action 2026",
-  "food labeling fraud false advertising health claims class action 2026",
-  "E. coli Salmonella Listeria food contamination outbreak class action 2026",
-  "baby food heavy metals contamination brain injury class action 2026",
-  "dietary supplement false claims injury class action 2026",
-  "product liability injury complaint Reddit consumers 2026",
-  "mass tort new filing complaint injury attorney 2026",
-
-  // ── Financial Products / Consumer Fraud ──────────────────────────────────
-  "predatory lending hidden fees junk fees mortgage class action 2026",
-  "bank overdraft NSF fee unfair practice class action 2026",
-  "cryptocurrency exchange fraud investor class action lawsuit 2026",
-  "insurance bad faith claim denial class action lawsuit 2026",
-  "student loan servicer misrepresentation class action 2026",
-  "payday lender usurious interest rate class action 2026",
-  "subscription trap dark pattern unauthorized charge class action 2026",
-  "MLM pyramid scheme investor class action settlement 2026",
-
-  // ── Employment / Labor / Wage ─────────────────────────────────────────────
-  "wage theft unpaid overtime minimum wage class action 2026",
-  "gig worker employee misclassification class action lawsuit 2026",
-  "workplace sexual harassment discrimination class action settlement 2026",
-  "age race gender discrimination employment class action 2026",
-  "EEOC employment discrimination class action investigation 2026",
-  "non-compete no-poach agreement workers class action antitrust 2026",
-
-  // ── Antitrust / Price Fixing ──────────────────────────────────────────────
-  "price fixing antitrust class action settlement consumer 2026",
-  "market allocation anticompetitive cartel class action 2026",
-  "corporate fraud whistleblower class action 2026",
-  "DOJ antitrust investigation price fixing consumer class action 2026",
-
-  // ── DOJ Criminal Enforcement → Civil Plaintiff Pipeline ──────────────────
-  "DOJ criminal fraud conviction company executives guilty plea victims civil lawsuit 2026",
-  "criminal plea agreement corporate fraud consumer patients investors victims compensation 2026",
-  "USA v company criminal charges fraud victims class action civil RICO 2026",
-  "RICO criminal civil lawsuit corporate fraud victims damages class action 2026",
-  "healthcare insurance fraud criminal conviction patients victims civil lawsuit 2026",
-
-  // ── False Claims Act / Qui Tam / FCA ─────────────────────────────────────
-  "False Claims Act qui tam whistleblower settlement healthcare hospital fraud 2026",
-  "FCA relator whistleblower hospital medical billing fraud settlement 2026",
-  "Medicare Medicaid overbilling fraud settlement qui tam whistleblower 2026",
-  "defense contractor government fraud FCA settlement whistleblower 2026",
-
-  // ── State AG / Government Enforcement ────────────────────────────────────
-  "state attorney general investigation enforcement corporate fraud consumer 2026",
-  "multistate attorney general settlement consumer protection fraud 2026",
-  "California attorney general investigation consumer fraud corporate 2026",
-  "New York attorney general consumer fraud settlement class action 2026",
-  "Texas Florida Ohio Illinois attorney general enforcement consumer 2026",
-  "state AG opioid pharmaceutical settlement consumer victims 2026",
-
-  // ── SEC EDGAR / Securities Fraud ──────────────────────────────────────────
-  "SEC enforcement action securities fraud class action 2026",
-  "company disclosed SEC subpoena DOJ investigation 8-K investor class action 2026",
-  "accounting restatement prior earnings securities class action investor loss 2026",
-  "material weakness internal controls restatement securities fraud lawsuit 2026",
-  "securities fraud stock drop class action filed 2026 site:securities.stanford.edu OR site:classaction.org",
-  "company late SEC filing NT 10-K restatement securities class action 2026",
-  "insider trading SEC investigation executive class action investor 2026",
-
-  // ── FTC / CFPB Consumer Protection ───────────────────────────────────────
-  "FTC consumer protection enforcement action lawsuit 2026",
-  "CFPB consumer financial protection enforcement action class action 2026",
-  "FTC dark pattern subscription fraud enforcement class action 2026",
-  "CFPB debt collector banking enforcement consumer victims class action 2026",
-
-  // ── Reddit / Social Media Signal Mining ──────────────────────────────────
-  "site:reddit.com r/legaladvice class action lawsuit company defective injury 2026",
-  "site:reddit.com r/personalfinance bank insurance bad faith denial class action 2026",
-  "site:reddit.com drug device recall injury compensation class action 2026",
-  "site:reddit.com employer wage theft unpaid overtime class action lawsuit 2026",
-  "site:reddit.com r/dataisbeautiful r/privacy data breach personal information lawsuit",
-
-  // ── Court Filings / JPML / CourtListener ─────────────────────────────────
-  "JPML motion transfer MDL consolidation class action filed 2026",
-  "site:courtlistener.com class action complaint filed 2026",
-  "federal district court class action complaint initial filing 2026",
-  "MDL bellwether trial date class action settlement negotiations 2026",
-  "new class action complaint filed PACER district court 2026",
-];
+const CRON_INTERVAL_MS = 60 * 60 * 1000; // 1 hour — matches vercel.json cron
 
 // ─── UTILITIES ────────────────────────────────────────────────────────────────
-
-async function hashUrl(str) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
-}
-
-function loadLeads()  { try { return JSON.parse(localStorage.getItem(LEADS_KEY)  || "[]");   } catch { return [];        } }
-function saveLeads(v) { try { localStorage.setItem(LEADS_KEY,  JSON.stringify(v)); }           catch {} }
-function loadSeen()   { try { return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]")); } catch { return new Set(); } }
-function saveSeen(v)  { try { localStorage.setItem(SEEN_KEY,   JSON.stringify([...v])); }       catch {} }
-function loadLastScan()     { return localStorage.getItem(LAST_SCAN_KEY) || null; }
-function saveLastScan(iso)  { localStorage.setItem(LAST_SCAN_KEY, iso); }
-function loadInterval()     { return Number(localStorage.getItem(INTERVAL_KEY) || 1); }
-function saveInterval(h)    { localStorage.setItem(INTERVAL_KEY, String(h)); }
 
 function fmtCountdown(ms) {
   if (ms <= 0) return "now";
@@ -244,157 +71,6 @@ function pubAgo(iso) {
   return `${Math.floor(months / 12)}yr old`;
 }
 
-function extractDomain(url) {
-  try { return new URL(url).hostname.replace("www.", ""); } catch { return url.slice(0, 30); }
-}
-
-// ─── FULL-TEXT EXTRACTION (Jina AI reader) ───────────────────────────────────
-
-const SKIP_FULLTEXT = ["reddit.com", "storage.googleapis.com"];
-
-async function fetchArticleText(url) {
-  if (!url || SKIP_FULLTEXT.some(s => url.includes(s))) return "";
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 10000);
-    const res = await fetch(`https://r.jina.ai/${url}`, {
-      headers: { Accept: "text/plain", "X-Return-Format": "text" },
-      signal: controller.signal,
-    });
-    clearTimeout(timer);
-    const text = await res.text();
-    return text.replace(/\s+/g, " ").trim().slice(0, 3000);
-  } catch { return ""; }
-}
-
-// ─── API CALLS ────────────────────────────────────────────────────────────────
-
-const HEADERS = {
-  "Content-Type": "application/json",
-  "x-api-key": API_KEY,
-  "anthropic-version": "2023-06-01",
-  "anthropic-dangerous-direct-browser-access": "true",
-};
-
-async function runWebSearch(query) {
-  try {
-    const res  = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST", headers: HEADERS,
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001", max_tokens: 1000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: `Search: ${query}\n\nReturn ONLY a JSON array of up to 5 relevant results. Each: {"title":"...","url":"...","description":"...","pubDate":"ISO date or today"}. Focus on 2025–2026 results. Return ONLY the JSON array.` }],
-      }),
-    });
-    const data  = await res.json();
-    const text  = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
-    const match = text.match(/\[[\s\S]*?\]/);
-    if (!match) return [];
-    return JSON.parse(match[0])
-      .filter(i => i.url && i.title)
-      .map(i => ({ title: String(i.title), url: String(i.url), description: String(i.description || ""), pubDate: String(i.pubDate || new Date().toISOString()), source: extractDomain(i.url) }));
-  } catch { return []; }
-}
-
-async function triageLead(item) {
-  try {
-    const res  = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST", headers: HEADERS,
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001", max_tokens: 120,
-        system: QUICK_TRIAGE_PROMPT,
-        messages: [{ role: "user", content: `Lead: ${item.title}\nSource: ${item.source}\nDate: ${item.pubDate}\n${item.description ? `Summary: ${item.description.slice(0, 300)}` : ""}` }],
-      }),
-    });
-    const data  = await res.json();
-    const text  = data.content?.map(b => b.text || "").join("") || "{}";
-    const match = text.match(/\{[\s\S]*?\}/);
-    return match ? JSON.parse(match[0]) : null;
-  } catch { return null; }
-}
-
-async function deepAnalyzeLead(item) {
-  try {
-    const fullText = await fetchArticleText(item.url);
-    const content  = fullText
-      ? `${item.description}\n\n--- FULL ARTICLE TEXT ---\n${fullText}`
-      : item.description;
-    const res  = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST", headers: HEADERS,
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514", max_tokens: 2500,
-        system: DEEP_ANALYSIS_PROMPT,
-        messages: [{ role: "user", content: `Full litigation intelligence analysis:\n\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${item.pubDate}\nContent: ${content}\nURL: ${item.url}` }],
-      }),
-    });
-    const data  = await res.json();
-    const text  = data.content?.map(b => b.text || "").join("") || "{}";
-    const match = text.match(/\{[\s\S]*\}/);
-    return match ? JSON.parse(match[0]) : null;
-  } catch { return null; }
-}
-
-// ─── SCAN ORCHESTRATOR ────────────────────────────────────────────────────────
-
-async function runScan(onProgress) {
-  const seen     = loadSeen();
-  const existing = loadLeads();
-  const rawItems = [];
-
-  // Phase 1: search all queries
-  for (let i = 0; i < FEED_QUERIES.length; i++) {
-    onProgress({ phase: "search", qi: i + 1, total: FEED_QUERIES.length, query: FEED_QUERIES[i] });
-    const results = await runWebSearch(FEED_QUERIES[i]);
-    for (const r of results) {
-      const id = await hashUrl(r.url);
-      if (!seen.has(id)) rawItems.push({ ...r, id });
-    }
-    await new Promise(r => setTimeout(r, 300));
-  }
-
-  // Mark all seen upfront
-  rawItems.forEach(i => seen.add(i.id));
-  saveSeen(seen);
-
-  if (rawItems.length === 0) {
-    onProgress({ phase: "done", newLeads: 0 });
-    return loadLeads();
-  }
-
-  // Phase 2: triage
-  const toAnalyze = [];
-  for (let i = 0; i < rawItems.length; i++) {
-    onProgress({ phase: "triage", qi: i + 1, total: rawItems.length });
-    const t = await triageLead(rawItems[i]);
-    if (t?.score >= 55) toAnalyze.push({ ...rawItems[i], triageScore: t.score });
-    await new Promise(r => setTimeout(r, 150));
-  }
-
-  if (toAnalyze.length === 0) {
-    onProgress({ phase: "done", newLeads: 0 });
-    return loadLeads();
-  }
-
-  // Phase 3: deep analyze
-  const newLeads = [];
-  for (let i = 0; i < toAnalyze.length; i++) {
-    onProgress({ phase: "analyze", qi: i + 1, total: toAnalyze.length });
-    const a = await deepAnalyzeLead(toAnalyze[i]);
-    if (a) newLeads.push({ id: toAnalyze[i].id, url: toAnalyze[i].url, title: toAnalyze[i].title, description: toAnalyze[i].description, source: toAnalyze[i].source, pubDate: toAnalyze[i].pubDate, scannedAt: new Date().toISOString(), analysis: a });
-    await new Promise(r => setTimeout(r, 500));
-  }
-
-  // Merge, expire, cap
-  const cutoff = Date.now() - THIRTY_DAYS;
-  const merged = [...newLeads, ...existing.filter(l => new Date(l.scannedAt).getTime() > cutoff)];
-  merged.sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0));
-  const final = merged.slice(0, MAX_LEADS);
-  saveLeads(final);
-  saveLastScan(new Date().toISOString());
-  onProgress({ phase: "done", newLeads: newLeads.length });
-  return final;
-}
-
 // ─── LEAD CARD ────────────────────────────────────────────────────────────────
 
 function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
@@ -418,13 +94,11 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
           {a.classification && <Badge label={a.classification} color={a.classification === "CREATE" ? "#22c55e" : a.classification === "INVESTIGATE" ? "#f59e0b" : "#6b7280"} />}
           {a.joinOrCreate   && <Badge label={a.joinOrCreate}   color={a.joinOrCreate   === "CREATE" ? "#C8442F" : "#3b82f6"} />}
           {a.timeline?.urgencyLevel && a.timeline.urgencyLevel !== "LOW" && <Badge label={a.timeline.urgencyLevel} color={uc} />}
-          {/* Opportunity status — always visible */}
           {a.opportunityStatus && (
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: ops.bg, color: ops.color, border: `1px solid ${ops.border}` }}>
               {ops.label}
             </span>
           )}
-          {/* Targeting readiness */}
           {rs && (
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: rs.color + "18", color: rs.color, border: `1px solid ${rs.color}44` }}>
               {rs.label}
@@ -434,7 +108,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
         </div>
       </div>
 
-      {/* Days to act — critical countdown, shown when < 180 days */}
+      {/* Days to act */}
       {a.daysToAct != null && a.daysToAct <= 180 && (
         <div style={{ marginBottom: 8, padding: "6px 12px", borderRadius: 8, background: a.daysToAct <= 30 ? "rgba(239,68,68,0.12)" : a.daysToAct <= 90 ? "rgba(245,158,11,0.1)" : "rgba(34,197,94,0.08)", border: `1px solid ${a.daysToAct <= 30 ? "rgba(239,68,68,0.35)" : a.daysToAct <= 90 ? "rgba(245,158,11,0.3)" : "rgba(34,197,94,0.2)"}`, display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22, fontWeight: 900, color: a.daysToAct <= 30 ? "#ef4444" : a.daysToAct <= 90 ? "#f59e0b" : "#22c55e", lineHeight: 1 }}>{a.daysToAct}</span>
@@ -450,11 +124,11 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
       <div style={{ fontSize: 11, color: "#555", marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
         <span>Source: <span style={{ color: "#C8442F" }}>{lead.source}</span></span>
         <span>· Scanned {timeAgo(lead.scannedAt)}</span>
-        {age && <span>· Published <span style={{ color: age === "today" || age?.includes("day") && parseInt(age) < 8 ? "#4ade80" : "#666" }}>{age}</span></span>}
+        {age && <span>· Published <span style={{ color: age === "today" || (age?.includes("day") && parseInt(age) < 8) ? "#4ade80" : "#666" }}>{age}</span></span>}
         {a.timeline?.opportunityWindow && <span>· Window: <span style={{ color: "#c8c8e0" }}>{a.timeline.opportunityWindow}</span></span>}
       </div>
 
-      {/* Targeting readiness reason — always visible when READY_NOW */}
+      {/* Targeting readiness reason */}
       {a.targetingReadiness === "READY_NOW" && a.targetingReadinessReason && (
         <div style={{ fontSize: 12, color: "#4ade80", marginBottom: 8, padding: "6px 10px", background: "rgba(34,197,94,0.07)", borderRadius: 6, borderLeft: "3px solid #22c55e" }}>
           {a.targetingReadinessReason}
@@ -594,82 +268,105 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
 const CASE_TYPES = ["Medical Device","Pharmaceutical","Auto Defect","Environmental","Consumer Fraud","Data Breach","Securities","Food Safety","Financial Products","Employment","Antitrust","Government Liability","Criminal Enforcement → Civil","Securities Fraud / Stock Drop","False Claims Act / Qui Tam","Other"];
 
 export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases }) {
-  const [leads,          setLeads]          = useState(() => loadLeads());
-  const [lastScan,       setLastScan]       = useState(() => loadLastScan());
-  const [intervalHours,  setIntervalHours]  = useState(() => loadInterval());
+  const [leads,          setLeads]          = useState([]);
+  const [lastScanTime,   setLastScanTime]   = useState(null);
+  const [totalInKV,      setTotalInKV]      = useState(null);
+  const [loading,        setLoading]        = useState(true);
   const [isScanning,     setIsScanning]     = useState(false);
-  const [scanPhase,      setScanPhase]      = useState("");   // live status text
-  const [scanProgress,   setScanProgress]   = useState(0);    // 0-100
-  const [newLeadCount,   setNewLeadCount]   = useState(null); // result of last scan
-  const [countdown,      setCountdown]      = useState(0);    // ms until next scan
-  const [dismissed,      setDismissed]      = useState(() => new Set());
-  const [minScore,       setMinScore]       = useState(55);
+  const [scanStatus,     setScanStatus]     = useState("");
+  const [newLeadCount,   setNewLeadCount]   = useState(null);
+  const [countdown,      setCountdown]      = useState(0);
+  const [minScore,       setMinScore]       = useState(0);
   const [joinFilter,     setJoinFilter]     = useState("ALL");
   const [caseTypeFilter, setCaseTypeFilter] = useState("");
-  const scanningRef = useRef(false);
+  const scanStartRef = useRef(null); // timestamp when "Run Scan Now" was clicked
+  const pollRef      = useRef(null);
 
-  // ── Countdown ticker (every second) ─────────────────────────────────────────
+  // ── Fetch leads + stats from backend KV ──────────────────────────────────
+  const fetchLeads = useCallback(async () => {
+    try {
+      const [leadsRes, statsRes] = await Promise.all([
+        fetch("/api/leads?limit=200&minScore=0"),
+        fetch("/api/leads?stats=1"),
+      ]);
+      const leadsData = leadsRes.ok ? await leadsRes.json() : { leads: [] };
+      const statsData = statsRes.ok ? await statsRes.json() : {};
+      setLeads(leadsData.leads || []);
+      setTotalInKV(statsData.total ?? null);
+      if (statsData.lastScan?.timestamp) setLastScanTime(statsData.lastScan.timestamp);
+    } catch (e) {
+      console.error("DailyFeed fetch failed:", e);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { fetchLeads(); }, [fetchLeads]);
+
+  // ── Countdown to next auto-scan (hourly cron) ─────────────────────────────
   useEffect(() => {
     const tick = () => {
-      const last = loadLastScan();
-      if (!last) { setCountdown(0); return; }
-      const next = new Date(last).getTime() + intervalHours * 3600000;
+      if (!lastScanTime) { setCountdown(0); return; }
+      const next = new Date(lastScanTime).getTime() + CRON_INTERVAL_MS;
       setCountdown(Math.max(0, next - Date.now()));
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [intervalHours, lastScan]);
+  }, [lastScanTime]);
 
-  // ── Auto-scan trigger (check every 30 seconds) ───────────────────────────────
-  useEffect(() => {
-    const check = async () => {
-      if (scanningRef.current) return;
-      const last = loadLastScan();
-      const due  = !last || (Date.now() - new Date(last).getTime()) >= intervalHours * 3600000;
-      if (due) triggerScan();
-    };
-    check(); // check immediately on mount or interval change
-    const id = setInterval(check, 30000);
-    // Re-check when tab becomes visible (catches scans missed while tab was in background)
-    const onVisible = () => { if (document.visibilityState === "visible") check(); };
-    document.addEventListener("visibilitychange", onVisible);
-    return () => { clearInterval(id); document.removeEventListener("visibilitychange", onVisible); };
-  }, [intervalHours]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // ── Trigger backend scan + poll for completion ────────────────────────────
   const triggerScan = useCallback(async () => {
-    if (scanningRef.current) return;
-    scanningRef.current = true;
+    if (isScanning) return;
     setIsScanning(true);
-    setScanProgress(0);
+    setScanStatus("Starting scan — backend is running 50+ sources...");
     setNewLeadCount(null);
+    scanStartRef.current = Date.now();
 
-    try {
-      const result = await runScan(({ phase, qi, total, newLeads }) => {
-        if (phase === "search")  { setScanPhase(`Searching source ${qi}/${total}...`);  setScanProgress(Math.round((qi / total) * 40)); }
-        if (phase === "triage")  { setScanPhase(`Triaging ${total} new items...`);       setScanProgress(40 + Math.round((qi / total) * 25)); }
-        if (phase === "analyze") { setScanPhase(`Analyzing lead ${qi}/${total}...`);     setScanProgress(65 + Math.round((qi / total) * 33)); }
-        if (phase === "done")    { setScanPhase(`Scan complete — ${newLeads} new leads found`); setScanProgress(100); setNewLeadCount(newLeads); }
-      });
-      setLeads(result);
-      setLastScan(loadLastScan());
-    } catch (e) {
-      setScanPhase("Scan error: " + e.message);
-    } finally {
-      scanningRef.current = false;
-      setIsScanning(false);
-    }
-  }, []);
+    // Fire the scan (takes 2-3 min; we poll independently for resilience)
+    fetch("/api/scan").then(r => r.json()).catch(() => {});
 
-  const changeInterval = (h) => {
-    setIntervalHours(h);
-    saveInterval(h);
-  };
+    // Poll stats every 8 seconds; when lastScan.timestamp is newer than our
+    // start time, the scan completed.
+    let attempts = 0;
+    const MAX_ATTEMPTS = 45; // ~6 min max wait
+    pollRef.current = setInterval(async () => {
+      attempts++;
+      if (attempts > MAX_ATTEMPTS) {
+        clearInterval(pollRef.current);
+        setScanStatus("Scan taking longer than expected — check back in a few minutes.");
+        setIsScanning(false);
+        return;
+      }
+      try {
+        const res  = await fetch("/api/leads?stats=1");
+        const data = res.ok ? await res.json() : {};
+        const ts   = data.lastScan?.timestamp;
+        if (ts && new Date(ts).getTime() > scanStartRef.current) {
+          clearInterval(pollRef.current);
+          const prev = leads.length;
+          await fetchLeads();
+          setLeads(cur => {
+            setNewLeadCount(Math.max(0, cur.length - prev));
+            return cur;
+          });
+          setScanStatus("Scan complete");
+          setIsScanning(false);
+        } else {
+          const elapsed = Math.floor((Date.now() - scanStartRef.current) / 1000);
+          setScanStatus(`Scanning... ${elapsed}s elapsed — fetching 50+ sources`);
+        }
+      } catch {}
+    }, 8000);
+  }, [isScanning, fetchLeads, leads.length]);
+
+  // Cleanup poll on unmount
+  useEffect(() => () => clearInterval(pollRef.current), []);
 
   const handleAddToTracker = useCallback((lead) => {
     const a = lead.analysis || {};
     setCases(prev => [...prev, {
       id: Date.now(),
+      leadId: lead.id,
       title: a.headline || lead.title,
       caseType: a.caseType || "Other",
       score: a.score || 0,
@@ -687,117 +384,90 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
 
   const handlePromoteToKB = useCallback((lead) => {
     if (!setKbCases) return;
-    const a    = lead.analysis || {};
+    const a     = lead.analysis || {};
     const score = a.score || 0;
     const rating = score >= 90 ? "A+" : score >= 80 ? "A" : score >= 70 ? "B+" : score >= 60 ? "B" : "C";
     const nextId = Math.max(0, ...(kbCases || []).map(c => c.id || 0)) + 1;
-    const kbCase = {
-      id:               nextId,
-      title:            a.headline || lead.title,
-      company:          a.defendantProfile?.name || "Unknown",
-      type:             a.caseType || "Other",
-      industry:         a.caseType || "Other",
-      outcome:          "pending",
-      year:             new Date().getFullYear(),
-      affectedPop:      a.classProfile?.estimatedSize || "TBD",
-      jurisdiction:     a.classProfile?.geographicScope || "Federal",
-      mdlNumber:        a.existingLitigation?.mdlNumber || "",
-      settlementAmount: a.damagesModel?.totalFundEstimate || "Pending",
-      classSize:        a.classProfile?.estimatedSize || "TBD",
-      rule23bType:      "b(3)",
-      harmCategory:     (a.caseType || "").toLowerCase().includes("physical") || (a.caseType || "").toLowerCase().includes("device") || (a.caseType || "").toLowerCase().includes("pharma") ? "physical" : "economic",
-      keyFact:          a.executiveSummary || lead.description,
-      tags:             [a.caseType, a.joinOrCreate, "promoted-from-feed"].filter(Boolean),
-      notes:            `Promoted from Daily Feed scan (score: ${score}/100). Source: ${lead.source}. URL: ${lead.url}`,
+    setKbCases(prev => [...prev, {
+      id: nextId,
+      title: a.headline || lead.title,
+      company: a.defendantProfile?.name || "Unknown",
+      type: a.caseType || "Other",
+      industry: a.caseType || "Other",
+      year: new Date().getFullYear(),
+      settlement: a.damagesModel?.totalFundEstimate || "Pending",
+      status: "Active",
+      source: lead.source || "Feed",
+      rating,
       analysis: {
         rating,
-        strengthScore:          Math.min(10, Math.round(score / 10)),
-        payoutPerClaimant:      a.damagesModel?.perClaimantRange || "TBD — pending enrichment",
-        litigationYears:        3,
-        whyItWorked:            a.whyItScored || a.executiveSummary || "",
-        challenges:             a.topRisk || "",
-        strategiesWon:          a.immediateNextSteps || [],
-        strategiesFailed:       [],
-        demographics:           a.plaintiffProfile?.demographics || "",
-        injuryTypes:            a.causesOfAction?.map(c => c.name) || [],
-        keyEvidence:            a.executiveSummary || "",
-        corporateMisconduct:    a.executiveSummary || "",
-        regulatoryActions:      a.regulatoryStatus?.recentActions || "",
-        settlementStructure:    a.damagesModel?.totalFundEstimate || "TBD",
-        bellwetherOutcome:      a.timeline?.opportunityWindow || "Pending",
-        attorneyFees:           a.damagesModel?.feeToFirmAt33Pct || "TBD",
-        replicationModel:       `${rating} — promoted from Daily Feed, requires full enrichment`,
+        strengthScore: Math.round(score / 10),
+        payoutPerClaimant: a.damagesModel?.perClaimantRange || "Unknown",
+        litigationYears: a.timeline?.yearsToResolution || 3,
+        whyItWorked: a.executiveSummary || "",
+        challenges: a.topRisk || "",
+        strategiesWon: a.immediateNextSteps || [],
+        strategiesFailed: [],
+        demographics: a.plaintiffProfile?.demographics || "",
+        injuryTypes: a.plaintiffProfile?.requiredInjury ? [a.plaintiffProfile.requiredInjury] : [],
+        keyEvidence: a.signalsAnalysis?.present?.join("; ") || "",
+        corporateMisconduct: a.executiveSummary || "",
+        regulatoryActions: a.regulatoryStatus ? JSON.stringify(a.regulatoryStatus) : "",
+        settlementStructure: a.damagesModel?.theory || "",
+        bellwetherOutcome: "",
+        attorneyFees: a.damagesModel?.feeToFirmAt33Pct || "",
+        replicationModel: `${a.kbReplicationGrade || "C"} — ${a.kbComparativeAssessment || ""}`,
         clientAcquisitionStrategy: [a.plaintiffProfile?.acquisitionHook, ...(a.plaintiffProfile?.whereToFind || [])].filter(Boolean).join(". ") || "",
-        watchOut:               a.riskMatrix?.keyRisks?.[0] || a.topRisk || "",
+        watchOut: a.riskMatrix?.keyRisks?.[0] || a.topRisk || "",
       },
-    };
-    setKbCases(prev => [...prev, kbCase]);
+    }]);
     setTab("knowledge");
   }, [kbCases, setKbCases, setTab]);
 
-  const handleDismiss = useCallback((id) => {
-    setDismissed(prev => new Set([...prev, id]));
-    const updated = loadLeads().filter(l => l.id !== id);
-    saveLeads(updated);
-    setLeads(updated);
+  const handleDismiss = useCallback(async (id) => {
+    setLeads(prev => prev.filter(l => l.id !== id));
+    try { await fetch(`/api/leads?id=${id}`, { method: "DELETE" }); } catch {}
   }, []);
 
   const visible = leads
-    .filter(l => !dismissed.has(l.id))
     .filter(l => (l.analysis?.score || 0) >= minScore)
     .filter(l => joinFilter === "ALL" || l.analysis?.joinOrCreate === joinFilter)
     .filter(l => !caseTypeFilter || l.analysis?.caseType === caseTypeFilter)
     .sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0));
 
-  const allActive = leads.filter(l => !dismissed.has(l.id));
   const stats = {
-    total:  allActive.length,
-    high:   allActive.filter(l => (l.analysis?.score || 0) >= 75).length,
-    create: allActive.filter(l => l.analysis?.joinOrCreate === "CREATE").length,
-    join:   allActive.filter(l => l.analysis?.joinOrCreate === "JOIN").length,
+    total:  leads.length,
+    high:   leads.filter(l => (l.analysis?.score || 0) >= 75).length,
+    create: leads.filter(l => l.analysis?.joinOrCreate === "CREATE").length,
+    join:   leads.filter(l => l.analysis?.joinOrCreate === "JOIN").length,
   };
 
   return (
     <div>
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
         <div>
           <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: "#e0e0f0" }}>Daily Intelligence Feed</h2>
           <div style={{ fontSize: 12, color: "#666", display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <span>Last scan: <span style={{ color: "#a0a0b8" }}>{timeAgo(lastScan)}</span></span>
-            {!isScanning && countdown > 0 && <span>Next scan: <span style={{ color: "#C8442F" }}>{fmtCountdown(countdown)}</span></span>}
-            {isScanning && <span style={{ color: "#E06050" }}>Scanning now...</span>}
+            <span>Last scan: <span style={{ color: "#a0a0b8" }}>{timeAgo(lastScanTime)}</span></span>
+            {!isScanning && countdown > 0 && (
+              <span>Next auto-scan: <span style={{ color: "#C8442F" }}>{fmtCountdown(countdown)}</span></span>
+            )}
+            {isScanning && <span style={{ color: "#E06050" }}>{scanStatus}</span>}
+            <span style={{ color: "#555" }}>Runs hourly on Vercel — accumulates while you're offline</span>
           </div>
         </div>
-
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          {/* Frequency selector */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 12, color: "#666" }}>Scan</span>
-            <div style={{ display: "flex", gap: 2 }}>
-              {SCAN_INTERVALS.map(s => (
-                <button key={s.hours} onClick={() => changeInterval(s.hours)}
-                  style={{ padding: "4px 10px", borderRadius: 6, border: "none", fontSize: 11, fontWeight: intervalHours === s.hours ? 700 : 400, background: intervalHours === s.hours ? "rgba(200,68,47,0.3)" : "rgba(255,255,255,0.06)", color: intervalHours === s.hours ? "#E06050" : "#666", cursor: "pointer" }}>
-                  {s.short}
-                </button>
-              ))}
-            </div>
-          </div>
-          <Btn small onClick={triggerScan} style={{ opacity: isScanning ? 0.5 : 1 }}>
-            {isScanning ? "Scanning..." : "Scan Now"}
-          </Btn>
-        </div>
+        <Btn small onClick={triggerScan} style={{ opacity: isScanning ? 0.5 : 1 }}>
+          {isScanning ? "Scanning..." : "Run Scan Now"}
+        </Btn>
       </div>
 
-      {/* ── Scan progress bar (non-blocking — sits above the feed) ─────────── */}
+      {/* ── Scan progress bar ────────────────────────────────────────────────── */}
       {isScanning && (
         <div style={{ marginBottom: 16, padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#E06050", marginBottom: 6 }}>
-            <span>{scanPhase}</span>
-            <span>{scanProgress}%</span>
-          </div>
+          <div style={{ fontSize: 12, color: "#E06050", marginBottom: 6 }}>{scanStatus}</div>
           <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${scanProgress}%`, background: "linear-gradient(90deg,#C8442F,#B83E2C)", borderRadius: 2, transition: "width 0.4s" }} />
+            <div style={{ height: "100%", width: "100%", background: "linear-gradient(90deg,#C8442F,#B83E2C)", borderRadius: 2, animation: "pulse 2s ease-in-out infinite" }} />
           </div>
         </div>
       )}
@@ -809,20 +479,27 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
         </div>
       )}
 
+      {/* ── Loading ──────────────────────────────────────────────────────────── */}
+      {loading && (
+        <div style={{ textAlign: "center", color: "#555", padding: "48px 0", fontSize: 13 }}>Loading leads from backend...</div>
+      )}
+
       {/* ── Empty state ──────────────────────────────────────────────────────── */}
-      {!isScanning && leads.length === 0 && (
+      {!loading && leads.length === 0 && (
         <Card style={{ textAlign: "center", padding: "48px 24px" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#e0e0f0", marginBottom: 8 }}>Waiting for first scan</div>
-          <div style={{ fontSize: 13, color: "#555", maxWidth: 420, margin: "0 auto 20px", lineHeight: 1.6 }}>
-            The scanner will start automatically. It runs 120+ targeted queries across plaintiff intel sites, FDA/NHTSA/CFPB/EPA/SEC/FTC enforcement, medical device and drug injuries, data breaches, PFAS and environmental contamination, employment and wage theft, antitrust, state AG actions, qui tam/FCA, securities fraud, Reddit complaint clusters, and court filings — then scores each result for class action viability using your knowledge base.
+          <div style={{ fontSize: 15, fontWeight: 600, color: "#e0e0f0", marginBottom: 8 }}>No leads yet</div>
+          <div style={{ fontSize: 13, color: "#555", maxWidth: 460, margin: "0 auto 20px", lineHeight: 1.6 }}>
+            The backend scanner runs automatically every hour on Vercel — no browser required. Click "Run Scan Now" to trigger an immediate scan, or wait for the hourly cron. Leads accumulate in the cloud while you're offline.
           </div>
-          <div style={{ fontSize: 12, color: "#666" }}>Scanning {fmtCountdown(countdown) === "now" ? "starting..." : `in ${fmtCountdown(countdown)}`}</div>
+          <Btn small onClick={triggerScan} style={{ opacity: isScanning ? 0.5 : 1 }}>
+            {isScanning ? "Scanning..." : "Run Scan Now"}
+          </Btn>
         </Card>
       )}
 
       {leads.length > 0 && (
         <>
-          {/* ── Stats ────────────────────────────────────────────────────────── */}
+          {/* ── Stats ──────────────────────────────────────────────────────── */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 16 }}>
             {[
               { label: "Total Leads",       value: stats.total,  color: "#C8442F", sub: "in feed" },
@@ -838,7 +515,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
             ))}
           </div>
 
-          {/* ── Filters ──────────────────────────────────────────────────────── */}
+          {/* ── Filters ────────────────────────────────────────────────────── */}
           <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score</span>
@@ -857,7 +534,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
             <span style={{ fontSize: 12, color: "#555", marginLeft: "auto" }}>{visible.length} leads shown</span>
           </div>
 
-          {/* ── Lead cards ───────────────────────────────────────────────────── */}
+          {/* ── Lead cards ─────────────────────────────────────────────────── */}
           {visible.length === 0
             ? <div style={{ textAlign: "center", padding: "32px 0", color: "#555", fontSize: 13 }}>No leads match current filters. Try lowering the minimum score.</div>
             : visible.map(lead => <LeadCard key={lead.id} lead={lead} onAddToTracker={handleAddToTracker} onDismiss={handleDismiss} onPromoteToKB={setKbCases ? handlePromoteToKB : null} />)
