@@ -302,6 +302,15 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
+  // ── Auto-refresh every 5 minutes while tab is open ───────────────────────
+  // Silently checks if KV has new leads; if so, reloads the list automatically.
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!isScanning) fetchLeads();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [fetchLeads, isScanning]);
+
   // ── Countdown to next auto-scan (hourly cron) ─────────────────────────────
   useEffect(() => {
     const tick = () => {
