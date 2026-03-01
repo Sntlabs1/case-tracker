@@ -219,26 +219,14 @@ function AcquisitionBrief({ lead }) {
     ].join("\n");
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/brief", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-allow-browser": "true",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          system: BRIEF_PROMPT,
-          messages: [{ role: "user", content: `Generate a Plaintiff Acquisition Brief for this lead:\n\n${context}` }],
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ context }),
       });
       const data = await res.json();
-      const text = data.content?.map(b => b.text || "").join("") || "{}";
-      const match = text.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error("No JSON in response");
-      setBrief(JSON.parse(match[0]));
+      if (!res.ok) throw new Error(data.error || "Brief generation failed");
+      setBrief(data.brief);
     } catch (e) {
       setError(e.message);
     }
