@@ -57,6 +57,9 @@ export default async function handler(req, res) {
   const max = parseInt(maxScore);
   const lim = Math.min(parseInt(limit), 200);
 
+  // Get true total count from KV (independent of limit/filters)
+  const totalInKV = await kv.zcard("leads_by_score");
+
   // Fetch lead IDs from sorted set (highest score first)
   const ids = await kv.zrange("leads_by_score", max, min, {
     byScore: true,
@@ -65,7 +68,7 @@ export default async function handler(req, res) {
   });
 
   if (!ids || ids.length === 0) {
-    return res.status(200).json({ leads: [], total: 0 });
+    return res.status(200).json({ leads: [], total: totalInKV });
   }
 
   // Fetch lead objects from KV
@@ -89,5 +92,5 @@ export default async function handler(req, res) {
     })
     .slice(0, lim);
 
-  return res.status(200).json({ leads, total: leads.length });
+  return res.status(200).json({ leads, total: totalInKV });
 }

@@ -1175,7 +1175,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({ minScore, limit: "100" });
+      const params = new URLSearchParams({ minScore, limit: "200" });
       if (filterClass) params.set("classification", filterClass);
       if (filterJoinCreate) params.set("joinOrCreate", filterJoinCreate);
       if (filterCategory) params.set("category", filterCategory);
