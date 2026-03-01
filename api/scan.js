@@ -5,14 +5,18 @@
 import Parser from "rss-parser";
 import { createHash } from "crypto";
 import { kv } from "@vercel/kv";
-import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT } from "../src/lib/kbRubric.js";
+import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT, buildDeepAnalysisPromptWithKB } from "../src/lib/kbRubric.js";
+import { KB_CASES } from "../src/data/knowledgeBase.js";
+
+// Build KB-enhanced analysis prompt once at startup (static — 165 cases injected)
+const DEEP_ANALYSIS_PROMPT_WITH_KB = buildDeepAnalysisPromptWithKB(KB_CASES);
 
 const ANTHROPIC_API_KEY  = process.env.ANTHROPIC_API_KEY;
 const YOUTUBE_API_KEY    = process.env.YOUTUBE_API_KEY;    // optional
 const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN; // optional — X API v2
 
 const TIMEOUT_MS = 12000;
-const TRIAGE_THRESHOLD = 55; // only deep-analyze items that score >= this
+const TRIAGE_THRESHOLD = 40; // only deep-analyze items that score >= this
 
 // ─── SOURCE DEFINITIONS ──────────────────────────────────────────────────────
 
@@ -37,8 +41,12 @@ const GOV_RSS_FEEDS = [
   { name: "CFPB",                 url: "https://www.consumerfinance.gov/about-us/newsroom/feed/",                                              category: "Federal" },
   // Courts
   { name: "JPML MDL Orders",      url: "https://ecf.jpml.uscourts.gov/cgi-bin/rss_outside.pl",                                                category: "Judicial" },
+  { name: "Courthouse News",      url: "https://www.courthousenews.com/feed/",                                                                 category: "Judicial" },
   // Plaintiff firm intelligence
-  { name: "Miller & Zois Blog",   url: "https://www.millerandzois.com/blog/feed/atom/",                                                        category: "Plaintiff Firm" },
+  { name: "Miller & Zois Blog",         url: "https://www.millerandzois.com/blog/feed/atom/",                                       category: "Plaintiff Firm" },
+  { name: "Mass Tort News",             url: "https://masstortnews.org/feed/",                                                      category: "Plaintiff Firm" },
+  { name: "JD Supra — Class Actions",   url: "https://www.jdsupra.com/topics/class-action/rss/",                                    category: "Plaintiff Firm" },
+  { name: "Duane Morris CA Defense",    url: "https://blogs.duanemorris.com/classactiondefense/feed/",                              category: "Plaintiff Firm" },
 ];
 
 const GOOGLE_NEWS_QUERIES = [
@@ -150,10 +158,47 @@ const GOOGLE_NEWS_QUERIES = [
   "securities fraud stock drop class action complaint filed site:securities.stanford.edu 2026",
   "NT 10-K late SEC filing restatement securities fraud class action 2026",
 
-  // Plaintiff firm intelligence sites
+  // ── SPECIFIC DRUG / DEVICE / CASE TYPE QUERIES ────────────────────────────
+  // GLP-1 / weight loss drugs — massive emerging litigation
+  "GLP-1 semaglutide Ozempic Wegovy tirzepatide gastroparesis paralysis injury class action 2026",
+  "GLP-1 weight loss drug stomach paralysis intestinal injury lawsuit 2026",
+  // Specific device categories
+  "surgical mesh hernia pelvic floor implant injury recall class action 2026",
+  "SSRI antidepressant birth defect PPHN infant injury class action 2026",
+  "IUD Mirena Paragard contraceptive device injury migration class action 2026",
+  "compounding pharmacy contaminated drug infection injury class action 2026",
+  "insulin pump continuous glucose monitor CGM defect injury class action 2026",
+  // Auto / Vehicle specific
+  "EV electric vehicle battery fire thermal runaway defect class action 2026",
+  // Data privacy / tech specific
+  "BIPA Illinois biometric facial recognition fingerprint class action settlement 2026",
+  "website pixel tracker Meta healthcare HIPAA data class action 2026",
+  "ransomware healthcare hospital patient data breach class action 2026",
+  "AI deepfake voice cloning synthetic identity fraud class action 2026",
+  // Financial / consumer specific
+  "bank overdraft NSF junk fee unfair practice class action settlement 2026",
+  "subscription trap dark pattern unauthorized recurring charge class action 2026",
+  "payday lender usurious interest rate consumer class action 2026",
+  "student loan servicer misrepresentation wrongful default class action 2026",
+  // Employment / antitrust specific
+  "non-compete no-poach no-hire agreement workers antitrust class action 2026",
+  "nursing home understaffing neglect abuse class action settlement 2026",
+
+  // Plaintiff firm intelligence sites — active investigation trackers
   "site:millerandzois.com settlement verdict product liability pharmaceutical 2026",
   "site:classaction.com new investigation lawsuit consumer automobile drugs 2026",
   "site:classaction.com new investigation medical devices tech environmental 2026",
+
+  // Major plaintiff law firm blogs — new case announcements and investigations
+  "site:hbsslaw.com new investigation lawsuit class action 2026",
+  "site:levinlaw.com new case investigation mass tort 2026",
+  "site:motleyrice.com new case investigation lawsuit 2026",
+  "site:seegerweiss.com new investigation mass tort class action 2026",
+  "site:lieffcabraser.com new class action investigation lawsuit 2026",
+  "site:wisnerbaum.com new investigation pharmaceutical mass tort 2026",
+  "site:lawsuit-information-center.com class action lawsuit settlement 2026",
+  "site:jdsupra.com class action MDL mass tort new filing 2026",
+  "site:masstortnews.org new investigation lawsuit mass tort 2026",
 ];
 
 // Keyword-filtered subs — already mentioning legal action
@@ -276,6 +321,29 @@ const CLAUDE_WEB_SEARCHES = [
   "accounting restatement securities fraud class action 2026",
   "site:millerandzois.com new settlement verdict injury product liability 2026",
   "site:classaction.com new investigation lawsuit filed consumer drugs 2026",
+  // Legal news wire — high-quality case reporting
+  "new class action MDL mass tort filed site:law360.com 2026",
+  "new class action lawsuit settlement site:reuters.com/legal 2026",
+  "new class action MDL complaint filed site:courthousenews.com 2026",
+  "new pharmaceutical medical device mass tort filing site:aboutlawsuits.com OR site:drugwatch.com 2026",
+  // Major plaintiff firms — new investigation announcements
+  "new investigation lawsuit announced site:hbsslaw.com OR site:levinlaw.com OR site:motleyrice.com 2026",
+  "new investigation mass tort announced site:seegerweiss.com OR site:lieffcabraser.com OR site:wisnerbaum.com 2026",
+  "new class action MDL announcement site:jdsupra.com OR site:masstortnews.org 2026",
+  // MDL lifecycle milestone monitoring
+  "MDL bellwether trial date scheduled selected 2026",
+  "MDL class action settlement preliminary approval motion filed 2026",
+  "class certification order granted MDL mass tort 2026",
+];
+
+// ─── FAERS TERMS (FDA adverse event spikes to query) ─────────────────────────
+// Dynamic FAERS monitoring — no fixed drug list.
+// fetchFAERS() queries the top-reported drugs broadly, then compares
+// recent 30-day counts vs prior 30-day baseline to detect spikes.
+// Known drugs to always include for context comparison:
+const FAERS_WATCH_ALWAYS = [
+  "semaglutide", "tirzepatide", "ozempic", "wegovy", "mounjaro",
+  "talcum powder", "paraquat", "roundup", "hair relaxer",
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -515,8 +583,8 @@ async function fetchRedditComplaintClusters() {
 }
 
 async function fetchComplaintWebSearches() {
-  const results = [];
-  for (const q of COMPLAINT_WEB_SEARCHES) {
+  // All complaint web searches run in parallel (was sequential with delays)
+  const allResults = await Promise.all(COMPLAINT_WEB_SEARCHES.map(async q => {
     try {
       const res = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -538,26 +606,22 @@ async function fetchComplaintWebSearches() {
       const data = await res.json();
       const text = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
       const match = text.match(/\[[\s\S]*?\]/);
-      if (match) {
-        const items = JSON.parse(match[0]);
-        for (const item of items) {
-          results.push({
-            id: hash(item.url || item.title || ""),
-            title: item.title || "",
-            url: item.url || "",
-            description: item.description || "",
-            pubDate: item.pubDate || new Date().toISOString(),
-            source: `Complaint Search: ${q.slice(0, 50)}`,
-            category: "Social",
-          });
-        }
-      }
+      if (!match) return [];
+      return JSON.parse(match[0]).map(item => ({
+        id: hash(item.url || item.title || ""),
+        title: item.title || "",
+        url: item.url || "",
+        description: item.description || "",
+        pubDate: item.pubDate || new Date().toISOString(),
+        source: `Complaint Search: ${q.slice(0, 50)}`,
+        category: "Social",
+      }));
     } catch (e) {
       console.error(`Complaint search failed [${q.slice(0, 40)}]:`, e.message);
+      return [];
     }
-    await delay(400);
-  }
-  return results;
+  }));
+  return allResults.flat();
 }
 
 async function fetchCourtListener() {
@@ -695,6 +759,43 @@ async function fetchCourtListenerFraudDockets() {
   }
 }
 
+// MDL Progression Monitor — watches for milestone events in active MDL dockets
+// Queries CourtListener for recent orders mentioning bellwether trials, settlement approvals,
+// class certification, and JPML transfer orders — surfaces case lifecycle changes as leads.
+async function fetchMDLProgressions() {
+  const milestoneQueries = [
+    { q: "bellwether+trial+date+set", label: "Bellwether Trial Set" },
+    { q: "preliminary+settlement+approval+class+action", label: "Settlement Approval" },
+    { q: "class+certification+granted+order", label: "Class Cert Granted" },
+    { q: "MDL+transfer+order+JPML", label: "MDL Transfer" },
+    { q: "discovery+cutoff+class+action+MDL", label: "Discovery Milestone" },
+  ];
+  const results = [];
+  for (const { q, label } of milestoneQueries) {
+    try {
+      const url = `https://www.courtlistener.com/api/rest/v3/search/?type=o&q=${q}&order_by=dateFiled+desc&filed_after=${yesterday()}&stat_Precedential=on`;
+      const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+      const data = await res.json();
+      for (const r of (data.results || []).slice(0, 5)) {
+        results.push({
+          id: hash(`mdlprog_${r.id || r.caseName}_${label}`),
+          title: `MDL Milestone [${label}]: ${r.caseName || "Federal MDL"}`,
+          url: `https://www.courtlistener.com${r.absolute_url || ""}`,
+          description: (r.snippet || "").replace(/<[^>]*>/g, "").slice(0, 400),
+          pubDate: r.dateFiled || new Date().toISOString(),
+          source: "MDL Progression Monitor",
+          category: "Judicial",
+        });
+      }
+    } catch (e) {
+      console.error(`MDL progression [${label}]:`, e.message);
+    }
+    await delay(300);
+  }
+  console.log(`MDL Progressions: ${results.length} milestone events`);
+  return results;
+}
+
 // NHTSA — recent vehicle safety complaints and investigations via API
 async function fetchNHTSA() {
   const url = `https://api.nhtsa.gov/complaints/complaintsByVehicle?make=all&model=all&modelYear=all`;
@@ -825,81 +926,72 @@ async function fetchYouTube() {
 // X (Twitter) API v2 — recent search for complaint clusters and lawsuit signals
 // Requires TWITTER_BEARER_TOKEN env var. Uses recent search (last 7 days).
 // Searches in batches to stay within rate limits (15 req / 15 min on Basic).
+// Top 12 Twitter queries — highest signal-to-noise for pre-litigation detection
+// Run in parallel (not sequential) to stay within function time budget
 const TWITTER_QUERIES = [
-  // ── PRE-LITIGATION: Consumer harm clustering (people venting before they sue) ──
+  // Consumer harm clustering — people venting before they sue
   "\"anyone else\" \"side effects\" OR \"reaction\" OR \"injured\" product -is:retweet lang:en",
   "\"making me sick\" OR \"made me sick\" product company -is:retweet lang:en",
-  "\"same problem\" OR \"same issue\" product defective injury -is:retweet lang:en",
   "\"adverse reaction\" OR \"adverse event\" drug device hospital -is:retweet lang:en",
-  "\"has anyone\" experienced injury \"side effects\" drug OR device OR product -is:retweet lang:en",
 
-  // ── PRE-LITIGATION: Regulatory investigation signals (before lawsuit) ──
+  // Regulatory signals
   "\"FDA warning letter\" OR \"FDA investigation\" company product safety -is:retweet lang:en",
   "\"NHTSA investigation\" OR \"NHTSA probe\" vehicle defect safety -is:retweet lang:en",
-  "\"OSHA investigation\" OR \"OSHA citation\" workplace injury workers -is:retweet lang:en",
-  "\"SEC investigation\" OR \"SEC subpoena\" company fraud executives -is:retweet lang:en",
   "\"attorney general\" investigation company consumers fraud -is:retweet lang:en",
 
-  // ── PRE-LITIGATION: Corporate misconduct before it goes public ──
-  "\"internal documents\" OR \"leaked documents\" company harm consumers -is:retweet lang:en",
+  // Corporate misconduct
   "\"whistleblower\" company safety fraud harm cover -is:retweet lang:en",
-  "\"employees warned\" OR \"insiders say\" company product unsafe -is:retweet lang:en",
   "\"covered up\" OR \"concealed\" company harm injury consumers -is:retweet lang:en",
 
-  // ── PRE-LITIGATION: Environmental & community harm ──
-  "residents \"contaminated\" OR \"toxic\" OR \"cancer cluster\" neighborhood -is:retweet lang:en",
-  "\"water contamination\" OR \"air quality\" residents sick hospital -is:retweet lang:en",
-  "\"PFAS\" OR \"forever chemicals\" detected water community -is:retweet lang:en",
+  // Environmental
+  "\"cancer cluster\" OR \"PFAS\" OR \"forever chemicals\" residents sick contamination -is:retweet lang:en",
 
-  // ── PRE-LITIGATION: Financial & consumer fraud before filing ──
-  "\"unauthorized charge\" OR \"overcharged\" OR \"billed without\" company consumers -is:retweet lang:en",
-  "\"price gouging\" OR \"price fixing\" company consumers investigation -is:retweet lang:en",
-  "\"data exposed\" OR \"data leaked\" company users customers -is:retweet lang:en",
+  // Financial fraud
+  "\"unauthorized charge\" OR \"overcharged\" company consumers complaint -is:retweet lang:en",
 
-  // ── REACTIVE (confirm what's forming into cases) ──
+  // Litigation forming
   "\"class action\" filed OR forming OR investigating pharmaceutical device -is:retweet lang:en",
-  "\"MDL\" OR \"mass tort\" consolidation new filing -is:retweet lang:en",
-  "\"seeking plaintiffs\" OR \"accepting clients\" injury investigation -is:retweet lang:en",
-  "\"bellwether\" OR \"trial date\" MDL mass tort verdict -is:retweet lang:en",
-  "\"settlement\" announced \"class action\" consumers victims -is:retweet lang:en",
+  "\"MDL\" OR \"mass tort\" new consolidation filing injury -is:retweet lang:en",
 ];
 
 async function fetchTwitter() {
   if (!TWITTER_BEARER_TOKEN) return [];
-  const results = [];
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
 
-  for (const query of TWITTER_QUERIES) {
+  // Run all queries in parallel — much faster than sequential with 500ms delays
+  const queryResults = await Promise.all(TWITTER_QUERIES.map(async query => {
     try {
-      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=25&tweet.fields=created_at,public_metrics,text,context_annotations,entities&expansions=author_id&user.fields=name,username,verified,public_metrics`;
+      const url = `https://api.twitter.com/2/tweets/search/recent?query=${encodeURIComponent(query)}&max_results=25&tweet.fields=created_at,public_metrics,text&expansions=author_id&user.fields=name,username,verified`;
       const res = await fetchWithTimeout(url, {
         headers: { Authorization: `Bearer ${TWITTER_BEARER_TOKEN}` },
       });
       const data = await res.json();
+      if (data.errors || data.error || !data.data) return [];
       const tweets = data.data || [];
       const users  = Object.fromEntries((data.includes?.users || []).map(u => [u.id, u]));
-
-      for (const tweet of tweets) {
-        // Only surface tweets with meaningful engagement (signal vs noise filter)
-        const metrics = tweet.public_metrics || {};
-        if ((metrics.retweet_count || 0) + (metrics.like_count || 0) < 1) continue;
-
-        const author = users[tweet.author_id] || {};
-        results.push({
-          id:          hash(`twitter_${tweet.id}`),
-          title:       `X/@${author.username || "user"}: ${tweet.text.slice(0, 120)}`,
-          url:         `https://x.com/${author.username || "i"}/status/${tweet.id}`,
-          description: tweet.text,
-          pubDate:     tweet.created_at || new Date().toISOString(),
-          source:      `X/Twitter — ${query.slice(0, 40)}`,
-          category:    "Social",
+      return tweets
+        .filter(t => {
+          const m = t.public_metrics || {};
+          return (m.retweet_count || 0) + (m.like_count || 0) >= 2; // min engagement filter
+        })
+        .map(tweet => {
+          const author = users[tweet.author_id] || {};
+          return {
+            id:          hash(`twitter_${tweet.id}`),
+            title:       `X/@${author.username || "user"}: ${tweet.text.slice(0, 120)}`,
+            url:         `https://x.com/${author.username || "i"}/status/${tweet.id}`,
+            description: tweet.text,
+            pubDate:     tweet.created_at || new Date().toISOString(),
+            source:      `X/Twitter — ${query.slice(0, 40)}`,
+            category:    "Social",
+          };
         });
-      }
     } catch (e) {
       console.error(`Twitter search failed [${query.slice(0, 40)}]:`, e.message);
+      return [];
     }
-    await delay(500); // paid tier — higher rate limit
-  }
+  }));
+
+  const results = queryResults.flat();
   console.log(`Twitter: ${results.length} tweets found across ${TWITTER_QUERIES.length} queries`);
   return results;
 }
@@ -952,6 +1044,58 @@ async function fetchClaudeWebSearch(query) {
 // Skip only: Reddit (post text already in item.description), raw binary storage blobs
 const SKIP_FULLTEXT = ["reddit.com", "storage.googleapis.com", "storage.courtlistener.com"];
 
+// Sanitize LLM JSON output — fixes unescaped double quotes inside string values
+function sanitizeJsonFromLLM(text) {
+  // Strategy: walk the JSON char-by-char, tracking string context.
+  // Fixes two classes of LLM JSON bugs:
+  //   1. Literal control characters (newline, tab, CR) inside strings → escaped sequences
+  //   2. Unescaped double-quotes inside string values → \"
+  let result = "";
+  let inString = false;
+  let prevBackslash = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const code = text.charCodeAt(i);
+    if (inString) {
+      if (prevBackslash) {
+        result += ch;
+        prevBackslash = false;
+        continue;
+      }
+      if (ch === "\\") {
+        result += ch;
+        prevBackslash = true;
+        continue;
+      }
+      if (ch === '"') {
+        // Check if this is a legitimate string terminator by looking ahead
+        // for a colon, comma, } or ] (ignoring whitespace)
+        let j = i + 1;
+        while (j < text.length && (text[j] === " " || text[j] === "\n" || text[j] === "\r" || text[j] === "\t")) j++;
+        const next = text[j];
+        if (next === ":" || next === "," || next === "}" || next === "]") {
+          result += ch;
+          inString = false;
+        } else {
+          // Unescaped quote inside string value — escape it
+          result += '\\"';
+        }
+        continue;
+      }
+      // Escape literal control characters that break JSON parsing
+      if (code === 0x0A) { result += "\\n"; continue; }   // literal newline
+      if (code === 0x0D) { result += "\\r"; continue; }   // literal carriage return
+      if (code === 0x09) { result += "\\t"; continue; }   // literal tab
+      if (code < 0x20)  { result += `\\u${code.toString(16).padStart(4, "0")}`; continue; } // other control chars
+      result += ch;
+    } else {
+      result += ch;
+      if (ch === '"') inString = true;
+    }
+  }
+  return result;
+}
+
 async function fetchArticleText(url) {
   if (!url || SKIP_FULLTEXT.some(s => url.includes(s))) return "";
   try {
@@ -993,12 +1137,11 @@ async function triageWithClaude(item) {
   }
 }
 
-async function deepAnalyzeWithClaude(item) {
-  const fullText = await fetchArticleText(item.url);
-  const content  = fullText
-    ? `${item.description}\n\n--- FULL ARTICLE TEXT ---\n${fullText}`
-    : item.description;
-  const prompt = `Perform a full litigation intelligence analysis on this lead:\n\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${item.pubDate}\nContent: ${content}\nURL: ${item.url}`;
+// Batch triage: score up to 15 items in a single Haiku call (15x faster than one-by-one)
+async function batchTriageWithClaude(items) {
+  const itemList = items.map((item, i) =>
+    `[${i}] "${(item.title || "").slice(0, 120)}" | Source: ${item.source} | ${(item.description || "").slice(0, 150)}`
+  ).join("\n");
   try {
     const res = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -1008,27 +1151,301 @@ async function deepAnalyzeWithClaude(item) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2500,
-        system: DEEP_ANALYSIS_PROMPT,
-        messages: [{ role: "user", content: prompt }],
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1200,
+        system: `You are a class action attorney screening leads for viability. Score each lead 0-100.
+Return ONLY a JSON array, one entry per lead, same order as input:
+[{"score":<0-100>,"classification":"CREATE"|"INVESTIGATE"|"PASS","caseType":"<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Other>"}]
+Score 75+: Government action + physical injury + large class + clear damages model
+Score 50-74: Some signals present but missing key elements
+Score <50: No causation, individual issues dominate, no class, bankruptcy risk, or preemption`,
+        messages: [{ role: "user", content: `Score these ${items.length} leads:\n\n${itemList}` }],
       }),
     });
     const data = await res.json();
-    const text = data.content?.map(b => b.text || "").join("") || "{}";
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("No JSON in response");
+    const text = data.content?.map(b => b.text || "").join("") || "[]";
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) return items.map(() => null);
     return JSON.parse(match[0]);
   } catch (e) {
-    console.error("Deep analysis failed:", e.message);
+    console.error("Batch triage failed:", e.message);
+    return items.map(() => null);
+  }
+}
+
+async function deepAnalyzeWithClaude(item) {
+  const fullText = await fetchArticleText(item.url);
+  const content  = fullText
+    ? `${item.description}\n\n--- FULL ARTICLE TEXT ---\n${fullText}`
+    : item.description;
+  const prompt = `Perform a full litigation intelligence analysis on this lead. OUTPUT ONLY RAW JSON — no markdown, no code blocks, no explanations. Use single quotes (') for any inline quotations inside string values, NEVER double quotes. Keep every string value on a single logical line (no literal newlines inside strings).\n\nTitle: ${item.title}\nSource: ${item.source}\nDate: ${item.pubDate}\nContent: ${content}\nURL: ${item.url}`;
+  try {
+    // Use a longer timeout for deep analysis — Sonnet with KB system prompt takes 20-40s
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 90000); // 90s timeout for deep analysis
+    let res;
+    try {
+      res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 8000,
+          system: DEEP_ANALYSIS_PROMPT,
+          messages: [
+            { role: "user", content: prompt },
+            { role: "assistant", content: "{" }, // prefill forces raw JSON (no markdown)
+          ],
+        }),
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); } catch(pe) {
+      console.error("Deep analysis response parse error:", pe.message, "| raw:", rawText.slice(0, 300));
+      throw new Error("Response JSON parse failed");
+    }
+    if (data.error) {
+      console.error("Deep analysis API error:", JSON.stringify(data.error));
+      throw new Error(data.error.message || JSON.stringify(data.error));
+    }
+    // Prepend "{" (the prefill) since Anthropic returns only the continuation
+    const text = "{" + (data.content?.map(b => b.text || "").join("") || "}");
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) {
+      console.error("Deep analysis no JSON — raw:", text.slice(0, 200));
+      throw new Error("No JSON in response");
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(match[0]);
+    } catch (parseErr) {
+      // Attempt sanitization — fix unescaped quotes inside string values
+      try {
+        const sanitized = sanitizeJsonFromLLM(match[0]);
+        const sanitizedMatch = sanitized.match(/\{[\s\S]*\}/);
+        if (sanitizedMatch) parsed = JSON.parse(sanitizedMatch[0]);
+      } catch {}
+      if (!parsed) {
+        console.error("Deep JSON parse failed:", parseErr.message);
+        parsed = {
+          score: 50, confidence: 30, classification: "INVESTIGATE",
+          joinOrCreate: "CREATE", caseType: "Other",
+          headline: item.title?.slice(0, 80) || "Analysis parse failed",
+          executiveSummary: "Automated analysis parse error — manual review required.",
+          _parseError: parseErr.message,
+        };
+      }
+    }
+    return parsed;
+  } catch (e) {
+    console.error("Deep analysis failed:", e.message, "| item:", item?.title?.slice(0, 60));
     return null;
   }
+}
+
+// ─── FAERS — FDA Adverse Event Reporting System ───────────────────────────────
+// Queries OpenFDA for adverse event reports spiking in the last 30 days.
+// High report count on a drug/device is a strong pre-litigation signal.
+async function fetchFAERS() {
+  const results = [];
+  const now = Date.now();
+  const fmt = (ts) => new Date(ts).toISOString().slice(0, 10).replace(/-/g, "");
+
+  // Time windows for spike detection
+  const recent = { from: fmt(now - 30 * 86400000), to: fmt(now) };
+  const baseline = { from: fmt(now - 90 * 86400000), to: fmt(now - 31 * 86400000) };
+
+  try {
+    // ── 1. Top 25 drugs by recent report count (last 30 days) ────────────────
+    const recentUrl = `https://api.fda.gov/drug/event.json?search=receivedate:[${recent.from}+TO+${recent.to}]&count=patient.drug.medicinalproduct.exact&limit=25`;
+    const baselineUrl = `https://api.fda.gov/drug/event.json?search=receivedate:[${baseline.from}+TO+${baseline.to}]&count=patient.drug.medicinalproduct.exact&limit=50`;
+
+    const [recentRes, baselineRes] = await Promise.all([
+      fetchWithTimeout(recentUrl, { headers: { Accept: "application/json" } }),
+      fetchWithTimeout(baselineUrl, { headers: { Accept: "application/json" } }),
+    ]);
+    const recentData = await recentRes.json();
+    const baselineData = await baselineRes.json();
+
+    const recentDrugs = recentData.results || [];   // [{ term: "OZEMPIC", count: 847 }, ...]
+    const baselineDrugs = baselineData.results || [];
+
+    // Build baseline lookup (normalized to 30-day rate — baseline covers 59 days)
+    const baselineMap = {};
+    for (const d of baselineDrugs) {
+      baselineMap[d.term.toUpperCase()] = Math.round(d.count * (30 / 59));
+    }
+
+    // ── 2. Always check the watch list in parallel ────────────────────────────
+    const watchResults = await Promise.all(FAERS_WATCH_ALWAYS.map(async (term) => {
+      try {
+        const url = `https://api.fda.gov/drug/event.json?search=receivedate:[${recent.from}+TO+${recent.to}]+AND+patient.drug.medicinalproduct:"${encodeURIComponent(term)}"&count=receivedate&limit=1`;
+        const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+        const data = await res.json();
+        return { term, count: data?.meta?.results?.total || 0 };
+      } catch { return { term, count: 0 }; }
+    }));
+
+    // ── 3. Identify spikes: new entrants + high-growth drugs ─────────────────
+    const MIN_REPORTS = 15;        // ignore noise (< 15 reports = not meaningful)
+    const SPIKE_THRESHOLD = 1.5;   // 50%+ increase over baseline = spike
+    const candidates = new Map();  // term → { recent, baseline, pctChange }
+
+    for (const d of recentDrugs) {
+      const key = d.term.toUpperCase();
+      const rec = d.count;
+      const base = baselineMap[key] || 0;
+      if (rec < MIN_REPORTS) continue;
+      const pct = base === 0 ? 999 : Math.round(((rec - base) / base) * 100);
+      if (base === 0 || pct >= Math.round((SPIKE_THRESHOLD - 1) * 100)) {
+        candidates.set(d.term, { recent: rec, baseline: base, pctChange: pct });
+      }
+    }
+
+    // Add watch-list drugs with meaningful count even if not in top-25
+    for (const { term, count } of watchResults) {
+      if (count >= MIN_REPORTS && !candidates.has(term.toUpperCase())) {
+        const key = term.toUpperCase();
+        const base = baselineMap[key] || 0;
+        const pct = base === 0 ? 999 : Math.round(((count - base) / base) * 100);
+        candidates.set(term, { recent: count, baseline: base, pctChange: pct });
+      }
+    }
+
+    // ── 4. Create leads for top candidates ───────────────────────────────────
+    const sorted = [...candidates.entries()]
+      .sort((a, b) => b[1].recent - a[1].recent)
+      .slice(0, 10); // top 10 signals
+
+    for (const [term, stats] of sorted) {
+      const isSurge = stats.pctChange >= 50;
+      const isNew = stats.baseline === 0;
+      const spikeLabel = isNew ? "NEW — no prior baseline"
+        : isSurge ? `+${stats.pctChange}% vs prior 30-day baseline (${stats.baseline} → ${stats.recent} reports)`
+        : `${stats.recent} reports (baseline: ~${stats.baseline}/mo)`;
+
+      results.push({
+        id: hash(`faers|${term}|${recent.to}`),
+        title: `FDA FAERS Spike: "${term}" — ${stats.recent} adverse events in 30 days${isSurge ? ` (+${stats.pctChange}%)` : ""}`,
+        url: `https://api.fda.gov/drug/event.json?search=patient.drug.medicinalproduct:"${encodeURIComponent(term)}"&limit=1`,
+        description: `OpenFDA FAERS adverse event database: ${spikeLabel}. ${isSurge || isNew ? "Statistically unusual spike — this pattern precedes pharmaceutical class action filings by 6–18 months." : "Ongoing high-volume adverse event reporting — monitor for trend acceleration."} Drug: ${term}. Review for physical injury pattern, causation science viability, and class size.`,
+        pubDate: new Date().toISOString(),
+        source: `FDA FAERS (OpenFDA API) — dynamic spike detection`,
+        category: "Federal",
+      });
+    }
+  } catch (e) {
+    console.error("FAERS dynamic monitoring failed:", e.message);
+  }
+
+  console.log(`FAERS: ${results.length} adverse event spike signals (dynamic broad monitoring)`);
+  return results;
+}
+
+// ─── CONVERGENCE DETECTION ────────────────────────────────────────────────────
+// After all sources are fetched, find defendants/companies that appear across
+// 2+ independent source categories. Multi-source convergence is the strongest
+// pre-litigation signal — it means the same entity is generating signals in
+// government data, social media, news, AND legal filings simultaneously.
+
+const CONVERGENCE_EXTRACT_PROMPT = `Extract the single most specific defendant/company/product name from each lead title.
+Return ONLY a JSON array: [{"idx":0,"defendant":"Exact Company Name"}, ...]
+Rules: Use specific names (e.g. "3M PFAS" not "company"). Skip government agencies (FDA, DOJ, etc.) as defendants. If no identifiable private defendant, use null.`;
+
+async function detectConvergence(items) {
+  if (items.length < 4) return [];
+
+  // Batch extract defendant names from all item titles in one Haiku call
+  const titleList = items.map((item, idx) => `[${idx}] ${item.title}`).join("\n");
+  let extracted = [];
+  try {
+    const res = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1500,
+        system: CONVERGENCE_EXTRACT_PROMPT,
+        messages: [{ role: "user", content: titleList }],
+      }),
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || "").join("") || "[]";
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) return [];
+    extracted = JSON.parse(match[0]);
+  } catch (e) {
+    console.error("Convergence extraction failed:", e.message);
+    return [];
+  }
+
+  // Group by normalized defendant name × source category
+  const entityMap = {};
+  for (const { idx, defendant } of extracted) {
+    if (!defendant || !items[idx]) continue;
+    const key = defendant.toLowerCase().replace(/\s+/g, " ").trim();
+    if (key.length < 3) continue;
+    if (!entityMap[key]) entityMap[key] = { name: defendant, categories: new Set(), sources: [], items: [] };
+    const cat = items[idx].category || "Other";
+    entityMap[key].categories.add(cat);
+    entityMap[key].sources.push(items[idx].source);
+    entityMap[key].items.push(items[idx]);
+  }
+
+  // Generate convergence alerts for any defendant in 2+ independent source categories
+  const convergenceLeads = [];
+  for (const entity of Object.values(entityMap)) {
+    if (entity.categories.size < 2) continue;
+    const cats = [...entity.categories].join(" + ");
+    const topSources = [...new Set(entity.sources)].slice(0, 4).join("; ");
+    convergenceLeads.push({
+      id: hash(`convergence|${entity.name.toLowerCase()}`),
+      title: `CONVERGENCE: ${entity.name} — ${entity.categories.size} independent source categories (${cats})`,
+      url: entity.items[0]?.url || "",
+      description: `Multi-source convergence signal: "${entity.name}" detected across ${entity.categories.size} independent source categories (${cats}). Total signals: ${entity.items.length}. Sources: ${topSources}. When the same defendant generates signals in government data, social media, legal filings, and news simultaneously, a case is likely forming.`,
+      pubDate: new Date().toISOString(),
+      source: "Convergence Detector",
+      category: "Convergence",
+      triageScore: 88,
+      triageCaseType: "Multi-Source Convergence",
+      convergenceData: {
+        defendant: entity.name,
+        categories: [...entity.categories],
+        itemCount: entity.items.length,
+        sourceCount: entity.categories.size,
+      },
+    });
+  }
+
+  // Sort by source category count (most converged first), cap at top 8
+  convergenceLeads.sort((a, b) => (b.convergenceData?.sourceCount || 0) - (a.convergenceData?.sourceCount || 0));
+  console.log(`Convergence detection: ${convergenceLeads.length} multi-source signals across ${Object.keys(entityMap).length} defendants`);
+  return convergenceLeads.slice(0, 8);
 }
 
 // ─── MAIN HANDLER ─────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+
+  // ?reset=1 — clear the seen_ids set so all items are re-processed by Sonnet on the next scan
+  // Use this once after fixing the analysis pipeline (e.g., switching from broken Haiku to working Sonnet)
+  if (req.query.reset === "1") {
+    await kv.del("seen_ids");
+    return res.status(200).json({ reset: true, message: "seen_ids cleared — next scan will re-process all items" });
+  }
 
   const runId = `scan_${Date.now()}`;
   console.log(`[${runId}] Starting comprehensive scan`);
@@ -1045,10 +1462,11 @@ export default async function handler(req, res) {
   ]);
 
   // Batch 3: Specialized APIs (in parallel)
-  const [courtResults, courtDocketResults, courtFraudResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults] = await Promise.all([
+  const [courtResults, courtDocketResults, courtFraudResults, mdlProgressionResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults] = await Promise.all([
     fetchCourtListener(),
     fetchCourtListenerDockets(),
     fetchCourtListenerFraudDockets(),
+    fetchMDLProgressions(),
     fetchSecEdgar(),
     fetchSecEdgarTargeted(),
     fetchNHTSA(),
@@ -1058,22 +1476,18 @@ export default async function handler(req, res) {
     fetchTwitter(),
   ]);
 
-  // Batch 4: Legal/news web searches (sequential)
-  const webSearchResults = [];
-  for (const q of CLAUDE_WEB_SEARCHES) {
-    const results = await fetchClaudeWebSearch(q);
-    webSearchResults.push(...results);
-    await delay(400);
-  }
-
-  // Batch 5: Behavioral complaint cluster analysis across complaint-heavy subreddits
-  // This runs AFTER other fetches — it's the most AI-intensive batch
-  // Each sub is fetched without keyword filter, posts batched to Claude for pattern detection
-  console.log(`[${runId}] Starting behavioral complaint cluster analysis (${COMPLAINT_CLUSTER_SUBS.length} subreddits)...`);
-  const clusterResults = await fetchRedditComplaintClusters();
-
-  // Batch 6: Complaint-behavior web searches (looking for patterns, not lawsuits)
-  const complaintWebResults = await fetchComplaintWebSearches();
+  // Batches 4–7: run all remaining source types in parallel
+  console.log(`[${runId}] Starting parallel fetch: ${CLAUDE_WEB_SEARCHES.length} Claude web searches + complaint clusters + FAERS...`);
+  const [webSearchResults, clusterResults, complaintWebResults, faersResults] = await Promise.all([
+    // Batch 4: All Claude web searches in parallel (was sequential — major speedup)
+    Promise.all(CLAUDE_WEB_SEARCHES.map(q => fetchClaudeWebSearch(q))).then(r => r.flat()),
+    // Batch 5: Reddit complaint cluster analysis
+    fetchRedditComplaintClusters(),
+    // Batch 6: Complaint-behavior web searches
+    fetchComplaintWebSearches(),
+    // Batch 7: FAERS — FDA adverse event spikes
+    fetchFAERS(),
+  ]);
 
   const allItems = [
     ...govResults,
@@ -1082,6 +1496,7 @@ export default async function handler(req, res) {
     ...courtResults,
     ...courtDocketResults,
     ...courtFraudResults,
+    ...mdlProgressionResults,
     ...secResults,
     ...secTargetedResults,
     ...nhtsaResults,
@@ -1092,9 +1507,10 @@ export default async function handler(req, res) {
     ...webSearchResults,
     ...clusterResults,
     ...complaintWebResults,
+    ...faersResults,
   ];
 
-  const totalSources = GOV_RSS_FEEDS.length + GOOGLE_NEWS_QUERIES.length + REDDIT_SUBS.length + COMPLAINT_CLUSTER_SUBS.length + COMPLAINT_WEB_SEARCHES.length + 8;
+  const totalSources = GOV_RSS_FEEDS.length + GOOGLE_NEWS_QUERIES.length + REDDIT_SUBS.length + COMPLAINT_CLUSTER_SUBS.length + COMPLAINT_WEB_SEARCHES.length + FAERS_WATCH_ALWAYS.length + 8;
   console.log(`[${runId}] Fetched ${allItems.length} total items (incl. ${clusterResults.length} complaint clusters) from ${totalSources} sources`);
 
   // ── 2. DEDUPLICATE ────────────────────────────────────────────────────────
@@ -1121,53 +1537,113 @@ export default async function handler(req, res) {
 
   // ── 3. TRIAGE — fast Haiku pass to filter low-signal items ───────────────
 
-  let triaged = 0;
   const passedTriage = [];
 
-  for (const item of newItems) {
-    const triage = await triageWithClaude(item);
-    triaged++;
-
-    if (triage && triage.score >= TRIAGE_THRESHOLD) {
-      passedTriage.push({ ...item, triageScore: triage.score, triageCaseType: triage.caseType });
-    }
-
-    // Minimal delay — Haiku is fast and cheap
-    await delay(150);
+  // Batch triage: 15 items per Haiku call, all batches run in parallel — ~15x faster than one-by-one
+  const TRIAGE_BATCH_SIZE = 15;
+  const triageBatches = [];
+  for (let i = 0; i < newItems.length; i += TRIAGE_BATCH_SIZE) {
+    triageBatches.push(newItems.slice(i, i + TRIAGE_BATCH_SIZE));
   }
+  const batchResults = await Promise.all(triageBatches.map(batch => batchTriageWithClaude(batch)));
+  batchResults.forEach((results, batchIdx) => {
+    (results || []).forEach((triage, itemIdx) => {
+      const item = triageBatches[batchIdx][itemIdx];
+      if (item && triage && triage.score >= TRIAGE_THRESHOLD) {
+        passedTriage.push({ ...item, triageScore: triage.score, triageCaseType: triage.caseType });
+      }
+    });
+  });
 
-  console.log(`[${runId}] ${passedTriage.length}/${triaged} items passed triage (score >= ${TRIAGE_THRESHOLD})`);
+  console.log(`[${runId}] ${passedTriage.length}/${newItems.length} items passed triage (score >= ${TRIAGE_THRESHOLD})`);
+
+  // ── 3a. RECALL / WARNING AUTO-ELEVATION ────────────────────────────────────
+  // Government recalls and safety warnings are ALWAYS high-value plaintiff signals.
+  // They bypass triage regardless of score — the government already did the discovery.
+  // Items from recall-specific sources OR containing recall keywords get auto-elevated.
+  const RECALL_SOURCES = new Set([
+    "FDA Recalls", "FDA Safety Alerts", "FDA Drug Safety",
+    "CPSC Recalls", "FSIS Food Recalls",
+    "NHTSA Recall Database", "HHS News",
+  ]);
+  const RECALL_TITLE_KEYWORDS = [
+    "recall", "warning letter", "safety alert", "market withdrawal",
+    "public health advisory", "do not use", "do not eat", "do not drink",
+    "undeclared allergen", "contamination", "adverse event", "safety notice",
+    "class i", "class ii", "class iii", "enforcement action",
+  ];
+  const passedTriageIds = new Set(passedTriage.map(i => i.id));
+  let recallElevated = 0;
+  for (const item of newItems) {
+    if (passedTriageIds.has(item.id)) continue; // already passed triage
+    const titleLower = (item.title || "").toLowerCase();
+    const isRecallSource = RECALL_SOURCES.has(item.source);
+    const hasRecallKeyword = RECALL_TITLE_KEYWORDS.some(kw => titleLower.includes(kw));
+    if (isRecallSource || hasRecallKeyword) {
+      passedTriage.push({
+        ...item,
+        triageScore: 82,
+        triageCaseType: "Government Recall / Safety Warning",
+        isRecallElevated: true,
+      });
+      passedTriageIds.add(item.id);
+      recallElevated++;
+    }
+  }
+  if (recallElevated > 0) console.log(`[${runId}] ${recallElevated} recall/warning items auto-elevated (bypassed triage)`);
+
+  // ── 3b. CONVERGENCE DETECTION — find defendants appearing in 2+ source categories ──
+  // Runs on ALL new items (not just triage passers) — even low-scoring items can
+  // form a high-priority convergence signal when they cluster around one defendant.
+  const convergenceAlerts = await detectConvergence(newItems.slice(0, 120));
+  // Convergence alerts bypass triage — inject directly into deep analysis queue
+  const seenConvergenceIds = new Set(passedTriage.map(i => i.id));
+  for (const alert of convergenceAlerts) {
+    if (!seenConvergenceIds.has(alert.id)) {
+      passedTriage.push(alert);
+      seenConvergenceIds.add(alert.id);
+    }
+  }
+  console.log(`[${runId}] ${convergenceAlerts.length} convergence alerts injected → ${passedTriage.length} total for deep analysis`);
 
   // ── 4. DEEP ANALYSIS — Sonnet full intelligence report on passing items ───
+  // Cap at 10 per scan: 4 batches × 3 concurrent Sonnet calls (~50s each) ≈ 200s deep analysis
+  // + ~90s data gathering + ~10s triage ≈ 300s total — fits within Vercel Pro limit.
+  const MAX_DEEP_ANALYSIS = 10;
+  const toAnalyze = passedTriage
+    .sort((a, b) => (b.triageScore || 0) - (a.triageScore || 0))
+    .slice(0, MAX_DEEP_ANALYSIS);
 
   let scored = 0;
   const leads = [];
 
-  for (const item of passedTriage) {
-    const analysis = await deepAnalyzeWithClaude(item);
-    if (!analysis) continue;
+  // Run 3 deep analyses concurrently — each takes ~30s, so 2 chunks = ~60s total
+  const ANALYSIS_CONCURRENCY = 3;
+  console.log(`[${runId}] Starting deep analysis on ${toAnalyze.length} items (${ANALYSIS_CONCURRENCY} concurrent)...`);
+  for (let i = 0; i < toAnalyze.length; i += ANALYSIS_CONCURRENCY) {
+    const chunk = toAnalyze.slice(i, i + ANALYSIS_CONCURRENCY);
+    await Promise.all(chunk.map(async item => {
+      const analysis = await deepAnalyzeWithClaude(item);
+      if (!analysis) return;
 
-    const lead = {
-      id: item.id,
-      title: item.title,
-      url: item.url,
-      description: item.description,
-      pubDate: item.pubDate,
-      source: item.source,
-      category: item.category,
-      analysis,
-      scannedAt: new Date().toISOString(),
-    };
+      const lead = {
+        id: item.id,
+        title: item.title,
+        url: item.url,
+        description: item.description,
+        pubDate: item.pubDate,
+        source: item.source,
+        category: item.category,
+        analysis,
+        scannedAt: new Date().toISOString(),
+      };
 
-    leads.push(lead);
-    scored++;
+      leads.push(lead);
+      scored++;
 
-    // Store in KV with 30-day TTL
-    await kv.set(`lead:${item.id}`, JSON.stringify(lead), { ex: 30 * 24 * 3600 });
-    await kv.zadd("leads_by_score", { score: analysis.score, member: item.id });
-
-    // Rate limit — Sonnet is expensive per call
-    await delay(500);
+      await kv.set(`lead:${item.id}`, JSON.stringify(lead), { ex: 30 * 24 * 3600 });
+      await kv.zadd("leads_by_score", { score: analysis.score, member: item.id });
+    }));
   }
 
   // ── 5. STORE SCAN METADATA + HISTORICAL TREND DATA ───────────────────────
@@ -1253,7 +1729,69 @@ export default async function handler(req, res) {
   // ── 5d. last_scan (for LeadsInbox header) ────────────────────────────────
   await kv.set("last_scan", JSON.stringify(scanEntry), { ex: 7 * 24 * 3600 });
 
+  // ── Step 6: Invalidate opportunities cache ───────────────────────────────
+  // Fresh leads were just stored — clear the synthesis cache so the next
+  // /api/opportunities request regenerates with updated data.
+  try {
+    await kv.del("opportunities:latest");
+    console.log(`[${runId}] Opportunities cache cleared — will regenerate on next request`);
+  } catch {}
+
   console.log(`[${runId}] Done. ${allItems.length} fetched → ${newItems.length} new → ${passedTriage.length} passed triage → ${scored} deep-analyzed.`);
+
+  // ── Step 7: Slack alert for high-priority leads ───────────────────────────
+  // Posts to Slack when any new lead scores ≥ 70. Requires SLACK_WEBHOOK_URL env var.
+  const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+  const alertLeads = sortedLeads.filter(l => (l.analysis?.score || 0) >= 70);
+  if (SLACK_WEBHOOK_URL && alertLeads.length > 0) {
+    try {
+      const blocks = [
+        {
+          type: "header",
+          text: { type: "plain_text", text: `${alertLeads.length} High-Priority Lead${alertLeads.length > 1 ? "s" : ""} Detected` },
+        },
+        {
+          type: "context",
+          elements: [{ type: "mrkdwn", text: `Scan ${runId} · ${allItems.length} sources · ${passedTriage.length} passed triage` }],
+        },
+        { type: "divider" },
+        ...alertLeads.slice(0, 5).flatMap(l => {
+          const a = l.analysis || {};
+          const scoreEmoji = a.score >= 85 ? "🔴" : a.score >= 75 ? "🟠" : "🟡";
+          return [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `${scoreEmoji} *Score ${a.score}* · ${a.classification || ""} · ${a.caseType || ""} · ${a.timeline?.urgencyLevel || ""}\n*${a.headline || l.title}*\n${a.executiveSummary ? a.executiveSummary.slice(0, 200) + "..." : ""}`,
+              },
+              accessory: l.url ? {
+                type: "button",
+                text: { type: "plain_text", text: "View Source" },
+                url: l.url,
+              } : undefined,
+            },
+            {
+              type: "context",
+              elements: [
+                { type: "mrkdwn", text: `Source: *${l.source || "Unknown"}* · Fund: ${a.damagesModel?.totalFundEstimate || "Unknown"} · KB Grade: ${a.kbReplicationGrade || "?"}` },
+              ],
+            },
+            { type: "divider" },
+          ];
+        }),
+      ];
+
+      await fetch(SLACK_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blocks }),
+      });
+      console.log(`[${runId}] Slack alert sent for ${alertLeads.length} high-priority leads`);
+    } catch (e) {
+      console.error(`[${runId}] Slack alert failed:`, e.message);
+    }
+  }
 
   return res.status(200).json({
     runId,

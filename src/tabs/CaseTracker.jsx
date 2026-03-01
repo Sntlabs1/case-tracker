@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Badge, Btn, Input, Select, TextArea, Modal, ScoreBar, AIPanel } from "../components/UI.jsx";
 import { CASE_TYPES, PRIORITIES, STATUSES, PRIORITY_COLORS, STATUS_COLORS } from "../data/sources.js";
 
-export default function CaseTracker({ cases, setCases, selectedCase, setSelectedCase, showAI, setShowAI }) {
+export default function CaseTracker({ cases, setCases, selectedCase, setSelectedCase, showAI, setShowAI, caseFilter = {} }) {
   const [filterType, setFilterType] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+
+  // Apply filter passed from Dashboard (e.g. clicking a pipeline stage)
+  useEffect(() => {
+    if (caseFilter.status)   setFilterStatus(caseFilter.status);
+    if (caseFilter.caseType) setFilterType(caseFilter.caseType);
+    if (caseFilter.priority) setFilterPriority(caseFilter.priority);
+  }, [caseFilter]);
   const [searchQ, setSearchQ] = useState("");
   const [showAddCase, setShowAddCase] = useState(false);
   const [newCase, setNewCase] = useState({ title: "", source: "", caseType: "", priority: "Medium", status: "New Lead", affectedPop: "", company: "", description: "", notes: "", score: 50, jurisdiction: "" });

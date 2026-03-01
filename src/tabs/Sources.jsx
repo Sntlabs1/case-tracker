@@ -16,23 +16,38 @@ const FEDERAL_RSS = [
   { name: "EPA Enforcement",     url: "epa.gov", category: "Federal" },
   { name: "CFPB",                url: "consumerfinance.gov", category: "Federal" },
   { name: "JPML MDL Orders",     url: "jpml.uscourts.gov", category: "Judicial" },
+  { name: "Courthouse News",     url: "courthousenews.com", category: "Judicial" },
+  { name: "Miller & Zois Blog",  url: "millerandzois.com/blog/feed/atom", category: "Plaintiff Firm" },
+  { name: "Mass Tort News",      url: "masstortnews.org/feed", category: "Plaintiff Firm" },
+  { name: "JD Supra — Class Actions", url: "jdsupra.com/topics/class-action/rss", category: "Plaintiff Firm" },
+  { name: "Duane Morris CA Defense", url: "blogs.duanemorris.com/classactiondefense/feed", category: "Plaintiff Firm" },
 ];
 
 const SPECIAL_APIS = [
   { name: "CourtListener — PACER Dockets",    detail: "NOS 375 (FCA), 376 (Qui Tam), 470 (RICO), 850 (Securities) — new filings daily" },
   { name: "SEC EDGAR Full-Text Search",        detail: "Targeted: subpoena 8-K, material weakness 10-K, accounting restatements, securities class action 8-K" },
+  { name: "FDA FAERS (OpenFDA API)",           detail: "Adverse event report spike detection — 30-day counts per drug/device. Pre-litigation pharma signal." },
   { name: "NHTSA Safety Complaints",           detail: "NHTSA API — auto defect complaints + recall notices" },
   { name: "CFPB Consumer Complaints",          detail: "CFPB API — financial product complaint spikes" },
   { name: "PubMed Medical Literature",         detail: "New adverse event studies + drug safety signals" },
   { name: "YouTube (optional)",                detail: "Injury-related video signals when API key configured" },
-  { name: "X / Twitter API v2",               detail: "10 targeted recent-search queries: class actions, MDL, complaint clusters, criminal fraud victims, securities fraud, data breach — 7-day rolling window" },
+  { name: "X / Twitter API v2",               detail: "25 predictive queries: consumer harm clustering, regulatory investigations, corporate misconduct, environmental harm, financial fraud — 7-day rolling window" },
+  { name: "Convergence Detector",             detail: "Cross-source correlation engine — flags defendants appearing in 2+ independent source categories simultaneously (highest-confidence pre-litigation signal)" },
 ];
 
 const PLAINTIFF_INTEL_SITES = [
+  // Active investigation trackers
   "classaction.org", "topclassactions.com", "aboutlawsuits.com",
-  "securities.stanford.edu", "law360.com", "courthousenews.com",
-  "lawyersandsettlements.com", "drugwatch.com",
-  "millerandzois.com", "classaction.com",
+  "classaction.com", "lawsuit-information-center.com", "lawyersandsettlements.com",
+  "drugwatch.com", "masstortnews.org",
+  // Legal news wires
+  "law360.com", "courthousenews.com", "reuters.com/legal", "bloomberg.com/law",
+  "jdsupra.com",
+  // Securities class action databases
+  "securities.stanford.edu",
+  // Plaintiff law firm blogs (RSS + site: queries)
+  "millerandzois.com", "hbsslaw.com", "levinlaw.com",
+  "motleyrice.com", "seegerweiss.com", "lieffcabraser.com", "wisnerbaum.com",
 ];
 
 const REDDIT_KEYWORD_SUBS = [
@@ -176,6 +191,15 @@ const CLAUDE_WEB_SEARCHES = [
   "Securities fraud stock drop class action complaints",
   "Company disclosed SEC/DOJ subpoena 8-K → class action",
   "Accounting restatement → securities fraud class action",
+  "New class action MDL mass tort filed (law360.com)",
+  "New class action lawsuit settlement (reuters.com/legal)",
+  "New class action MDL complaint filed (courthousenews.com)",
+  "New pharma/device mass tort filing (aboutlawsuits.com, drugwatch.com)",
+  "Miller & Zois — new settlement verdict product liability pharma",
+  "ClassAction.com — new investigation consumer drugs medical devices",
+  "Hagens Berman / Levin / Motley Rice — new investigation announcements",
+  "Seeger Weiss / Lieff Cabraser / Wisner Baum — new mass tort investigations",
+  "JD Supra / Mass Tort News — new class action MDL filings",
 ];
 
 const DAILY_FEED_QUERIES = [
@@ -299,10 +323,10 @@ export default function Sources() {
   const regionalCount = STATE_AG_COVERAGE.filter(s => s.regional).length;
 
   const stats = [
-    { value: GRAND_TOTAL, label: "Total Sources",        color: "#C8442F" },
-    { value: 15,          label: "Federal RSS Feeds",    color: "#3b82f6" },
-    { value: 50,          label: "States AGs Covered",   color: "#22c55e" },
-    { value: totalReddit, label: "Reddit Communities",   color: "#f59e0b" },
+    { value: GRAND_TOTAL,      label: "Total Sources",      color: "#C8442F" },
+    { value: totalFederalRSS,  label: "Federal RSS Feeds",  color: "#3b82f6" },
+    { value: 50,               label: "States AGs Covered", color: "#22c55e" },
+    { value: totalReddit,      label: "Reddit Communities", color: "#f59e0b" },
   ];
 
   return (
@@ -430,9 +454,9 @@ export default function Sources() {
         <div style={{ fontSize: 12, fontWeight: 600, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline Architecture</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {[
-            { title: "Backend Cron (Hourly)", desc: "Vercel serverless: RSS feeds, Google News (40+ queries), Reddit (56 subs + complaint cluster AI), CourtListener, SEC EDGAR, NHTSA, CFPB, PubMed, Claude web searches. Stored in Vercel KV.", color: "#3b82f6" },
-            { title: "Browser Feed (Auto)", desc: "DailyFeed tab: 27 Claude web_search queries running client-side. Two-pass analysis: Haiku triage → Sonnet deep analysis for score ≥55. Stored in localStorage.", color: "#22c55e" },
-            { title: "50-State AG Coverage", desc: "29 dedicated Google News queries (25 individual states + 4 regional groups) covering all 50 states + multistate coalitions. Criminal enforcement → civil victim pipeline.", color: "#f59e0b" },
+            { title: "Backend Cron (Hourly)", desc: "Vercel serverless: RSS feeds, Google News (65+ queries), Reddit (56 subs + complaint cluster AI), CourtListener, SEC EDGAR, FDA FAERS, NHTSA, CFPB, PubMed, X/Twitter (25 queries), Claude web searches. Stored in Vercel KV.", color: "#3b82f6" },
+            { title: "Browser Feed (Auto)", desc: "DailyFeed tab: 29 Claude web_search queries running client-side. Two-pass analysis: Haiku triage → Sonnet deep analysis for score ≥55. Stored in localStorage.", color: "#22c55e" },
+            { title: "Convergence Detection", desc: "After every scan, Claude extracts defendant names from all signals and flags entities appearing in 2+ independent source categories (gov + social + legal + news). Highest-confidence pre-litigation alerts bypass triage.", color: "#C8442F" },
           ].map((item, i) => (
             <div key={i} style={{ padding: "10px 12px", background: "rgba(255,255,255,0.02)", borderRadius: 6, borderLeft: `3px solid ${item.color}` }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: item.color, marginBottom: 5 }}>{item.title}</div>

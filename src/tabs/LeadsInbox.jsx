@@ -42,6 +42,77 @@ function strengthColor(s) {
   return "#ef4444";
 }
 
+// ─── SOURCE CLASSIFICATION ────────────────────────────────────────────────────
+// Maps raw source strings to a clean label + accent color for badges
+
+function sourceCategory(source) {
+  if (!source) return { label: "Unknown", color: "#666" };
+  const s = source.toLowerCase();
+  if (s.includes("faers") || (s.includes("fda") && s.includes("adverse"))) return { label: "FDA FAERS", color: "#ef4444" };
+  if (s.includes("fda")) return { label: "FDA", color: "#ef4444" };
+  if (s.includes("cpsc")) return { label: "CPSC", color: "#f97316" };
+  if (s.includes("nhtsa")) return { label: "NHTSA", color: "#f97316" };
+  if (s.includes("cfpb")) return { label: "CFPB", color: "#8b5cf6" };
+  if (s.includes("sec edgar") || (s.includes("sec") && s.includes("edgar"))) return { label: "SEC EDGAR", color: "#8b5cf6" };
+  if (s.includes("sec ") || s.startsWith("sec")) return { label: "SEC", color: "#8b5cf6" };
+  if (s.includes("doj") || s.includes("department of justice")) return { label: "DOJ", color: "#ef4444" };
+  if (s.includes("epa")) return { label: "EPA", color: "#22c55e" };
+  if (s.includes("usda") || s.includes("fsis")) return { label: "USDA / FSIS", color: "#22c55e" };
+  if (s.includes("ftc")) return { label: "FTC", color: "#f97316" };
+  if (s.includes("eeoc")) return { label: "EEOC", color: "#f59e0b" };
+  if (s.includes("courtlistener") || s.includes("court listener")) return { label: "CourtListener", color: "#3b82f6" };
+  if (s.includes("jpml") || s.includes("mdl order")) return { label: "JPML / MDL", color: "#3b82f6" };
+  if (s.includes("courthouse news")) return { label: "Courthouse News", color: "#3b82f6" };
+  if (s.includes("pubmed")) return { label: "PubMed", color: "#22c55e" };
+  if (s.includes("convergence")) return { label: "Convergence Signal", color: "#C8442F" };
+  if (s.includes("reddit complaint cluster")) return { label: "Reddit Cluster", color: "#f97316" };
+  if (s.includes("reddit")) return { label: "Reddit", color: "#f97316" };
+  if (s.includes("x/twitter") || s.includes("twitter")) return { label: "X / Twitter", color: "#60a5fa" };
+  if (s.includes("youtube")) return { label: "YouTube", color: "#ef4444" };
+  if (s.includes("complaint search")) return { label: "Complaint Search", color: "#f59e0b" };
+  if (s.includes("web:") || s.includes("claude web") || s.startsWith("web ")) return { label: "Claude Web Search", color: "#9090c0" };
+  if (s.includes("google news")) return { label: "Google News", color: "#60a5fa" };
+  if (s.includes("miller") || s.includes("mass tort") || s.includes("levin") || s.includes("motley") || s.includes("jd supra")) return { label: "Plaintiff Firm Intel", color: "#C8442F" };
+  return { label: source.split(":")[0].split(" —")[0].trim().slice(0, 22), color: "#666" };
+}
+
+function SourceBadge({ source, url }) {
+  const { label, color } = sourceCategory(source || "");
+  // Extract the query/detail after the colon (e.g. "Google News: FDA recalls" → "FDA recalls")
+  const detail = source?.includes(":") ? source.split(":").slice(1).join(":").trim().slice(0, 60) : null;
+  return (
+    <div style={{ display: "flex", gap: 5, alignItems: "center", flexWrap: "wrap" }}>
+      <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4,
+        background: `${color}18`, color, border: `1px solid ${color}33`,
+        letterSpacing: "0.04em", whiteSpace: "nowrap", flexShrink: 0 }}>
+        {label}
+      </span>
+      {detail && (
+        <span style={{ fontSize: 11, color: "#555", lineHeight: 1.3 }}>{detail}</span>
+      )}
+      {url && (
+        <a href={url} target="_blank" rel="noopener noreferrer"
+          onClick={e => e.stopPropagation()}
+          style={{ fontSize: 10, color: "#555", textDecoration: "none", padding: "1px 7px",
+            borderRadius: 4, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+            whiteSpace: "nowrap", flexShrink: 0 }}>
+          View Source →
+        </a>
+      )}
+    </div>
+  );
+}
+
+function stageColor(stage) {
+  if (stage === "Pre-Litigation") return "#f59e0b";
+  if (stage === "Filed / Discovery") return "#3b82f6";
+  if (stage === "MDL Consolidated") return "#8b5cf6";
+  if (stage === "Bellwether Set") return "#f97316";
+  if (stage === "Settlement Discussions") return "#22c55e";
+  if (stage === "Resolved") return "#6b7280";
+  return "#6b7280";
+}
+
 // ─── SECTION COMPONENTS ───────────────────────────────────────────────────────
 
 function Section({ title, children, accent = "#C8442F" }) {
@@ -99,6 +170,220 @@ function RiskRow({ risk }) {
   );
 }
 
+// ─── PLAINTIFF ACQUISITION BRIEF ─────────────────────────────────────────────
+
+const BRIEF_PROMPT = `You are a senior plaintiff litigation strategist. Given an intelligence lead about a potential class action, produce a one-page Plaintiff Acquisition Brief for the firm's intake team.
+
+Return ONLY a JSON object (no markdown, no explanation). Structure:
+{
+  "qualificationCriteria": ["<criterion 1 — specific, testable>", "<criterion 2>", "<criterion 3>"],
+  "disqualifiers": ["<hard disqualifier 1>", "<hard disqualifier 2>"],
+  "intakeDocs": ["<document 1>", "<document 2>", "<document 3>"],
+  "whereToFind": ["<channel 1 — specific platform/group/community/location>", "<channel 2>", "<channel 3>"],
+  "outreachScript": "<2-3 sentence intake script — conversational, not legal jargon. Tells prospective plaintiff what happened, what they may qualify for, what to do next>",
+  "intakeQuestions": ["<question 1>", "<question 2>", "<question 3>", "<question 4>", "<question 5>"],
+  "targetDemographics": "<who is the ideal plaintiff — age, geography, product usage, injury type>",
+  "geographicHotspots": ["<state or region 1>", "<state or region 2>"],
+  "competitorNote": "<are major plaintiff firms already advertising for this? How aggressively? Is there still a first-mover window?>",
+  "urgencyNote": "<why sign clients NOW vs waiting — SOL, consolidation window, advertising costs rising, etc.>"
+}
+
+Be specific to the actual case. Never give generic answers. Cite the defendant, product, injury type, and case facts from the lead.`;
+
+function AcquisitionBrief({ lead }) {
+  const [brief, setBrief] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generate = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const a = lead.analysis || {};
+    const context = [
+      `Headline: ${a.headline || lead.title}`,
+      `Case type: ${a.caseType || "Unknown"}`,
+      `Case stage: ${a.caseStage || "Unknown"}`,
+      `Defendant: ${a.defendantProfile?.name || "Unknown"}`,
+      `Class size: ${a.classProfile?.estimatedSize || "Unknown"}`,
+      `Injuries: ${a.plaintiffProfile?.requiredInjury || "Unknown"}`,
+      `Demographics: ${a.plaintiffProfile?.demographics || "Unknown"}`,
+      `Where to find: ${(a.plaintiffProfile?.whereToFind || []).join(", ") || "Unknown"}`,
+      `Disqualifiers: ${a.plaintiffProfile?.disqualifiers || "Unknown"}`,
+      `Docs needed: ${(a.plaintiffProfile?.documentationNeeded || []).join(", ") || "Unknown"}`,
+      `Damages per claimant: ${a.damagesModel?.perClaimantRange || "Unknown"}`,
+      `Total fund: ${a.damagesModel?.totalFundEstimate || "Unknown"}`,
+      `Urgency: ${a.timeline?.urgencyLevel || "Unknown"} — ${a.timeline?.urgencyReason || ""}`,
+      `SOL: ${a.timeline?.statuteOfLimitationsNote || "Unknown"}`,
+      `KB Replication Grade: ${a.kbReplicationGrade || "Unknown"}`,
+      `Executive Summary: ${a.executiveSummary || ""}`,
+    ].join("\n");
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-allow-browser": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1500,
+          system: BRIEF_PROMPT,
+          messages: [{ role: "user", content: `Generate a Plaintiff Acquisition Brief for this lead:\n\n${context}` }],
+        }),
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || "").join("") || "{}";
+      const match = text.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("No JSON in response");
+      setBrief(JSON.parse(match[0]));
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [lead]);
+
+  if (!brief && !loading && !error) {
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <Btn small variant="secondary" onClick={generate}>Generate Acquisition Brief</Btn>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(200,68,47,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#C8442F", letterSpacing: "0.1em", textTransform: "uppercase" }}>Plaintiff Acquisition Brief</span>
+        <Btn small variant="secondary" onClick={generate} style={{ padding: "2px 10px", fontSize: 10 }}>
+          {loading ? "Generating..." : "Regenerate"}
+        </Btn>
+      </div>
+
+      {loading && (
+        <div style={{ padding: "24px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
+          Generating acquisition brief...
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: "12px 16px", color: "#f87171", fontSize: 12 }}>Error: {error}</div>
+      )}
+
+      {brief && !loading && (
+        <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+
+          {/* Target + Outreach Script */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {brief.targetDemographics && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Target Plaintiff</div>
+                <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{brief.targetDemographics}</div>
+              </div>
+            )}
+            {brief.outreachScript && (
+              <div style={{ padding: "8px 12px", background: "rgba(34,197,94,0.06)", borderRadius: 8, border: "1px solid rgba(34,197,94,0.2)" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Outreach Script</div>
+                <div style={{ fontSize: 12, color: "#86efac", fontStyle: "italic", lineHeight: 1.5 }}>"{brief.outreachScript}"</div>
+              </div>
+            )}
+          </div>
+
+          {/* Qualification + Disqualifiers */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {brief.qualificationCriteria?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Qualification Criteria</div>
+                {brief.qualificationCriteria.map((c, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 3, display: "flex", gap: 6, alignItems: "flex-start" }}>
+                    <span style={{ color: "#22c55e", flexShrink: 0 }}>✓</span><span style={{ lineHeight: 1.4 }}>{c}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {brief.disqualifiers?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Disqualifiers</div>
+                {brief.disqualifiers.map((d, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#fca5a5", marginBottom: 3, display: "flex", gap: 6, alignItems: "flex-start" }}>
+                    <span style={{ flexShrink: 0 }}>✗</span><span style={{ lineHeight: 1.4 }}>{d}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Where to Find */}
+          {brief.whereToFind?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Where to Find Plaintiffs</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {brief.whereToFind.map((w, i) => (
+                  <span key={i} style={{ fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.25)" }}>{w}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Intake Questions */}
+          {brief.intakeQuestions?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Intake Questions</div>
+              {brief.intakeQuestions.map((q, i) => (
+                <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4, display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <span style={{ color: "#f59e0b", fontWeight: 700, flexShrink: 0, minWidth: 16 }}>{i + 1}.</span>
+                  <span style={{ lineHeight: 1.4 }}>{q}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Docs + Geographic Hotspots */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {brief.intakeDocs?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Documents to Request</div>
+                {brief.intakeDocs.map((d, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 2 }}>• {d}</div>
+                ))}
+              </div>
+            )}
+            {brief.geographicHotspots?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Geographic Hotspots</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                  {brief.geographicHotspots.map((g, i) => (
+                    <span key={i} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.2)" }}>{g}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Competitor + Urgency notes */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {brief.competitorNote && (
+              <div style={{ padding: "8px 12px", background: "rgba(245,158,11,0.06)", borderRadius: 8, border: "1px solid rgba(245,158,11,0.2)" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Competitor Landscape</div>
+                <div style={{ fontSize: 12, color: "#fbbf24", lineHeight: 1.5 }}>{brief.competitorNote}</div>
+              </div>
+            )}
+            {brief.urgencyNote && (
+              <div style={{ padding: "8px 12px", background: "rgba(239,68,68,0.06)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Why Sign Clients Now</div>
+                <div style={{ fontSize: 12, color: "#fca5a5", lineHeight: 1.5 }}>{brief.urgencyNote}</div>
+              </div>
+            )}
+          </div>
+
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -106,6 +391,137 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
   return (
     <div onClick={e => e.stopPropagation()} style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+
+      {/* ── SOURCE ATTRIBUTION — always visible at top of report ── */}
+      <div style={{ marginBottom: 16, padding: "8px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+        <span style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", flexShrink: 0 }}>Source</span>
+        <SourceBadge source={lead.source} url={lead.url} />
+        {lead.pubDate && (
+          <span style={{ fontSize: 11, color: "#444", marginLeft: "auto" }}>
+            {new Date(lead.pubDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          </span>
+        )}
+      </div>
+
+      {/* ── RECALL ALERT — shown when lead originated from a government recall/warning ── */}
+      {a.recallIntelligence?.isGovernmentRecall && (
+        <div style={{ marginBottom: 18, padding: "14px 16px", background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.35)", borderRadius: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.1em", color: "#ef4444", textTransform: "uppercase" }}>Government Recall / Safety Warning</span>
+              {a.recallIntelligence.recallClass && !a.recallIntelligence.recallClass.includes("Not") && (
+                <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: "rgba(239,68,68,0.15)", color: "#fca5a5", border: "1px solid rgba(239,68,68,0.3)" }}>
+                  {a.recallIntelligence.recallClass.split("—")[0].trim()}
+                </span>
+              )}
+              {a.recallIntelligence.issuingAgency && (
+                <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "#888" }}>
+                  {a.recallIntelligence.issuingAgency}
+                </span>
+              )}
+            </div>
+            {a.recallIntelligence.immediateAction && (
+              <span style={{ fontSize: 11, color: "#ef4444", fontWeight: 600 }}>Act Now</span>
+            )}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
+            {a.recallIntelligence.productName && (
+              <div>
+                <div style={{ fontSize: 10, color: "#666", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>Product</div>
+                <div style={{ fontSize: 12, color: "#fca5a5", fontWeight: 600 }}>{a.recallIntelligence.productName}</div>
+              </div>
+            )}
+            {a.recallIntelligence.estimatedClassSize && (
+              <div>
+                <div style={{ fontSize: 10, color: "#666", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>Est. Class Size</div>
+                <div style={{ fontSize: 12, color: "#e0e0f0", fontWeight: 600 }}>{a.recallIntelligence.estimatedClassSize}</div>
+              </div>
+            )}
+            {a.recallIntelligence.recallScope && (
+              <div>
+                <div style={{ fontSize: 10, color: "#666", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>Scope</div>
+                <div style={{ fontSize: 12, color: "#e0e0f0" }}>{a.recallIntelligence.recallScope}</div>
+              </div>
+            )}
+          </div>
+
+          {a.recallIntelligence.injuryMechanism && (
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 10, color: "#666", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Injury Mechanism</div>
+              <div style={{ fontSize: 12, color: "#fca5a5", lineHeight: 1.5 }}>{a.recallIntelligence.injuryMechanism}</div>
+            </div>
+          )}
+
+          {a.recallIntelligence.injuryReported && (
+            <div style={{ marginBottom: 10, padding: "6px 10px", background: "rgba(239,68,68,0.08)", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, color: "#ef4444", marginBottom: 2, fontWeight: 700 }}>Injuries Already Reported</div>
+              <div style={{ fontSize: 12, color: "#fca5a5" }}>{a.recallIntelligence.injuryReported}</div>
+            </div>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+            {a.recallIntelligence.liabilityTheory && (
+              <div>
+                <div style={{ fontSize: 10, color: "#666", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Liability Theory</div>
+                <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{a.recallIntelligence.liabilityTheory}</div>
+              </div>
+            )}
+            {a.recallIntelligence.manufacturerKnowledge && (
+              <div>
+                <div style={{ fontSize: 10, color: "#f59e0b", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Manufacturer Prior Knowledge</div>
+                <div style={{ fontSize: 12, color: "#fbbf24", lineHeight: 1.5 }}>{a.recallIntelligence.manufacturerKnowledge}</div>
+              </div>
+            )}
+          </div>
+
+          {a.recallIntelligence.classDefinition && (
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(59,130,246,0.06)", borderRadius: 6, border: "1px solid rgba(59,130,246,0.2)" }}>
+              <div style={{ fontSize: 10, color: "#60a5fa", marginBottom: 2, fontWeight: 700, textTransform: "uppercase" }}>Proposed Class Definition</div>
+              <div style={{ fontSize: 12, color: "#93c5fd", lineHeight: 1.5 }}>{a.recallIntelligence.classDefinition}</div>
+            </div>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+            {a.recallIntelligence.targetDemographics && (
+              <div>
+                <div style={{ fontSize: 10, color: "#22c55e", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Target Demographics</div>
+                <div style={{ fontSize: 12, color: "#86efac", lineHeight: 1.5 }}>{a.recallIntelligence.targetDemographics}</div>
+              </div>
+            )}
+            {a.recallIntelligence.whereToFindPlaintiffs?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, color: "#22c55e", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Where to Find Plaintiffs</div>
+                {a.recallIntelligence.whereToFindPlaintiffs.map((ch, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#86efac", marginBottom: 2 }}>• {ch}</div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {a.recallIntelligence.acquisitionScript && (
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(34,197,94,0.06)", borderRadius: 6, border: "1px solid rgba(34,197,94,0.2)" }}>
+              <div style={{ fontSize: 10, color: "#22c55e", marginBottom: 2, fontWeight: 700 }}>Outreach Script</div>
+              <div style={{ fontSize: 13, color: "#86efac", fontStyle: "italic" }}>"{a.recallIntelligence.acquisitionScript}"</div>
+            </div>
+          )}
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {a.recallIntelligence.competingFirmsLikely && (
+              <div style={{ padding: "6px 10px", background: "rgba(245,158,11,0.06)", borderRadius: 6, border: "1px solid rgba(245,158,11,0.2)" }}>
+                <div style={{ fontSize: 10, color: "#f59e0b", marginBottom: 2, fontWeight: 700 }}>Competition Timeline</div>
+                <div style={{ fontSize: 12, color: "#fbbf24" }}>{a.recallIntelligence.competingFirmsLikely}</div>
+              </div>
+            )}
+            {a.recallIntelligence.immediateAction && (
+              <div style={{ padding: "6px 10px", background: "rgba(239,68,68,0.08)", borderRadius: 6, border: "1px solid rgba(239,68,68,0.3)" }}>
+                <div style={{ fontSize: 10, color: "#ef4444", marginBottom: 2, fontWeight: 700 }}>Immediate Action Required</div>
+                <div style={{ fontSize: 12, color: "#fca5a5" }}>{a.recallIntelligence.immediateAction}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {a.executiveSummary && (
         <Section title="Executive Summary" accent="#C8442F">
@@ -279,6 +695,16 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
         {a.timeline && (
           <Section title="Timeline & Urgency" accent={urgencyColor(a.timeline.urgencyLevel)}>
+            {a.caseStage && (
+              <div style={{ marginBottom: 10 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: stageColor(a.caseStage) + "22", color: stageColor(a.caseStage), border: `1px solid ${stageColor(a.caseStage)}44` }}>
+                  {a.caseStage}
+                </span>
+                {a.caseStageRationale && (
+                  <div style={{ fontSize: 12, color: "#a0a0b8", marginTop: 5, lineHeight: 1.4 }}>{a.caseStageRationale}</div>
+                )}
+              </div>
+            )}
             {a.timeline.urgencyLevel && (
               <div style={{ marginBottom: 8, padding: "6px 10px", background: `${urgencyColor(a.timeline.urgencyLevel)}18`, borderRadius: 6, border: `1px solid ${urgencyColor(a.timeline.urgencyLevel)}44`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: urgencyColor(a.timeline.urgencyLevel) }}>{a.timeline.urgencyLevel} URGENCY</span>
@@ -345,8 +771,107 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         </Section>
       )}
 
+      {/* ── KB INTELLIGENCE — KB-grounded comparison, analogues, warnings, playbook ── */}
+      {(a.kbAnalogues?.length > 0 || a.kbWarnings?.length > 0 || a.kbComparativeAssessment) && (
+        <Section title="KB Intelligence — Historical Case Comparison" accent="#C8442F">
+
+          {/* Replication grade + comparative assessment */}
+          {(a.kbReplicationGrade || a.kbComparativeAssessment) && (
+            <div style={{ display: "flex", gap: 16, marginBottom: 16, alignItems: "flex-start" }}>
+              {a.kbReplicationGrade && (
+                <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 10, background: "rgba(200,68,47,0.12)", border: "2px solid rgba(200,68,47,0.4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: "#C8442F", lineHeight: 1 }}>{a.kbReplicationGrade}</div>
+                  <div style={{ fontSize: 9, color: "#888", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>Replicate</div>
+                </div>
+              )}
+              {a.kbComparativeAssessment && (
+                <p style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.7, margin: 0, flex: 1 }}>{a.kbComparativeAssessment}</p>
+              )}
+            </div>
+          )}
+
+          {/* KB Analogues — cases that succeeded with same pattern */}
+          {a.kbAnalogues?.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+                Similar cases that succeeded ({a.kbAnalogues.length})
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {a.kbAnalogues.map((k, i) => (
+                  <div key={i} style={{ padding: "10px 12px", background: "rgba(34,197,94,0.05)", border: "1px solid rgba(34,197,94,0.18)", borderRadius: 8, display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "start" }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: "#22c55e" }}>{k.rating || "?"}</span>
+                      <span style={{ fontSize: 9, color: "#444", textAlign: "center", lineHeight: 1.2 }}>KB#{k.caseId}</span>
+                      {k.replicationGrade && (
+                        <span style={{ fontSize: 9, padding: "1px 4px", borderRadius: 3, background: "rgba(34,197,94,0.12)", color: "#86efac", fontWeight: 700 }}>{k.replicationGrade}</span>
+                      )}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#86efac", marginBottom: 2 }}>{k.caseName}</div>
+                      {k.settlement && <div style={{ fontSize: 11, color: "#22c55e", marginBottom: 4 }}>{k.settlement}</div>}
+                      {k.whyAnalogous && <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, marginBottom: 4 }}>{k.whyAnalogous}</div>}
+                      {k.keyLesson && (
+                        <div style={{ fontSize: 11, color: "#86efac", padding: "4px 8px", background: "rgba(34,197,94,0.08)", borderRadius: 4, lineHeight: 1.4 }}>
+                          Lesson: {k.keyLesson}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* KB Warnings — cases that failed with same pattern */}
+          {a.kbWarnings?.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+                Failure mode warnings ({a.kbWarnings.length})
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {a.kbWarnings.map((k, i) => (
+                  <div key={i} style={{ padding: "10px 12px", background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "start" }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 3, flexShrink: 0 }}>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: "#ef4444" }}>{k.rating || "F"}</span>
+                      <span style={{ fontSize: 9, color: "#444", textAlign: "center", lineHeight: 1.2 }}>KB#{k.caseId}</span>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "#fca5a5", marginBottom: 2 }}>{k.caseName}</div>
+                      {k.failureMode && <div style={{ fontSize: 12, color: "#f87171", lineHeight: 1.5, marginBottom: 4 }}>Failure: {k.failureMode}</div>}
+                      {k.howThisLeadMirrorsIt && <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, marginBottom: 4 }}>{k.howThisLeadMirrorsIt}</div>}
+                      {k.mitigationAdvice && (
+                        <div style={{ fontSize: 11, color: "#fbbf24", padding: "4px 8px", background: "rgba(251,191,36,0.06)", borderRadius: 4, lineHeight: 1.4 }}>
+                          Avoid: {k.mitigationAdvice}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* KB Strategic Playbook — derived from historical success patterns */}
+          {a.kbStrategicPlaybook?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 11, color: "#C8442F", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+                Strategic playbook (from KB patterns)
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {a.kbStrategicPlaybook.map((step, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, padding: "4px 0" }}>
+                    <span style={{ color: "#C8442F", fontWeight: 700, flexShrink: 0, minWidth: 18 }}>{i + 1}.</span>
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </Section>
+      )}
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
-        {a.analogousCases?.length > 0 && (
+        {a.analogousCases?.length > 0 && !a.kbAnalogues?.length && (
           <Section title="KB Analogues" accent="#E06050">
             <TagList items={a.analogousCases} color="#E06050" />
           </Section>
@@ -386,6 +911,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         </Section>
       )}
 
+      <AcquisitionBrief lead={lead} />
+
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
         <Btn small onClick={() => onAddToTracker(lead)}>+ Add to Case Tracker</Btn>
         {lead.url && (
@@ -394,6 +921,116 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         <Btn small variant="danger" onClick={() => onDismiss(lead.id)}>Dismiss</Btn>
       </div>
     </div>
+  );
+}
+
+// ─── OPPORTUNITY CARD ─────────────────────────────────────────────────────────
+
+function OpportunityCard({ opp, leadsMap }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Card style={{ cursor: "pointer", borderLeft: `3px solid ${scoreColor(opp.combinedScore)}` }} onClick={() => setExpanded(e => !e)}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 12, fontWeight: 800, padding: "2px 8px", borderRadius: 6, background: "rgba(200,68,47,0.2)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.4)" }}>
+              #{opp.rank}
+            </span>
+            <span style={{ fontSize: 22, fontWeight: 800, color: scoreColor(opp.combinedScore), lineHeight: 1 }}>{opp.combinedScore}</span>
+            <span style={{ fontSize: 11, color: "#666" }}>/ {opp.probabilityOfSuccess}% P(success)</span>
+            {opp.caseStage && (
+              <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, background: stageColor(opp.caseStage) + "18", color: stageColor(opp.caseStage), border: `1px solid ${stageColor(opp.caseStage)}44` }}>
+                {opp.caseStage}
+              </span>
+            )}
+            {opp.urgencyLevel && opp.urgencyLevel !== "LOW" && (
+              <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, background: `${urgencyColor(opp.urgencyLevel)}18`, color: urgencyColor(opp.urgencyLevel), border: `1px solid ${urgencyColor(opp.urgencyLevel)}44` }}>
+                {opp.urgencyLevel}
+              </span>
+            )}
+            {opp.firstMoverAdvantage && (
+              <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 6, background: "rgba(34,197,94,0.15)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.3)" }}>
+                FIRST MOVER
+              </span>
+            )}
+            {opp.signalCount > 0 && (
+              <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 6, background: "rgba(100,100,150,0.15)", color: "#9090c0" }}>
+                {opp.signalCount} signals
+              </span>
+            )}
+          </div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: "#e0e0f0", marginBottom: 3 }}>{opp.opportunityName}</div>
+          {opp.estimatedFund && (
+            <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>
+              Fund: <span style={{ color: "#E06050", fontWeight: 600 }}>{opp.estimatedFund}</span>
+              {opp.estimatedFeeToFirm && <> · Firm fee: <span style={{ color: "#22c55e", fontWeight: 600 }}>{opp.estimatedFeeToFirm}</span></>}
+            </div>
+          )}
+          {opp.whyPursue?.[0] && <div style={{ fontSize: 12, color: "#c8c8e0" }}>• {opp.whyPursue[0]}</div>}
+        </div>
+        {opp.kbReplicationGrade && opp.kbReplicationGrade !== "Unknown" && (
+          <div style={{ textAlign: "center", minWidth: 44, flexShrink: 0 }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: opp.kbReplicationGrade <= "B" ? "#22c55e" : opp.kbReplicationGrade <= "C" ? "#f59e0b" : "#ef4444" }}>{opp.kbReplicationGrade}</div>
+            <div style={{ fontSize: 9, color: "#555" }}>KB GRADE</div>
+          </div>
+        )}
+      </div>
+
+      {expanded && (
+        <div style={{ marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
+          {opp.whyPursue?.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Why Pursue</div>
+              {opp.whyPursue.map((r, i) => <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4 }}>• {r}</div>)}
+            </div>
+          )}
+          {opp.immediateAction && (
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(200,68,47,0.08)", borderRadius: 8, border: "1px solid rgba(200,68,47,0.25)" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Immediate Action</div>
+              <div style={{ fontSize: 13, color: "#e0e0f0", fontWeight: 600 }}>{opp.immediateAction}</div>
+            </div>
+          )}
+          {opp.keyRisk && (
+            <div style={{ fontSize: 12, color: "#f87171", marginBottom: 12 }}>Risk: {opp.keyRisk}</div>
+          )}
+          {opp.supportingSignals?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#555", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Supporting Signals</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {opp.supportingSignals.map((s, i) => {
+                  // Look up source from leads map by matching headline
+                  const matchedLead = leadsMap ? Object.values(leadsMap).find(l =>
+                    l.analysis?.headline === s || l.title === s || (l.analysis?.headline && s.includes(l.analysis.headline.slice(0, 40)))
+                  ) : null;
+                  const src = matchedLead?.source;
+                  const url = matchedLead?.url;
+                  return (
+                    <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                      {src && (
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3,
+                          background: `${sourceCategory(src).color}18`, color: sourceCategory(src).color,
+                          border: `1px solid ${sourceCategory(src).color}33`, whiteSpace: "nowrap", flexShrink: 0, marginTop: 1 }}>
+                          {sourceCategory(src).label}
+                        </span>
+                      )}
+                      <span style={{ fontSize: 11, color: "#8080a8", lineHeight: 1.4, flex: 1 }}>{s.slice(0, 90)}</span>
+                      {url && (
+                        <a href={url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+                          style={{ fontSize: 10, color: "#555", textDecoration: "none", padding: "1px 5px",
+                            borderRadius: 3, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                            whiteSpace: "nowrap", flexShrink: 0 }}>
+                          →
+                        </a>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </Card>
   );
 }
 
@@ -430,16 +1067,25 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
                 {urgency}
               </span>
             )}
+            {a.caseStage && a.caseStage !== "Resolved" && (
+              <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 6, background: stageColor(a.caseStage) + "18", color: stageColor(a.caseStage), border: `1px solid ${stageColor(a.caseStage)}44` }}>
+                {a.caseStage}
+              </span>
+            )}
             {a.caseType && <Badge label={a.caseType} color="#C8442F" />}
             {a.subCategory && <Badge label={a.subCategory} color="#B83E2C" />}
           </div>
 
-          <div style={{ fontWeight: 600, fontSize: 14, color: "#e0e0f0", marginBottom: 4, lineHeight: 1.4 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, color: "#e0e0f0", marginBottom: 6, lineHeight: 1.4 }}>
             {a.headline || lead.title}
           </div>
 
-          <div style={{ fontSize: 11, color: "#555", marginBottom: 4 }}>
-            {lead.source} · {new Date(lead.pubDate || lead.scannedAt).toLocaleDateString()}
+          {/* Prominent source attribution */}
+          <div style={{ marginBottom: 6 }}>
+            <SourceBadge source={lead.source} url={lead.url} />
+          </div>
+          <div style={{ fontSize: 11, color: "#444", marginBottom: 4 }}>
+            {new Date(lead.pubDate || lead.scannedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
           </div>
 
           {a.executiveSummary && (
@@ -458,6 +1104,20 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
             <div style={{ fontSize: 11, color: "#E06050", marginTop: 3 }}>
               Est. fund: {a.damagesModel.totalFundEstimate}
               {a.damagesModel.feeToFirmAt33Pct && ` · Fee: ${a.damagesModel.feeToFirmAt33Pct}`}
+            </div>
+          )}
+          {(a.kbReplicationGrade || a.kbAnalogues?.length > 0) && (
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
+              {a.kbReplicationGrade && (
+                <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 4, background: "rgba(200,68,47,0.12)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.3)" }}>
+                  KB Grade: {a.kbReplicationGrade}
+                </span>
+              )}
+              {a.kbAnalogues?.slice(0, 2).map((k, i) => (
+                <span key={i} style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4, background: "rgba(34,197,94,0.08)", color: "#86efac", border: "1px solid rgba(34,197,94,0.2)" }}>
+                  ~ KB#{k.caseId} {k.caseName?.split(" ").slice(0, 3).join(" ")} ({k.rating})
+                </span>
+              ))}
             </div>
           )}
         </div>
@@ -485,12 +1145,31 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState("");
 
-  const [minScore, setMinScore] = useState(50);
+  const [minScore, setMinScore] = useState(0);
   const [filterClass, setFilterClass] = useState("");
   const [filterJoinCreate, setFilterJoinCreate] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [filterCaseType, setFilterCaseType] = useState("");
   const [filterUrgency, setFilterUrgency] = useState("");
+  const [filterCaseStage, setFilterCaseStage] = useState("");
+
+  const [viewMode, setViewMode] = useState("leads");
+  const [opportunities, setOpportunities] = useState([]);
+  const [oppsLoading, setOppsLoading] = useState(false);
+  const [oppsGeneratedAt, setOppsGeneratedAt] = useState(null);
+
+  const fetchOpportunities = useCallback(async (forceRefresh = false) => {
+    setOppsLoading(true);
+    try {
+      const res = await fetch(`/api/opportunities${forceRefresh ? "?refresh=1" : ""}`);
+      const data = await res.json();
+      setOpportunities(data.opportunities || []);
+      setOppsGeneratedAt(data.generatedAt || null);
+    } catch (e) {
+      setError("Opportunities synthesis failed: " + e.message);
+    }
+    setOppsLoading(false);
+  }, []);
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -502,14 +1181,15 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       if (filterCategory) params.set("category", filterCategory);
       if (filterCaseType) params.set("caseType", filterCaseType);
 
-      const [leadsRes, statsRes] = await Promise.all([
-        fetch(`/api/leads?${params}`),
-        fetch("/api/leads?stats=1"),
-      ]);
+      const leadsRes = await fetch(`/api/leads?${params}`);
       const leadsData = await leadsRes.json();
-      const statsData = await statsRes.json();
       setLeads(leadsData.leads || []);
-      setStats(statsData);
+
+      // Stats are optional — fetch separately so a failure doesn't block leads
+      fetch("/api/leads?stats=1")
+        .then(r => r.ok ? r.json() : null)
+        .then(statsData => { if (statsData) setStats(statsData); })
+        .catch(() => {});
     } catch (e) {
       setError("Cannot connect to backend. Deploy to Vercel and enable KV.");
     }
@@ -517,6 +1197,19 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   }, [minScore, filterClass, filterJoinCreate, filterCategory, filterCaseType]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
+
+  // Auto-push leads scoring ≥ 75 to Case Tracker (only if not already tracked by leadId)
+  useEffect(() => {
+    if (!setCases || leads.length === 0) return;
+    const highLeads = leads.filter(l => (l.analysis?.score || 0) >= 75);
+    if (highLeads.length === 0) return;
+    setCases(prev => {
+      const existingLeadIds = new Set(prev.map(c => c.leadId).filter(Boolean));
+      const toAdd = highLeads.filter(l => !existingLeadIds.has(l.id));
+      if (toAdd.length === 0) return prev;
+      return [...toAdd.map((lead, i) => buildCaseFromLead(lead, i)), ...prev];
+    });
+  }, [leads]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const triggerScan = async () => {
     setScanning(true);
@@ -541,14 +1234,15 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     }
   };
 
-  const addToTracker = (lead) => {
+  const buildCaseFromLead = (lead, idOffset = 0) => {
     const a = lead.analysis || {};
-    const newCase = {
-      id: Date.now(),
+    return {
+      id: Date.now() + idOffset,
+      leadId: lead.id,
       title: a.headline || lead.title,
       company: a.defendantProfile?.name || "",
-      type: a.caseType || "Product Liability",
-      priority: (a.score || 0) >= 75 ? "Critical" : (a.score || 0) >= 60 ? "High" : "Medium",
+      caseType: a.caseType || "Other",
+      priority: (a.score || 0) >= 90 ? "Critical" : (a.score || 0) >= 75 ? "High" : "Medium",
       status: "New Lead",
       source: lead.source,
       affectedPop: a.classProfile?.estimatedSize || "",
@@ -556,25 +1250,34 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       score: a.score || 50,
       description: a.executiveSummary || lead.description || "",
       notes: [
-        `KB Analogues: ${(a.analogousCases || []).join(", ")}`,
-        `Top Risk: ${a.topRisk || ""}`,
+        a.analogousCases?.length ? `KB Analogues: ${a.analogousCases.join(", ")}` : null,
+        a.topRisk ? `Top Risk: ${a.topRisk}` : null,
         `Damages: Per claimant ${a.damagesModel?.perClaimantRange || "unknown"} · Fund ${a.damagesModel?.totalFundEstimate || "unknown"}`,
-        `Timeline: ${a.timeline?.yearsToResolution || "?"} years · Urgency: ${a.timeline?.urgencyLevel || "unknown"}`,
-        `SOL: ${a.timeline?.statuteOfLimitationsNote || "unknown"}`,
-        `Plaintiff: ${a.plaintiffProfile?.demographics || "unknown"}`,
-        `Defendant: ${a.defendantProfile?.name || "unknown"} — Bankruptcy risk: ${a.defendantProfile?.bankruptcyRisk || "unknown"}`,
-        `Recommendation: ${a.recommendedAction || ""}`,
-        `Source URL: ${lead.url || ""}`,
+        `Timeline: ${a.timeline?.yearsToResolution || "?"} yrs · Urgency: ${a.timeline?.urgencyLevel || "unknown"}`,
+        a.timeline?.statuteOfLimitationsNote ? `SOL: ${a.timeline.statuteOfLimitationsNote}` : null,
+        a.recommendedAction ? `Action: ${a.recommendedAction}` : null,
+        lead.url ? `Source: ${lead.url}` : null,
       ].filter(Boolean).join("\n"),
       dateAdded: new Date().toISOString().slice(0, 10),
     };
-    if (setCases) setCases(prev => [newCase, ...prev]);
+  };
+
+  const addToTracker = (lead) => {
+    if (!setCases) return;
+    setCases(prev => {
+      if (prev.some(c => c.leadId === lead.id)) return prev; // already tracked
+      return [buildCaseFromLead(lead), ...prev];
+    });
     if (onAddCase) onAddCase();
   };
 
   const visibleLeads = leads
     .filter(l => !filterUrgency || l.analysis?.timeline?.urgencyLevel === filterUrgency)
+    .filter(l => !filterCaseStage || l.analysis?.caseStage === filterCaseStage)
     .sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0));
+
+  // Build a lookup map for OpportunityCard to resolve source + URL from supporting signal titles
+  const leadsMap = Object.fromEntries(leads.map(l => [l.id, l]));
 
   const highCount = leads.filter(l => (l.analysis?.score || 0) >= 75).length;
   const criticalCount = leads.filter(l => l.analysis?.timeline?.urgencyLevel === "CRITICAL").length;
@@ -625,57 +1328,119 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score: <strong style={{ color: "#e0e0f0" }}>{minScore}</strong></span>
-          <input type="range" min="0" max="100" step="5" value={minScore} onChange={e => setMinScore(parseInt(e.target.value))}
-            style={{ width: 100, accentColor: "#C8442F", cursor: "pointer" }} />
-        </div>
-
+      {/* ── View mode toggle ── */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         {[
-          { label: "Classification", value: filterClass, onChange: setFilterClass, options: ["CREATE", "INVESTIGATE", "PASS"] },
-          { label: "JOIN / CREATE", value: filterJoinCreate, onChange: setFilterJoinCreate, options: ["JOIN", "CREATE"] },
-          { label: "Category", value: filterCategory, onChange: setFilterCategory, options: SOURCE_CATEGORIES },
-          { label: "Urgency", value: filterUrgency, onChange: setFilterUrgency, options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
-        ].map(({ label, value, onChange, options }) => (
-          <select key={label} value={value} onChange={e => onChange(e.target.value)}
-            style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
-            <option value="">{label}: All</option>
-            {options.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
+          { id: "leads", label: `All Leads (${leads.length})` },
+          { id: "opportunities", label: "Top Opportunities" },
+        ].map(({ id, label }) => (
+          <button key={id} onClick={() => {
+            setViewMode(id);
+            if (id === "opportunities" && opportunities.length === 0) fetchOpportunities();
+          }} style={{
+            padding: "7px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
+            background: viewMode === id ? "#C8442F" : "rgba(255,255,255,0.06)",
+            color: viewMode === id ? "#fff" : "#888",
+            border: `1px solid ${viewMode === id ? "#C8442F" : "rgba(255,255,255,0.1)"}`,
+          }}>
+            {label}
+          </button>
         ))}
-
-        <select value={filterCaseType} onChange={e => setFilterCaseType(e.target.value)}
-          style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
-          <option value="">Case Type: All</option>
-          {CASE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-        </select>
-
-        <Btn small variant="secondary" onClick={fetchLeads}>Refresh</Btn>
       </div>
 
-      <div style={{ fontSize: 12, color: "#666", marginBottom: 12 }}>
-        {visibleLeads.length} leads · click any card to expand full intelligence report
-      </div>
+      {viewMode === "leads" ? (
+        <>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score: <strong style={{ color: "#e0e0f0" }}>{minScore}</strong></span>
+              <input type="range" min="0" max="100" step="5" value={minScore} onChange={e => setMinScore(parseInt(e.target.value))}
+                style={{ width: 100, accentColor: "#C8442F", cursor: "pointer" }} />
+            </div>
 
-      {loading ? (
-        <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
-          <div style={{ fontSize: 13 }}>Loading leads...</div>
-        </div>
-      ) : visibleLeads.length === 0 ? (
-        <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>📥</div>
-          <div style={{ marginBottom: 8 }}>No leads yet.</div>
-          <div style={{ fontSize: 12, color: "#444" }}>
-            {error ? "Check Vercel deployment and KV configuration." : "Click \"Run Scan Now\" to monitor 50+ sources: FDA, CPSC, NHTSA, SEC, DOJ, EEOC, courts, Reddit, news, social media, PubMed, CFPB."}
+            {[
+              { label: "Classification", value: filterClass, onChange: setFilterClass, options: ["CREATE", "INVESTIGATE", "PASS"] },
+              { label: "JOIN / CREATE", value: filterJoinCreate, onChange: setFilterJoinCreate, options: ["JOIN", "CREATE"] },
+              { label: "Category", value: filterCategory, onChange: setFilterCategory, options: SOURCE_CATEGORIES },
+              { label: "Urgency", value: filterUrgency, onChange: setFilterUrgency, options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
+            ].map(({ label, value, onChange, options }) => (
+              <select key={label} value={value} onChange={e => onChange(e.target.value)}
+                style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+                <option value="">{label}: All</option>
+                {options.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            ))}
+
+            <select value={filterCaseType} onChange={e => setFilterCaseType(e.target.value)}
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+              <option value="">Case Type: All</option>
+              {CASE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+
+            <select value={filterCaseStage} onChange={e => setFilterCaseStage(e.target.value)}
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+              <option value="">Stage: All</option>
+              <option value="Pre-Litigation">Pre-Litigation</option>
+              <option value="Filed / Discovery">Filed / Discovery</option>
+              <option value="MDL Consolidated">MDL Consolidated</option>
+              <option value="Bellwether Set">Bellwether Set</option>
+              <option value="Settlement Discussions">Settlement Discussions</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+
+            <Btn small variant="secondary" onClick={fetchLeads}>Refresh</Btn>
           </div>
-        </div>
+
+          <div style={{ fontSize: 12, color: "#666", marginBottom: 12 }}>
+            {visibleLeads.length} leads · click any card to expand full intelligence report
+          </div>
+
+          {loading ? (
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ fontSize: 13 }}>Loading leads...</div>
+            </div>
+          ) : visibleLeads.length === 0 ? (
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ fontSize: 40, marginBottom: 12 }}>📥</div>
+              <div style={{ marginBottom: 8 }}>No leads yet.</div>
+              <div style={{ fontSize: 12, color: "#444" }}>
+                {error ? "Check Vercel deployment and KV configuration." : "Click \"Run Scan Now\" to monitor 50+ sources: FDA, CPSC, NHTSA, SEC, DOJ, EEOC, courts, Reddit, news, social media, PubMed, CFPB."}
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gap: 10 }}>
+              {visibleLeads.map(lead => (
+                <LeadCard key={lead.id} lead={lead} onDismiss={dismissLead} onAddToTracker={addToTracker} />
+              ))}
+            </div>
+          )}
+        </>
       ) : (
-        <div style={{ display: "grid", gap: 10 }}>
-          {visibleLeads.map(lead => (
-            <LeadCard key={lead.id} lead={lead} onDismiss={dismissLead} onAddToTracker={addToTracker} />
-          ))}
-        </div>
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: "#666" }}>
+              {oppsLoading
+                ? "Claude is synthesizing case opportunities across all leads..."
+                : `${opportunities.length} case opportunities ranked by probability of success${oppsGeneratedAt ? ` · Generated ${new Date(oppsGeneratedAt).toLocaleString()}` : ""}`}
+            </div>
+            <Btn small variant="secondary" onClick={() => fetchOpportunities(true)} style={{ flexShrink: 0 }}>
+              {oppsLoading ? "Analyzing..." : "Refresh Analysis"}
+            </Btn>
+          </div>
+          {oppsLoading ? (
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ fontSize: 13 }}>Grouping signals by defendant · Scoring by KB precedent · Ranking by P(success)...</div>
+            </div>
+          ) : opportunities.length === 0 ? (
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ marginBottom: 8 }}>No leads available for synthesis.</div>
+              <div style={{ fontSize: 12, color: "#444" }}>Run a scan first to populate leads, then return here.</div>
+            </div>
+          ) : (
+            <div style={{ display: "grid", gap: 10 }}>
+              {opportunities.map((opp, i) => <OpportunityCard key={i} opp={opp} leadsMap={leadsMap} />)}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

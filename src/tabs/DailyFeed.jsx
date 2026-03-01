@@ -19,53 +19,151 @@ const SCAN_INTERVALS  = [
 ];
 
 const FEED_QUERIES = [
-  // Plaintiff intel sites — highest signal
+  // ── Plaintiff intelligence sites — highest signal ──────────────────────────
   "new class action lawsuit filed 2026 site:classaction.org OR site:topclassactions.com OR site:aboutlawsuits.com",
   "new MDL mass tort consolidation JPML transfer order 2026",
   "new settlement verdict product liability pharmaceutical site:millerandzois.com 2026",
   "new investigation lawsuit filed consumer drugs devices site:classaction.com 2026",
+  "new investigation lawsuit class action site:hbsslaw.com OR site:levinlaw.com OR site:motleyrice.com 2026",
+  "new investigation mass tort class action site:seegerweiss.com OR site:lieffcabraser.com OR site:wisnerbaum.com 2026",
+  "new case filing investigation MDL site:jdsupra.com OR site:masstortnews.org OR site:lawsuit-information-center.com 2026",
+  "class action lawsuit filed 2026 site:reuters.com OR site:bloomberg.com OR site:law360.com",
 
-  // Government agency actions
-  "FDA recall injury class action lawsuit 2026",
-  "SEC enforcement action securities fraud class action 2026",
-  "FTC consumer protection enforcement action lawsuit 2026",
-  "NHTSA vehicle defect recall investigation class action 2026",
-  "EPA environmental contamination PFAS toxic lawsuit 2026",
-
-  // Case categories
+  // ── FDA / Drug / Medical Device ───────────────────────────────────────────
+  "FDA recall Class I dangerous defective product injury death 2026",
+  "FDA warning letter pharmaceutical drug consumer patient injury 2026",
+  "FDA adverse event drug injury spike complaint class action 2026",
+  "FDA black box warning serious injury death lawsuit class action 2026",
   "pharmaceutical drug injury lawsuit FDA warning 2026",
-  "product recall personal injury class action filed 2026",
-  "data breach settlement class action 2026",
-  "social media addiction youth mental health lawsuit 2026",
-  "mass tort new filing complaint injury attorney 2026",
-  "product liability injury complaint Reddit consumers 2026",
-  "corporate fraud whistleblower class action 2026",
   "medical device defect recall injury lawsuit 2026",
+  "GLP-1 Ozempic Wegovy semaglutide gastroparesis paralysis injury lawsuit 2026",
+  "SSRI antidepressant birth defect infant injury class action 2026",
+  "surgical mesh hernia pelvic implant injury recall class action 2026",
+  "hip knee replacement metal implant recall injury class action 2026",
+  "CPAP BIPAP contaminated foam lung injury recall class action 2026",
+  "talcum powder asbestos ovarian cancer mesothelioma class action 2026",
+  "compounding pharmacy contaminated drug injury death class action 2026",
+  "insulin pump glucose monitor defect injury class action 2026",
+  "IUD contraceptive device injury perforation class action 2026",
 
-  // DOJ criminal enforcement → civil plaintiff pipeline
+  // ── NHTSA / Auto / Vehicle Defect ─────────────────────────────────────────
+  "NHTSA vehicle defect recall investigation class action 2026",
+  "vehicle defect recall products liability class action automotive 2026",
+  "EV electric vehicle battery fire defect explosion class action 2026",
+  "autonomous self-driving vehicle accident defect class action 2026",
+  "airbag inflator defect shrapnel injury recall class action 2026",
+  "car truck SUV fire rollover transmission defect class action 2026",
+  "used car dealership fraud misrepresentation class action 2026",
+
+  // ── Data Breach / Privacy ─────────────────────────────────────────────────
+  "data breach settlement class action 2026",
+  "healthcare hospital data breach HIPAA patients class action 2026",
+  "biometric data Illinois BIPA facial recognition fingerprint class action 2026",
+  "AI deepfake voice cloning identity fraud class action lawsuit 2026",
+  "data broker personal information sold without consent class action 2026",
+  "website pixel tracker unauthorized health data collection class action 2026",
+  "ransomware healthcare patient data exposure class action 2026",
+
+  // ── Social Media / Big Tech ───────────────────────────────────────────────
+  "social media addiction youth mental health lawsuit 2026",
+  "Meta Facebook Instagram teen mental health harm class action 2026",
+  "TikTok algorithm addiction minor children class action 2026",
+  "Google Apple antitrust app store monopoly class action 2026",
+  "AI training data copyright scraping class action 2026",
+
+  // ── Environmental / Toxic Exposure / PFAS ────────────────────────────────
+  "EPA environmental contamination PFAS toxic lawsuit 2026",
+  "PFAS forever chemicals water contamination class action 2026",
+  "chemical plant industrial contamination cancer class action 2026",
+  "lead contamination water supply infrastructure class action 2026",
+  "wildfire utility company negligence class action settlement 2026",
+  "toxic mold asbestos contamination building exposure class action 2026",
+  "pesticide herbicide cancer exposure class action Roundup 2026",
+  "oil pipeline spill groundwater contamination class action 2026",
+
+  // ── Consumer Products / Food Safety ──────────────────────────────────────
+  "product recall personal injury class action filed 2026",
+  "CPSC dangerous consumer product recall injury children class action 2026",
+  "food labeling fraud false advertising health claims class action 2026",
+  "E. coli Salmonella Listeria food contamination outbreak class action 2026",
+  "baby food heavy metals contamination brain injury class action 2026",
+  "dietary supplement false claims injury class action 2026",
+  "product liability injury complaint Reddit consumers 2026",
+  "mass tort new filing complaint injury attorney 2026",
+
+  // ── Financial Products / Consumer Fraud ──────────────────────────────────
+  "predatory lending hidden fees junk fees mortgage class action 2026",
+  "bank overdraft NSF fee unfair practice class action 2026",
+  "cryptocurrency exchange fraud investor class action lawsuit 2026",
+  "insurance bad faith claim denial class action lawsuit 2026",
+  "student loan servicer misrepresentation class action 2026",
+  "payday lender usurious interest rate class action 2026",
+  "subscription trap dark pattern unauthorized charge class action 2026",
+  "MLM pyramid scheme investor class action settlement 2026",
+
+  // ── Employment / Labor / Wage ─────────────────────────────────────────────
+  "wage theft unpaid overtime minimum wage class action 2026",
+  "gig worker employee misclassification class action lawsuit 2026",
+  "workplace sexual harassment discrimination class action settlement 2026",
+  "age race gender discrimination employment class action 2026",
+  "EEOC employment discrimination class action investigation 2026",
+  "non-compete no-poach agreement workers class action antitrust 2026",
+
+  // ── Antitrust / Price Fixing ──────────────────────────────────────────────
+  "price fixing antitrust class action settlement consumer 2026",
+  "market allocation anticompetitive cartel class action 2026",
+  "corporate fraud whistleblower class action 2026",
+  "DOJ antitrust investigation price fixing consumer class action 2026",
+
+  // ── DOJ Criminal Enforcement → Civil Plaintiff Pipeline ──────────────────
   "DOJ criminal fraud conviction company executives guilty plea victims civil lawsuit 2026",
   "criminal plea agreement corporate fraud consumer patients investors victims compensation 2026",
   "USA v company criminal charges fraud victims class action civil RICO 2026",
-
-  // State AG investigations
-  "state attorney general investigation enforcement action corporate fraud consumer victims 2026",
-  "multistate attorney general settlement investigation consumer protection fraud 2026",
-
-  // False Claims Act — government contract fraud
-  "False Claims Act qui tam whistleblower settlement healthcare hospital fraud victims 2026",
-
-  // SEC EDGAR signals → securities class action
-  "company disclosed SEC subpoena DOJ investigation 8-K investor class action 2026",
-  "accounting restatement prior earnings reduced securities class action complaint investor loss 2026",
-  "material weakness internal controls restatement securities fraud lawsuit investor 2026",
-  "securities fraud stock drop class action complaint filed 2026 site:securities.stanford.edu OR site:classaction.org",
-
-  // SEC filing failures
-  "company late SEC filing NT 10-K restatement securities class action investor damages 2026",
-
-  // Criminal corporate cases to find civil victims
   "RICO criminal civil lawsuit corporate fraud victims damages class action 2026",
   "healthcare insurance fraud criminal conviction patients victims civil lawsuit 2026",
+
+  // ── False Claims Act / Qui Tam / FCA ─────────────────────────────────────
+  "False Claims Act qui tam whistleblower settlement healthcare hospital fraud 2026",
+  "FCA relator whistleblower hospital medical billing fraud settlement 2026",
+  "Medicare Medicaid overbilling fraud settlement qui tam whistleblower 2026",
+  "defense contractor government fraud FCA settlement whistleblower 2026",
+
+  // ── State AG / Government Enforcement ────────────────────────────────────
+  "state attorney general investigation enforcement corporate fraud consumer 2026",
+  "multistate attorney general settlement consumer protection fraud 2026",
+  "California attorney general investigation consumer fraud corporate 2026",
+  "New York attorney general consumer fraud settlement class action 2026",
+  "Texas Florida Ohio Illinois attorney general enforcement consumer 2026",
+  "state AG opioid pharmaceutical settlement consumer victims 2026",
+
+  // ── SEC EDGAR / Securities Fraud ──────────────────────────────────────────
+  "SEC enforcement action securities fraud class action 2026",
+  "company disclosed SEC subpoena DOJ investigation 8-K investor class action 2026",
+  "accounting restatement prior earnings securities class action investor loss 2026",
+  "material weakness internal controls restatement securities fraud lawsuit 2026",
+  "securities fraud stock drop class action filed 2026 site:securities.stanford.edu OR site:classaction.org",
+  "company late SEC filing NT 10-K restatement securities class action 2026",
+  "insider trading SEC investigation executive class action investor 2026",
+
+  // ── FTC / CFPB Consumer Protection ───────────────────────────────────────
+  "FTC consumer protection enforcement action lawsuit 2026",
+  "CFPB consumer financial protection enforcement action class action 2026",
+  "FTC dark pattern subscription fraud enforcement class action 2026",
+  "CFPB debt collector banking enforcement consumer victims class action 2026",
+
+  // ── Reddit / Social Media Signal Mining ──────────────────────────────────
+  "site:reddit.com r/legaladvice class action lawsuit company defective injury 2026",
+  "site:reddit.com r/personalfinance bank insurance bad faith denial class action 2026",
+  "site:reddit.com drug device recall injury compensation class action 2026",
+  "site:reddit.com employer wage theft unpaid overtime class action lawsuit 2026",
+  "site:reddit.com r/dataisbeautiful r/privacy data breach personal information lawsuit",
+
+  // ── Court Filings / JPML / CourtListener ─────────────────────────────────
+  "JPML motion transfer MDL consolidation class action filed 2026",
+  "site:courtlistener.com class action complaint filed 2026",
+  "federal district court class action complaint initial filing 2026",
+  "MDL bellwether trial date class action settlement negotiations 2026",
+  "new class action complaint filed PACER district court 2026",
 ];
 
 // ─── UTILITIES ────────────────────────────────────────────────────────────────
@@ -716,7 +814,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
         <Card style={{ textAlign: "center", padding: "48px 24px" }}>
           <div style={{ fontSize: 15, fontWeight: 600, color: "#e0e0f0", marginBottom: 8 }}>Waiting for first scan</div>
           <div style={{ fontSize: 13, color: "#555", maxWidth: 420, margin: "0 auto 20px", lineHeight: 1.6 }}>
-            The scanner will start automatically. It searches 30+ targeted queries covering DOJ/AG criminal enforcement, SEC EDGAR subpoenas and restatements, government databases, legal sites, news, Reddit, and social media — then scores each result for class action viability using your 150-case knowledge base.
+            The scanner will start automatically. It runs 120+ targeted queries across plaintiff intel sites, FDA/NHTSA/CFPB/EPA/SEC/FTC enforcement, medical device and drug injuries, data breaches, PFAS and environmental contamination, employment and wage theft, antitrust, state AG actions, qui tam/FCA, securities fraud, Reddit complaint clusters, and court filings — then scores each result for class action viability using your knowledge base.
           </div>
           <div style={{ fontSize: 12, color: "#666" }}>Scanning {fmtCountdown(countdown) === "now" ? "starting..." : `in ${fmtCountdown(countdown)}`}</div>
         </Card>

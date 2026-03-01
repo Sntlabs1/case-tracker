@@ -11,6 +11,7 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") return res.status(200).end();
 
+
   // ─── DELETE — dismiss a lead ───────────────────────────────────────────────
   if (req.method === "DELETE") {
     const { id } = req.query;

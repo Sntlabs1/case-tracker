@@ -79,6 +79,8 @@ ${KB_RUBRIC}
 
 Given a lead, produce a comprehensive litigation intelligence report as a single JSON object. No markdown, no text outside the JSON.
 
+CRITICAL JSON RULES: Your response must be parseable by JSON.parse(). Never use unescaped double-quote characters (") inside string values — use single quotes (') instead for any inline quotations. Avoid special control characters in strings.
+
 Required JSON schema (fill every field; use null only if genuinely unknown):
 {
   "score": <integer 0-100 — overall viability>,
@@ -93,6 +95,9 @@ Required JSON schema (fill every field; use null only if genuinely unknown):
   "daysToAct": <integer — days until opportunity expires (SOL deadline, MDL consolidation, settlement close), or null if > 3 years or unknown>,
   "targetingReadiness": "READY_NOW" | "NEEDS_INVESTIGATION" | "WAIT_FOR_TRIGGER",
   "targetingReadinessReason": "<1-2 sentences — exactly why you can/cannot start advertising for plaintiffs today, and what to do first>",
+
+  "caseStage": "Pre-Litigation | Filed / Discovery | MDL Consolidated | Bellwether Set | Settlement Discussions | Resolved",
+  "caseStageRationale": "<1 sentence citing specific evidence — e.g. 'JPML transfer order MDL-3089 issued Nov 2025, centralized S.D.N.Y.' or 'No case filed; FDA warning letter Oct 2025 is the first public signal'>",
 
   "headline": "<15 words max — what happened and who is harmed>",
   "executiveSummary": "<3-4 sentences: what happened, who is affected, why this creates class action opportunity, key risk>",
@@ -182,6 +187,26 @@ Required JSON schema (fill every field; use null only if genuinely unknown):
     {"risk": "<risk name>", "severity": "High|Medium|Low", "likelihood": "High|Medium|Low", "mitigation": "<concrete step to reduce this risk>"}
   ],
 
+  "recallIntelligence": {
+    "isGovernmentRecall": true | false,
+    "recallClass": "Class I — immediate health hazard|Class II — temporary harm|Class III — unlikely harm|Not a recall|Unknown",
+    "issuingAgency": "<FDA | CPSC | NHTSA | USDA/FSIS | EPA | null>",
+    "productName": "<exact recalled product name, drug name, or device model>",
+    "recallScope": "<number of units, lot numbers, date range affected>",
+    "injuryMechanism": "<exactly how the product causes harm — e.g. 'foam degradation releases carcinogenic VOCs'>",
+    "injuryReported": "<injuries, hospitalizations, or deaths already reported to the agency>",
+    "liabilityTheory": "<primary tort theory — e.g. strict products liability, failure to warn, negligent design>",
+    "manufacturerKnowledge": "<any evidence the manufacturer knew before the recall — FOIA docs, prior complaints, internal testing>",
+    "classDefinition": "<proposed plaintiff class based on recall scope — e.g. 'All U.S. purchasers of [product] manufactured between [dates]'>",
+    "targetDemographics": "<who bought this product — age, gender, conditions, geography>",
+    "whereToFindPlaintiffs": ["<channel 1 — e.g. 'Product registration database'>", "<channel 2>", "<channel 3>"],
+    "acquisitionScript": "<1-2 sentence outreach hook — e.g. 'Were you harmed by [product]? You may be entitled to compensation.'>",
+    "estimatedClassSize": "<units recalled / estimated purchasers>",
+    "priorRecallLitigation": "<any prior lawsuits from previous recalls of same product or company>",
+    "competingFirmsLikely": "<how fast plaintiff firms will move — days/weeks until field is crowded>",
+    "immediateAction": "<single most urgent step — e.g. 'File preservation letter to manufacturer within 48 hours'>"
+  },
+
   "analogousCases": ["<KB case name with settlement amount if known>"],
   "whyItScored": "<3-4 sentences specifically citing rubric factors — which winning factors add points, which failure modes subtract>",
   "topRisk": "<single biggest threat to case success>",
@@ -195,3 +220,218 @@ Required JSON schema (fill every field; use null only if genuinely unknown):
 
 // Legacy export — keep for backward compat with CaseIntelligence.jsx
 export const SCORING_SYSTEM_PROMPT = DEEP_ANALYSIS_PROMPT;
+
+// ─── KB CASE INDEX BUILDER ────────────────────────────────────────────────────
+// Compresses the 165 KB cases into a compact reference string for injection
+// into the backend deep analysis prompt. Each case becomes ~180 chars.
+// Total index: ~30,000 chars / ~7,500 tokens — well within Sonnet context limit.
+
+export function buildKBIndex(kbCases) {
+  if (!kbCases || kbCases.length === 0) return "";
+
+  const lines = kbCases.map(c => {
+    const a = c.analysis || {};
+    const rating   = a.rating         || "?";
+    const score    = a.strengthScore  != null ? a.strengthScore : "?";
+    const payout   = a.payoutPerClaimant ? a.payoutPerClaimant.slice(0, 60) : "unknown";
+    const worked   = a.whyItWorked    ? a.whyItWorked.slice(0, 120) : "";
+    const watch    = a.watchOut       ? a.watchOut.slice(0, 80) : "";
+    const replGrade = a.replicationModel ? a.replicationModel.slice(0, 1) : rating;
+    const settle   = c.settlementAmount ? c.settlementAmount.slice(0, 40) : "unknown";
+    return `[KB#${c.id}] ${c.title} | ${c.company} | ${c.type} | Rating:${rating}/10:${score} | Settlement:${settle} | Payout:${payout} | Replicate:${replGrade} | Won: ${worked} | Risk: ${watch}`;
+  });
+
+  return `\n\n═══════════════════════════════════════════════════════════════
+KNOWLEDGE BASE: ${kbCases.length} HISTORICAL CASES (use for comparison)
+═══════════════════════════════════════════════════════════════
+${lines.join("\n")}
+═══════════════════════════════════════════════════════════════
+Use these KB cases to populate kbAnalogues (similar cases that succeeded) and kbWarnings (cases with same failure modes). Always cite KB# numbers.`;
+}
+
+// ─── KB-ENHANCED DEEP ANALYSIS PROMPT ────────────────────────────────────────
+// Backend version only — injects the full KB case index for explicit comparison.
+// Returns a full system prompt string with KB data embedded.
+
+export function buildDeepAnalysisPromptWithKB(kbCases) {
+  const kbIndex = buildKBIndex(kbCases);
+
+  return `You are a senior class action attorney and litigation strategist with 25 years of experience. You have personally analyzed every case in the Knowledge Base below and know exactly what separates a $5B verdict from a dismissal at class cert.
+
+${KB_RUBRIC}
+${kbIndex}
+
+Given a lead, produce a comprehensive litigation intelligence report as a single JSON object. No markdown, no text outside the JSON. Reference specific KB# cases in kbAnalogues and kbWarnings — never leave these arrays empty if relevant KB cases exist.
+
+CRITICAL JSON RULES: Your response must be parseable by JSON.parse(). Never use unescaped double-quote characters (") inside string values — use single quotes (') instead for any inline quotations. Avoid special control characters in strings.
+
+Required JSON schema (fill every field; use null only if genuinely unknown):
+{
+  "score": <integer 0-100 — overall viability>,
+  "confidence": <integer 0-100 — how confident you are in this score given available info>,
+  "classification": "CREATE" | "INVESTIGATE" | "PASS",
+  "joinOrCreate": "JOIN" | "CREATE",
+  "existingMDLNumber": "<MDL number if known, else null>",
+  "caseType": "<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Criminal Enforcement → Civil|Securities Fraud / Stock Drop|False Claims Act / Qui Tam|Other>",
+  "subCategory": "<specific sub-type, e.g. 'Implantable Cardiac Device', 'PFAS in Water Supply'>",
+
+  "opportunityStatus": "OPEN" | "CLOSING" | "CLOSED" | "UNKNOWN",
+  "daysToAct": <integer — days until opportunity expires, or null>,
+  "targetingReadiness": "READY_NOW" | "NEEDS_INVESTIGATION" | "WAIT_FOR_TRIGGER",
+  "targetingReadinessReason": "<1-2 sentences — exactly why you can/cannot start advertising for plaintiffs today>",
+
+  "caseStage": "Pre-Litigation | Filed / Discovery | MDL Consolidated | Bellwether Set | Settlement Discussions | Resolved",
+  "caseStageRationale": "<1 sentence citing specific evidence — e.g. 'JPML transfer order MDL-3089 issued Nov 2025, centralized S.D.N.Y.' or 'No case filed; FDA warning letter Oct 2025 is the first public signal'>",
+
+  "headline": "<15 words max — what happened and who is harmed>",
+  "executiveSummary": "<3-4 sentences: what happened, who is affected, why this creates class action opportunity, key risk>",
+
+  "causesOfAction": [
+    {"name": "<cause of action name>", "strength": "Strong|Moderate|Weak", "note": "<why>"}
+  ],
+
+  "classProfile": {
+    "estimatedSize": "<e.g. '50,000–200,000' or 'Unknown'>",
+    "sizeConfidence": "High|Medium|Low",
+    "geographicScope": "Nationwide|Multi-state|Single state|Unknown",
+    "commonalityStrength": "<one sentence on why class can/cannot be certified>",
+    "numerositySatisfied": true | false | null
+  },
+
+  "plaintiffProfile": {
+    "demographics": "<age range, gender, occupation, health status of ideal plaintiff>",
+    "requiredInjury": "<specific physical, financial, or statutory injury needed>",
+    "injuryTimeframe": "<when injury likely occurred>",
+    "geographicHotspots": ["<state or region 1>", "<state or region 2>"],
+    "documentationNeeded": ["<doc 1>", "<doc 2>", "<doc 3>"],
+    "whereToFind": ["<channel 1>", "<channel 2>", "<channel 3>"],
+    "acquisitionHook": "<one-line pitch for plaintiff outreach ads/social media>",
+    "disqualifiers": "<who would NOT be a good plaintiff>"
+  },
+
+  "defendantProfile": {
+    "name": "<defendant company/entity name if identifiable, else 'Unknown'>",
+    "type": "Corporation|Government|Non-profit|Unknown",
+    "financialHealth": "<solvency assessment>",
+    "bankruptcyRisk": "High|Medium|Low|Unknown",
+    "assetProtectionRisk": "<specific concern if any>",
+    "priorLitigation": "<any prior class actions or regulatory settlements>",
+    "defenseLikelyStrategy": "<their most likely defense>",
+    "vulnerability": "<what makes them uniquely exposed>"
+  },
+
+  "regulatoryStatus": {
+    "recallIssued": true | false | null,
+    "recallClass": "Class I|Class II|Class III|None|Unknown",
+    "fdaAction": "<FDA action or null>",
+    "cpscAction": "<CPSC action or null>",
+    "nhtsaAction": "<NHTSA action or null>",
+    "epaAction": "<EPA action or null>",
+    "secAction": "<SEC action or null>",
+    "dojAction": "<DOJ action or null>",
+    "stateAgAction": "<State AG action or null>",
+    "governmentInvestigation": "<any other investigation>"
+  },
+
+  "existingLitigation": {
+    "mdlConsolidated": true | false | null,
+    "jpmlPetitionFiled": true | false | null,
+    "activeFederalCases": "<count or description>",
+    "settlementStatus": "None|Pending|Completed|Unknown",
+    "leadFirmsInvolved": ["<firm name if known>"],
+    "opportunityAssessment": "<is there still room to file?>"
+  },
+
+  "damagesModel": {
+    "theory": "<damages theory>",
+    "perClaimantRange": "<e.g. '$10,000–$75,000' or 'Unknown'>",
+    "totalFundEstimate": "<e.g. '$500M–$5B' or 'Unknown'>",
+    "feeToFirmAt33Pct": "<calculated fee range or 'Unknown'>",
+    "comcastCompliant": true | false | null,
+    "comcastNote": "<how damages model maps to liability theory>"
+  },
+
+  "timeline": {
+    "yearsToResolution": "<e.g. '3–5' or 'Unknown'>",
+    "urgencyLevel": "CRITICAL|HIGH|MEDIUM|LOW",
+    "urgencyReason": "<why urgent or not>",
+    "statuteOfLimitationsNote": "<SOL period, when it started, deadline>",
+    "nextMilestone": "<most important near-term event>",
+    "opportunityWindow": "<how long before field closes>"
+  },
+
+  "signalsAnalysis": {
+    "present": ["<signal present>"],
+    "missing": ["<signal not yet present but needed>"],
+    "strengthening": ["<trends making case stronger>"],
+    "watchFor": ["<specific trigger events that would escalate score>"]
+  },
+
+  "riskMatrix": [
+    {"risk": "<risk name>", "severity": "High|Medium|Low", "likelihood": "High|Medium|Low", "mitigation": "<concrete step>"}
+  ],
+
+  "kbAnalogues": [
+    {
+      "caseId": <KB# integer>,
+      "caseName": "<exact KB case title>",
+      "company": "<defendant company>",
+      "rating": "<A+/A/B+/B/C/D/F>",
+      "settlement": "<settlement amount>",
+      "whyAnalogous": "<1-2 sentences: exactly what factors this lead shares with that KB case>",
+      "keyLesson": "<the single most important strategic lesson from that case to apply here>",
+      "replicationGrade": "<A–F>"
+    }
+  ],
+
+  "kbWarnings": [
+    {
+      "caseId": <KB# integer>,
+      "caseName": "<exact KB case title>",
+      "rating": "<D or F>",
+      "failureMode": "<what killed that case>",
+      "howThisLeadMirrorsIt": "<1-2 sentences: which specific elements of this lead parallel the failure mode>",
+      "mitigationAdvice": "<what to do differently to avoid the same outcome>"
+    }
+  ],
+
+  "kbReplicationGrade": "<A through F — overall grade for how replicable this opportunity is based on KB analogues>",
+  "kbComparativeAssessment": "<2-3 sentences: how this lead compares to KB patterns overall — which case type this most resembles, historical win rate for similar cases, key differentiators>",
+  "kbStrategicPlaybook": [
+    "<specific strategic step derived from KB success patterns — not generic advice>",
+    "<specific step 2>",
+    "<specific step 3>",
+    "<specific step 4>"
+  ],
+
+  "recallIntelligence": {
+    "isGovernmentRecall": true | false,
+    "recallClass": "Class I — immediate health hazard|Class II — temporary harm|Class III — unlikely harm|Not a recall|Unknown",
+    "issuingAgency": "<FDA | CPSC | NHTSA | USDA/FSIS | EPA | null>",
+    "productName": "<exact recalled product name, drug name, or device model>",
+    "recallScope": "<units, lot numbers, date range affected>",
+    "injuryMechanism": "<exactly how the product causes harm>",
+    "injuryReported": "<injuries, hospitalizations, or deaths already reported>",
+    "liabilityTheory": "<primary tort theory>",
+    "manufacturerKnowledge": "<any evidence the manufacturer knew before the recall>",
+    "classDefinition": "<proposed plaintiff class based on recall scope>",
+    "targetDemographics": "<who bought this product>",
+    "whereToFindPlaintiffs": ["<channel 1>", "<channel 2>", "<channel 3>"],
+    "acquisitionScript": "<1-2 sentence outreach hook>",
+    "estimatedClassSize": "<units recalled / estimated purchasers>",
+    "priorRecallLitigation": "<any prior lawsuits from same product or company>",
+    "competingFirmsLikely": "<how fast plaintiff firms will move>",
+    "immediateAction": "<single most urgent step>"
+  },
+
+  "analogousCases": ["<brief label — kept for backward compat>"],
+  "whyItScored": "<3-4 sentences specifically citing rubric factors>",
+  "topRisk": "<single biggest threat to case success>",
+  "recommendedAction": "<most urgent concrete action>",
+  "immediateNextSteps": [
+    "<specific actionable step 1>",
+    "<specific actionable step 2>",
+    "<specific actionable step 3>"
+  ]
+}`;
+}
