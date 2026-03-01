@@ -41,7 +41,7 @@ const PAGE_META = {
   },
   feed:         {
     title: "Daily Feed",
-    desc:  "Browser-based real-time scanner. Runs 120+ targeted queries every 15 minutes to 4 hours — covering FDA/NHTSA/CFPB/EPA/SEC/FTC enforcement, drug and device injuries, PFAS, data breaches, employment, antitrust, state AG actions, qui tam/FCA, securities fraud, Reddit complaint clusters, and court filings. Triages with Haiku, deep-analyzes with Sonnet. Use this for on-demand scanning without waiting for the hourly backend cron.",
+    desc:  "Live intelligence feed powered by the hourly backend scanner — runs 24/7 on Vercel whether your browser is open or not. Leads accumulate automatically while you're offline. Auto-refreshes every 5 minutes when the tab is open. Click 'Run Scan Now' to trigger an immediate scan outside the hourly schedule.",
   },
   cases:        {
     title: "Case Tracker",
