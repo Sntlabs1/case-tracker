@@ -1441,10 +1441,23 @@ export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
   // ?reset=1 — clear the seen_ids set so all items are re-processed by Sonnet on the next scan
-  // Use this once after fixing the analysis pipeline (e.g., switching from broken Haiku to working Sonnet)
   if (req.query.reset === "1") {
     await kv.del("seen_ids");
     return res.status(200).json({ reset: true, message: "seen_ids cleared — next scan will re-process all items" });
+  }
+
+  // ?purge=1 — delete ALL stored leads + seen_ids so the inbox starts fresh
+  if (req.query.purge === "1") {
+    const ids = await kv.zrange("leads_by_score", 0, -1) || [];
+    if (ids.length > 0) {
+      const pipeline = kv.pipeline();
+      ids.forEach(id => pipeline.del(`lead:${id}`));
+      await pipeline.exec();
+    }
+    await kv.del("leads_by_score");
+    await kv.del("seen_ids");
+    await kv.del("opportunities:latest");
+    return res.status(200).json({ purged: true, leadsDeleted: ids.length, message: "All leads cleared. Next scan will populate fresh 2026 leads." });
   }
 
   const runId = `scan_${Date.now()}`;
@@ -1513,19 +1526,28 @@ export default async function handler(req, res) {
   const totalSources = GOV_RSS_FEEDS.length + GOOGLE_NEWS_QUERIES.length + REDDIT_SUBS.length + COMPLAINT_CLUSTER_SUBS.length + COMPLAINT_WEB_SEARCHES.length + FAERS_WATCH_ALWAYS.length + 8;
   console.log(`[${runId}] Fetched ${allItems.length} total items (incl. ${clusterResults.length} complaint clusters) from ${totalSources} sources`);
 
-  // ── 2. DEDUPLICATE ────────────────────────────────────────────────────────
+  // ── 2. DEDUPLICATE + DATE FILTER ─────────────────────────────────────────
 
   const seenKey = "seen_ids";
   const seenIds = new Set(await kv.smembers(seenKey) || []);
   const SKIP_WORDS = ["expired", "correction", "retraction", "test post", "removed", "[deleted]"];
-  const newItems = allItems.filter(item =>
-    item.id &&
-    !seenIds.has(item.id) &&
-    item.title.length > 10 &&
-    !SKIP_WORDS.some(w => item.title.toLowerCase().includes(w))
-  );
+  const DATE_CUTOFF_MS = 90 * 24 * 60 * 60 * 1000; // reject items older than 90 days
+  const cutoffDate = Date.now() - DATE_CUTOFF_MS;
 
-  console.log(`[${runId}] ${newItems.length} new items after dedup`);
+  const newItems = allItems.filter(item => {
+    if (!item.id) return false;
+    if (seenIds.has(item.id)) return false;
+    if (item.title.length <= 10) return false;
+    if (SKIP_WORDS.some(w => item.title.toLowerCase().includes(w))) return false;
+    // Drop stale items — RSS feeds and news can return articles years old
+    if (item.pubDate) {
+      const age = new Date(item.pubDate).getTime();
+      if (!isNaN(age) && age < cutoffDate) return false;
+    }
+    return true;
+  });
+
+  console.log(`[${runId}] ${newItems.length} new items after dedup + 90-day date filter`);
 
   if (newItems.length === 0) {
     return res.status(200).json({ runId, processed: allItems.length, newItems: 0, newLeads: 0 });
