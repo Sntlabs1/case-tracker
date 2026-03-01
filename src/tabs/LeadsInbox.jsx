@@ -1184,8 +1184,10 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       const leadsRes = await fetch(`/api/leads?${params}`);
       const leadsData = await leadsRes.json();
       setLeads(leadsData.leads || []);
+      // Immediately apply the real KV total from the leads response
+      if (leadsData.total != null) setStats(prev => ({ ...(prev || {}), total: leadsData.total }));
 
-      // Stats are optional — fetch separately so a failure doesn't block leads
+      // Stats fetch for band breakdowns and lastScan metadata
       fetch("/api/leads?stats=1")
         .then(r => r.ok ? r.json() : null)
         .then(statsData => { if (statsData) setStats(statsData); })
