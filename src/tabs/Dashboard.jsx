@@ -341,7 +341,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const fetchData = useCallback((silent = false) => {
     if (!silent) { setLeadsLoading(true); setOppsLoading(true); }
     // Fetch top leads from KV
-    fetch("/api/leads?limit=200")
+    fetch("/api/leads")
       .then(r => r.json())
       .then(d => {
         const all = d.leads || [];

@@ -50,12 +50,12 @@ export default async function handler(req, res) {
     joinOrCreate,
     category,
     caseType,
-    limit = "100",
+    limit = "2000",
   } = req.query;
 
   const min = parseInt(minScore);
   const max = parseInt(maxScore);
-  const lim = Math.min(parseInt(limit), 200);
+  const lim = Math.min(parseInt(limit), 5000);
 
   // Get true total count from KV (independent of limit/filters)
   const totalInKV = await kv.zcard("leads_by_score");
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
   const ids = await kv.zrange("leads_by_score", max, min, {
     byScore: true,
     rev: true,
-    limit: { count: lim * 3, offset: 0 }, // overfetch to allow filtering
+    limit: { count: lim, offset: 0 },
   });
 
   if (!ids || ids.length === 0) {

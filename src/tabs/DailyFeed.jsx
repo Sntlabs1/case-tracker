@@ -288,7 +288,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
   const fetchLeads = useCallback(async () => {
     try {
       const [leadsRes, statsRes] = await Promise.all([
-        fetch("/api/leads?limit=200&minScore=0"),
+        fetch("/api/leads?minScore=0"),
         fetch("/api/leads?stats=1"),
       ]);
       const leadsData = leadsRes.ok ? await leadsRes.json() : { leads: [] };
