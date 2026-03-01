@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Card, Badge, Btn, ScoreBar } from "../components/UI.jsx";
 
 const CASE_TYPES = [
@@ -1197,6 +1197,25 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   }, [minScore, filterClass, filterJoinCreate, filterCategory, filterCaseType]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
+
+  // Silent auto-refresh: poll stats every 30s, silently refetch if new leads arrived
+  const kvTotalRef = useRef(null);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch("/api/leads?stats=1")
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (!d) return;
+          const latest = d.total ?? 0;
+          if (kvTotalRef.current !== null && latest > kvTotalRef.current) {
+            fetchLeads();
+          }
+          kvTotalRef.current = latest;
+        })
+        .catch(() => {});
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [fetchLeads]);
 
   // Auto-push leads scoring ≥ 75 to Case Tracker (only if not already tracked by leadId)
   useEffect(() => {

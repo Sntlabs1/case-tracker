@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Card, Btn } from "../components/UI.jsx";
 
 // ── Color helpers ─────────────────────────────────────────────────────────────
@@ -335,7 +335,10 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const [totalLeads, setTotalLeads] = useState(null);
   const [lastScanTime, setLastScanTime] = useState(null);
 
-  useEffect(() => {
+  const kvTotalRef = useRef(null);
+
+  const fetchData = useCallback((silent = false) => {
+    if (!silent) { setLeadsLoading(true); setOppsLoading(true); }
     // Fetch top leads from KV
     fetch("/api/leads")
       .then(r => r.json())
@@ -344,22 +347,25 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
         const sorted = [...all].sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0)).slice(0, 5);
         setLeads(sorted);
         setTotalLeads(d.total || all.length);
-        // Use scannedAt (when our scanner processed it), not pubDate (article publish date)
         const dates = all.map(l => l.scannedAt || l.pubDate).filter(Boolean).sort().reverse();
         if (dates[0]) setLastScanTime(dates[0]);
       })
       .catch(() => {})
-      .finally(() => setLeadsLoading(false));
+      .finally(() => { if (!silent) setLeadsLoading(false); });
 
-    // Fetch actual scan metadata for accurate "last scan" time
     fetch("/api/leads?stats=1")
       .then(r => r.ok ? r.json() : null)
       .then(d => {
+        if (!d) return;
         if (d?.lastScan?.timestamp) setLastScanTime(d.lastScan.timestamp);
+        // If new leads arrived since last poll, refresh fully
+        if (kvTotalRef.current !== null && d.total > kvTotalRef.current) {
+          fetchData(true);
+        }
+        kvTotalRef.current = d.total ?? kvTotalRef.current;
       })
       .catch(() => {});
 
-    // Fetch synthesized opportunities (cached — fast)
     fetch("/api/opportunities")
       .then(r => r.json())
       .then(d => {
@@ -367,8 +373,14 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
         if (d.generatedAt) setLastScanTime(prev => prev || d.generatedAt);
       })
       .catch(() => {})
-      .finally(() => setOppsLoading(false));
+      .finally(() => { if (!silent) setOppsLoading(false); });
   }, []);
+
+  useEffect(() => {
+    fetchData(false);
+    const interval = setInterval(() => fetchData(true), 30000);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   // ── Derived stats ─────────────────────────────────────────────────────────
   const highPriorityLeads = leads.filter(l => (l.analysis?.score || 0) >= 70);
