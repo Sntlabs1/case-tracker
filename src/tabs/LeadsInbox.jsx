@@ -1334,7 +1334,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 12, marginBottom: 20 }}>
         {[
-          ["Total Leads", leads.length, "#C8442F"],
+          ["Total Leads", stats?.total ?? leads.length, "#C8442F"],
           ["Critical Urgency", criticalCount, "#ef4444"],
           ["High Priority (75+)", highCount, "#22c55e"],
           ["CREATE Opportunities", createCount, "#E06050"],
@@ -1350,7 +1350,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       {/* ── View mode toggle ── */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         {[
-          { id: "leads", label: `All Leads (${leads.length})` },
+          { id: "leads", label: `All Leads (${stats?.total ?? leads.length})` },
           { id: "opportunities", label: "Top Opportunities" },
         ].map(({ id, label }) => (
           <button key={id} onClick={() => {

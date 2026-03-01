@@ -459,7 +459,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
     .sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0));
 
   const stats = {
-    total:  leads.length,
+    total:  totalInKV ?? leads.length,
     high:   leads.filter(l => (l.analysis?.score || 0) >= 75).length,
     create: leads.filter(l => l.analysis?.joinOrCreate === "CREATE").length,
     join:   leads.filter(l => l.analysis?.joinOrCreate === "JOIN").length,
