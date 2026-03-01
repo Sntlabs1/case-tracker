@@ -1,7 +1,4 @@
 // POST /api/brief — generate a Plaintiff Acquisition Brief for a single lead
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const BRIEF_PROMPT = `You are a senior plaintiff litigation strategist. Given an intelligence lead about a potential class action, produce a one-page Plaintiff Acquisition Brief for the firm's intake team.
 
@@ -31,14 +28,25 @@ export default async function handler(req, res) {
   if (!context) return res.status(400).json({ error: "context required" });
 
   try {
-    const msg = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1500,
-      system: BRIEF_PROMPT,
-      messages: [{ role: "user", content: `Generate a Plaintiff Acquisition Brief for this lead:\n\n${context}` }],
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1500,
+        system: BRIEF_PROMPT,
+        messages: [{ role: "user", content: `Generate a Plaintiff Acquisition Brief for this lead:\n\n${context}` }],
+      }),
     });
 
-    const text = msg.content?.map(b => b.text || "").join("") || "{}";
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || `Anthropic API error ${response.status}`);
+
+    const text = data.content?.map(b => b.text || "").join("") || "{}";
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error("No JSON in response");
     const brief = JSON.parse(match[0]);
