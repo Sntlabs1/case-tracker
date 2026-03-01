@@ -279,8 +279,10 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
   const [minScore,       setMinScore]       = useState(0);
   const [joinFilter,     setJoinFilter]     = useState("ALL");
   const [caseTypeFilter, setCaseTypeFilter] = useState("");
-  const scanStartRef = useRef(null); // timestamp when "Run Scan Now" was clicked
+  const [newAvailable,   setNewAvailable]   = useState(0); // leads in KV not yet shown
+  const scanStartRef = useRef(null);
   const pollRef      = useRef(null);
+  const kvTotalRef   = useRef(null); // last known KV total for change detection
 
   // ── Fetch leads + stats from backend KV ──────────────────────────────────
   const fetchLeads = useCallback(async () => {
@@ -292,7 +294,10 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
       const leadsData = leadsRes.ok ? await leadsRes.json() : { leads: [] };
       const statsData = statsRes.ok ? await statsRes.json() : {};
       setLeads(leadsData.leads || []);
-      setTotalInKV(statsData.total ?? null);
+      setNewAvailable(0);
+      const total = statsData.total ?? null;
+      setTotalInKV(total);
+      kvTotalRef.current = total;
       if (statsData.lastScan?.timestamp) setLastScanTime(statsData.lastScan.timestamp);
     } catch (e) {
       console.error("DailyFeed fetch failed:", e);
@@ -302,14 +307,23 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
-  // ── Auto-refresh every 5 minutes while tab is open ───────────────────────
-  // Silently checks if KV has new leads; if so, reloads the list automatically.
+  // ── Poll stats every 30s — show banner when KV has new leads ─────────────
+  // Only fetches a tiny stats payload; full leads fetched only when user clicks.
   useEffect(() => {
-    const id = setInterval(() => {
-      if (!isScanning) fetchLeads();
-    }, 5 * 60 * 1000);
+    const id = setInterval(async () => {
+      if (isScanning) return;
+      try {
+        const res  = await fetch("/api/leads?stats=1");
+        const data = res.ok ? await res.json() : {};
+        if (data.lastScan?.timestamp) setLastScanTime(data.lastScan.timestamp);
+        const latest = data.total ?? 0;
+        if (kvTotalRef.current !== null && latest > kvTotalRef.current) {
+          setNewAvailable(latest - kvTotalRef.current);
+        }
+      } catch {}
+    }, 30000); // every 30 seconds
     return () => clearInterval(id);
-  }, [fetchLeads, isScanning]);
+  }, [isScanning]);
 
   // ── Countdown to next auto-scan (hourly cron) ─────────────────────────────
   useEffect(() => {
@@ -481,8 +495,19 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
         </div>
       )}
 
-      {/* ── New leads banner ─────────────────────────────────────────────────── */}
-      {!isScanning && newLeadCount !== null && (
+      {/* ── New leads available banner (auto-detected every 30s) ─────────────── */}
+      {newAvailable > 0 && (
+        <div
+          onClick={fetchLeads}
+          style={{ marginBottom: 16, padding: "11px 16px", background: "rgba(34,197,94,0.1)", borderRadius: 8, border: "1px solid rgba(34,197,94,0.35)", fontSize: 13, color: "#4ade80", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        >
+          <span>{newAvailable} new lead{newAvailable > 1 ? "s" : ""} available — click to load</span>
+          <span style={{ fontSize: 11, color: "#22c55e", fontWeight: 700 }}>LOAD NOW</span>
+        </div>
+      )}
+
+      {/* ── Post-scan result banner ───────────────────────────────────────────── */}
+      {!isScanning && newLeadCount !== null && newAvailable === 0 && (
         <div style={{ marginBottom: 16, padding: "10px 14px", background: newLeadCount > 0 ? "rgba(34,197,94,0.08)" : "rgba(255,255,255,0.04)", borderRadius: 8, border: `1px solid ${newLeadCount > 0 ? "rgba(34,197,94,0.25)" : "rgba(255,255,255,0.08)"}`, fontSize: 13, color: newLeadCount > 0 ? "#4ade80" : "#666" }}>
           {newLeadCount > 0 ? `${newLeadCount} new lead${newLeadCount > 1 ? "s" : ""} added from latest scan` : "No new leads this scan — all sources up to date"}
         </div>
