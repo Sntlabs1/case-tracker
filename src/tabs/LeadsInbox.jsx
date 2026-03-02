@@ -1594,18 +1594,60 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       priority: (a.score || 0) >= 90 ? "Critical" : (a.score || 0) >= 75 ? "High" : "Medium",
       status: "New Lead",
       source: lead.source,
+      url: lead.url || "",
       affectedPop: a.classProfile?.estimatedSize || "",
       jurisdiction: a.classProfile?.geographicScope || "",
       score: a.score || 50,
       description: a.executiveSummary || lead.description || "",
+      // Financial
+      fundEstimate: a.damagesModel?.totalFundEstimate || "",
+      perClaimant: a.damagesModel?.perClaimantRange || "",
+      feeToFirm: a.damagesModel?.feeToFirmAt33Pct || "",
+      damagesTheory: a.damagesModel?.theory || "",
+      // Timeline
+      urgency: a.timeline?.urgencyLevel || "",
+      urgencyReason: a.timeline?.urgencyReason || "",
+      sol: a.timeline?.statuteOfLimitationsNote || "",
+      yearsToResolution: a.timeline?.yearsToResolution || null,
+      nextMilestone: a.timeline?.nextMilestone || "",
+      opportunityWindow: a.timeline?.opportunityWindow || "",
+      // Case details
+      caseStage: a.caseStage || "",
+      caseStageRationale: a.caseStageRationale || "",
+      causesOfAction: (a.causesOfAction || []).map(c => c.name).filter(Boolean),
+      // Plaintiff profile
+      targetDemographics: a.plaintiffProfile?.demographics || "",
+      requiredInjury: a.plaintiffProfile?.requiredInjury || "",
+      disqualifiers: a.plaintiffProfile?.disqualifiers || "",
+      whereToFind: a.plaintiffProfile?.whereToFind || [],
+      geographicHotspots: a.plaintiffProfile?.geographicHotspots || [],
+      // Risk & strategy
+      topRisk: a.topRisk || "",
+      immediateNextSteps: a.immediateNextSteps || [],
+      recommendedAction: a.recommendedAction || "",
+      // KB intelligence
+      kbGrade: a.kbReplicationGrade || "",
+      kbComparativeAssessment: a.kbComparativeAssessment || "",
+      kbAnalogues: (a.kbAnalogues || []).slice(0, 3),
+      kbStrategicPlaybook: a.kbStrategicPlaybook || [],
+      whyItScored: a.whyItScored || "",
+      scoreDimensions: a.scoreDimensions || null,
+      // Defendant
+      defendantFinancialHealth: a.defendantProfile?.financialHealth || "",
+      defendantBankruptcyRisk: a.defendantProfile?.bankruptcyRisk || "",
+      defenseLikelyStrategy: a.defendantProfile?.defenseLikelyStrategy || "",
+      // Litigation
+      existingMDLNumber: a.existingMDLNumber || "",
+      activeFederalCases: a.existingLitigation?.activeFederalCases || "",
+      leadFirmsInvolved: a.existingLitigation?.leadFirmsInvolved?.filter(Boolean) || [],
+      // Judge
+      assignedJudge: a.assignedJudge || "",
+      assignedJudgeCourt: a.assignedJudgeCourt || "",
+      // Notes — editable free text
       notes: [
-        a.analogousCases?.length ? `KB Analogues: ${a.analogousCases.join(", ")}` : null,
         a.topRisk ? `Top Risk: ${a.topRisk}` : null,
-        `Damages: Per claimant ${a.damagesModel?.perClaimantRange || "unknown"} · Fund ${a.damagesModel?.totalFundEstimate || "unknown"}`,
-        `Timeline: ${a.timeline?.yearsToResolution || "?"} yrs · Urgency: ${a.timeline?.urgencyLevel || "unknown"}`,
-        a.timeline?.statuteOfLimitationsNote ? `SOL: ${a.timeline.statuteOfLimitationsNote}` : null,
-        a.recommendedAction ? `Action: ${a.recommendedAction}` : null,
-        lead.url ? `Source: ${lead.url}` : null,
+        a.recommendedAction ? `Recommended Action: ${a.recommendedAction}` : null,
+        lead.url ? `Source URL: ${lead.url}` : null,
       ].filter(Boolean).join("\n"),
       dateAdded: new Date().toISOString().slice(0, 10),
     };
