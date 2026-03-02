@@ -93,11 +93,74 @@ Score <50: Causation unproven, individual issues predominate, economic-only loss
 
 ${KB_RUBRIC}`;
 
+// ─── 5-DIMENSION SCORING FRAMEWORK ───────────────────────────────────────────
+// Replaces the additive rubric for deep analysis.
+// Each dimension is 0–20; total score = sum of 5 = 0–100.
+// When an OUTCOME FLOOR applies, it sets the minimum TOTAL score;
+// distribute proportionally (e.g., floor=90 → set Liability=18, adjust others to reach 90).
+
+export const FIVE_DIM_SCORING = `
+5-DIMENSION SCORING FRAMEWORK
+══════════════════════════════════════════════════════════════
+Compute scoreDimensions independently, then set score = sum of all 5.
+When an OUTCOME FLOOR applies (from the rubric above), the total score
+must be at least that floor — raise dimensions proportionally.
+
+DIMENSION 1 — LIABILITY CERTAINTY (0–20)
+How certain is it that the defendant is legally liable?
+20 = Defendant convicted at trial / paying government fine / admitted guilt
+18 = No-admit settlement OR government recall issued (FDA/CPSC/NHTSA/USDA)
+16 = Complaint survived motion to dismiss
+14 = Strong internal documents proving prior knowledge (J&J memos pattern)
+12 = Criminal indictment or active DOJ/SEC enforcement (unresolved)
+10 = Multiple concurrent regulatory investigations
+ 6 = Single regulatory investigation, no action yet
+ 2 = Plaintiff allegations only, no independent corroboration
+ 0 = No corroborating evidence of defendant liability
+
+DIMENSION 2 — CASE CERTIFIABILITY (0–20)
+Can this realistically be certified as a class action?
+20 = Uniform product defect / identical conduct + Comcast-compliant damages model
+16 = Strong commonality + class-wide damages (no individual mini-trials)
+12 = Commonality present but individual damages questions remain
+ 8 = Some common questions but individualized causation issues likely
+ 4 = Individual issues likely predominate (Wal-Mart v. Dukes risk)
+ 0 = Individual issues overwhelmingly predominate, no uniform conduct
+
+DIMENSION 3 — ECONOMIC UPSIDE (0–20)
+What is the firm's financial potential?
+20 = $1B+ fund + physical injury ($50K+ per claimant) + solvent defendant
+16 = $100M–$999M fund OR $10K–$49K per claimant
+12 = $25M–$99M fund OR $1K–$9K per claimant
+ 8 = < $25M fund OR < $1K per claimant (statutory / cy pres risk)
+ 4 = High bankruptcy risk — reduces recovery probability materially
+ 0 = Economic loss only, de minimis per claimant, defendant effectively insolvent
+
+DIMENSION 4 — PLAINTIFF PIPELINE (0–20)
+How easily can qualified plaintiffs be found and signed?
+20 = 100K+ identifiable class + excellent documentation + SOL 2+ years runway
+16 = Identifiable class + good documentation + SOL > 1 year
+12 = Class identifiable but documentation sparse OR SOL 6–12 months
+ 8 = Class hard to identify (no product registration, indirect exposure)
+ 4 = SOL < 6 months OR class extremely difficult to define
+ 0 = SOL likely expired OR class not identifiable
+
+DIMENSION 5 — FIRST MOVER WINDOW (0–20)
+How open is the competitive window to sign clients?
+20 = Pre-Litigation + no plaintiff firms advertising + trigger < 3 months old
+16 = Pre-Litigation + minimal competition + trigger 3–6 months old
+12 = Pre-Litigation but major firms already advertising OR trigger 6–12 months old
+ 8 = MDL formed but plaintiff signing still open; medium competition
+ 4 = MDL consolidated, crowded plaintiff field, late-mover disadvantage
+ 0 = Settlement fund closed OR case fully resolved
+══════════════════════════════════════════════════════════════`;
+
 // ─── DEEP ANALYSIS — comprehensive intelligence report ─────────────────────────
 
 export const DEEP_ANALYSIS_PROMPT = `You are a senior class action attorney and litigation strategist with 25 years of experience. You have analyzed 150+ class actions and know exactly what separates a $5B verdict from a case that gets dismissed at class cert.
 
 ${KB_RUBRIC}
+${FIVE_DIM_SCORING}
 
 Given a lead, produce a comprehensive litigation intelligence report as a single JSON object. No markdown, no text outside the JSON.
 
@@ -105,11 +168,20 @@ CRITICAL JSON RULES: Your response must be parseable by JSON.parse(). Never use 
 
 Required JSON schema (fill every field; use null only if genuinely unknown):
 {
-  "score": <integer 0-100 — overall viability>,
+  "score": <integer 0-100 — sum of all 5 dimension scores>,
+  "scoreDimensions": {
+    "liabilityCertainty": <0-20 — how certain is defendant liable>,
+    "certifiability": <0-20 — how certifiable as a class action>,
+    "economicUpside": <0-20 — financial potential for the firm>,
+    "plaintiffPipeline": <0-20 — ease of finding and signing plaintiffs>,
+    "firstMoverWindow": <0-20 — openness of competitive window>
+  },
   "confidence": <integer 0-100 — how confident you are in this score given available info>,
   "classification": "CREATE" | "INVESTIGATE" | "PASS",
   "joinOrCreate": "JOIN" | "CREATE",
   "existingMDLNumber": "<MDL number if known, else null>",
+  "assignedJudge": "<full name of the assigned federal judge if mentioned or identifiable from context, else null>",
+  "assignedJudgeCourt": "<court name — e.g. 'U.S. District Court, S.D.N.Y.' — if known, else null>",
   "caseType": "<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Criminal Enforcement → Civil|Securities Fraud / Stock Drop|False Claims Act / Qui Tam|Other>",
   "subCategory": "<specific sub-type, e.g. 'Implantable Cardiac Device', 'PFAS in Water Supply'>",
 
@@ -281,6 +353,7 @@ export function buildDeepAnalysisPromptWithKB(kbCases) {
   return `You are a senior class action attorney and litigation strategist with 25 years of experience. You have personally analyzed every case in the Knowledge Base below and know exactly what separates a $5B verdict from a dismissal at class cert.
 
 ${KB_RUBRIC}
+${FIVE_DIM_SCORING}
 ${kbIndex}
 
 Given a lead, produce a comprehensive litigation intelligence report as a single JSON object. No markdown, no text outside the JSON. Reference specific KB# cases in kbAnalogues and kbWarnings — never leave these arrays empty if relevant KB cases exist.
@@ -289,11 +362,20 @@ CRITICAL JSON RULES: Your response must be parseable by JSON.parse(). Never use 
 
 Required JSON schema (fill every field; use null only if genuinely unknown):
 {
-  "score": <integer 0-100 — overall viability>,
+  "score": <integer 0-100 — sum of all 5 dimension scores>,
+  "scoreDimensions": {
+    "liabilityCertainty": <0-20 — how certain is defendant liable>,
+    "certifiability": <0-20 — how certifiable as a class action>,
+    "economicUpside": <0-20 — financial potential for the firm>,
+    "plaintiffPipeline": <0-20 — ease of finding and signing plaintiffs>,
+    "firstMoverWindow": <0-20 — openness of competitive window>
+  },
   "confidence": <integer 0-100 — how confident you are in this score given available info>,
   "classification": "CREATE" | "INVESTIGATE" | "PASS",
   "joinOrCreate": "JOIN" | "CREATE",
   "existingMDLNumber": "<MDL number if known, else null>",
+  "assignedJudge": "<full name of the assigned federal judge if mentioned or identifiable from context, else null>",
+  "assignedJudgeCourt": "<court name — e.g. 'U.S. District Court, S.D.N.Y.' — if known, else null>",
   "caseType": "<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Criminal Enforcement → Civil|Securities Fraud / Stock Drop|False Claims Act / Qui Tam|Other>",
   "subCategory": "<specific sub-type, e.g. 'Implantable Cardiac Device', 'PFAS in Water Supply'>",
 

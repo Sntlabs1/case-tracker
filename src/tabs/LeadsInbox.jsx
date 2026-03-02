@@ -372,6 +372,207 @@ function AcquisitionBrief({ lead }) {
   );
 }
 
+// ─── JUDGE INTELLIGENCE ───────────────────────────────────────────────────────
+
+function JudgeIntel({ lead }) {
+  const a = lead.analysis || {};
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [judgeInput, setJudgeInput] = useState(a.assignedJudge || "");
+
+  const researchJudge = useCallback(async (name) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/judge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          judgeName: name,
+          court: a.assignedJudgeCourt || null,
+          mdlNumber: a.existingMDLNumber || null,
+          caseType: a.caseType || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Judge research failed");
+      setProfile(data.profile);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [a]);
+
+  function pfColor(score) {
+    if (score >= 7) return "#22c55e";
+    if (score >= 5) return "#f59e0b";
+    return "#ef4444";
+  }
+
+  if (!profile && !loading) {
+    return (
+      <div style={{ marginBottom: 14 }}>
+        {a.assignedJudge ? (
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <span style={{ fontSize: 12, color: "#888" }}>Judge: <strong style={{ color: "#e0e0f0" }}>{a.assignedJudge}</strong></span>
+            {a.assignedJudgeCourt && <span style={{ fontSize: 11, color: "#555" }}>· {a.assignedJudgeCourt}</span>}
+            <Btn small variant="secondary" onClick={() => researchJudge(a.assignedJudge)}>Get Judge Intel</Btn>
+          </div>
+        ) : (
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <input value={judgeInput} onChange={e => setJudgeInput(e.target.value)}
+              placeholder="Enter judge name..."
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, width: 200 }}
+              onKeyDown={e => { if (e.key === "Enter" && judgeInput.trim()) researchJudge(judgeInput.trim()); }} />
+            <Btn small variant="secondary" onClick={() => judgeInput.trim() && researchJudge(judgeInput.trim())}>Research Judge</Btn>
+          </div>
+        )}
+        {error && <div style={{ fontSize: 12, color: "#f87171", marginTop: 6 }}>Error: {error}</div>}
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div style={{ marginBottom: 14, padding: "20px 16px", background: "rgba(59,130,246,0.05)", borderRadius: 10, border: "1px solid rgba(59,130,246,0.2)", textAlign: "center" }}>
+        <div style={{ fontSize: 13, color: "#555" }}>Researching judge ruling history...</div>
+        <div style={{ fontSize: 11, color: "#444", marginTop: 4 }}>Searching published opinions, class cert rulings, MDL history</div>
+      </div>
+    );
+  }
+
+  const pf = profile.plaintiffFriendlyScore ?? 5;
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(59,130,246,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(59,130,246,0.08)", borderBottom: "1px solid rgba(59,130,246,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#60a5fa", letterSpacing: "0.1em", textTransform: "uppercase" }}>Judge Intelligence</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0" }}>{profile.name}</span>
+          {profile.court && <span style={{ fontSize: 11, color: "#555" }}>{profile.court}</span>}
+          {profile.appointedBy && <span style={{ fontSize: 11, color: "#555" }}>· Appt. {profile.appointedBy}</span>}
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {profile.dataQuality && (
+            <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4,
+              background: profile.dataQuality === "high" ? "rgba(34,197,94,0.12)" : profile.dataQuality === "medium" ? "rgba(245,158,11,0.12)" : "rgba(100,100,100,0.12)",
+              color: profile.dataQuality === "high" ? "#22c55e" : profile.dataQuality === "medium" ? "#f59e0b" : "#666" }}>
+              {profile.dataQuality} confidence
+            </span>
+          )}
+          <Btn small variant="secondary" onClick={() => { setProfile(null); setError(null); }} style={{ padding: "2px 8px", fontSize: 10 }}>Re-research</Btn>
+        </div>
+      </div>
+
+      <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Score tiles */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 10 }}>
+          <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: `1px solid ${pfColor(pf)}33`, textAlign: "center" }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: pfColor(pf), lineHeight: 1 }}>{pf}<span style={{ fontSize: 13, color: "#555" }}>/10</span></div>
+            <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Plaintiff-Friendly</div>
+          </div>
+          {profile.classCertGrantRate && (
+            <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#e0e0f0", lineHeight: 1.3 }}>{profile.classCertGrantRate}</div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Class Cert Grant Rate</div>
+            </div>
+          )}
+          {profile.daubert && profile.daubert !== "unknown" && (
+            <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: profile.daubert === "admit-leaning" ? "#22c55e" : profile.daubert === "exclude-leaning" ? "#ef4444" : "#f59e0b", lineHeight: 1.4 }}>
+                {profile.daubert.replace(/-/g, " ")}
+              </div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Daubert Tendency</div>
+            </div>
+          )}
+          {profile.mdlExperience && (
+            <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: profile.mdlExperience === "extensive" ? "#22c55e" : profile.mdlExperience === "moderate" ? "#f59e0b" : "#ef4444", lineHeight: 1.4 }}>
+                {profile.mdlExperience}
+              </div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>MDL Experience</div>
+            </div>
+          )}
+          {profile.avgDaysToClassCert && (
+            <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#e0e0f0", lineHeight: 1.3 }}>{profile.avgDaysToClassCert}d</div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Avg to Class Cert</div>
+            </div>
+          )}
+        </div>
+
+        {/* Overall assessment */}
+        {profile.overallAssessment && (
+          <div style={{ padding: "10px 14px", background: `${pfColor(pf)}0d`, borderRadius: 8, border: `1px solid ${pfColor(pf)}33` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: pfColor(pf), letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Assessment for Plaintiff Firm</div>
+            <div style={{ fontSize: 13, color: "#e0e0f0", lineHeight: 1.6 }}>{profile.overallAssessment}</div>
+          </div>
+        )}
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          {profile.notableRulings?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Notable Rulings</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+                {profile.notableRulings.slice(0, 4).map((r, i) => (
+                  <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, alignItems: "flex-start" }}>
+                    <span style={{ color: r.plaintiffResult === "favorable" ? "#22c55e" : r.plaintiffResult === "unfavorable" ? "#ef4444" : "#f59e0b", fontWeight: 700, flexShrink: 0 }}>●</span>
+                    <div style={{ lineHeight: 1.4 }}>
+                      <span style={{ color: "#888", fontSize: 11 }}>{r.case} ({r.year}) — </span>
+                      <span style={{ color: "#c8c8e0" }}>{r.ruling}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div>
+            {profile.keyTendencies?.length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Key Tendencies</div>
+                {profile.keyTendencies.map((t, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4, display: "flex", gap: 6 }}>
+                    <span style={{ color: "#f59e0b", flexShrink: 0 }}>→</span><span style={{ lineHeight: 1.4 }}>{t}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {profile.riskFlags?.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Risk Flags</div>
+                {profile.riskFlags.map((r, i) => (
+                  <div key={i} style={{ fontSize: 12, color: "#fca5a5", marginBottom: 4, display: "flex", gap: 6 }}>
+                    <span style={{ flexShrink: 0 }}>⚑</span><span style={{ lineHeight: 1.4 }}>{r}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {profile.strategyTips?.length > 0 && (
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Strategy Tips</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 6 }}>
+              {profile.strategyTips.map((tip, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, padding: "6px 10px", background: "rgba(34,197,94,0.05)", borderRadius: 6, border: "1px solid rgba(34,197,94,0.12)", fontSize: 12, color: "#86efac", alignItems: "flex-start" }}>
+                  <span style={{ color: "#22c55e", fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span>
+                  <span style={{ lineHeight: 1.4 }}>{tip}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {profile.dataQualityNote && (
+          <div style={{ fontSize: 11, color: "#444", fontStyle: "italic" }}>{profile.dataQualityNote}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -899,6 +1100,11 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         </Section>
       )}
 
+      {/* Judge Intel — always available; input shown when judge not yet identified */}
+      <Section title="Judge Intelligence" accent="#3b82f6">
+        <JudgeIntel lead={lead} />
+      </Section>
+
       <AcquisitionBrief lead={lead} />
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
@@ -1112,6 +1318,30 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
           <ScoreBar score={a.score || 0} />
+          {a.scoreDimensions && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 3, alignItems: "flex-end" }}>
+              {[
+                { key: "liabilityCertainty", label: "Liab" },
+                { key: "certifiability", label: "Cert" },
+                { key: "economicUpside", label: "Econ" },
+                { key: "plaintiffPipeline", label: "Pipe" },
+                { key: "firstMoverWindow", label: "Window" },
+              ].map(({ key, label }) => {
+                const val = a.scoreDimensions[key] ?? 0;
+                const pct = Math.round((val / 20) * 100);
+                const color = pct >= 75 ? "#22c55e" : pct >= 50 ? "#f59e0b" : "#ef4444";
+                return (
+                  <div key={key} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <span style={{ fontSize: 9, color: "#555", minWidth: 36, textAlign: "right" }}>{label}</span>
+                    <div style={{ width: 56, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: 2 }} />
+                    </div>
+                    <span style={{ fontSize: 9, color, minWidth: 14, textAlign: "right", fontWeight: 600 }}>{val}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <div style={{ fontSize: 10, color: "#444" }}>{expanded ? "▲ collapse" : "▼ expand"}</div>
         </div>
       </div>
