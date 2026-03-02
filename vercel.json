@@ -17,6 +17,12 @@
     },
     "api/judge.js": {
       "maxDuration": 60
+    },
+    "api/intake-site.js": {
+      "maxDuration": 60
+    },
+    "api/intake.js": {
+      "maxDuration": 10
     }
   },
   "headers": [

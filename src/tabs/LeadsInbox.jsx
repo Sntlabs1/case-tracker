@@ -573,6 +573,101 @@ function JudgeIntel({ lead }) {
   );
 }
 
+// ─── INTAKE SITE GENERATOR ────────────────────────────────────────────────────
+
+function IntakeSiteGenerator({ lead }) {
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  const generate = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/intake-site", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Generation failed");
+      setResult(data);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [lead]);
+
+  const copyUrl = () => {
+    const url = `${window.location.origin}${result.previewUrl}`;
+    navigator.clipboard.writeText(url).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!result && !loading && !error) {
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <Btn small onClick={generate}>Generate Intake Website</Btn>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(34,197,94,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(34,197,94,0.08)", borderBottom: "1px solid rgba(34,197,94,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase" }}>Plaintiff Intake Website</span>
+        <Btn small variant="secondary" onClick={generate} style={{ padding: "2px 10px", fontSize: 10 }}>
+          {loading ? "Generating..." : "Regenerate"}
+        </Btn>
+      </div>
+
+      {loading && (
+        <div style={{ padding: "28px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
+          <div style={{ marginBottom: 6, color: "#888" }}>Building intake website...</div>
+          <div style={{ fontSize: 11, color: "#444" }}>Generating plaintiff intake form, fee agreement, document checklist, and FAQ</div>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: "12px 16px", color: "#f87171", fontSize: 12 }}>Error: {error}</div>
+      )}
+
+      {result && !loading && (
+        <div style={{ padding: "14px 16px" }}>
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 12, color: "#888", marginBottom: 3 }}>
+              Defendant: <strong style={{ color: "#e0e0f0" }}>{result.defendant}</strong>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 12, padding: "10px 14px", background: "rgba(34,197,94,0.06)", borderRadius: 8, border: "1px solid rgba(34,197,94,0.2)" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Live Intake Site URL</div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <code style={{ fontSize: 11, color: "#86efac", background: "rgba(0,0,0,0.25)", padding: "4px 9px", borderRadius: 4, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {window.location.origin}{result.previewUrl}
+              </code>
+              <Btn small variant="secondary" onClick={copyUrl} style={{ flexShrink: 0 }}>
+                {copied ? "Copied!" : "Copy URL"}
+              </Btn>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Btn small onClick={() => window.open(result.previewUrl, "_blank")}>Preview Site</Btn>
+          </div>
+
+          <div style={{ marginTop: 10, fontSize: 11, color: "#444", lineHeight: 1.5 }}>
+            Includes: plaintiff intake form · contingency fee agreement · document checklist · eligibility criteria · FAQ.
+            Share this URL directly with potential plaintiffs or embed it on your website.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -1106,6 +1201,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       </Section>
 
       <AcquisitionBrief lead={lead} />
+
+      <IntakeSiteGenerator lead={lead} />
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
         <Btn small onClick={() => onAddToTracker(lead)}>+ Add to Case Tracker</Btn>
