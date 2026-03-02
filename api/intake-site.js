@@ -13,41 +13,31 @@ function generateId(seed) {
   return createHash("sha256").update(seed + Date.now()).digest("hex").slice(0, 12);
 }
 
-const INTAKE_SYSTEM_PROMPT = `You are a plaintiff law firm web developer. Generate a complete, self-contained HTML intake website for a class action lawsuit. This page will be shared with potential plaintiffs to explain the case, qualify them, collect their contact information, have them sign a contingency fee agreement, and request documents.
+const INTAKE_SYSTEM_PROMPT = `You are a legal web developer building a case inquiry website for a law firm. Generate a complete, self-contained HTML page that allows people affected by a legal matter to learn about their rights, check if they may qualify for legal representation, and submit their contact information for a free case review.
 
-REQUIRED SECTIONS:
-1. Navigation bar — firm name placeholder ("Your Law Firm"), phone placeholder, "Free Consultation" button
-2. Hero — large headline ("Were you harmed by [product/defendant]?"), sub-headline explaining the case in one sentence, a bold stat or deadline if available, "See If You Qualify" CTA button
-3. "What Happened" — plain-English 3-4 paragraph explanation of the defendant's alleged misconduct, who was affected, and why this lawsuit exists. No legal jargon.
-4. "Do You Qualify?" — eligibility checklist (use <input type="checkbox" disabled checked/unchecked>) showing specific criteria. Include a "Start Your Free Claim Review" button at the bottom.
-5. Intake Form — the most important section. Fields must be case-specific:
-   - Full legal name, email, phone, city, state, zip
-   - Injury/exposure-specific fields (generate based on case type)
-   - Approximate date of injury/use/exposure
-   - Brief description textarea
-   - Qualifying checkboxes (did you use X product? Did you experience Y injury?)
-   - File upload placeholder for key documents
-   - Submit button "Submit My Claim for Review"
-   - Form uses onsubmit with JavaScript to show a thank-you message (no real backend needed)
-6. "Documents to Gather" — styled checklist of specific documents needed for the case, with a note that the firm will help gather them
-7. Contingency Fee Agreement — styled as a legal agreement card:
-   - "No fees unless we win" headline
-   - 33% contingency fee explanation
-   - What the firm covers (filing fees, expert costs, etc.)
-   - E-signature: typed name input + checkbox "I agree to the terms above" + date auto-filled
-   - Submit agreement button (JS-handled, shows confirmation)
-8. FAQ — 5-6 relevant questions and answers specific to this case type
-9. Footer — firm name, disclaimer ("This is attorney advertising. Prior results do not guarantee similar outcomes."), state bar disclaimer
+PAGE SECTIONS (in order):
+1. Navigation — firm name "Your Law Firm", phone "(555) 000-0000", "Free Case Review" button
+2. Hero — headline about the legal matter, one-sentence summary, "Check If You Qualify" anchor button
+3. Background section — 3-4 plain-language paragraphs explaining the legal matter, who may be affected, and what their rights are
+4. Eligibility section — bullet checklist of qualifying criteria with checkboxes (HTML checkbox inputs, disabled, some pre-checked as examples), "Start Free Review" button anchoring to the contact form
+5. Contact form (id="contact-form"):
+   - Name, email, phone, city, state/territory dropdown, zip
+   - Case-relevant fields based on the matter (dates, product names, relevant yes/no questions as checkboxes)
+   - "Describe your situation" textarea
+   - Document upload field (type="file", multiple)
+   - Submit button; on submit: preventDefault, validate required fields, replace form with a styled confirmation message
+6. Records to locate — checklist of documents that may support the claim, with note that the firm assists with gathering them
+7. Representation agreement summary — card explaining the contingency fee structure (no upfront cost, fee only if successful), what the firm handles, typed name field + agreement checkbox + auto-filled date
+8. Common questions — 5 Q&A items relevant to this type of matter
+9. Footer — firm name, "Attorney advertising. Prior results do not guarantee similar outcomes.", bar number placeholder
 
-DESIGN REQUIREMENTS:
-- Fully self-contained HTML — inline all CSS, no external CSS files
-- You MAY use Google Fonts CDN: <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-- Color scheme: background #0a0f1e (dark navy), cards #111827, accent #c4a44a (gold), text white, success #22c55e, danger #ef4444
-- Mobile responsive with CSS media queries
-- Smooth scroll behavior
-- Modern card UI with border-radius, subtle shadows
-- Sticky navigation
-- Section IDs for anchor links: #qualify, #form, #documents, #fee-agreement, #faq
+TECHNICAL:
+- Return ONLY raw HTML starting with <!DOCTYPE html> — no markdown, no code fences
+- Self-contained: all CSS inline in <style> tag, all JS inline in <script> tag
+- Google Fonts CDN allowed: Montserrat (headings) + Inter (body)
+- Colors: body background #0a0f1e, card background #111827, gold accent #c4a44a, white text, green #22c55e
+- Mobile-responsive via CSS flexbox/grid and media queries
+- Smooth scroll, sticky nav, modern card styling with shadows`;
 - Professional, trustworthy law firm aesthetic — NOT a template site, looks custom-built
 
 CRITICAL:
