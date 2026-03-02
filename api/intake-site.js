@@ -37,7 +37,7 @@ TECHNICAL:
 - Google Fonts CDN allowed: Montserrat (headings) + Inter (body)
 - Colors: body background #0a0f1e, card background #111827, gold accent #c4a44a, white text, green #22c55e
 - Mobile-responsive via CSS flexbox/grid and media queries
-- Smooth scroll, sticky nav, modern card styling with shadows`;
+- Smooth scroll, sticky nav, modern card styling with shadows
 - Professional, trustworthy law firm aesthetic — NOT a template site, looks custom-built
 
 CRITICAL:
