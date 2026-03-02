@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, Badge, Btn, Input, Select, TextArea, Modal, ScoreBar, AIPanel } from "../components/UI.jsx";
 import { CASE_TYPES, PRIORITIES, STATUSES, PRIORITY_COLORS, STATUS_COLORS } from "../data/sources.js";
 
@@ -64,11 +64,138 @@ function InfoRow({ label, value, valueColor }) {
   );
 }
 
+// ─── CASE MEMO ────────────────────────────────────────────────────────────────
+
+function goNoGoColor(v) {
+  if (v === "GO") return "#22c55e";
+  if (v === "NO-GO") return "#ef4444";
+  return "#f59e0b";
+}
+
+function MemoSection({ title, content, color = "#c8c8e0" }) {
+  if (!content) return null;
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#C8442F", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(200,68,47,0.2)" }}>
+        {title}
+      </div>
+      <div style={{ fontSize: 13, color, lineHeight: 1.75, whiteSpace: "pre-line" }}>{content}</div>
+    </div>
+  );
+}
+
+function CaseMemo({ caseData, updateCase }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const memo = caseData.caseMemo || null;
+  const generatedAt = caseData.caseMemoGeneratedAt || null;
+
+  const generate = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/case-summary", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caseData }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Generation failed");
+      updateCase(caseData.id, { caseMemo: data.memo, caseMemoGeneratedAt: data.generatedAt });
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [caseData, updateCase]);
+
+  if (!memo && !loading) {
+    return (
+      <div style={{ marginBottom: 18 }}>
+        <Btn small onClick={generate}>Generate Full Case Memo</Btn>
+        {error && <div style={{ fontSize: 12, color: "#f87171", marginTop: 6 }}>Error: {error}</div>}
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div style={{ marginBottom: 18, padding: "22px 16px", background: "rgba(200,68,47,0.05)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)", textAlign: "center" }}>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>Writing case evaluation memo...</div>
+        <div style={{ fontSize: 11, color: "#555" }}>Analyzing background · legal theory · class analysis · financial model · litigation landscape · risks · recommendation</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 20, border: "1px solid rgba(200,68,47,0.25)", borderRadius: 12, overflow: "hidden" }}>
+      {/* Header */}
+      <div style={{ padding: "12px 18px", background: "rgba(200,68,47,0.08)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#C8442F", letterSpacing: "0.1em", textTransform: "uppercase" }}>Case Evaluation Memo</span>
+          {memo.goNoGo && (
+            <span style={{ fontSize: 12, fontWeight: 800, padding: "2px 10px", borderRadius: 6, background: `${goNoGoColor(memo.goNoGo)}18`, color: goNoGoColor(memo.goNoGo), border: `1px solid ${goNoGoColor(memo.goNoGo)}44` }}>
+              {memo.goNoGo}
+            </span>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {generatedAt && <span style={{ fontSize: 10, color: "#444" }}>{new Date(generatedAt).toLocaleDateString()}</span>}
+          <Btn small variant="secondary" onClick={generate} style={{ padding: "2px 10px", fontSize: 10 }}>
+            {loading ? "Regenerating..." : "Regenerate"}
+          </Btn>
+        </div>
+      </div>
+
+      <div style={{ padding: "18px 20px" }}>
+        {/* Bottom line — prominent */}
+        {memo.bottomLine && (
+          <div style={{ marginBottom: 20, padding: "14px 16px", background: `${goNoGoColor(memo.goNoGo)}08`, borderRadius: 8, border: `1px solid ${goNoGoColor(memo.goNoGo)}30` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: goNoGoColor(memo.goNoGo), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Bottom Line</div>
+            <div style={{ fontSize: 14, color: "#e0e0f0", lineHeight: 1.7, fontWeight: 500 }}>{memo.bottomLine}</div>
+          </div>
+        )}
+
+        <MemoSection title="Background" content={memo.background} />
+        <MemoSection title="Legal Theory" content={memo.legalTheory} />
+        <MemoSection title="Class Analysis" content={memo.classAnalysis} />
+        <MemoSection title="Financial Analysis" content={memo.financialAnalysis} color="#E06050" />
+        <MemoSection title="Litigation Landscape" content={memo.litigationLandscape} />
+
+        {/* Key Risks */}
+        {memo.keyRisks?.length > 0 && (
+          <div style={{ marginBottom: 18 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#C8442F", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(200,68,47,0.2)" }}>
+              Key Risks
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {memo.keyRisks.map((r, i) => {
+                const sColor = r.severity === "High" ? "#ef4444" : r.severity === "Medium" ? "#f59e0b" : "#22c55e";
+                return (
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "auto 1fr 1fr", gap: 12, padding: "9px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)", alignItems: "start" }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 4, background: `${sColor}18`, color: sColor, border: `1px solid ${sColor}33`, whiteSpace: "nowrap", marginTop: 1 }}>{r.severity}</span>
+                    <div style={{ fontSize: 12, color: "#fca5a5", lineHeight: 1.5 }}>{r.risk}</div>
+                    <div style={{ fontSize: 12, color: "#86efac", lineHeight: 1.5 }}>{r.mitigation}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <MemoSection title="Strategic Recommendation" content={memo.strategicRecommendation} color="#86efac" />
+      </div>
+    </div>
+  );
+}
+
 // ─── EXPANDED DETAIL PANEL ────────────────────────────────────────────────────
 
 function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
   return (
     <div onClick={e => e.stopPropagation()} style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+
+      {/* ── CASE MEMO (AI-generated narrative) ── */}
+      <CaseMemo caseData={c} updateCase={updateCase} />
 
       {/* ── FINANCIAL OVERVIEW ── */}
       {(c.fundEstimate || c.perClaimant || c.feeToFirm) && (

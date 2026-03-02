@@ -18,6 +18,9 @@
     "api/judge.js": {
       "maxDuration": 60
     },
+    "api/case-summary.js": {
+      "maxDuration": 60
+    },
     "api/intake-site.js": {
       "maxDuration": 60
     },
