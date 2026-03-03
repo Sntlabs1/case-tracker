@@ -1528,8 +1528,14 @@ export default async function handler(req, res) {
 
   // ── 2. DEDUPLICATE + DATE FILTER ─────────────────────────────────────────
 
-  const seenKey = "seen_ids";
-  const seenIds = new Set(await kv.smembers(seenKey) || []);
+  // "seen_zset" is a sorted set (score = unix epoch sec) — lets us prune old entries
+  // "seen_ids" was the old plain SET key; still read for backwards compat during transition
+  const seenKey = "seen_zset";
+  const [newMembers, oldMembers] = await Promise.all([
+    kv.zrange(seenKey, 0, -1).catch(() => []),
+    kv.smembers("seen_ids").catch(() => []),
+  ]);
+  const seenIds = new Set([...(newMembers || []), ...(oldMembers || [])]);
   const SKIP_WORDS = ["expired", "correction", "retraction", "test post", "removed", "[deleted]"];
   const DATE_CUTOFF_MS = 90 * 24 * 60 * 60 * 1000; // reject items older than 90 days
   const cutoffDate = Date.now() - DATE_CUTOFF_MS;
@@ -1549,13 +1555,31 @@ export default async function handler(req, res) {
 
   console.log(`[${runId}] ${newItems.length} new items after dedup + 90-day date filter`);
 
+  // Always record that the cron fired, even on empty scans — keeps "last scan" timestamp current
+  const emptyScanEntry = {
+    runId,
+    timestamp: new Date().toISOString(),
+    sourcesQueried: totalSources,
+    processed: allItems.length,
+    newItems: newItems.length,
+    passedTriage: 0,
+    scored: 0,
+    note: "no new items after dedup",
+  };
   if (newItems.length === 0) {
+    await kv.set("last_scan", JSON.stringify(emptyScanEntry), { ex: 7 * 24 * 3600 });
+    await kv.lpush("scan_history", JSON.stringify(emptyScanEntry));
+    await kv.ltrim("scan_history", 0, 89);
     return res.status(200).json({ runId, processed: allItems.length, newItems: 0, newLeads: 0 });
   }
 
-  // Mark all seen (30-day expiry) — do this before scoring to prevent duplicates on retry
-  await kv.sadd(seenKey, ...newItems.map(i => i.id));
-  await kv.expire(seenKey, 30 * 24 * 3600);
+  // Mark all seen — use a sorted set with timestamp as score so old entries can be pruned
+  // Score = unix epoch seconds; prune anything older than 30 days on each scan
+  const nowSec = Math.floor(Date.now() / 1000);
+  const cutoffSec = nowSec - 30 * 24 * 3600;
+  await kv.zadd(seenKey, ...newItems.flatMap(i => [nowSec, i.id]));
+  await kv.zremrangebyscore(seenKey, "-inf", cutoffSec); // prune items older than 30 days
+  await kv.expire(seenKey, 35 * 24 * 3600); // safety TTL on the whole key
 
   // ── 3. TRIAGE — fast Haiku pass to filter low-signal items ───────────────
 
