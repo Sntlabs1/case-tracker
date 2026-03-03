@@ -1440,13 +1440,13 @@ async function detectConvergence(items) {
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
-  // ?reset=1 — clear the seen_ids set so all items are re-processed by Sonnet on the next scan
+  // ?reset=1 — clear the seen_ids/seen_zset so all items are re-processed on the next scan
   if (req.query.reset === "1") {
-    await kv.del("seen_ids");
-    return res.status(200).json({ reset: true, message: "seen_ids cleared — next scan will re-process all items" });
+    await Promise.all([kv.del("seen_ids"), kv.del("seen_zset")]);
+    return res.status(200).json({ reset: true, message: "seen_ids + seen_zset cleared — next scan will re-process all items" });
   }
 
-  // ?purge=1 — delete ALL stored leads + seen_ids so the inbox starts fresh
+  // ?purge=1 — delete ALL stored leads + seen tracking so the inbox starts fresh
   if (req.query.purge === "1") {
     const ids = await kv.zrange("leads_by_score", 0, -1) || [];
     if (ids.length > 0) {
@@ -1454,10 +1454,13 @@ export default async function handler(req, res) {
       ids.forEach(id => pipeline.del(`lead:${id}`));
       await pipeline.exec();
     }
-    await kv.del("leads_by_score");
-    await kv.del("seen_ids");
-    await kv.del("opportunities:latest");
-    return res.status(200).json({ purged: true, leadsDeleted: ids.length, message: "All leads cleared. Next scan will populate fresh 2026 leads." });
+    await Promise.all([
+      kv.del("leads_by_score"),
+      kv.del("seen_ids"),
+      kv.del("seen_zset"),
+      kv.del("opportunities:latest"),
+    ]);
+    return res.status(200).json({ purged: true, leadsDeleted: ids.length, message: "All leads cleared. Next scan will populate fresh leads." });
   }
 
   const runId = `scan_${Date.now()}`;
