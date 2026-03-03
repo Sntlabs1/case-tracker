@@ -450,7 +450,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
         )}
         <Btn small variant="danger" onClick={() => deleteCase(c.id)}>Delete</Btn>
       </div>
-      {showAI[c.id] && <AIPanel caseData={c} onClose={() => setShowAI(p => ({ ...p, [c.id]: false }))} apiKey={import.meta.env.VITE_ANTHROPIC_API_KEY} />}
+      {showAI[c.id] && <AIPanel caseData={c} onClose={() => setShowAI(p => ({ ...p, [c.id]: false }))} />}
     </div>
   );
 }

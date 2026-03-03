@@ -10,17 +10,17 @@ export default function AIScanner({ onAddCase }) {
     setWebLoading(true);
     setWebResults([]);
     try {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
+      const r = await fetch("/api/analyze", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1000,
+          prompt: `Search for the latest product recalls, FDA recalls, class action lawsuits, and MDL litigation developments from the past 30 days. Focus on: ${webQuery || "all recent recalls and class actions"}. Return a summary of the top findings with case names, companies involved, affected populations, and current status. Format as a structured list.`,
+          maxTokens: 1000,
           tools: [{ type: "web_search_20250305", name: "web_search" }],
-          messages: [{ role: "user", content: `Search for the latest product recalls, FDA recalls, class action lawsuits, and MDL litigation developments from the past 30 days. Focus on: ${webQuery || "all recent recalls and class actions"}. Return a summary of the top findings with case names, companies involved, affected populations, and current status. Format as a structured list.` }]
-        })
+        }),
       });
       const data = await r.json();
-      const text = data.content?.map(b => b.text || "").filter(Boolean).join("\n") || "No results found.";
+      const text = data.error ? `Error: ${data.error}` : (data.text || "No results found.");
       setWebResults([{ text }]);
     } catch (e) {
       setWebResults([{ text: "Error: " + e.message }]);

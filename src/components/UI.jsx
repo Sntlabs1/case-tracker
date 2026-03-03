@@ -73,7 +73,7 @@ export const Rule23Badges = ({ numerosity, commonality, typicality, adequacy }) 
   </div>
 );
 
-export const AIPanel = ({ caseData, onClose, apiKey }) => {
+export const AIPanel = ({ caseData, onClose }) => {
   const [analysis, setAnalysis] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState("viability");
@@ -88,13 +88,14 @@ export const AIPanel = ({ caseData, onClose, apiKey }) => {
     setLoading(true);
     setAnalysis("");
     try {
-      const r = await fetch("https://api.anthropic.com/v1/messages", {
+      const r = await fetch("/api/analyze", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompts[mode] }] })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompts[mode], maxTokens: 1000 }),
       });
       const data = await r.json();
-      setAnalysis(data.content?.map(b => b.text || "").join("\n") || "No response received.");
+      if (data.error) throw new Error(data.error);
+      setAnalysis(data.text || "No response received.");
     } catch (e) { setAnalysis("Error: " + e.message); }
     setLoading(false);
   };

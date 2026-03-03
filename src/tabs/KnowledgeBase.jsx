@@ -2,17 +2,15 @@ import { useState } from "react";
 import { Card, Badge, Btn, Input, Select, TextArea, Modal, Rule23Badges } from "../components/UI.jsx";
 import { OUTCOMES, INDUSTRIES, OUTCOME_COLORS, INDUSTRY_COLORS } from "../data/sources.js";
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
-
 async function callClaude(prompt, maxTokens = 1500) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
+  const r = await fetch("/api/analyze", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: maxTokens, messages: [{ role: "user", content: prompt }] })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, maxTokens }),
   });
   const data = await r.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.content?.map(b => b.text || "").join("\n") || "No response.";
+  if (data.error) throw new Error(data.error);
+  return data.text || "No response.";
 }
 
 function AIResultBox({ text }) {

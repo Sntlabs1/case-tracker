@@ -3,32 +3,20 @@ import { Card, Badge, Btn } from "../components/UI.jsx";
 import { CAUSES_OF_ACTION, CA_CATEGORIES } from "../data/causeOfActionLibrary.js";
 import { KB_RUBRIC } from "../lib/kbRubric.js";
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
-
 // Condensed CA reference for prompts — names + element names + viability rating
 const CA_REFERENCE = CAUSES_OF_ACTION.map(ca =>
   `${ca.id} | ${ca.name} | Class viability: ${ca.classActionViability?.rating?.split(" ")[0] || "—"} | Elements: ${ca.elements.map(e => e.element).join("; ")}`
 ).join("\n");
 
 async function callClaude(systemPrompt, userPrompt, maxTokens = 2000) {
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
+  const r = await fetch("/api/analyze", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: userPrompt, system: systemPrompt, maxTokens }),
   });
   const data = await r.json();
-  if (data.error) throw new Error(data.error.message);
-  return data.content?.map(b => b.text || "").join("") || "";
+  if (data.error) throw new Error(data.error);
+  return data.text || "";
 }
 
 const CATEGORY_COLORS = {

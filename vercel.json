@@ -29,6 +29,9 @@
     },
     "api/chat.js": {
       "maxDuration": 120
+    },
+    "api/analyze.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
