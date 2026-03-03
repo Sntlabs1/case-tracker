@@ -26,6 +26,9 @@
     },
     "api/intake.js": {
       "maxDuration": 10
+    },
+    "api/chat.js": {
+      "maxDuration": 120
     }
   },
   "headers": [

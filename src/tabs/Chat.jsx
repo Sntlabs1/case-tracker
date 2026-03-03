@@ -3,7 +3,6 @@ import { Card, Btn } from "../components/UI.jsx";
 import { KB_RUBRIC } from "../lib/kbRubric.js";
 import { KB_CASES } from "../data/knowledgeBase.js";
 
-const API_KEY  = import.meta.env.VITE_ANTHROPIC_API_KEY;
 const CHAT_KEY = "mdl-chat-messages";
 const MAX_MSGS = 60; // max messages to persist
 
@@ -88,21 +87,10 @@ Claude web search: 30+ targeted queries including DOJ criminal fraud convictions
 // ─── STREAMING CALL ───────────────────────────────────────────────────────────
 
 async function streamClaude(apiMessages, systemPrompt, onChunk) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": API_KEY,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      stream: true,
-      system: systemPrompt,
-      messages: apiMessages,
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: apiMessages, system: systemPrompt }),
   });
 
   if (!res.ok) {
@@ -125,13 +113,13 @@ async function streamClaude(apiMessages, systemPrompt, onChunk) {
       if (!line.startsWith("data: ")) continue;
       const raw = line.slice(6).trim();
       if (raw === "[DONE]") continue;
-      try {
-        const evt = JSON.parse(raw);
-        if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta") {
-          text += evt.delta.text;
-          onChunk(text);
-        }
-      } catch { /* ignore parse errors on malformed SSE chunks */ }
+      let evt;
+      try { evt = JSON.parse(raw); } catch { continue; }
+      if (evt.type === "error") throw new Error(evt.error?.message || "Stream error");
+      if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta") {
+        text += evt.delta.text;
+        onChunk(text);
+      }
     }
   }
   return text;
