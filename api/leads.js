@@ -5,6 +5,9 @@
 
 import { kv } from "@vercel/kv";
 
+const LEADS_CACHE_KEY = "leads_cache_v1";
+const CACHE_TTL = 300; // 5 minutes — cache full unfiltered leads list in KV
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, DELETE, OPTIONS");
@@ -12,13 +15,14 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") return res.status(200).end();
 
-
   // ─── DELETE — dismiss a lead ───────────────────────────────────────────────
   if (req.method === "DELETE") {
     const { id } = req.query;
     if (!id) return res.status(400).json({ error: "id required" });
     await kv.del(`lead:${id}`);
     await kv.zrem("leads_by_score", id);
+    // Invalidate leads cache so next fetch reflects the dismissal
+    await kv.del(LEADS_CACHE_KEY).catch(() => {});
     return res.status(200).json({ dismissed: id });
   }
 
@@ -26,14 +30,13 @@ export default async function handler(req, res) {
 
   // ─── GET stats ─────────────────────────────────────────────────────────────
   if (req.query.stats === "1") {
-    const lastScan = await kv.get("last_scan");
-    const totalInSet = await kv.zcard("leads_by_score");
-
-    // Count by score band
-    const high = await kv.zcount("leads_by_score", 75, 100);
-    const mid = await kv.zcount("leads_by_score", 50, 74);
-    const low = await kv.zcount("leads_by_score", 0, 49);
-
+    const [lastScan, totalInSet, high, mid, low] = await Promise.all([
+      kv.get("last_scan"),
+      kv.zcard("leads_by_score"),
+      kv.zcount("leads_by_score", 75, 100),
+      kv.zcount("leads_by_score", 50, 74),
+      kv.zcount("leads_by_score", 0, 49),
+    ]);
     return res.status(200).json({
       lastScan: lastScan ? JSON.parse(lastScan) : null,
       total: totalInSet,
@@ -58,10 +61,23 @@ export default async function handler(req, res) {
   const max = parseInt(maxScore);
   const lim = Math.min(parseInt(limit), 5000);
 
-  // Get true total count from KV (independent of limit/filters)
+  // For the default unfiltered full-fetch, serve from a 5-minute KV cache.
+  // This turns a ~990 KV-read pipeline into a single GET — ~99% reduction.
+  const isDefaultFetch = !classification && !joinOrCreate && !category && !caseType && min === 0 && max === 100;
+
+  if (isDefaultFetch) {
+    try {
+      const cached = await kv.get(LEADS_CACHE_KEY);
+      if (cached) {
+        const data = typeof cached === "string" ? JSON.parse(cached) : cached;
+        return res.status(200).json({ ...data, cached: true });
+      }
+    } catch {} // cache miss or KV hiccup — fall through to live fetch
+  }
+
+  // Live fetch from KV
   const totalInKV = await kv.zcard("leads_by_score");
 
-  // Fetch lead IDs from sorted set (highest score first)
   const ids = await kv.zrange("leads_by_score", max, min, {
     byScore: true,
     rev: true,
@@ -72,7 +88,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ leads: [], total: totalInKV });
   }
 
-  // Fetch lead objects from KV
   const pipeline = kv.pipeline();
   for (const id of ids) pipeline.get(`lead:${id}`);
   const raw = await pipeline.exec();
@@ -93,5 +108,12 @@ export default async function handler(req, res) {
     })
     .slice(0, lim);
 
-  return res.status(200).json({ leads, total: totalInKV });
+  const result = { leads, total: totalInKV };
+
+  // Store in cache for next 5 minutes (only for the default full fetch)
+  if (isDefaultFetch) {
+    kv.set(LEADS_CACHE_KEY, JSON.stringify(result), { ex: CACHE_TTL }).catch(() => {});
+  }
+
+  return res.status(200).json(result);
 }

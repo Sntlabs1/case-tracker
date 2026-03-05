@@ -1778,12 +1778,14 @@ export default async function handler(req, res) {
   // ── 5d. last_scan (for LeadsInbox header) ────────────────────────────────
   await kv.set("last_scan", JSON.stringify(scanEntry), { ex: 7 * 24 * 3600 });
 
-  // ── Step 6: Invalidate opportunities cache ───────────────────────────────
-  // Fresh leads were just stored — clear the synthesis cache so the next
-  // /api/opportunities request regenerates with updated data.
+  // ── Step 6: Invalidate caches (opportunities + leads) ────────────────────
+  // Fresh leads were just stored — clear both caches so next requests regenerate.
   try {
-    await kv.del("opportunities:latest");
-    console.log(`[${runId}] Opportunities cache cleared — will regenerate on next request`);
+    await Promise.all([
+      kv.del("opportunities:latest"),
+      kv.del("leads_cache_v1"),
+    ]);
+    console.log(`[${runId}] Caches cleared — opportunities + leads will regenerate on next request`);
   } catch {}
 
   console.log(`[${runId}] Done. ${allItems.length} fetched → ${newItems.length} new → ${passedTriage.length} passed triage → ${scored} deep-analyzed.`);
