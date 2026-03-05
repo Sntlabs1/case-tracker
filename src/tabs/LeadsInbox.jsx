@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Card, Badge, Btn, ScoreBar } from "../components/UI.jsx";
 
 const CASE_TYPES = [
@@ -1452,8 +1452,13 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
+const LEADS_LS_KEY = "mdl-feed-leads";
+function saveLeadsToLS(leads) { try { localStorage.setItem(LEADS_LS_KEY, JSON.stringify(leads)); } catch {} }
+function loadLeadsFromLS() { try { return JSON.parse(localStorage.getItem(LEADS_LS_KEY) || "[]"); } catch { return []; } }
+
 export default function LeadsInbox({ onAddCase, setCases, cases }) {
-  const [leads, setLeads] = useState([]);
+  // All leads stored in localStorage — no re-fetch on page reload
+  const [allLeads, setAllLeads] = useState(() => loadLeadsFromLS());
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -1475,6 +1480,19 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   const [newAvailable, setNewAvailable] = useState(0);
   const [countdown, setCountdown] = useState(0);
 
+  // Client-side filtering — no KV reads when filters change
+  const leads = useMemo(() => allLeads.filter(lead => {
+    const a = lead.analysis || {};
+    if ((a.score || 0) < minScore) return false;
+    if (filterClass && a.classification !== filterClass) return false;
+    if (filterJoinCreate && a.joinOrCreate !== filterJoinCreate) return false;
+    if (filterCategory && lead.category !== filterCategory) return false;
+    if (filterCaseType && a.caseType !== filterCaseType) return false;
+    if (filterUrgency && a.timeline?.urgencyLevel !== filterUrgency) return false;
+    if (filterCaseStage && a.caseStage !== filterCaseStage) return false;
+    return true;
+  }), [allLeads, minScore, filterClass, filterJoinCreate, filterCategory, filterCaseType, filterUrgency, filterCaseStage]);
+
   const fetchOpportunities = useCallback(async (forceRefresh = false) => {
     setOppsLoading(true);
     try {
@@ -1488,23 +1506,18 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     setOppsLoading(false);
   }, []);
 
+  // Fetch full leads list from KV and persist to localStorage
+  // Filters are applied client-side — this always fetches unfiltered
   const fetchLeads = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({ minScore });
-      if (filterClass) params.set("classification", filterClass);
-      if (filterJoinCreate) params.set("joinOrCreate", filterJoinCreate);
-      if (filterCategory) params.set("category", filterCategory);
-      if (filterCaseType) params.set("caseType", filterCaseType);
-
-      const leadsRes = await fetch(`/api/leads?${params}`);
+      const leadsRes = await fetch("/api/leads");
       const leadsData = await leadsRes.json();
-      setLeads(leadsData.leads || []);
-      // Immediately apply the real KV total from the leads response
+      const fresh = leadsData.leads || [];
+      setAllLeads(fresh);
+      saveLeadsToLS(fresh);
       if (leadsData.total != null) setStats(prev => ({ ...(prev || {}), total: leadsData.total }));
-
-      // Stats fetch for band breakdowns and lastScan metadata
       fetch("/api/leads?stats=1")
         .then(r => r.ok ? r.json() : null)
         .then(statsData => { if (statsData) setStats(statsData); })
@@ -1513,9 +1526,26 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
       setError("Cannot connect to backend. Deploy to Vercel and enable KV.");
     }
     setLoading(false);
-  }, [minScore, filterClass, filterJoinCreate, filterCategory, filterCaseType]);
+  }, []);
 
-  useEffect(() => { fetchLeads(); }, [fetchLeads]);
+  // On mount: if we have localStorage data use it; only hit KV if empty or count differs
+  useEffect(() => {
+    const stored = loadLeadsFromLS();
+    if (stored.length === 0) {
+      fetchLeads();
+    } else {
+      // Check if KV has new leads since last visit
+      fetch("/api/leads?stats=1")
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (!d) return;
+          setStats(d);
+          kvTotalRef.current = d.total ?? stored.length;
+          if (d.total > stored.length) fetchLeads(); // new leads arrived — refresh
+        })
+        .catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Poll stats every 30s — show banner when new leads arrive
   const kvTotalRef = useRef(null);
@@ -1577,7 +1607,11 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
   const dismissLead = async (id) => {
     try {
       await fetch(`/api/leads?id=${id}`, { method: "DELETE" });
-      setLeads(l => l.filter(lead => lead.id !== id));
+      setAllLeads(l => {
+        const updated = l.filter(lead => lead.id !== id);
+        saveLeadsToLS(updated);
+        return updated;
+      });
     } catch (e) {
       console.error("Dismiss failed:", e);
     }
