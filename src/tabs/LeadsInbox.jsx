@@ -1537,7 +1537,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
           }
         })
         .catch(() => {});
-    }, 30000);
+    }, 300000); // 5 min — was 30s
     return () => clearInterval(interval);
   }, [fetchLeads]);
 

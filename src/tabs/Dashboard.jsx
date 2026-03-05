@@ -340,13 +340,12 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   const fetchData = useCallback((silent = false) => {
     if (!silent) { setLeadsLoading(true); setOppsLoading(true); }
-    // Fetch top leads from KV
-    fetch("/api/leads")
+    // Fetch only top 5 leads for dashboard display (not all 987)
+    fetch("/api/leads?limit=5")
       .then(r => r.json())
       .then(d => {
         const all = d.leads || [];
-        const sorted = [...all].sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0)).slice(0, 5);
-        setLeads(sorted);
+        setLeads(all);
         setTotalLeads(d.total || all.length);
         const dates = all.map(l => l.scannedAt || l.pubDate).filter(Boolean).sort().reverse();
         if (dates[0]) setLastScanTime(dates[0]);
@@ -381,7 +380,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   useEffect(() => {
     fetchData(false);
-    const interval = setInterval(() => fetchData(true), 30000);
+    const interval = setInterval(() => fetchData(true), 300000); // 5 min — was 30s
     return () => clearInterval(interval);
   }, [fetchData]);
 
