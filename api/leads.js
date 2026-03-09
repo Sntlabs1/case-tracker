@@ -63,7 +63,7 @@ export default async function handler(req, res) {
 
   // For the default unfiltered full-fetch, serve from a 5-minute KV cache.
   // This turns a ~990 KV-read pipeline into a single GET — ~99% reduction.
-  const isDefaultFetch = !classification && !joinOrCreate && !category && !caseType && min === 0 && max === 100;
+  const isDefaultFetch = !classification && !joinOrCreate && !category && !caseType && min === 0 && max === 100 && lim >= 2000;
 
   if (isDefaultFetch) {
     try {
