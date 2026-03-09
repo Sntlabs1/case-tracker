@@ -1677,7 +1677,7 @@ export default async function handler(req, res) {
   const newItems = allItems.filter(item => {
     if (!item.id) return false;
     if (seenIds.has(item.id)) return false;
-    if (item.title.length <= 10) return false;
+    if (!item.title || typeof item.title !== "string" || item.title.length <= 10) return false;
     if (SKIP_WORDS.some(w => item.title.toLowerCase().includes(w))) return false;
     // Drop stale items — RSS feeds and news can return articles years old
     if (item.pubDate) {
@@ -1711,7 +1711,7 @@ export default async function handler(req, res) {
   // Score = unix epoch seconds; prune anything older than 30 days on each scan
   const nowSec = Math.floor(Date.now() / 1000);
   const cutoffSec = nowSec - 30 * 24 * 3600;
-  await kv.zadd(seenKey, ...newItems.flatMap(i => [nowSec, i.id]));
+  await kv.zadd(seenKey, ...newItems.map(i => ({ score: nowSec, member: i.id })));
   await kv.zremrangebyscore(seenKey, "-inf", cutoffSec); // prune items older than 30 days
   await kv.expire(seenKey, 35 * 24 * 3600); // safety TTL on the whole key
 
