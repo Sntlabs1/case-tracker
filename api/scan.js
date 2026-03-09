@@ -14,8 +14,6 @@ const DEEP_ANALYSIS_PROMPT_WITH_KB = buildDeepAnalysisPromptWithKB(KB_CASES);
 const ANTHROPIC_API_KEY  = process.env.ANTHROPIC_API_KEY;
 const YOUTUBE_API_KEY    = process.env.YOUTUBE_API_KEY;    // optional
 const TWITTER_BEARER_TOKEN = process.env.TWITTER_BEARER_TOKEN; // optional — X API v2
-const NEWS_API_KEY       = process.env.NEWS_API_KEY;       // optional — newsapi.org
-const EVENT_REGISTRY_KEY = process.env.EVENT_REGISTRY_KEY; // optional — eventregistry.org
 
 const TIMEOUT_MS = 12000;
 const TRIAGE_THRESHOLD = 40; // only deep-analyze items that score >= this
@@ -358,9 +356,9 @@ function yesterday() {
   return new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 }
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = TIMEOUT_MS) {
+async function fetchWithTimeout(url, options = {}) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(url, { ...options, signal: controller.signal });
     clearTimeout(timer);
@@ -1352,117 +1350,6 @@ async function fetchFAERS() {
   return results;
 }
 
-// ─── NEWS API FETCHERS ────────────────────────────────────────────────────────
-
-// Targeted litigation-signal queries for NewsAPI (newsapi.org)
-const NEWSAPI_QUERIES = [
-  "class action lawsuit filed",
-  "MDL mass tort consolidation",
-  "product recall injury lawsuit",
-  "FDA warning letter pharmaceutical",
-  "data breach class action settlement",
-  "NHTSA investigation vehicle defect recall",
-  "securities fraud class action investor",
-  "environmental contamination lawsuit residents",
-  "pharmaceutical drug injury adverse reaction lawsuit",
-  "whistleblower corporate fraud consumer harm",
-];
-
-async function fetchNewsAPI() {
-  if (!NEWS_API_KEY) return [];
-  const from = yesterday();
-  const results = await Promise.all(
-    NEWSAPI_QUERIES.map(async q => {
-      try {
-        const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&from=${from}&pageSize=20&apiKey=${NEWS_API_KEY}`;
-        const res = await fetchWithTimeout(url, {}, 5000);
-        if (!res.ok) {
-          console.error(`NewsAPI [${q.slice(0, 40)}]: HTTP ${res.status}`);
-          return [];
-        }
-        const data = await res.json();
-        return (data.articles || [])
-          .filter(a => a.title && a.url && a.title !== "[Removed]")
-          .map(a => ({
-            id: hash(a.url || a.title || ""),
-            title: a.title,
-            url: a.url,
-            description: a.description || "",
-            pubDate: a.publishedAt || new Date().toISOString(),
-            source: `NewsAPI: ${a.source?.name || "News"}`,
-            category: "News",
-          }));
-      } catch (e) {
-        console.error(`NewsAPI failed [${q.slice(0, 40)}]:`, e.message);
-        return [];
-      }
-    })
-  );
-  const flat = results.flat();
-  console.log(`NewsAPI: ${flat.length} articles across ${NEWSAPI_QUERIES.length} queries`);
-  return flat;
-}
-
-// Targeted queries for Event Registry (eventregistry.org)
-const EVENT_REGISTRY_QUERIES = [
-  "class action lawsuit",
-  "mass tort litigation MDL",
-  "product recall injury consumers",
-  "pharmaceutical drug injury",
-  "data breach settlement",
-  "environmental contamination lawsuit",
-  "securities fraud class action",
-  "whistleblower corporate fraud",
-];
-
-async function fetchEventRegistry() {
-  if (!EVENT_REGISTRY_KEY) return [];
-  const results = await Promise.all(
-    EVENT_REGISTRY_QUERIES.map(async q => {
-      try {
-        const res = await fetchWithTimeout("https://eventregistry.org/api/v1/article/getArticles", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "getArticles",
-            keyword: q,
-            articlesPage: 1,
-            articlesCount: 20,
-            articlesSortBy: "date",
-            articlesSortByAsc: false,
-            dataType: ["news"],
-            resultType: "articles",
-            lang: "eng",
-            apiKey: EVENT_REGISTRY_KEY,
-          }),
-        }, 5000);
-        if (!res.ok) {
-          console.error(`EventRegistry [${q.slice(0, 40)}]: HTTP ${res.status}`);
-          return [];
-        }
-        const data = await res.json();
-        return (data.articles?.results || [])
-          .filter(a => a.title && a.url)
-          .map(a => ({
-            id: hash(a.url || a.uri || a.title || ""),
-            title: a.title,
-            url: a.url,
-            description: (a.body || a.description || "").slice(0, 400),
-            pubDate: a.dateTime || new Date().toISOString(),
-            source: `EventRegistry: ${a.source?.title || "News"}`,
-            category: "News",
-          }));
-      } catch (e) {
-        console.error(`EventRegistry failed [${q.slice(0, 40)}]:`, e.message);
-        return [];
-      }
-    })
-  );
-  const flat = results.flat();
-  console.log(`EventRegistry: ${flat.length} articles across ${EVENT_REGISTRY_QUERIES.length} queries`);
-  return flat;
-}
-
 // ─── CONVERGENCE DETECTION ────────────────────────────────────────────────────
 // After all sources are fetched, find defendants/companies that appear across
 // 2+ independent source categories. Multi-source convergence is the strongest
@@ -1559,20 +1446,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ reset: true, message: "seen_ids + seen_zset cleared — next scan will re-process all items" });
   }
 
-  // ?reseed=1 — repopulate seen_ids from existing leads_by_score so next scan only processes NEW items
-  // Use this after a reset to avoid re-processing all existing leads
-  if (req.query.reseed === "1") {
-    const existingIds = await kv.zrange("leads_by_score", 0, -1) || [];
-    if (existingIds.length > 0) {
-      // Batch sadd in groups of 100 to stay within client argument limits
-      const BATCH = 100;
-      for (let i = 0; i < existingIds.length; i += BATCH) {
-        await kv.sadd("seen_ids", ...existingIds.slice(i, i + BATCH));
-      }
-    }
-    return res.status(200).json({ reseeded: true, count: existingIds.length, message: `seen_ids populated with ${existingIds.length} existing lead IDs — next scan will only process new items` });
-  }
-
   // ?purge=1 — delete ALL stored leads + seen tracking so the inbox starts fresh
   if (req.query.purge === "1") {
     const ids = await kv.zrange("leads_by_score", 0, -1) || [];
@@ -1605,7 +1478,7 @@ export default async function handler(req, res) {
   ]);
 
   // Batch 3: Specialized APIs (in parallel)
-  const [courtResults, courtDocketResults, courtFraudResults, mdlProgressionResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults, newsApiResults, eventRegistryResults] = await Promise.all([
+  const [courtResults, courtDocketResults, courtFraudResults, mdlProgressionResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults] = await Promise.all([
     fetchCourtListener(),
     fetchCourtListenerDockets(),
     fetchCourtListenerFraudDockets(),
@@ -1617,8 +1490,6 @@ export default async function handler(req, res) {
     fetchPubMed(),
     fetchYouTube(),
     fetchTwitter(),
-    fetchNewsAPI(),
-    fetchEventRegistry(),
   ]);
 
   // Batches 4–7: run all remaining source types in parallel
@@ -1649,15 +1520,13 @@ export default async function handler(req, res) {
     ...pubmedResults,
     ...ytResults,
     ...twitterResults,
-    ...newsApiResults,
-    ...eventRegistryResults,
     ...webSearchResults,
     ...clusterResults,
     ...complaintWebResults,
     ...faersResults,
   ];
 
-  const totalSources = GOV_RSS_FEEDS.length + GOOGLE_NEWS_QUERIES.length + REDDIT_SUBS.length + COMPLAINT_CLUSTER_SUBS.length + COMPLAINT_WEB_SEARCHES.length + FAERS_WATCH_ALWAYS.length + NEWSAPI_QUERIES.length + EVENT_REGISTRY_QUERIES.length + 8;
+  const totalSources = GOV_RSS_FEEDS.length + GOOGLE_NEWS_QUERIES.length + REDDIT_SUBS.length + COMPLAINT_CLUSTER_SUBS.length + COMPLAINT_WEB_SEARCHES.length + FAERS_WATCH_ALWAYS.length + 8;
   console.log(`[${runId}] Fetched ${allItems.length} total items (incl. ${clusterResults.length} complaint clusters) from ${totalSources} sources`);
 
   // ── 2. DEDUPLICATE + DATE FILTER ─────────────────────────────────────────
