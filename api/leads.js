@@ -11,7 +11,7 @@ const CACHE_TTL = 300; // 5 minutes — cache full unfiltered leads list in KV
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, DELETE, OPTIONS");
-  res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+  res.setHeader("Cache-Control", "no-store");
 
   if (req.method === "OPTIONS") return res.status(200).end();
 
