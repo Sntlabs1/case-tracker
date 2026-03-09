@@ -1559,6 +1559,18 @@ export default async function handler(req, res) {
     return res.status(200).json({ reset: true, message: "seen_ids + seen_zset cleared — next scan will re-process all items" });
   }
 
+  // ?reseed=1 — repopulate seen_zset from existing leads_by_score so next scan only processes NEW items
+  // Use this after a reset to avoid re-processing all existing leads
+  if (req.query.reseed === "1") {
+    const existingIds = await kv.zrange("leads_by_score", 0, -1) || [];
+    if (existingIds.length > 0) {
+      const nowSec = Math.floor(Date.now() / 1000);
+      await kv.zadd("seen_zset", ...existingIds.flatMap(id => [nowSec, id]));
+      await kv.expire("seen_zset", 35 * 24 * 3600);
+    }
+    return res.status(200).json({ reseeded: true, count: existingIds.length, message: `seen_zset populated with ${existingIds.length} existing lead IDs — next scan will only process new items` });
+  }
+
   // ?purge=1 — delete ALL stored leads + seen tracking so the inbox starts fresh
   if (req.query.purge === "1") {
     const ids = await kv.zrange("leads_by_score", 0, -1) || [];
