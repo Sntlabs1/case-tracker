@@ -358,9 +358,9 @@ function yesterday() {
   return new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 }
 
-async function fetchWithTimeout(url, options = {}) {
+async function fetchWithTimeout(url, options = {}, timeoutMs = TIMEOUT_MS) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(url, { ...options, signal: controller.signal });
     clearTimeout(timer);
@@ -1375,7 +1375,7 @@ async function fetchNewsAPI() {
     NEWSAPI_QUERIES.map(async q => {
       try {
         const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&from=${from}&pageSize=20&apiKey=${NEWS_API_KEY}`;
-        const res = await fetchWithTimeout(url);
+        const res = await fetchWithTimeout(url, {}, 5000);
         if (!res.ok) {
           console.error(`NewsAPI [${q.slice(0, 40)}]: HTTP ${res.status}`);
           return [];
@@ -1435,7 +1435,7 @@ async function fetchEventRegistry() {
             lang: "eng",
             apiKey: EVENT_REGISTRY_KEY,
           }),
-        });
+        }, 5000);
         if (!res.ok) {
           console.error(`EventRegistry [${q.slice(0, 40)}]: HTTP ${res.status}`);
           return [];
