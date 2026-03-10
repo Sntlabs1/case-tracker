@@ -672,6 +672,113 @@ function IntakeSiteGenerator({ lead }) {
 
 const PLATFORM_LABELS = { youtube: "YouTube", tiktok: "TikTok", instagram: "Instagram", twitter: "Twitter / X" };
 const PLATFORM_COLORS = { youtube: "#ff4444", tiktok: "#69c9d0", instagram: "#e1306c", twitter: "#1d9bf0" };
+const TIER_COLORS = { "Tier 1": "#22c55e", "Tier 2": "#f59e0b", "Tier 3": "#6b7280" };
+
+function ScoreBar_({ label, value, max, color }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+      <span style={{ fontSize: 10, color: "#555", width: 80, flexShrink: 0 }}>{label}</span>
+      <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden" }}>
+        <div style={{ width: `${(value / max) * 100}%`, height: "100%", background: color || "#a78bfa", borderRadius: 2 }} />
+      </div>
+      <span style={{ fontSize: 10, color: "#666", width: 22, textAlign: "right" }}>{value}</span>
+    </div>
+  );
+}
+
+function InfluencerCard({ inf, rank }) {
+  const [expanded, setExpanded] = useState(false);
+  const tier = (inf.partnershipTier || "").split("—")[0].trim();
+  const tierColor = TIER_COLORS[tier] || "#6b7280";
+  const plat = inf.platform;
+  const platColor = PLATFORM_COLORS[plat] || "#888";
+  const total = inf.scores?.total || 0;
+
+  return (
+    <div style={{ border: `1px solid rgba(255,255,255,${rank <= 3 ? "0.1" : "0.05"})`, borderRadius: 8, overflow: "hidden", marginBottom: 8 }}>
+      {/* Header row */}
+      <div
+        style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: rank === 1 ? "rgba(139,92,246,0.08)" : "rgba(255,255,255,0.02)", cursor: "pointer" }}
+        onClick={() => setExpanded(e => !e)}
+      >
+        {/* Rank + score circle */}
+        <div style={{ width: 36, height: 36, borderRadius: "50%", background: `conic-gradient(${platColor} ${total}%, rgba(255,255,255,0.05) 0)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#0f0f1a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: platColor }}>
+            {total}
+          </div>
+        </div>
+
+        {inf.avatar && (
+          <img src={inf.avatar} alt="" style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+        )}
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+            <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0", textDecoration: "none" }}>
+              {inf.displayName || inf.username}
+            </a>
+            <span style={{ fontSize: 10, color: platColor, fontWeight: 600 }}>{PLATFORM_LABELS[plat] || plat}</span>
+            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: `${tierColor}22`, color: tierColor, fontWeight: 700 }}>{tier}</span>
+            {inf.verified && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>VERIFIED</span>}
+          </div>
+          <div style={{ display: "flex", gap: 10, marginTop: 2, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 11, color: "#888" }}><span style={{ color: "#c8c8e0", fontWeight: 600 }}>{inf.followersFormatted || "Unknown"}</span> followers</span>
+            {inf.grade && <span style={{ fontSize: 11, color: "#a78bfa" }}>Grade: {inf.grade}</span>}
+            {inf.dailyGrowthFormatted && <span style={{ fontSize: 11, color: inf.dailyGrowth >= 0 ? "#22c55e" : "#f87171" }}>{inf.dailyGrowthFormatted}</span>}
+            {inf.engagementRate && <span style={{ fontSize: 11, color: "#888" }}>{inf.engagementRate}% eng.</span>}
+            {inf.location && <span style={{ fontSize: 11, color: "#555" }}>{inf.location}</span>}
+          </div>
+        </div>
+
+        <span style={{ fontSize: 10, color: "#444", flexShrink: 0 }}>{expanded ? "▲" : "▼"}</span>
+      </div>
+
+      {/* Expanded detail */}
+      {expanded && (
+        <div style={{ padding: "10px 14px", background: "rgba(0,0,0,0.15)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+          {inf.niche && (
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 6 }}>
+              <span style={{ color: "#666" }}>Niche: </span><span style={{ color: "#c8c8e0" }}>{inf.niche}</span>
+            </div>
+          )}
+          {inf.demographics && (
+            <div style={{ fontSize: 11, color: "#888", marginBottom: 6 }}>
+              <span style={{ color: "#666" }}>Audience: </span><span style={{ color: "#c8c8e0" }}>{inf.demographics}</span>
+            </div>
+          )}
+          {inf.whyTargeted && (
+            <div style={{ fontSize: 12, color: "#a8a8c0", lineHeight: 1.5, marginBottom: 10, padding: "6px 10px", background: "rgba(139,92,246,0.06)", borderRadius: 6, borderLeft: "2px solid rgba(139,92,246,0.4)" }}>
+              {inf.whyTargeted}
+            </div>
+          )}
+
+          {/* Score breakdown */}
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Partnership Score Breakdown</div>
+            <ScoreBar_ label="Niche fit" value={inf.scores?.niche || 0} max={30} color="#a78bfa" />
+            <ScoreBar_ label="Demographics" value={inf.scores?.demographic || 0} max={25} color="#60a5fa" />
+            <ScoreBar_ label="Geography" value={inf.scores?.geographic || 0} max={20} color="#34d399" />
+            <ScoreBar_ label="Reach" value={inf.scores?.reach || 0} max={15} color="#f59e0b" />
+            <ScoreBar_ label="Tone / Trust" value={inf.scores?.tone || 0} max={10} color="#f87171" />
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#e0e0f0", marginTop: 4, textAlign: "right" }}>Total: {inf.scores?.total || 0} / 100</div>
+          </div>
+
+          {/* Contact info */}
+          {(inf.email || inf.website) && (
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+              {inf.email && <a href={`mailto:${inf.email}`} style={{ fontSize: 11, color: "#60a5fa" }}>{inf.email}</a>}
+              {inf.website && <a href={inf.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa" }}>{inf.website.replace(/^https?:\/\//, "")}</a>}
+            </div>
+          )}
+
+          <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", fontSize: 11, color: platColor, padding: "4px 10px", border: `1px solid ${platColor}44`, borderRadius: 5, textDecoration: "none", marginTop: 2 }}>
+            View on {PLATFORM_LABELS[plat] || plat} &rarr;
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function InfluencerOutreach({ lead }) {
   const [data, setData] = useState(null);
@@ -693,6 +800,8 @@ function InfluencerOutreach({ lead }) {
           category: lead.category || "",
           description: lead.description || "",
           caseType: a.caseType || "",
+          plaintiffProfile: [a.plaintiffProfile?.demographics, a.plaintiffProfile?.requiredInjury].filter(Boolean).join("; "),
+          geography: a.classProfile?.geographicScope || "",
         }),
       });
       const d = await res.json();
@@ -715,16 +824,19 @@ function InfluencerOutreach({ lead }) {
   return (
     <div style={{ marginBottom: 16, border: "1px solid rgba(139,92,246,0.3)", borderRadius: 10, overflow: "hidden" }}>
       <div style={{ padding: "10px 14px", background: "rgba(139,92,246,0.08)", borderBottom: "1px solid rgba(139,92,246,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 11, fontWeight: 800, color: "#a78bfa", letterSpacing: "0.1em", textTransform: "uppercase" }}>Influencer Outreach</span>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#a78bfa", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+          Influencer Outreach
+          {data && <span style={{ marginLeft: 8, fontWeight: 400, color: "#666" }}>— {data.totalFound} targeted, {data.verifiedCount || 0} verified</span>}
+        </span>
         <Btn small variant="secondary" onClick={fetch_} style={{ padding: "2px 10px", fontSize: 10 }}>
-          {loading ? "Searching..." : "Refresh"}
+          {loading ? "Analyzing..." : "Refresh"}
         </Btn>
       </div>
 
       {loading && (
-        <div style={{ padding: "28px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
-          <div style={{ marginBottom: 6, color: "#888" }}>Searching Social Blade...</div>
-          <div style={{ fontSize: 11, color: "#444" }}>Finding relevant creators across YouTube, TikTok, and Instagram</div>
+        <div style={{ padding: "32px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
+          <div style={{ marginBottom: 8, color: "#888", fontSize: 13 }}>Identifying targeted influencers...</div>
+          <div style={{ fontSize: 11, color: "#444" }}>Claude is analyzing case demographics, geography, and niche — then verifying top picks on Social Blade</div>
         </div>
       )}
 
@@ -734,80 +846,55 @@ function InfluencerOutreach({ lead }) {
 
       {data && !loading && (
         <div style={{ padding: "14px 16px" }}>
-          {data.niche && (
-            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(139,92,246,0.08)", borderRadius: 7, border: "1px solid rgba(139,92,246,0.15)", fontSize: 12, color: "#c4b5fd", lineHeight: 1.4 }}>
-              <span style={{ color: "#7c3aed", fontWeight: 700, marginRight: 6 }}>Target niche:</span>{data.niche}
+          {data.strategyNote && (
+            <div style={{ marginBottom: 12, padding: "10px 14px", background: "rgba(139,92,246,0.07)", borderRadius: 7, border: "1px solid rgba(139,92,246,0.2)", fontSize: 12, color: "#c4b5fd", lineHeight: 1.5 }}>
+              <span style={{ display: "block", fontSize: 10, fontWeight: 700, color: "#7c3aed", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Outreach Strategy</span>
+              {data.strategyNote}
             </div>
           )}
 
           {data.outreachScript && (
-            <div style={{ marginBottom: 14, padding: "8px 12px", background: "rgba(0,0,0,0.2)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 5 }}>
-                DM Outreach Script
+            <div style={{ marginBottom: 14, padding: "10px 14px", background: "rgba(0,0,0,0.2)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+                DM / Email Pitch Script
                 <button
                   onClick={() => { navigator.clipboard.writeText(data.outreachScript); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  style={{ marginLeft: 8, fontSize: 10, color: copied ? "#22c55e" : "#666", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                  style={{ fontSize: 10, color: copied ? "#22c55e" : "#555", background: "none", border: "none", cursor: "pointer", padding: 0 }}
                 >
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
-              <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, fontStyle: "italic" }}>&ldquo;{data.outreachScript}&rdquo;</div>
+              <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.6, fontStyle: "italic" }}>&ldquo;{data.outreachScript}&rdquo;</div>
             </div>
           )}
 
-          {Object.entries(data.byPlatform || {}).map(([platform, creators]) => (
-            <div key={platform} style={{ marginBottom: 14 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: PLATFORM_COLORS[platform] || "#888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, paddingBottom: 4, borderBottom: `1px solid ${(PLATFORM_COLORS[platform] || "#888")}33` }}>
-                {PLATFORM_LABELS[platform] || platform} — {creators.length} creators
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {creators.map((inf, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.05)" }}>
-                    {inf.avatar && (
-                      <img src={inf.avatar} alt="" style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                    )}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                        <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0", textDecoration: "none" }}>
-                          {inf.displayName || inf.username}
-                        </a>
-                        {inf.grade && inf.grade !== "N/A" && (
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: "rgba(139,92,246,0.2)", color: "#a78bfa" }}>{inf.grade}</span>
-                        )}
-                        {inf.country && (
-                          <span style={{ fontSize: 10, color: "#555" }}>{inf.country}</span>
-                        )}
-                      </div>
-                      <div style={{ display: "flex", gap: 12, marginTop: 3, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 11, color: "#888" }}>
-                          <span style={{ color: "#c8c8e0", fontWeight: 600 }}>{inf.followersFormatted}</span> followers
-                        </span>
-                        {inf.dailyGrowth !== 0 && (
-                          <span style={{ fontSize: 11, color: inf.dailyGrowth > 0 ? "#22c55e" : "#f87171" }}>{inf.dailyGrowthFormatted}</span>
-                        )}
-                        {inf.email && (
-                          <a href={`mailto:${inf.email}`} style={{ fontSize: 11, color: "#60a5fa" }}>{inf.email}</a>
-                        )}
-                        {inf.website && (
-                          <a href={inf.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{inf.website.replace(/^https?:\/\//, "")}</a>
-                        )}
-                      </div>
-                    </div>
-                    <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: PLATFORM_COLORS[platform] || "#888", textDecoration: "none", flexShrink: 0, padding: "4px 8px", border: `1px solid ${(PLATFORM_COLORS[platform] || "#888")}44`, borderRadius: 5 }}>
-                      View &rarr;
-                    </a>
+          {/* Tier 1 callout */}
+          {data.influencers?.some(i => i.partnershipTier?.includes("Tier 1")) && (
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>Primary Targets (Tier 1)</div>
+          )}
+
+          {(data.influencers || []).map((inf, i) => {
+            const prevTier = i > 0 ? data.influencers[i - 1].partnershipTier : null;
+            const currTier = inf.partnershipTier || "";
+            const showDivider = i > 0 && !prevTier?.includes(currTier.split("—")[0].trim()) && currTier !== prevTier;
+            return (
+              <div key={i}>
+                {showDivider && (
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", margin: "12px 0 8px" }}>
+                    {currTier.split("—")[0].trim()} Targets
                   </div>
-                ))}
+                )}
+                <InfluencerCard inf={inf} rank={i + 1} />
               </div>
-            </div>
-          ))}
+            );
+          })}
 
-          {data.totalFound === 0 && (
-            <div style={{ fontSize: 12, color: "#555", textAlign: "center", padding: "12px 0" }}>No matching creators found for this case type.</div>
+          {(!data.influencers || data.influencers.length === 0) && (
+            <div style={{ fontSize: 12, color: "#555", textAlign: "center", padding: "12px 0" }}>No influencers identified for this case type.</div>
           )}
 
-          <div style={{ fontSize: 10, color: "#333", marginTop: 8 }}>
-            Data via Social Blade · {data.cached ? "Cached" : "Live"} · {data.totalFound} creators found
+          <div style={{ fontSize: 10, color: "#333", marginTop: 4 }}>
+            Scored by Claude · Verified via Social Blade · {data.cached ? "Cached 24h" : "Live"} · {new Date(data.generatedAt).toLocaleString()}
           </div>
         </div>
       )}
