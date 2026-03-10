@@ -668,6 +668,153 @@ function IntakeSiteGenerator({ lead }) {
   );
 }
 
+// ─── INFLUENCER OUTREACH ──────────────────────────────────────────────────────
+
+const PLATFORM_LABELS = { youtube: "YouTube", tiktok: "TikTok", instagram: "Instagram", twitter: "Twitter / X" };
+const PLATFORM_COLORS = { youtube: "#ff4444", tiktok: "#69c9d0", instagram: "#e1306c", twitter: "#1d9bf0" };
+
+function InfluencerOutreach({ lead }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  const fetch_ = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const a = lead.analysis || {};
+    try {
+      const res = await fetch("/api/influencers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          title: a.headline || lead.title,
+          category: lead.category || "",
+          description: lead.description || "",
+          caseType: a.caseType || "",
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || "Request failed");
+      setData(d);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [lead]);
+
+  if (!data && !loading && !error) {
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <Btn small variant="secondary" onClick={fetch_}>Find Influencers for Outreach</Btn>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(139,92,246,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(139,92,246,0.08)", borderBottom: "1px solid rgba(139,92,246,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#a78bfa", letterSpacing: "0.1em", textTransform: "uppercase" }}>Influencer Outreach</span>
+        <Btn small variant="secondary" onClick={fetch_} style={{ padding: "2px 10px", fontSize: 10 }}>
+          {loading ? "Searching..." : "Refresh"}
+        </Btn>
+      </div>
+
+      {loading && (
+        <div style={{ padding: "28px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
+          <div style={{ marginBottom: 6, color: "#888" }}>Searching Social Blade...</div>
+          <div style={{ fontSize: 11, color: "#444" }}>Finding relevant creators across YouTube, TikTok, and Instagram</div>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ padding: "12px 16px", color: "#f87171", fontSize: 12 }}>Error: {error}</div>
+      )}
+
+      {data && !loading && (
+        <div style={{ padding: "14px 16px" }}>
+          {data.niche && (
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(139,92,246,0.08)", borderRadius: 7, border: "1px solid rgba(139,92,246,0.15)", fontSize: 12, color: "#c4b5fd", lineHeight: 1.4 }}>
+              <span style={{ color: "#7c3aed", fontWeight: 700, marginRight: 6 }}>Target niche:</span>{data.niche}
+            </div>
+          )}
+
+          {data.outreachScript && (
+            <div style={{ marginBottom: 14, padding: "8px 12px", background: "rgba(0,0,0,0.2)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.07)" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 5 }}>
+                DM Outreach Script
+                <button
+                  onClick={() => { navigator.clipboard.writeText(data.outreachScript); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+                  style={{ marginLeft: 8, fontSize: 10, color: copied ? "#22c55e" : "#666", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+              <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, fontStyle: "italic" }}>&ldquo;{data.outreachScript}&rdquo;</div>
+            </div>
+          )}
+
+          {Object.entries(data.byPlatform || {}).map(([platform, creators]) => (
+            <div key={platform} style={{ marginBottom: 14 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: PLATFORM_COLORS[platform] || "#888", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8, paddingBottom: 4, borderBottom: `1px solid ${(PLATFORM_COLORS[platform] || "#888")}33` }}>
+                {PLATFORM_LABELS[platform] || platform} — {creators.length} creators
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {creators.map((inf, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.05)" }}>
+                    {inf.avatar && (
+                      <img src={inf.avatar} alt="" style={{ width: 32, height: 32, borderRadius: "50%", flexShrink: 0, objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                        <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0", textDecoration: "none" }}>
+                          {inf.displayName || inf.username}
+                        </a>
+                        {inf.grade && inf.grade !== "N/A" && (
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 6px", borderRadius: 4, background: "rgba(139,92,246,0.2)", color: "#a78bfa" }}>{inf.grade}</span>
+                        )}
+                        {inf.country && (
+                          <span style={{ fontSize: 10, color: "#555" }}>{inf.country}</span>
+                        )}
+                      </div>
+                      <div style={{ display: "flex", gap: 12, marginTop: 3, flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 11, color: "#888" }}>
+                          <span style={{ color: "#c8c8e0", fontWeight: 600 }}>{inf.followersFormatted}</span> followers
+                        </span>
+                        {inf.dailyGrowth !== 0 && (
+                          <span style={{ fontSize: 11, color: inf.dailyGrowth > 0 ? "#22c55e" : "#f87171" }}>{inf.dailyGrowthFormatted}</span>
+                        )}
+                        {inf.email && (
+                          <a href={`mailto:${inf.email}`} style={{ fontSize: 11, color: "#60a5fa" }}>{inf.email}</a>
+                        )}
+                        {inf.website && (
+                          <a href={inf.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 160 }}>{inf.website.replace(/^https?:\/\//, "")}</a>
+                        )}
+                      </div>
+                    </div>
+                    <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: PLATFORM_COLORS[platform] || "#888", textDecoration: "none", flexShrink: 0, padding: "4px 8px", border: `1px solid ${(PLATFORM_COLORS[platform] || "#888")}44`, borderRadius: 5 }}>
+                      View &rarr;
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {data.totalFound === 0 && (
+            <div style={{ fontSize: 12, color: "#555", textAlign: "center", padding: "12px 0" }}>No matching creators found for this case type.</div>
+          )}
+
+          <div style={{ fontSize: 10, color: "#333", marginTop: 8 }}>
+            Data via Social Blade · {data.cached ? "Cached" : "Live"} · {data.totalFound} creators found
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -1203,6 +1350,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       <AcquisitionBrief lead={lead} />
 
       <IntakeSiteGenerator lead={lead} />
+
+      <InfluencerOutreach lead={lead} />
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
         <Btn small onClick={() => onAddToTracker(lead)}>+ Add to Case Tracker</Btn>
