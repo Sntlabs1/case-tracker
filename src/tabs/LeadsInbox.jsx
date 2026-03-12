@@ -1787,6 +1787,20 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
             </div>
           )}
 
+          {/* Defendant + Plaintiff — always visible on collapsed card */}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+            {a.defendantProfile?.name && a.defendantProfile.name !== "Unknown" && (
+              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 5, background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", color: "#fca5a5" }}>
+                <span style={{ opacity: 0.6, marginRight: 3 }}>vs.</span>{a.defendantProfile.name}
+              </span>
+            )}
+            {a.plaintiffProfile?.demographics && (
+              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 5, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)", color: "#93c5fd" }}>
+                {a.plaintiffProfile.demographics}
+              </span>
+            )}
+          </div>
+
           {a.topRisk && (
             <div style={{ fontSize: 11, color: "#fbbf24", display: "flex", gap: 4, alignItems: "flex-start" }}>
               <span style={{ opacity: 0.6 }}>Top risk:</span> {a.topRisk}
