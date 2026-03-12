@@ -1066,6 +1066,214 @@ Answer specifically for a plaintiff law firm evaluating this case for client acq
   );
 }
 
+// ─── SETTLEMENT REQUIREMENTS ──────────────────────────────────────────────────
+
+function SettlementRequirements({ lead }) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const a = lead.analysis || {};
+
+  const fetch_ = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const caseContext = [
+      `Case: ${a.headline || lead.title}`,
+      `Category: ${lead.category || ""}`,
+      `Case Type: ${a.caseType || ""}`,
+      `MDL Consolidated: ${a.existingLitigation?.mdlConsolidated ? "Yes" : "Unknown"}`,
+      `Settlement Status: ${a.existingLitigation?.settlementStatus || "Unknown"}`,
+      `Lead Firms: ${(a.existingLitigation?.leadFirmsInvolved || []).join(", ") || "Unknown"}`,
+      `Description: ${(lead.description || "").slice(0, 500)}`,
+      `Plaintiff Profile: ${a.plaintiffProfile?.demographics || ""}`,
+      `Required Injury: ${a.plaintiffProfile?.requiredInjury || ""}`,
+      `Defendant: ${a.defendantProfile?.name || "Unknown"}`,
+    ].filter(Boolean).join("\n");
+
+    const prompt = `You are a plaintiff class action litigation analyst. Based on your knowledge of this case and publicly available information, summarize the settlement qualification requirements.
+
+${caseContext}
+
+Return ONLY valid JSON (no markdown) with this structure:
+{
+  "settlementName": "<official settlement name or fund name>",
+  "status": "Open for Claims|Pending Court Approval|Closed|Unknown",
+  "administrator": "<claims administrator or law firm managing claims, if known>",
+  "deadline": "<claim filing deadline, or 'Not yet announced' or 'Unknown'>",
+  "eligibilityCriteria": [
+    "<specific requirement 1 — e.g. 'Diagnosed with uterine cancer after using product for 1+ year'>",
+    "<specific requirement 2>",
+    "<specific requirement 3>"
+  ],
+  "requiredDocumentation": [
+    "<doc 1 — e.g. 'Medical records confirming diagnosis'>",
+    "<doc 2>",
+    "<doc 3>"
+  ],
+  "compensationTiers": [
+    {"tier": "<e.g. 'Tier 1 — Uterine Cancer'>", "range": "<e.g. '$100,000–$500,000'>", "criteria": "<what qualifies>"},
+    {"tier": "<e.g. 'Tier 2 — Fibroids'>", "range": "<e.g. '$10,000–$50,000'>", "criteria": "<what qualifies>"}
+  ],
+  "disqualifiers": ["<who is excluded — e.g. 'Prior cancer diagnosis unrelated to product'>"],
+  "howToApply": "<brief description of claim process>",
+  "notes": "<any important caveats, opt-out rights, liens, or attorney fee structures>"
+}`;
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: prompt }],
+          system: "You are a precise legal research analyst. Return only the JSON requested with no extra text.",
+          stream: false,
+        }),
+      });
+
+      // /api/chat returns Anthropic SSE — stream and accumulate text deltas
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let jsonText = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const raw = line.slice(6).trim();
+          if (raw === "[DONE]") continue;
+          try {
+            const ev = JSON.parse(raw);
+            // Anthropic SSE: content_block_delta with delta.type = text_delta
+            if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta") {
+              jsonText += ev.delta.text || "";
+            }
+          } catch {}
+        }
+      }
+      const cleaned = jsonText.replace(/```json\n?|\n?```/g, "").trim();
+      // Find the JSON object
+      const start = cleaned.indexOf("{");
+      const end = cleaned.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("No JSON in response");
+      setData(JSON.parse(cleaned.slice(start, end + 1)));
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [lead, a]);
+
+  return (
+    <div style={{ marginBottom: 18, padding: "14px 16px", background: "rgba(34,197,94,0.05)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: data ? 14 : 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase" }}>Settlement Requirements</span>
+          {data?.status && (
+            <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4, background: "rgba(34,197,94,0.15)", color: "#86efac", border: "1px solid rgba(34,197,94,0.3)" }}>{data.status}</span>
+          )}
+        </div>
+        {!data && !loading && (
+          <Btn small onClick={fetch_} style={{ padding: "3px 12px", fontSize: 11 }}>View Requirements</Btn>
+        )}
+        {data && (
+          <Btn small variant="secondary" onClick={fetch_} style={{ padding: "2px 10px", fontSize: 10 }}>{loading ? "Loading..." : "Refresh"}</Btn>
+        )}
+      </div>
+
+      {loading && !data && (
+        <div style={{ fontSize: 12, color: "#555", marginTop: 10 }}>Researching settlement requirements...</div>
+      )}
+
+      {error && (
+        <div style={{ fontSize: 12, color: "#f87171", marginTop: 8 }}>Error: {error}</div>
+      )}
+
+      {data && !loading && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {data.settlementName && (
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0" }}>{data.settlementName}</div>
+          )}
+
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11 }}>
+            {data.deadline && data.deadline !== "Unknown" && (
+              <span style={{ color: "#fbbf24" }}>Deadline: <strong>{data.deadline}</strong></span>
+            )}
+            {data.administrator && (
+              <span style={{ color: "#888" }}>Admin: <span style={{ color: "#c8c8e0" }}>{data.administrator}</span></span>
+            )}
+          </div>
+
+          {/* Eligibility */}
+          {data.eligibilityCriteria?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Eligibility Criteria</div>
+              {data.eligibilityCriteria.map((c, i) => (
+                <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
+                  <span style={{ color: "#22c55e", flexShrink: 0, marginTop: 1 }}>✓</span>
+                  <span style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{c}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Compensation tiers */}
+          {data.compensationTiers?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Compensation Tiers</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {data.compensationTiers.map((t, i) => (
+                  <div key={i} style={{ padding: "7px 10px", background: "rgba(34,197,94,0.06)", borderRadius: 6, border: "1px solid rgba(34,197,94,0.15)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 2 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: "#86efac" }}>{t.tier}</span>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: "#22c55e" }}>{t.range}</span>
+                    </div>
+                    {t.criteria && <div style={{ fontSize: 11, color: "#555" }}>{t.criteria}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Required docs */}
+          {data.requiredDocumentation?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Required Documentation</div>
+              {data.requiredDocumentation.map((d, i) => (
+                <div key={i} style={{ fontSize: 11, color: "#93c5fd", marginBottom: 3 }}>• {d}</div>
+              ))}
+            </div>
+          )}
+
+          {/* Disqualifiers */}
+          {data.disqualifiers?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>Disqualifiers</div>
+              {data.disqualifiers.map((d, i) => (
+                <div key={i} style={{ fontSize: 11, color: "#fca5a5", marginBottom: 3 }}>✗ {d}</div>
+              ))}
+            </div>
+          )}
+
+          {data.howToApply && (
+            <div style={{ fontSize: 12, color: "#888", padding: "7px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 6, borderLeft: "2px solid rgba(34,197,94,0.3)" }}>
+              <span style={{ color: "#22c55e", fontWeight: 700 }}>How to Apply: </span>{data.howToApply}
+            </div>
+          )}
+
+          {data.notes && (
+            <div style={{ fontSize: 11, color: "#555", fontStyle: "italic" }}>{data.notes}</div>
+          )}
+
+          <div style={{ fontSize: 10, color: "#333" }}>AI-generated summary — verify with settlement administrator before advising clients</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -1084,6 +1292,11 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
           </span>
         )}
       </div>
+
+      {/* ── SETTLEMENT REQUIREMENTS — shown for JOIN cases or where settlement is pending/open ── */}
+      {(a.joinOrCreate === "JOIN" || a.existingLitigation?.settlementStatus === "Pending" || a.existingLitigation?.settlementStatus === "Completed") && (
+        <SettlementRequirements lead={lead} />
+      )}
 
       {/* ── RECALL ALERT — shown when lead originated from a government recall/warning ── */}
       {a.recallIntelligence?.isGovernmentRecall && (
