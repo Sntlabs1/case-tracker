@@ -902,6 +902,170 @@ function InfluencerOutreach({ lead }) {
   );
 }
 
+// ─── LEAD CHAT ────────────────────────────────────────────────────────────────
+
+function LeadChat({ lead }) {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [streaming, setStreaming] = useState(false);
+  const bottomRef = useRef(null);
+  const a = lead.analysis || {};
+
+  const systemPrompt = `You are a plaintiff class action litigation analyst. Answer questions about the following lead concisely and directly.
+
+Case: ${a.headline || lead.title}
+Category: ${lead.category || ""}
+Case Type: ${a.caseType || ""}
+Description: ${(lead.description || "").slice(0, 600)}
+Strength Score: ${a.strengthScore ?? ""}
+Litigation Stage: ${a.litigationStage || ""}
+Est. Fund: ${a.estimatedFund || ""}
+Attorney Fee: ${a.estimatedFee || ""}
+Plaintiff Profile: ${JSON.stringify(a.plaintiffProfile || {})}
+Class Profile: ${JSON.stringify(a.classProfile || {})}
+Top Risk: ${a.topRisk || ""}
+Why Act Now: ${a.whyActNow || ""}
+Replication Model: ${a.replicationModel || ""}
+Corporate Misconduct: ${a.corporateMisconduct || ""}
+Regulatory Actions: ${a.regulatoryActions || ""}
+
+Answer specifically for a plaintiff law firm evaluating this case for client acquisition.`;
+
+  const send = useCallback(async () => {
+    const text = input.trim();
+    if (!text || streaming) return;
+    setInput("");
+    const userMsg = { role: "user", content: text };
+    const history = [...messages, userMsg];
+    setMessages([...history, { role: "assistant", content: "" }]);
+    setStreaming(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: history.map(m => ({ role: m.role, content: m.content })),
+          system: systemPrompt,
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 600,
+          stream: true,
+        }),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let assistantText = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const raw = line.slice(6).trim();
+          if (raw === "[DONE]") continue;
+          try {
+            const ev = JSON.parse(raw);
+            const delta = ev.delta?.text || ev.choices?.[0]?.delta?.content || "";
+            if (delta) {
+              assistantText += delta;
+              setMessages(prev => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "assistant", content: assistantText };
+                return updated;
+              });
+            }
+          } catch {}
+        }
+      }
+    } catch (e) {
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[updated.length - 1] = { role: "assistant", content: `Error: ${e.message}` };
+        return updated;
+      });
+    }
+    setStreaming(false);
+  }, [input, messages, streaming, systemPrompt]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "8px 14px", background: "rgba(255,255,255,0.03)", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#888", letterSpacing: "0.1em", textTransform: "uppercase" }}>Ask AI about this case</span>
+        <span style={{ fontSize: 10, color: "#444" }}>Has full lead context</span>
+      </div>
+
+      {messages.length > 0 && (
+        <div style={{ maxHeight: 320, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
+          {messages.map((m, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
+              <div style={{
+                maxWidth: "85%",
+                padding: "8px 12px",
+                borderRadius: m.role === "user" ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
+                background: m.role === "user" ? "rgba(139,92,246,0.25)" : "rgba(255,255,255,0.05)",
+                border: m.role === "user" ? "1px solid rgba(139,92,246,0.3)" : "1px solid rgba(255,255,255,0.07)",
+                fontSize: 12,
+                color: m.role === "user" ? "#e0e0f0" : "#c8c8c8",
+                lineHeight: 1.6,
+                whiteSpace: "pre-wrap",
+              }}>
+                {m.content || (streaming && i === messages.length - 1 ? <span style={{ color: "#555" }}>...</span> : "")}
+              </div>
+            </div>
+          ))}
+          <div ref={bottomRef} />
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, padding: "10px 12px", background: "rgba(0,0,0,0.15)", borderTop: messages.length > 0 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
+          placeholder="How is this a good case for us? Can a 3rd party plaintiff replicate this?"
+          disabled={streaming}
+          style={{
+            flex: 1,
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 8,
+            padding: "8px 12px",
+            fontSize: 12,
+            color: "#e0e0f0",
+            outline: "none",
+          }}
+        />
+        <button
+          onClick={send}
+          disabled={!input.trim() || streaming}
+          style={{
+            background: streaming ? "rgba(139,92,246,0.2)" : "rgba(139,92,246,0.7)",
+            border: "none",
+            borderRadius: 8,
+            padding: "8px 14px",
+            color: "#fff",
+            fontSize: 12,
+            cursor: streaming ? "not-allowed" : "pointer",
+            flexShrink: 0,
+          }}
+        >
+          {streaming ? "..." : "Ask"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── INTELLIGENCE REPORT (expanded view) ─────────────────────────────────────
 
 function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
@@ -1439,6 +1603,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       <IntakeSiteGenerator lead={lead} />
 
       <InfluencerOutreach lead={lead} />
+
+      <LeadChat lead={lead} />
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}>
         <Btn small onClick={() => onAddToTracker(lead)}>+ Add to Case Tracker</Btn>
