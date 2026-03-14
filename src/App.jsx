@@ -89,6 +89,12 @@ export default function App() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showAI, setShowAI] = useState({});
   const [caseFilter, setCaseFilter] = useState({});
+  const [lightMode, setLightMode] = useLocalStorage("tt-light-mode", false);
+
+  // Apply theme to body
+  if (typeof document !== "undefined") {
+    document.body.classList.toggle("light", lightMode);
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "#0b0c14", color: "#e8e8f0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
@@ -137,8 +143,15 @@ export default function App() {
           ))}
         </div>
 
-        {/* Right: KB count */}
-        <div style={{ display: "flex", alignItems: "center", paddingLeft: 24, borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+        {/* Right: theme toggle + KB count */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 24, borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+          <button
+            onClick={() => setLightMode(m => !m)}
+            title={lightMode ? "Switch to dark mode" : "Switch to light mode"}
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 14, lineHeight: 1, color: "#aaa" }}
+          >
+            {lightMode ? "🌙" : "☀️"}
+          </button>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#C8442F", lineHeight: 1 }}>{kbCases.length}</div>
             <div style={{ fontSize: 9, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
