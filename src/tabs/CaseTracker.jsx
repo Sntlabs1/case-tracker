@@ -481,6 +481,17 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
 
   const sortedCases = [...filtered].sort((a, b) => b.score - a.score);
 
+  // Summary stats for quick-filter chips
+  const typeCounts    = {};
+  const defendantCounts = {};
+  const stageCounts   = {};
+  for (const c of cases) {
+    if (c.caseType)  typeCounts[c.caseType]  = (typeCounts[c.caseType]  || 0) + 1;
+    if (c.company)   defendantCounts[c.company] = (defendantCounts[c.company] || 0) + 1;
+    if (c.caseStage) stageCounts[c.caseStage]  = (stageCounts[c.caseStage]  || 0) + 1;
+  }
+  const topDefendants = Object.entries(defendantCounts).sort((a,b) => b[1]-a[1]).slice(0, 6);
+
   const addCase = () => {
     setCases(p => [...p, { ...newCase, id: Date.now(), dateAdded: new Date().toISOString().split("T")[0] }]);
     setNewCase({ title: "", source: "", caseType: "", priority: "Medium", status: "New Lead", affectedPop: "", company: "", description: "", notes: "", score: 50, jurisdiction: "" });
@@ -497,9 +508,94 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
         <Btn onClick={() => setShowAddCase(true)}>+ New Case</Btn>
       </div>
 
+      {/* ── QUICK SUMMARY DASHBOARD ── */}
+      <Card style={{ marginBottom: 12, padding: "14px 16px" }}>
+        {/* Stats row */}
+        <div style={{ display: "flex", gap: 20, marginBottom: 14, flexWrap: "wrap" }}>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{cases.length}</div>
+            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Cases</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.priority === "Critical").length}</div>
+            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Critical</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#f59e0b", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Pre-Litigation").length}</div>
+            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Pre-Lit</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#8b5cf6", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "MDL Consolidated").length}</div>
+            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>MDL</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Settlement Discussions").length}</div>
+            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Settlement</div>
+          </div>
+          {(filterType || filterPriority || filterStatus || searchQ) && (
+            <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+              <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setSearchQ(""); }}
+                style={{ fontSize: 11, color: "#C8442F", background: "none", border: "1px solid rgba(200,68,47,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+                Clear filters · {filtered.length} shown
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Case type chips */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Case Type</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {Object.entries(typeCounts).sort((a,b) => b[1]-a[1]).map(([type, count]) => (
+              <button key={type} onClick={() => setFilterType(filterType === type ? "" : type)}
+                style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                  background: filterType === type ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.04)",
+                  borderColor: filterType === type ? "rgba(200,68,47,0.5)" : "rgba(255,255,255,0.08)",
+                  color: filterType === type ? "#E06050" : "#888" }}>
+                {type} <span style={{ opacity: 0.6 }}>{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Stage chips */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Stage</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {Object.entries(stageCounts).sort((a,b) => b[1]-a[1]).map(([stage, count]) => (
+              <button key={stage} onClick={() => setSearchQ(searchQ === stage ? "" : stage)}
+                style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                  background: searchQ === stage ? `${stageColor(stage)}22` : "rgba(255,255,255,0.04)",
+                  borderColor: searchQ === stage ? `${stageColor(stage)}55` : "rgba(255,255,255,0.08)",
+                  color: searchQ === stage ? stageColor(stage) : "#888" }}>
+                {stage} <span style={{ opacity: 0.6 }}>{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Top defendants */}
+        {topDefendants.length > 0 && (
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Top Defendants</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {topDefendants.map(([defendant, count]) => (
+                <button key={defendant} onClick={() => setSearchQ(searchQ === defendant ? "" : defendant)}
+                  style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                    background: searchQ === defendant ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
+                    borderColor: searchQ === defendant ? "rgba(239,68,68,0.4)" : "rgba(255,255,255,0.08)",
+                    color: searchQ === defendant ? "#fca5a5" : "#888" }}>
+                  {defendant.length > 30 ? defendant.slice(0, 30) + "…" : defendant} <span style={{ opacity: 0.6 }}>{count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+
       <Card style={{ marginBottom: 16 }}>
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 12 }}>
-          <Input placeholder="Search cases..." value={searchQ} onChange={setSearchQ} style={{ marginBottom: 0 }} />
+          <Input placeholder="Search by title, defendant, plaintiff type, notes..." value={searchQ} onChange={setSearchQ} style={{ marginBottom: 0 }} />
           <Select value={filterType} onChange={setFilterType} options={CASE_TYPES} style={{ marginBottom: 0 }} />
           <Select value={filterPriority} onChange={setFilterPriority} options={PRIORITIES} style={{ marginBottom: 0 }} />
           <Select value={filterStatus} onChange={setFilterStatus} options={STATUSES} style={{ marginBottom: 0 }} />
