@@ -30,20 +30,26 @@ export default async function handler(req, res) {
 
   // ─── GET stats ─────────────────────────────────────────────────────────────
   if (req.query.stats === "1") {
-    const [lastScan, totalInSet, high, mid, low] = await Promise.all([
-      kv.get("last_scan"),
-      kv.zcard("leads_by_score"),
-      kv.zcount("leads_by_score", 75, 100),
-      kv.zcount("leads_by_score", 50, 74),
-      kv.zcount("leads_by_score", 0, 49),
-    ]);
-    return res.status(200).json({
-      lastScan: lastScan ? JSON.parse(lastScan) : null,
-      total: totalInSet,
-      highPriority: high,
-      investigate: mid,
-      pass: low,
-    });
+    try {
+      const [lastScan, totalInSet, high, mid, low] = await Promise.all([
+        kv.get("last_scan"),
+        kv.zcard("leads_by_score").catch(() => null),
+        kv.zcount("leads_by_score", 75, 100).catch(() => null),
+        kv.zcount("leads_by_score", 50, 74).catch(() => null),
+        kv.zcount("leads_by_score", 0, 49).catch(() => null),
+      ]);
+      // Vercel KV auto-parses JSON on get() — don't double-parse
+      const parsedScan = typeof lastScan === "string" ? JSON.parse(lastScan) : lastScan;
+      return res.status(200).json({
+        lastScan: parsedScan || null,
+        total: totalInSet,
+        highPriority: high,
+        investigate: mid,
+        pass: low,
+      });
+    } catch (e) {
+      return res.status(200).json({ lastScan: null, total: null, error: e.message });
+    }
   }
 
   // ─── GET leads ─────────────────────────────────────────────────────────────
