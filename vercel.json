@@ -32,6 +32,9 @@
     },
     "api/analyze.js": {
       "maxDuration": 60
+    },
+    "api/memo.js": {
+      "maxDuration": 120
     }
   },
   "headers": [

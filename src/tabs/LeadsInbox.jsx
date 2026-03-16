@@ -902,6 +902,137 @@ function InfluencerOutreach({ lead }) {
   );
 }
 
+// ─── MEMO GENERATOR ───────────────────────────────────────────────────────────
+
+function MemoGenerator({ lead }) {
+  const [memo, setMemo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [done, setDone] = useState(false);
+  const memoRef = useRef(null);
+
+  const generate = useCallback(async () => {
+    setLoading(true);
+    setMemo("");
+    setError(null);
+    setDone(false);
+    try {
+      const res = await fetch("/api/memo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lead }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let text = "";
+      while (true) {
+        const { done: streamDone, value } = await reader.read();
+        if (streamDone) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop();
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const raw = line.slice(6).trim();
+          if (raw === "[DONE]") continue;
+          try {
+            const ev = JSON.parse(raw);
+            if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta") {
+              text += ev.delta.text || "";
+              setMemo(text);
+            }
+          } catch {}
+        }
+      }
+      setDone(true);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  }, [lead]);
+
+  const copyMemo = useCallback(() => {
+    navigator.clipboard.writeText(memo);
+  }, [memo]);
+
+  const downloadMemo = useCallback(() => {
+    const a = lead.analysis || {};
+    const filename = `memo-${(a.headline || lead.title || "lead").slice(0, 50).replace(/[^a-z0-9]/gi, "-").toLowerCase()}.txt`;
+    const blob = new Blob([memo], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [memo, lead]);
+
+  if (!memo && !loading && !error) {
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <Btn small onClick={generate} style={{ background: "rgba(200,68,47,0.15)", border: "1px solid rgba(200,68,47,0.4)", color: "#E06050" }}>
+          Generate Full Litigation Memo
+        </Btn>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 16, border: "1px solid rgba(200,68,47,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.07)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#E06050", letterSpacing: "0.1em", textTransform: "uppercase" }}>Litigation Memorandum</span>
+          {loading && <span style={{ fontSize: 10, color: "#666" }}>Drafting...</span>}
+          {done && <span style={{ fontSize: 10, color: "#22c55e" }}>Complete</span>}
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {memo && (
+            <>
+              <Btn small variant="secondary" onClick={copyMemo} style={{ padding: "2px 10px", fontSize: 10 }}>Copy</Btn>
+              <Btn small variant="secondary" onClick={downloadMemo} style={{ padding: "2px 10px", fontSize: 10 }}>Download .txt</Btn>
+            </>
+          )}
+          <Btn small variant="secondary" onClick={generate} style={{ padding: "2px 10px", fontSize: 10 }}>{loading ? "Drafting..." : "Regenerate"}</Btn>
+        </div>
+      </div>
+
+      {error && (
+        <div style={{ padding: "12px 16px", color: "#f87171", fontSize: 12 }}>Error: {error}</div>
+      )}
+
+      {loading && !memo && (
+        <div style={{ padding: "28px 16px", textAlign: "center", color: "#555", fontSize: 12 }}>
+          <div style={{ marginBottom: 6, color: "#888" }}>Drafting full litigation memorandum...</div>
+          <div style={{ fontSize: 11, color: "#444" }}>Claude Sonnet is analyzing all case intelligence — takes ~60 seconds</div>
+        </div>
+      )}
+
+      {memo && (
+        <div
+          ref={memoRef}
+          style={{
+            padding: "20px 24px",
+            fontFamily: "'Georgia', 'Times New Roman', serif",
+            fontSize: 13,
+            lineHeight: 1.8,
+            color: "#d0d0e0",
+            whiteSpace: "pre-wrap",
+            maxHeight: 600,
+            overflowY: "auto",
+            background: "rgba(0,0,0,0.1)",
+          }}
+        >
+          {memo}
+          {loading && <span style={{ opacity: 0.4 }}>▋</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── LEAD CHAT ────────────────────────────────────────────────────────────────
 
 function LeadChat({ lead }) {
@@ -1814,6 +1945,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       <AcquisitionBrief lead={lead} />
 
       <IntakeSiteGenerator lead={lead} />
+
+      <MemoGenerator lead={lead} />
 
       <InfluencerOutreach lead={lead} />
 
