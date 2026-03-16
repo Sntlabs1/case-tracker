@@ -1787,9 +1787,9 @@ export default async function handler(req, res) {
   console.log(`[${runId}] ${convergenceAlerts.length} convergence alerts injected → ${passedTriage.length} total for deep analysis`);
 
   // ── 4. DEEP ANALYSIS — Sonnet full intelligence report on passing items ───
-  // Cap at 10 per scan: 4 batches × 3 concurrent Sonnet calls (~50s each) ≈ 200s deep analysis
+  // Cap at 20 per scan: 4 batches × 5 concurrent Sonnet calls (~50s each) ≈ 200s deep analysis
   // + ~90s data gathering + ~10s triage ≈ 300s total — fits within Vercel Pro limit.
-  const MAX_DEEP_ANALYSIS = 10;
+  const MAX_DEEP_ANALYSIS = 20;
   const toAnalyze = passedTriage
     .sort((a, b) => (b.triageScore || 0) - (a.triageScore || 0))
     .slice(0, MAX_DEEP_ANALYSIS);
@@ -1797,8 +1797,8 @@ export default async function handler(req, res) {
   let scored = 0;
   const leads = [];
 
-  // Run 3 deep analyses concurrently — each takes ~30s, so 2 chunks = ~60s total
-  const ANALYSIS_CONCURRENCY = 3;
+  // Run 5 deep analyses concurrently — 4 batches × ~50s ≈ 200s total
+  const ANALYSIS_CONCURRENCY = 5;
   console.log(`[${runId}] Starting deep analysis on ${toAnalyze.length} items (${ANALYSIS_CONCURRENCY} concurrent)...`);
   for (let i = 0; i < toAnalyze.length; i += ANALYSIS_CONCURRENCY) {
     const chunk = toAnalyze.slice(i, i + ANALYSIS_CONCURRENCY);
