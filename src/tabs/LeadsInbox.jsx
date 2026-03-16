@@ -2214,13 +2214,11 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
 
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
-const LEADS_LS_KEY = "mdl-feed-leads";
-function saveLeadsToLS(leads) { try { localStorage.setItem(LEADS_LS_KEY, JSON.stringify(leads)); } catch {} }
-function loadLeadsFromLS() { try { return JSON.parse(localStorage.getItem(LEADS_LS_KEY) || "[]"); } catch { return []; } }
+// Clear stale localStorage leads cache — was hitting 5MB quota with 1000+ leads
+try { localStorage.removeItem("mdl-feed-leads"); } catch {}
 
 export default function LeadsInbox({ onAddCase, setCases, cases }) {
-  // All leads stored in localStorage — no re-fetch on page reload
-  const [allLeads, setAllLeads] = useState(() => loadLeadsFromLS());
+  const [allLeads, setAllLeads] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -2268,45 +2266,34 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     setOppsLoading(false);
   }, []);
 
-  // Fetch full leads list from KV and persist to localStorage
-  // Filters are applied client-side — this always fetches unfiltered
+  // Fetch full leads list from KV — server has a 5-min KV cache so this is fast
   const fetchLeads = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const leadsRes = await fetch("/api/leads");
+      const [leadsRes, statsRes] = await Promise.all([
+        fetch("/api/leads"),
+        fetch("/api/leads?stats=1"),
+      ]);
       const leadsData = await leadsRes.json();
-      const fresh = leadsData.leads || [];
-      setAllLeads(fresh);
-      saveLeadsToLS(fresh);
-      if (leadsData.total != null) setStats(prev => ({ ...(prev || {}), total: leadsData.total }));
-      fetch("/api/leads?stats=1")
-        .then(r => r.ok ? r.json() : null)
-        .then(statsData => { if (statsData) setStats(statsData); })
-        .catch(() => {});
+      setAllLeads(leadsData.leads || []);
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setStats(statsData);
+        kvTotalRef.current = statsData.total ?? (leadsData.leads || []).length;
+      } else if (leadsData.total != null) {
+        setStats(prev => ({ ...(prev || {}), total: leadsData.total }));
+        kvTotalRef.current = leadsData.total;
+      }
     } catch (e) {
       setError("Cannot connect to backend. Deploy to Vercel and enable KV.");
     }
     setLoading(false);
   }, []);
 
-  // On mount: if we have localStorage data use it; only hit KV if empty or count differs
+  // Always fetch fresh on mount — localStorage was silently truncating at ~200 leads (5MB quota)
   useEffect(() => {
-    const stored = loadLeadsFromLS();
-    if (stored.length === 0) {
-      fetchLeads();
-    } else {
-      // Check if KV has new leads since last visit
-      fetch("/api/leads?stats=1")
-        .then(r => r.ok ? r.json() : null)
-        .then(d => {
-          if (!d) return;
-          setStats(d);
-          kvTotalRef.current = d.total ?? stored.length;
-          if (d.total > stored.length) fetchLeads(); // new leads arrived — refresh
-        })
-        .catch(() => {});
-    }
+    fetchLeads();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Poll stats every 30s — show banner when new leads arrive
@@ -2370,9 +2357,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     try {
       await fetch(`/api/leads?id=${id}`, { method: "DELETE" });
       setAllLeads(l => {
-        const updated = l.filter(lead => lead.id !== id);
-        saveLeadsToLS(updated);
-        return updated;
+        return l.filter(lead => lead.id !== id);
       });
     } catch (e) {
       console.error("Dismiss failed:", e);
