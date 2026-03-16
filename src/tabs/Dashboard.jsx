@@ -340,12 +340,16 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   const fetchData = useCallback((silent = false) => {
     if (!silent) { setLeadsLoading(true); setOppsLoading(true); }
-    // Fetch only top 5 leads for dashboard display (not all 987)
-    fetch("/api/leads?limit=5")
+    // Fetch recent high-priority leads for dashboard — top 100 by score, then show 5 most recent
+    fetch("/api/leads?limit=100&minScore=60")
       .then(r => r.json())
       .then(d => {
         const all = d.leads || [];
-        setLeads(all);
+        // Sort by scannedAt descending so dashboard shows what's NEW, not just what's highest scored
+        const sorted = [...all].sort((a, b) =>
+          new Date(b.scannedAt || b.pubDate || 0) - new Date(a.scannedAt || a.pubDate || 0)
+        );
+        setLeads(sorted.slice(0, 5));
         setTotalLeads(d.total || all.length);
       })
       .catch(() => {})

@@ -10,7 +10,7 @@
       "maxDuration": 30
     },
     "api/opportunities.js": {
-      "maxDuration": 60
+      "maxDuration": 120
     },
     "api/brief.js": {
       "maxDuration": 30
