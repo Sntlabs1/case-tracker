@@ -1821,7 +1821,7 @@ export default async function handler(req, res) {
       leads.push(lead);
       scored++;
 
-      await kv.set(`lead:${item.id}`, JSON.stringify(lead), { ex: 30 * 24 * 3600 });
+      await kv.set(`lead:${item.id}`, JSON.stringify(lead), { ex: 180 * 24 * 3600 });
       await kv.zadd("leads_by_score", { score: analysis.score, member: item.id });
     }));
   }
