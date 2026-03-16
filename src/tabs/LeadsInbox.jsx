@@ -2189,9 +2189,9 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
             setNewAvailable(latest - kvTotalRef.current);
           }
           kvTotalRef.current = latest;
-          // Update countdown to next hourly scan
+          // Update countdown to next daily 8am UTC scan
           if (d.lastScan?.timestamp) {
-            const next = new Date(d.lastScan.timestamp).getTime() + 60 * 60 * 1000;
+            const next = new Date(d.lastScan.timestamp).getTime() + 24 * 60 * 60 * 1000;
             setCountdown(Math.max(0, Math.round((next - Date.now()) / 1000)));
           }
         })

@@ -347,8 +347,6 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
         const all = d.leads || [];
         setLeads(all);
         setTotalLeads(d.total || all.length);
-        const dates = all.map(l => l.scannedAt || l.pubDate).filter(Boolean).sort().reverse();
-        if (dates[0]) setLastScanTime(dates[0]);
       })
       .catch(() => {})
       .finally(() => { if (!silent) setLeadsLoading(false); });
@@ -357,6 +355,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       .then(r => r.ok ? r.json() : null)
       .then(d => {
         if (!d) return;
+        // Stats API is authoritative for last scan time — never derive from individual leads
         if (d?.lastScan?.timestamp) setLastScanTime(d.lastScan.timestamp);
         // If new leads arrived since last poll, refresh fully
         if (kvTotalRef.current !== null && d.total > kvTotalRef.current) {
