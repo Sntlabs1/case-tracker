@@ -1,5 +1,5 @@
 export const Card = ({ children, className = "", onClick, style = {} }) => (
-  <div onClick={onClick} className={className} style={{ background: "#131418", borderRadius: 10, border: "1px solid rgba(255,255,255,0.07)", padding: 20, ...(onClick ? { cursor: "pointer" } : {}), ...style }}>{children}</div>
+  <div onClick={onClick} className={className} style={{ background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border)", padding: 20, ...(onClick ? { cursor: "pointer" } : {}), ...style }}>{children}</div>
 );
 
 export const Badge = ({ label, color }) => (
@@ -9,25 +9,25 @@ export const Badge = ({ label, color }) => (
 export const Btn = ({ children, onClick, variant = "primary", small, style = {} }) => {
   const base = { border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: small ? 12 : 13, padding: small ? "5px 12px" : "8px 18px", transition: "all 0.2s" };
   const styles = {
-    primary: { ...base, background: "#C8442F", color: "#fff" },
-    secondary: { ...base, background: "rgba(255,255,255,0.07)", color: "#c0c0d0", border: "1px solid rgba(255,255,255,0.10)" },
-    danger: { ...base, background: "#ef444420", color: "#ef4444", border: "1px solid #ef444440" },
-    success: { ...base, background: "#22c55e20", color: "#4ade80", border: "1px solid #22c55e40" },
+    primary:   { ...base, background: "#C8442F", color: "#fff" },
+    secondary: { ...base, background: "var(--bg-surface)", color: "var(--text-2)", border: "1px solid var(--border-md)" },
+    danger:    { ...base, background: "#ef444420", color: "#ef4444", border: "1px solid #ef444440" },
+    success:   { ...base, background: "#22c55e20", color: "#4ade80", border: "1px solid #22c55e40" },
   };
   return <button onClick={onClick} style={{ ...styles[variant], ...style }}>{children}</button>;
 };
 
 export const Input = ({ label, value, onChange, type = "text", placeholder, style = {} }) => (
   <div style={{ marginBottom: 12 }}>
-    {label && <label style={{ display: "block", fontSize: 12, color: "#a0a0b8", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.10)", background: "#0d0e18", color: "#e0e0f0", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }} />
+    {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
+    <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }} />
   </div>
 );
 
 export const Select = ({ label, value, onChange, options, style = {} }) => (
   <div style={{ marginBottom: 12 }}>
-    {label && <label style={{ display: "block", fontSize: 12, color: "#a0a0b8", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <select value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.10)", background: "#0d0e18", color: "#e0e0f0", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }}>
+    {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
+    <select value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }}>
       <option value="">All</option>
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
@@ -36,8 +36,8 @@ export const Select = ({ label, value, onChange, options, style = {} }) => (
 
 export const TextArea = ({ label, value, onChange, rows = 3, placeholder }) => (
   <div style={{ marginBottom: 12 }}>
-    {label && <label style={{ display: "block", fontSize: 12, color: "#a0a0b8", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.10)", background: "#0d0e18", color: "#e0e0f0", fontSize: 13, outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }} />
+    {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
+    <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }} />
   </div>
 );
 
@@ -45,10 +45,10 @@ export const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }} onClick={onClose}>
-      <div onClick={e => e.stopPropagation()} style={{ background: "#131418", borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)", padding: 28, maxWidth: 600, width: "100%", maxHeight: "85vh", overflow: "auto" }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "var(--bg-card)", borderRadius: 12, border: "1px solid var(--border)", padding: 28, maxWidth: 600, width: "100%", maxHeight: "85vh", overflow: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h3 style={{ margin: 0, color: "#e0e0f0", fontSize: 18 }}>{title}</h3>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: 20 }}>✕</button>
+          <h3 style={{ margin: 0, color: "var(--text-1)", fontSize: 18 }}>{title}</h3>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", cursor: "pointer", fontSize: 20 }}>✕</button>
         </div>
         {children}
       </div>
@@ -58,7 +58,7 @@ export const Modal = ({ open, onClose, title, children }) => {
 
 export const ScoreBar = ({ score }) => (
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <div style={{ flex: 1, height: 6, background: "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
+    <div style={{ flex: 1, height: 6, background: "var(--border)", borderRadius: 3, overflow: "hidden" }}>
       <div style={{ width: `${score}%`, height: "100%", borderRadius: 3, background: score >= 80 ? "linear-gradient(90deg,#22c55e,#4ade80)" : score >= 60 ? "linear-gradient(90deg,#eab308,#facc15)" : "linear-gradient(90deg,#ef4444,#f87171)", transition: "width 0.5s" }} />
     </div>
     <span style={{ fontSize: 12, fontWeight: 700, color: score >= 80 ? "#4ade80" : score >= 60 ? "#facc15" : "#f87171", minWidth: 28 }}>{score}</span>
@@ -104,7 +104,7 @@ export const AIPanel = ({ caseData, onClose }) => {
     <div style={{ marginTop: 16, background: "rgba(99,102,241,0.08)", borderRadius: 12, border: "1px solid rgba(99,102,241,0.2)", padding: 20 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <h4 style={{ margin: 0, color: "#a78bfa", fontSize: 14 }}>AI Case Analysis</h4>
-        <button onClick={onClose} style={{ background: "none", border: "none", color: "#888", cursor: "pointer" }}>✕</button>
+        <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", cursor: "pointer" }}>✕</button>
       </div>
       <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
         {[["viability", "Case Viability"], ["marketing", "Client Acquisition"], ["research", "Legal Research"]].map(([k, l]) => (
@@ -112,7 +112,7 @@ export const AIPanel = ({ caseData, onClose }) => {
         ))}
       </div>
       <Btn onClick={runAnalysis} small style={{ marginBottom: 12 }}>{loading ? "Analyzing..." : "Run Analysis"}</Btn>
-      {analysis && <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#c8c8e0", lineHeight: 1.6, maxHeight: 400, overflow: "auto", padding: 12, background: "rgba(0,0,0,0.2)", borderRadius: 8 }}>{analysis}</div>}
+      {analysis && <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "var(--text-2)", lineHeight: 1.6, maxHeight: 400, overflow: "auto", padding: 12, background: "var(--bg-surface2)", borderRadius: 8 }}>{analysis}</div>}
     </div>
   );
 };

@@ -11,10 +11,12 @@ import LeadsInbox from "./tabs/LeadsInbox.jsx";
 import Trends from "./tabs/Trends.jsx";
 import Chat from "./tabs/Chat.jsx";
 import Sources from "./tabs/Sources.jsx";
+import Clients from "./tabs/Clients.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
+  { id: "clients",      label: "Clients" },
   { id: "trends",       label: "Trends" },
   { id: "cases",        label: "Case Tracker" },
   { id: "scanner",      label: "AI Scanner" },
@@ -32,6 +34,10 @@ const PAGE_META = {
   leads:        {
     title: "Leads Inbox",
     desc:  "AI-scored leads pulled hourly from 50+ sources — FDA, NHTSA, CFPB, SEC, CourtListener, Reddit, PubMed, Google News, and more. Click any lead to expand a full litigation intelligence report. Use the filters to narrow by score, urgency, case type, or stage.",
+  },
+  clients:      {
+    title: "Clients",
+    desc:  "Import client databases from acquired law firms. Claude screens every client against active case leads and scores their eligibility as a plaintiff — matching injury profiles, medications, products, demographics, state, and exposure timeline.",
   },
   trends:       {
     title: "Trends",
@@ -97,10 +103,10 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0b0c14", color: "#e8e8f0", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "rgba(10,11,18,0.98)", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "stretch", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58 }}>
+      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "stretch", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58 }}>
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0, paddingRight: 32 }}>
@@ -108,10 +114,10 @@ export default function App() {
             <BullIcon />
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: "0.14em", color: "#fff", fontFamily: "'Playfair Display', Georgia, serif", textTransform: "uppercase", lineHeight: 1.1 }}>
+            <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: "0.14em", color: "var(--text-1)", fontFamily: "'Playfair Display', Georgia, serif", textTransform: "uppercase", lineHeight: 1.1 }}>
               Ticket Toro
             </div>
-            <div style={{ fontSize: 9, color: "#444", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 2 }}>
+            <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 2 }}>
               Class Action Intelligence
             </div>
           </div>
@@ -129,7 +135,7 @@ export default function App() {
                 borderBottom: tab === t.id ? "2px solid #C8442F" : "2px solid transparent",
                 borderTop: "2px solid transparent",
                 background: "transparent",
-                color: tab === t.id ? "#ffffff" : "#555",
+                color: tab === t.id ? "var(--text-1)" : "var(--text-6)",
                 cursor: "pointer",
                 fontSize: 13,
                 fontWeight: tab === t.id ? 600 : 400,
@@ -144,29 +150,29 @@ export default function App() {
         </div>
 
         {/* Right: theme toggle + KB count */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 24, borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 24, borderLeft: "1px solid var(--border)" }}>
           <button
             onClick={() => setLightMode(m => !m)}
             title={lightMode ? "Switch to dark mode" : "Switch to light mode"}
-            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 14, lineHeight: 1, color: "#aaa" }}
+            style={{ background: "var(--bg-surface)", border: "1px solid var(--border-md)", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 14, lineHeight: 1, color: "var(--text-4)" }}
           >
             {lightMode ? "🌙" : "☀️"}
           </button>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#C8442F", lineHeight: 1 }}>{kbCases.length}</div>
-            <div style={{ fontSize: 9, color: "#444", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
+            <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
           </div>
         </div>
       </div>
 
       {/* Page header — title + description for each tab */}
       {PAGE_META[tab] && (
-        <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.01)", padding: "14px 32px" }}>
+        <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)", padding: "14px 32px" }}>
           <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#e0e0f0", marginBottom: 4 }}>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>
               {PAGE_META[tab].title}
             </div>
-            <div style={{ fontSize: 12, color: "#555", lineHeight: 1.6, maxWidth: 860 }}>
+            <div style={{ fontSize: 12, color: "var(--text-6)", lineHeight: 1.6, maxWidth: 860 }}>
               {PAGE_META[tab].desc}
             </div>
           </div>
@@ -177,6 +183,7 @@ export default function App() {
       <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
         {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
+        {tab === "clients"      && <Clients />}
         {tab === "trends"       && <Trends />}
 {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
         {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}

@@ -35,6 +35,12 @@
     },
     "api/memo.js": {
       "maxDuration": 120
+    },
+    "api/clients.js": {
+      "maxDuration": 30
+    },
+    "api/match-clients.js": {
+      "maxDuration": 120
     }
   },
   "headers": [
