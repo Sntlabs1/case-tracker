@@ -41,6 +41,15 @@
     },
     "api/match-clients.js": {
       "maxDuration": 120
+    },
+    "api/intake-screen.js": {
+      "maxDuration": 60
+    },
+    "api/outreach.js": {
+      "maxDuration": 60
+    },
+    "api/briefing.js": {
+      "maxDuration": 60
     }
   },
   "headers": [

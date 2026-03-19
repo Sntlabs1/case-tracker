@@ -34,6 +34,25 @@ function gradeColor(grade) {
   return "#ef4444";
 }
 
+// ─── SOL HELPERS ───────────────────────────────────────────────────────────────
+
+const TODAY_SOL = new Date("2026-03-19");
+
+function solDaysRemaining(solDate) {
+  if (!solDate) return null;
+  const d = new Date(solDate);
+  return Math.ceil((d - TODAY_SOL) / 86400000);
+}
+
+function solColor(days) {
+  if (days === null) return "#6b7280";
+  if (days < 0) return "#ef4444";
+  if (days < 30) return "#ef4444";
+  if (days < 60) return "#f97316";
+  if (days < 90) return "#f59e0b";
+  return "#22c55e";
+}
+
 // ─── MINI HELPERS ──────────────────────────────────────────────────────────────
 
 function DataPill({ label, value, color = "#888" }) {
@@ -436,6 +455,33 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
           <Select label="Status" value={c.status} onChange={v => updateCase(c.id, { status: v })} options={STATUSES} />
           <Input label="Viability Score (0-100)" type="number" value={c.score} onChange={v => updateCase(c.id, { score: parseInt(v) || 0 })} />
           <Input label="Jurisdiction" value={c.jurisdiction || ""} onChange={v => updateCase(c.id, { jurisdiction: v })} />
+          <div style={{ gridColumn: "1 / -1" }}>
+            <label style={{ display: "block", fontSize: 11, color: "#888", marginBottom: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>SOL Deadline</label>
+            <input
+              type="date"
+              value={c.solDate || ""}
+              onChange={e => updateCase(c.id, { solDate: e.target.value || null })}
+              style={{
+                width: "100%", background: "var(--bg-input, rgba(255,255,255,0.06))",
+                border: "1px solid var(--border)", borderRadius: 7,
+                padding: "8px 12px", color: "var(--text-1, #e0e0f0)",
+                fontSize: 12, outline: "none", boxSizing: "border-box",
+              }}
+            />
+            {c.solDate && (() => {
+              const days = solDaysRemaining(c.solDate);
+              const col = solColor(days);
+              return (
+                <div style={{ marginTop: 4, fontSize: 11, color: col, fontWeight: 600 }}>
+                  {days < 0
+                    ? "EXPIRED"
+                    : days === 0
+                    ? "Expires TODAY"
+                    : `${days} day${days === 1 ? "" : "s"} remaining`}
+                </div>
+              );
+            })()}
+          </div>
         </div>
         <TextArea label="Notes" value={c.notes || ""} onChange={v => updateCase(c.id, { notes: v })} />
       </div>
@@ -455,6 +501,99 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
   );
 }
 
+// ─── SOL TRACKER VIEW ─────────────────────────────────────────────────────────
+
+function SOLTrackerView({ cases }) {
+  const casesWithSOL = cases
+    .filter(c => c.solDate)
+    .map(c => ({ ...c, _days: solDaysRemaining(c.solDate) }))
+    .sort((a, b) => a._days - b._days);
+
+  const expiring60 = casesWithSOL.filter(c => c._days >= 0 && c._days <= 60);
+
+  return (
+    <div>
+      {/* Summary bar */}
+      <div style={{
+        display: "flex", gap: 24, marginBottom: 16, padding: "12px 16px",
+        background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 10,
+        flexWrap: "wrap",
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{casesWithSOL.length}</div>
+          <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Cases with SOL set</div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#f97316", lineHeight: 1 }}>{expiring60.length}</div>
+          <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Expiring within 60 days</div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#ef4444", lineHeight: 1 }}>{casesWithSOL.filter(c => c._days < 0).length}</div>
+          <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Expired</div>
+        </div>
+      </div>
+
+      {casesWithSOL.length === 0 ? (
+        <div style={{ textAlign: "center", color: "#555", padding: 48, fontSize: 13 }}>
+          No cases have SOL dates set yet.<br />
+          <span style={{ fontSize: 11, color: "#444" }}>Expand a case and set a SOL Deadline in the Edit Case section.</span>
+        </div>
+      ) : (
+        <div style={{ display: "grid", gap: 10 }}>
+          {casesWithSOL.map(c => {
+            const days = c._days;
+            const col = solColor(days);
+            const expired = days < 0;
+            const pct = expired ? 100 : Math.min(Math.round(((90 - days) / 90) * 100), 100);
+
+            return (
+              <Card key={c.id} style={{ borderLeft: `3px solid ${col}`, padding: "14px 18px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 5, flexWrap: "wrap" }}>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: "#e0e0f0" }}>{c.title}</span>
+                      {expired && (
+                        <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: "rgba(239,68,68,0.2)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.4)", letterSpacing: "0.06em" }}>
+                          EXPIRED
+                        </span>
+                      )}
+                      {!expired && days < 30 && (
+                        <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: "rgba(239,68,68,0.15)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.3)", letterSpacing: "0.06em" }}>
+                          URGENT
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#666", marginBottom: 8 }}>
+                      {[c.status, c.caseType, c.jurisdiction].filter(Boolean).join(" · ")}
+                    </div>
+                    {/* SOL bar */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ flex: 1, maxWidth: 240, height: 6, borderRadius: 3, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                        <div style={{ width: `${expired ? 100 : pct}%`, height: "100%", background: col, borderRadius: 3 }} />
+                      </div>
+                      <span style={{ fontSize: 11, color: "#888" }}>
+                        SOL: {new Date(c.solDate).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ fontSize: 28, fontWeight: 800, color: col, lineHeight: 1 }}>
+                      {expired ? "−" + Math.abs(days) : days}
+                    </div>
+                    <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      {expired ? "days expired" : "days left"}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function CaseTracker({ cases, setCases, selectedCase, setSelectedCase, showAI, setShowAI, caseFilter = {} }) {
@@ -463,6 +602,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
   const [filterStatus, setFilterStatus] = useState("");
   const [searchQ, setSearchQ] = useState("");
   const [showAddCase, setShowAddCase] = useState(false);
+  const [viewMode, setViewMode] = useState("list"); // "list" | "sol"
   const [newCase, setNewCase] = useState({ title: "", source: "", caseType: "", priority: "Medium", status: "New Lead", affectedPop: "", company: "", description: "", notes: "", score: 50, jurisdiction: "" });
 
   useEffect(() => {
@@ -505,184 +645,239 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <h2 style={{ margin: 0, fontSize: 20 }}>Case Tracker</h2>
-        <Btn onClick={() => setShowAddCase(true)}>+ New Case</Btn>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {/* View mode toggle */}
+          <div style={{ display: "flex", gap: 4 }}>
+            {[
+              { key: "list", label: "All Cases" },
+              { key: "sol",  label: "SOL Tracker" },
+            ].map(v => (
+              <button
+                key={v.key}
+                onClick={() => setViewMode(v.key)}
+                style={{
+                  padding: "5px 13px", borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                  background: viewMode === v.key ? "#C8442F" : "rgba(255,255,255,0.06)",
+                  color: viewMode === v.key ? "#fff" : "#888",
+                  border: `1px solid ${viewMode === v.key ? "#C8442F" : "rgba(255,255,255,0.12)"}`,
+                  transition: "all 0.13s",
+                }}
+              >
+                {v.label}
+                {v.key === "sol" && cases.filter(c => {
+                  if (!c.solDate) return false;
+                  const d = solDaysRemaining(c.solDate);
+                  return d !== null && d >= 0 && d <= 60;
+                }).length > 0 && (
+                  <span style={{ marginLeft: 5, fontSize: 10, padding: "1px 5px", borderRadius: 10, background: "rgba(245,158,11,0.25)", color: "#f59e0b" }}>
+                    {cases.filter(c => {
+                      if (!c.solDate) return false;
+                      const d = solDaysRemaining(c.solDate);
+                      return d !== null && d >= 0 && d <= 60;
+                    }).length}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <Btn onClick={() => setShowAddCase(true)}>+ New Case</Btn>
+        </div>
       </div>
 
-      {/* ── QUICK SUMMARY DASHBOARD ── */}
-      <Card style={{ marginBottom: 12, padding: "14px 16px" }}>
-        {/* Stats row */}
-        <div style={{ display: "flex", gap: 20, marginBottom: 14, flexWrap: "wrap" }}>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{cases.length}</div>
-            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Cases</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.priority === "Critical").length}</div>
-            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Critical</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#f59e0b", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Pre-Litigation").length}</div>
-            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Pre-Lit</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#8b5cf6", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "MDL Consolidated").length}</div>
-            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>MDL</div>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Settlement Discussions").length}</div>
-            <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Settlement</div>
-          </div>
-          {(filterType || filterPriority || filterStatus || searchQ) && (
-            <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-              <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setSearchQ(""); }}
-                style={{ fontSize: 11, color: "#C8442F", background: "none", border: "1px solid rgba(200,68,47,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
-                Clear filters · {filtered.length} shown
-              </button>
-            </div>
-          )}
-        </div>
+      {/* ── SOL TRACKER VIEW ── */}
+      {viewMode === "sol" && <SOLTrackerView cases={cases} />}
 
-        {/* Case type chips */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Case Type</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {Object.entries(typeCounts).sort((a,b) => b[1]-a[1]).map(([type, count]) => (
-              <button key={type} onClick={() => setFilterType(filterType === type ? "" : type)}
-                style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
-                  background: filterType === type ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.04)",
-                  borderColor: filterType === type ? "rgba(200,68,47,0.5)" : "rgba(255,255,255,0.08)",
-                  color: filterType === type ? "#E06050" : "#888" }}>
-                {type} <span style={{ opacity: 0.6 }}>{count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Stage chips */}
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Stage</div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {Object.entries(stageCounts).sort((a,b) => b[1]-a[1]).map(([stage, count]) => (
-              <button key={stage} onClick={() => setSearchQ(searchQ === stage ? "" : stage)}
-                style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
-                  background: searchQ === stage ? `${stageColor(stage)}22` : "rgba(255,255,255,0.04)",
-                  borderColor: searchQ === stage ? `${stageColor(stage)}55` : "rgba(255,255,255,0.08)",
-                  color: searchQ === stage ? stageColor(stage) : "#888" }}>
-                {stage} <span style={{ opacity: 0.6 }}>{count}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Top defendants */}
-        {topDefendants.length > 0 && (
-          <div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Top Defendants</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {topDefendants.map(([defendant, count]) => (
-                <button key={defendant} onClick={() => setSearchQ(searchQ === defendant ? "" : defendant)}
-                  style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
-                    background: searchQ === defendant ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
-                    borderColor: searchQ === defendant ? "rgba(239,68,68,0.4)" : "rgba(255,255,255,0.08)",
-                    color: searchQ === defendant ? "#fca5a5" : "#888" }}>
-                  {defendant.length > 30 ? defendant.slice(0, 30) + "…" : defendant} <span style={{ opacity: 0.6 }}>{count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </Card>
-
-      <Card style={{ marginBottom: 16 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 12 }}>
-          <Input placeholder="Search by title, defendant, plaintiff type, notes..." value={searchQ} onChange={setSearchQ} style={{ marginBottom: 0 }} />
-          <Select value={filterType} onChange={setFilterType} options={CASE_TYPES} style={{ marginBottom: 0 }} />
-          <Select value={filterPriority} onChange={setFilterPriority} options={PRIORITIES} style={{ marginBottom: 0 }} />
-          <Select value={filterStatus} onChange={setFilterStatus} options={STATUSES} style={{ marginBottom: 0 }} />
-        </div>
-      </Card>
-
-      <div style={{ display: "grid", gap: 12 }}>
-        {sortedCases.map(c => (
-          <Card key={c.id} onClick={() => setSelectedCase(selectedCase?.id === c.id ? null : c)}
-            style={{ cursor: "pointer", borderLeft: `3px solid ${scoreColor(c.score)}` }}>
-
-            {/* ── COLLAPSED HEADER ── */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {/* Row 1: title + badges */}
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 5 }}>
-                  <span style={{ fontWeight: 700, fontSize: 15, color: "#e0e0f0" }}>{c.title}</span>
-                  <Badge label={c.priority} color={PRIORITY_COLORS[c.priority]} />
-                  <Badge label={c.status} color={STATUS_COLORS[c.status]} />
-                  {c.caseStage && (
-                    <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, background: stageColor(c.caseStage) + "18", color: stageColor(c.caseStage), border: `1px solid ${stageColor(c.caseStage)}33` }}>
-                      {c.caseStage}
-                    </span>
-                  )}
-                  {c.urgency && c.urgency !== "LOW" && (
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, background: `${urgencyColor(c.urgency)}18`, color: urgencyColor(c.urgency), border: `1px solid ${urgencyColor(c.urgency)}33` }}>
-                      {c.urgency}
-                    </span>
-                  )}
-                </div>
-
-                {/* Row 2: meta */}
-                <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>
-                  {[c.company, c.caseType, c.jurisdiction || c.source, c.affectedPop ? `Pop: ${c.affectedPop}` : null].filter(Boolean).join(" · ")}
-                </div>
-
-                {/* Row 3: description */}
-                {c.description && (
-                  <div style={{ fontSize: 13, color: "#a0a0b8", marginBottom: 8, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {c.description}
-                  </div>
-                )}
-
-                {/* Row 4: financial + urgency pills */}
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
-                  {c.fundEstimate && <DataPill label="Fund" value={c.fundEstimate} color="#E06050" />}
-                  {c.perClaimant && <DataPill label="Per Claimant" value={c.perClaimant} color="#a78bfa" />}
-                  {c.feeToFirm && <DataPill label="Firm Fee" value={c.feeToFirm} color="#22c55e" />}
-                  {c.sol && <DataPill label="SOL" value={c.sol} color="#f59e0b" />}
-                  {c.existingMDLNumber && <DataPill label="MDL" value={c.existingMDLNumber} color="#8b5cf6" />}
-                  {c.assignedJudge && <DataPill label="Judge" value={c.assignedJudge.split(" ").slice(-1)[0]} color="#60a5fa" />}
-                </div>
-
-                <div style={{ maxWidth: 220 }}><ScoreBar score={c.score} /></div>
+      {/* ── LIST VIEW ── */}
+      {viewMode === "list" && (
+        <>
+          {/* ── QUICK SUMMARY DASHBOARD ── */}
+          <Card style={{ marginBottom: 12, padding: "14px 16px" }}>
+            {/* Stats row */}
+            <div style={{ display: "flex", gap: 20, marginBottom: 14, flexWrap: "wrap" }}>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{cases.length}</div>
+                <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Cases</div>
               </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.priority === "Critical").length}</div>
+                <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Critical</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#f59e0b", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Pre-Litigation").length}</div>
+                <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Pre-Lit</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#8b5cf6", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "MDL Consolidated").length}</div>
+                <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>MDL</div>
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Settlement Discussions").length}</div>
+                <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Settlement</div>
+              </div>
+              {(filterType || filterPriority || filterStatus || searchQ) && (
+                <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
+                  <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setSearchQ(""); }}
+                    style={{ fontSize: 11, color: "#C8442F", background: "none", border: "1px solid rgba(200,68,47,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+                    Clear filters · {filtered.length} shown
+                  </button>
+                </div>
+              )}
+            </div>
 
-              {/* Right column: score + KB grade + date */}
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0, minWidth: 80 }}>
-                <div style={{ fontSize: 26, fontWeight: 800, color: scoreColor(c.score), lineHeight: 1 }}>{c.score}</div>
-                {c.kbGrade && (
-                  <div style={{ textAlign: "center" }}>
-                    <div style={{ fontSize: 18, fontWeight: 800, color: gradeColor(c.kbGrade) }}>{c.kbGrade}</div>
-                    <div style={{ fontSize: 9, color: "#555", textTransform: "uppercase", letterSpacing: "0.06em" }}>KB Grade</div>
-                  </div>
-                )}
-                <div style={{ fontSize: 11, color: "#555" }}>{c.dateAdded}</div>
-                {c.jurisdiction && <div style={{ fontSize: 11, color: "#B83E2C" }}>{c.jurisdiction}</div>}
-                <div style={{ fontSize: 10, color: "#444" }}>{selectedCase?.id === c.id ? "▲ collapse" : "▼ expand"}</div>
+            {/* Case type chips */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Case Type</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {Object.entries(typeCounts).sort((a,b) => b[1]-a[1]).map(([type, count]) => (
+                  <button key={type} onClick={() => setFilterType(filterType === type ? "" : type)}
+                    style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                      background: filterType === type ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.04)",
+                      borderColor: filterType === type ? "rgba(200,68,47,0.5)" : "rgba(255,255,255,0.08)",
+                      color: filterType === type ? "#E06050" : "#888" }}>
+                    {type} <span style={{ opacity: 0.6 }}>{count}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* ── EXPANDED DETAIL ── */}
-            {selectedCase?.id === c.id && (
-              <CaseDetailPanel
-                c={c}
-                updateCase={updateCase}
-                deleteCase={deleteCase}
-                showAI={showAI}
-                setShowAI={setShowAI}
-              />
+            {/* Stage chips */}
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Stage</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {Object.entries(stageCounts).sort((a,b) => b[1]-a[1]).map(([stage, count]) => (
+                  <button key={stage} onClick={() => setSearchQ(searchQ === stage ? "" : stage)}
+                    style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                      background: searchQ === stage ? `${stageColor(stage)}22` : "rgba(255,255,255,0.04)",
+                      borderColor: searchQ === stage ? `${stageColor(stage)}55` : "rgba(255,255,255,0.08)",
+                      color: searchQ === stage ? stageColor(stage) : "#888" }}>
+                    {stage} <span style={{ opacity: 0.6 }}>{count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Top defendants */}
+            {topDefendants.length > 0 && (
+              <div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Top Defendants</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {topDefendants.map(([defendant, count]) => (
+                    <button key={defendant} onClick={() => setSearchQ(searchQ === defendant ? "" : defendant)}
+                      style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
+                        background: searchQ === defendant ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.04)",
+                        borderColor: searchQ === defendant ? "rgba(239,68,68,0.4)" : "rgba(255,255,255,0.08)",
+                        color: searchQ === defendant ? "#fca5a5" : "#888" }}>
+                      {defendant.length > 30 ? defendant.slice(0, 30) + "…" : defendant} <span style={{ opacity: 0.6 }}>{count}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </Card>
-        ))}
-        {sortedCases.length === 0 && (
-          <div style={{ textAlign: "center", color: "#666", padding: 40 }}>No cases match your filters</div>
-        )}
-      </div>
+
+          <Card style={{ marginBottom: 16 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 12 }}>
+              <Input placeholder="Search by title, defendant, plaintiff type, notes..." value={searchQ} onChange={setSearchQ} style={{ marginBottom: 0 }} />
+              <Select value={filterType} onChange={setFilterType} options={CASE_TYPES} style={{ marginBottom: 0 }} />
+              <Select value={filterPriority} onChange={setFilterPriority} options={PRIORITIES} style={{ marginBottom: 0 }} />
+              <Select value={filterStatus} onChange={setFilterStatus} options={STATUSES} style={{ marginBottom: 0 }} />
+            </div>
+          </Card>
+
+          <div style={{ display: "grid", gap: 12 }}>
+            {sortedCases.map(c => (
+              <Card key={c.id} onClick={() => setSelectedCase(selectedCase?.id === c.id ? null : c)}
+                style={{ cursor: "pointer", borderLeft: `3px solid ${scoreColor(c.score)}` }}>
+
+                {/* ── COLLAPSED HEADER ── */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {/* Row 1: title + badges */}
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 5 }}>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: "#e0e0f0" }}>{c.title}</span>
+                      <Badge label={c.priority} color={PRIORITY_COLORS[c.priority]} />
+                      <Badge label={c.status} color={STATUS_COLORS[c.status]} />
+                      {c.caseStage && (
+                        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, background: stageColor(c.caseStage) + "18", color: stageColor(c.caseStage), border: `1px solid ${stageColor(c.caseStage)}33` }}>
+                          {c.caseStage}
+                        </span>
+                      )}
+                      {c.urgency && c.urgency !== "LOW" && (
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, background: `${urgencyColor(c.urgency)}18`, color: urgencyColor(c.urgency), border: `1px solid ${urgencyColor(c.urgency)}33` }}>
+                          {c.urgency}
+                        </span>
+                      )}
+                      {/* SOL badge on card */}
+                      {c.solDate && (() => {
+                        const days = solDaysRemaining(c.solDate);
+                        if (days === null || days > 90) return null;
+                        const col = solColor(days);
+                        return (
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 6, background: `${col}18`, color: col, border: `1px solid ${col}33` }}>
+                            {days < 0 ? "SOL EXPIRED" : `SOL ${days}d`}
+                          </span>
+                        );
+                      })()}
+                    </div>
+
+                    {/* Row 2: meta */}
+                    <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>
+                      {[c.company, c.caseType, c.jurisdiction || c.source, c.affectedPop ? `Pop: ${c.affectedPop}` : null].filter(Boolean).join(" · ")}
+                    </div>
+
+                    {/* Row 3: description */}
+                    {c.description && (
+                      <div style={{ fontSize: 13, color: "#a0a0b8", marginBottom: 8, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                        {c.description}
+                      </div>
+                    )}
+
+                    {/* Row 4: financial + urgency pills */}
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+                      {c.fundEstimate && <DataPill label="Fund" value={c.fundEstimate} color="#E06050" />}
+                      {c.perClaimant && <DataPill label="Per Claimant" value={c.perClaimant} color="#a78bfa" />}
+                      {c.feeToFirm && <DataPill label="Firm Fee" value={c.feeToFirm} color="#22c55e" />}
+                      {c.sol && <DataPill label="SOL" value={c.sol} color="#f59e0b" />}
+                      {c.existingMDLNumber && <DataPill label="MDL" value={c.existingMDLNumber} color="#8b5cf6" />}
+                      {c.assignedJudge && <DataPill label="Judge" value={c.assignedJudge.split(" ").slice(-1)[0]} color="#60a5fa" />}
+                    </div>
+
+                    <div style={{ maxWidth: 220 }}><ScoreBar score={c.score} /></div>
+                  </div>
+
+                  {/* Right column: score + KB grade + date */}
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0, minWidth: 80 }}>
+                    <div style={{ fontSize: 26, fontWeight: 800, color: scoreColor(c.score), lineHeight: 1 }}>{c.score}</div>
+                    {c.kbGrade && (
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ fontSize: 18, fontWeight: 800, color: gradeColor(c.kbGrade) }}>{c.kbGrade}</div>
+                        <div style={{ fontSize: 9, color: "#555", textTransform: "uppercase", letterSpacing: "0.06em" }}>KB Grade</div>
+                      </div>
+                    )}
+                    <div style={{ fontSize: 11, color: "#555" }}>{c.dateAdded}</div>
+                    {c.jurisdiction && <div style={{ fontSize: 11, color: "#B83E2C" }}>{c.jurisdiction}</div>}
+                    <div style={{ fontSize: 10, color: "#444" }}>{selectedCase?.id === c.id ? "▲ collapse" : "▼ expand"}</div>
+                  </div>
+                </div>
+
+                {/* ── EXPANDED DETAIL ── */}
+                {selectedCase?.id === c.id && (
+                  <CaseDetailPanel
+                    c={c}
+                    updateCase={updateCase}
+                    deleteCase={deleteCase}
+                    showAI={showAI}
+                    setShowAI={setShowAI}
+                  />
+                )}
+              </Card>
+            ))}
+            {sortedCases.length === 0 && (
+              <div style={{ textAlign: "center", color: "#666", padding: 40 }}>No cases match your filters</div>
+            )}
+          </div>
+        </>
+      )}
 
       <Modal open={showAddCase} onClose={() => setShowAddCase(false)} title="Add New Case">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

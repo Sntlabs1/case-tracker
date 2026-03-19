@@ -1,6 +1,7 @@
 // Vercel serverless — client database CRUD
-// GET  /api/clients                        — list all clients (optional ?firm=X&state=Y&q=search)
-// POST /api/clients  body: { clients: [] } — bulk import (or single { client: {} })
+// GET    /api/clients                        — list all clients (optional ?firm=X&state=Y&q=search)
+// POST   /api/clients  body: { clients: [] } — bulk import (or single { client: {} })
+// PATCH  /api/clients  body: { id, retainerStatus, retainerHistory? } — update status
 // DELETE /api/clients?id=xyz               — remove a client
 
 import { kv } from "@vercel/kv";
@@ -11,10 +12,32 @@ const CACHE_TTL         = 300; // 5 min
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Cache-Control", "no-store");
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  // ── PATCH — update retainer status ────────────────────────────────────────
+  if (req.method === "PATCH") {
+    const { id, retainerStatus, retainerHistory } = req.body || {};
+    if (!id) return res.status(400).json({ error: "id required" });
+    const raw = await kv.get(`client:${id}`);
+    if (!raw) return res.status(404).json({ error: "Client not found" });
+    const client = typeof raw === "string" ? JSON.parse(raw) : raw;
+    const updated = {
+      ...client,
+      retainerStatus: retainerStatus ?? client.retainerStatus,
+      retainerHistory: retainerHistory ?? [
+        ...(client.retainerHistory || []),
+        ...(retainerStatus && retainerStatus !== client.retainerStatus
+          ? [{ status: retainerStatus, at: new Date().toISOString() }]
+          : []),
+      ],
+    };
+    await kv.set(`client:${id}`, JSON.stringify(updated), { ex: 365 * 24 * 3600 });
+    await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
+    return res.status(200).json({ updated: id, retainerStatus: updated.retainerStatus });
+  }
 
   // ── DELETE ─────────────────────────────────────────────────────────────────
   if (req.method === "DELETE") {

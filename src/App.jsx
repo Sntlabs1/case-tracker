@@ -12,11 +12,13 @@ import Trends from "./tabs/Trends.jsx";
 import Chat from "./tabs/Chat.jsx";
 import Sources from "./tabs/Sources.jsx";
 import Clients from "./tabs/Clients.jsx";
+import Intake from "./tabs/Intake.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
   { id: "clients",      label: "Clients" },
+  { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
   { id: "cases",        label: "Case Tracker" },
   { id: "scanner",      label: "AI Scanner" },
@@ -38,6 +40,10 @@ const PAGE_META = {
   clients:      {
     title: "Clients",
     desc:  "Import client databases from acquired law firms. Claude screens every client against active case leads and scores their eligibility as a plaintiff — matching injury profiles, medications, products, demographics, state, and exposure timeline.",
+  },
+  intake:       {
+    title: "Intake Screen",
+    desc:  "Screen inbound callers in real time. Enter the caller's injuries, medications, products, state, and age — Claude instantly scores them against the top 150 active leads and returns qualifying cases with specific intake questions to confirm eligibility.",
   },
   trends:       {
     title: "Trends",
@@ -184,6 +190,7 @@ export default function App() {
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
         {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
         {tab === "clients"      && <Clients />}
+        {tab === "intake"       && <Intake />}
         {tab === "trends"       && <Trends />}
 {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
         {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}

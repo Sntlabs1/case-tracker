@@ -4,6 +4,20 @@ import { Card, Btn } from "../components/UI.jsx";
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 
+const RETAINER_STATUSES = ["Uncontacted", "Contacted", "Consultation", "Retained", "Filed", "Declined"];
+const RETAINER_COLORS = {
+  Uncontacted:  "#6b7280",
+  Contacted:    "#3b82f6",
+  Consultation: "#f59e0b",
+  Retained:     "#22c55e",
+  Filed:        "#8b5cf6",
+  Declined:     "#ef4444",
+};
+
+function retainerColor(status) {
+  return RETAINER_COLORS[status] || "#6b7280";
+}
+
 function scoreColor(s) {
   return s >= 75 ? "#22c55e" : s >= 50 ? "#f59e0b" : s >= 30 ? "#fb923c" : "#ef4444";
 }
@@ -79,6 +93,22 @@ function StatPill({ label, value, color = "#C8442F" }) {
   );
 }
 
+function RetainerBadge({ status }) {
+  if (!status) return null;
+  const color = retainerColor(status);
+  return (
+    <span style={{
+      fontSize: 10, padding: "1px 7px", borderRadius: 4,
+      background: `${color}20`,
+      color,
+      border: `1px solid ${color}40`,
+      fontWeight: 600,
+    }}>
+      {status}
+    </span>
+  );
+}
+
 function ClientRow({ client, onSelect, onDelete, selected }) {
   const [hov, setHov] = useState(false);
   return (
@@ -109,6 +139,7 @@ function ClientRow({ client, onSelect, onDelete, selected }) {
               {client.matchedLeads.length} match{client.matchedLeads.length > 1 ? "es" : ""}
             </span>
           )}
+          <RetainerBadge status={client.retainerStatus || "Uncontacted"} />
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           {client.injuries && (
@@ -127,6 +158,144 @@ function ClientRow({ client, onSelect, onDelete, selected }) {
         >
           Remove
         </button>
+      )}
+    </div>
+  );
+}
+
+// ── Outreach Drafter sub-component ────────────────────────────────────────────
+function OutreachDrafter({ client, lead }) {
+  const [status, setStatus] = useState("idle"); // idle | loading | streaming | done | error
+  const [text, setText] = useState("");
+  const [copied, setCopied] = useState(false);
+  const abortRef = useRef(null);
+
+  async function draft() {
+    setText("");
+    setCopied(false);
+    setStatus("loading");
+
+    try {
+      const resp = await fetch("/api/outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client, lead }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.text();
+        setStatus("error");
+        setText(`Error ${resp.status}: ${err.slice(0, 200)}`);
+        return;
+      }
+
+      setStatus("streaming");
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split("\n");
+        buf = lines.pop(); // keep incomplete line in buffer
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const raw = line.slice(6).trim();
+          if (!raw || raw === "[DONE]") continue;
+          try {
+            const ev = JSON.parse(raw);
+            if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta") {
+              setText(t => t + ev.delta.text);
+            }
+            if (ev.type === "message_stop") {
+              setStatus("done");
+            }
+            if (ev.type === "error") {
+              setStatus("error");
+              setText(ev.error?.message || "Unknown error");
+            }
+          } catch {
+            // non-JSON SSE line, skip
+          }
+        }
+      }
+      setStatus(s => s === "streaming" ? "done" : s);
+    } catch (e) {
+      setStatus("error");
+      setText(e.message);
+    }
+  }
+
+  function copy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div style={{ marginTop: 12 }} onClick={e => e.stopPropagation()}>
+      {status === "idle" && (
+        <button
+          onClick={draft}
+          style={{
+            padding: "6px 14px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+            background: "rgba(59,130,246,0.12)", color: "#3b82f6",
+            border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer",
+          }}
+        >
+          Draft Outreach Letter
+        </button>
+      )}
+
+      {status === "loading" && (
+        <div style={{ fontSize: 11, color: "var(--text-5)", padding: "6px 0" }}>Drafting letter…</div>
+      )}
+
+      {(status === "streaming" || status === "done" || status === "error") && (
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em" }}>
+              Outreach Letter{status === "streaming" ? " (streaming…)" : status === "done" ? " — Done" : " — Error"}
+            </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              {status === "done" && (
+                <button
+                  onClick={copy}
+                  style={{ padding: "3px 10px", borderRadius: 5, fontSize: 10, fontWeight: 600, cursor: "pointer", background: copied ? "rgba(34,197,94,0.15)" : "var(--bg-surface)", color: copied ? "#22c55e" : "var(--text-4)", border: `1px solid ${copied ? "rgba(34,197,94,0.4)" : "var(--border)"}` }}
+                >
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              )}
+              <button
+                onClick={() => { setStatus("idle"); setText(""); }}
+                style={{ padding: "3px 8px", borderRadius: 5, fontSize: 10, cursor: "pointer", background: "none", color: "var(--text-6)", border: "1px solid var(--border)" }}
+              >
+                Clear
+              </button>
+              {status !== "streaming" && (
+                <button
+                  onClick={draft}
+                  style={{ padding: "3px 8px", borderRadius: 5, fontSize: 10, cursor: "pointer", background: "none", color: "var(--text-5)", border: "1px solid var(--border)" }}
+                >
+                  Regenerate
+                </button>
+              )}
+            </div>
+          </div>
+          <pre style={{
+            margin: 0, padding: "10px 12px", borderRadius: 7,
+            background: "var(--bg-surface2)", border: "1px solid var(--border)",
+            fontSize: 11, color: status === "error" ? "#ef4444" : "var(--text-2)",
+            whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6,
+            maxHeight: 320, overflowY: "auto",
+            fontFamily: "inherit",
+          }}>
+            {text || " "}
+          </pre>
+        </div>
       )}
     </div>
   );
@@ -194,6 +363,7 @@ function MatchResult({ match, rank }) {
             {c.email && <a href={`mailto:${c.email}`} style={{ fontSize: 11, color: "#C8442F", textDecoration: "none" }}>{c.email}</a>}
             {c.phone && <span style={{ fontSize: 11, color: "var(--text-5)" }}>{c.phone}</span>}
           </div>
+          <OutreachDrafter client={c} lead={match.lead || {}} />
         </div>
       )}
     </div>
@@ -462,6 +632,7 @@ export default function Clients() {
   const [firms, setFirms] = useState([]);
   const [firmFilter, setFirmFilter] = useState("");
   const [stateFilter, setStateFilter] = useState("");
+  const [retainerFilter, setRetainerFilter] = useState("");
   const [searchQ, setSearchQ] = useState("");
   const [selectedClient, setSelectedClient] = useState(null);
   const [importCount, setImportCount] = useState(0);
@@ -489,17 +660,42 @@ export default function Clients() {
     let out = clients;
     if (firmFilter) out = out.filter(c => c.sourceFirm === firmFilter);
     if (stateFilter) out = out.filter(c => c.state === stateFilter);
+    if (retainerFilter) out = out.filter(c => (c.retainerStatus || "Uncontacted") === retainerFilter);
     if (searchQ) {
       const ql = searchQ.toLowerCase();
       out = out.filter(c => `${c.firstName} ${c.lastName} ${c.injuries} ${c.medicationsUsed} ${c.productsUsed}`.toLowerCase().includes(ql));
     }
     return out;
-  }, [clients, firmFilter, stateFilter, searchQ]);
+  }, [clients, firmFilter, stateFilter, retainerFilter, searchQ]);
 
   async function deleteClient(id) {
     await fetch(`/api/clients?id=${id}`, { method: "DELETE" });
     setClients(cs => cs.filter(c => c.id !== id));
     if (selectedClient?.id === id) setSelectedClient(null);
+  }
+
+  async function updateRetainerStatus(clientId, status) {
+    // Optimistically update local state
+    setClients(cs => cs.map(c => {
+      if (c.id !== clientId) return c;
+      const now = new Date().toISOString();
+      const history = [...(c.retainerHistory || []), { status, date: now }];
+      return { ...c, retainerStatus: status, retainerHistory: history };
+    }));
+    if (selectedClient?.id === clientId) {
+      setSelectedClient(sc => {
+        if (!sc) return sc;
+        const now = new Date().toISOString();
+        const history = [...(sc.retainerHistory || []), { status, date: now }];
+        return { ...sc, retainerStatus: status, retainerHistory: history };
+      });
+    }
+    // Persist to backend
+    await fetch("/api/clients", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: clientId, retainerStatus: status }),
+    });
   }
 
   async function runMatch() {
@@ -523,8 +719,11 @@ export default function Clients() {
   }
 
   // ── Stats ─────────────────────────────────────────────────────────────────
-  const totalWithMatches = clients.filter(c => c.matchedLeads?.length > 0).length;
+  const retainedCount = clients.filter(c => c.retainerStatus === "Retained").length;
+  const inProgressCount = clients.filter(c => c.retainerStatus === "Contacted" || c.retainerStatus === "Consultation").length;
   const statesRepresented = [...new Set(clients.map(c => c.state).filter(Boolean))].length;
+
+  const hasFilters = firmFilter || stateFilter || retainerFilter || searchQ;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -533,8 +732,8 @@ export default function Clients() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
         <StatPill label="Total Clients" value={clients.length} color="#C8442F" />
         <StatPill label="Firms Imported" value={firms.length} color="#3b82f6" />
-        <StatPill label="States Represented" value={statesRepresented} color="#f59e0b" />
-        <StatPill label="With Case Matches" value={totalWithMatches || "—"} color="#22c55e" />
+        <StatPill label="Retained" value={retainedCount || "—"} color="#22c55e" />
+        <StatPill label="In Progress" value={inProgressCount || "—"} color="#f59e0b" />
       </div>
 
       {/* ── View selector ── */}
@@ -573,11 +772,16 @@ export default function Clients() {
                 <option value="">All States</option>
                 {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
+              <select value={retainerFilter} onChange={e => setRetainerFilter(e.target.value)}
+                style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
+                <option value="">All Statuses</option>
+                {RETAINER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
             </div>
             <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 10 }}>
               Showing {filtered.length} of {clients.length} clients
-              {(firmFilter || stateFilter || searchQ) && (
-                <button onClick={() => { setFirmFilter(""); setStateFilter(""); setSearchQ(""); }}
+              {hasFilters && (
+                <button onClick={() => { setFirmFilter(""); setStateFilter(""); setRetainerFilter(""); setSearchQ(""); }}
                   style={{ marginLeft: 8, fontSize: 10, color: "#C8442F", background: "none", border: "none", cursor: "pointer" }}>
                   Clear filters
                 </button>
@@ -640,6 +844,44 @@ export default function Clients() {
                       <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
                     </div>
                   ) : null)}
+                </div>
+
+                {/* Retainer Status section */}
+                <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontWeight: 700 }}>Retainer Status</div>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: selectedClient.retainerHistory?.length > 0 ? 10 : 0 }}>
+                    <select
+                      value={selectedClient.retainerStatus || "Uncontacted"}
+                      onChange={e => updateRetainerStatus(selectedClient.id, e.target.value)}
+                      style={{
+                        background: "var(--bg-input)", border: "1px solid var(--border)",
+                        borderRadius: 6, padding: "6px 10px", fontSize: 12,
+                        color: retainerColor(selectedClient.retainerStatus || "Uncontacted"),
+                        outline: "none", cursor: "pointer", fontWeight: 600,
+                      }}
+                    >
+                      {RETAINER_STATUSES.map(s => (
+                        <option key={s} value={s} style={{ color: retainerColor(s) }}>{s}</option>
+                      ))}
+                    </select>
+                    <RetainerBadge status={selectedClient.retainerStatus || "Uncontacted"} />
+                  </div>
+                  {selectedClient.retainerHistory?.length > 0 && (
+                    <div>
+                      <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>History</div>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                        {selectedClient.retainerHistory.map((entry, i) => (
+                          <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: retainerColor(entry.status), flexShrink: 0, display: "inline-block" }} />
+                            <span style={{ fontSize: 11, color: "var(--text-3)", fontWeight: 600 }}>{entry.status}</span>
+                            <span style={{ fontSize: 10, color: "var(--text-6)" }}>
+                              {entry.date ? new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {selectedClient.injuries && (

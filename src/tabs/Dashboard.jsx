@@ -841,6 +841,108 @@ function OppDetailDrawer({ opp, onClose }) {
   );
 }
 
+// ── Morning Briefing Modal ─────────────────────────────────────────────────────
+function BriefingModal({ onClose }) {
+  const [briefing, setBriefing] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/briefing?generate=1")
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) throw new Error(d.error);
+        setBriefing(d);
+      })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        style={{
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.65)",
+          zIndex: 600,
+        }}
+      />
+      {/* Modal */}
+      <div style={{
+        position: "fixed",
+        top: "50%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 700, maxWidth: "94vw",
+        maxHeight: "80vh",
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
+        borderRadius: 14,
+        zIndex: 601,
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: "0 24px 80px rgba(0,0,0,0.7)",
+      }}>
+        {/* Modal header */}
+        <div style={{
+          padding: "16px 20px",
+          borderBottom: "1px solid var(--border)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexShrink: 0,
+        }}>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "var(--text-1)" }}>Morning Intelligence Briefing</div>
+            {briefing?.generatedAt && (
+              <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 2 }}>
+                {new Date(briefing.generatedAt).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                {briefing.newLeads != null && <> · {briefing.newLeads} new leads (24h)</>}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 6, padding: "6px 10px",
+              color: "#888", cursor: "pointer", fontSize: 14,
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Modal body */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
+          {loading && (
+            <div style={{ textAlign: "center", padding: "48px 0" }}>
+              <div style={{ fontSize: 13, color: "var(--text-5)", marginBottom: 6 }}>Generating briefing…</div>
+              <div style={{ fontSize: 11, color: "var(--text-7)" }}>Fetching leads, opportunities, and SOL alerts — this takes 10–20 seconds</div>
+            </div>
+          )}
+          {error && (
+            <div style={{ padding: "20px", color: "#f87171", fontSize: 13 }}>Error: {error}</div>
+          )}
+          {briefing?.briefing && (
+            <pre style={{
+              fontSize: 12, lineHeight: 1.8,
+              color: "var(--text-2)",
+              whiteSpace: "pre-wrap",
+              fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+              margin: 0,
+            }}>
+              {briefing.briefing}
+            </pre>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── Main Dashboard ────────────────────────────────────────────────────────────
 export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilter }) {
   const [leads, setLeads] = useState([]);
@@ -852,6 +954,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const [lastRefreshed, setLastRefreshed] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedOpp, setSelectedOpp] = useState(null);
+  const [showBriefing, setShowBriefing] = useState(false);
 
   const kvTotalRef = useRef(null);
 
@@ -926,6 +1029,20 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   const topCases = [...cases].sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 5);
 
+  // ── SOL alert computation ──────────────────────────────────────────────────
+  const TODAY = new Date("2026-03-19");
+  const solAlertCases = useMemo(() => {
+    return cases
+      .filter(c => {
+        if (!c.solDate) return false;
+        const sol = new Date(c.solDate);
+        const diffMs = sol - TODAY;
+        const diffDays = Math.ceil(diffMs / 86400000);
+        return diffDays >= 0 && diffDays <= 60;
+      })
+      .sort((a, b) => new Date(a.solDate) - new Date(b.solDate));
+  }, [cases]);
+
   function goTo(tab, filter) {
     if (filter && setCaseFilter) setCaseFilter(filter);
     setTab(tab);
@@ -938,6 +1055,9 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Briefing modal */}
+      {showBriefing && <BriefingModal onClose={() => setShowBriefing(false)} />}
+
       {/* Drawers */}
       {(selectedLead || selectedOpp) && (
         <div
@@ -948,8 +1068,18 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       {selectedLead && <LeadDetailDrawer lead={selectedLead} onClose={() => setSelectedLead(null)} />}
       {selectedOpp && <OppDetailDrawer opp={selectedOpp} onClose={() => setSelectedOpp(null)} />}
 
-      {/* ── Live indicator ── */}
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 6, marginBottom: -12 }}>
+      {/* ── Live indicator + Morning Briefing button ── */}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, marginBottom: -12 }}>
+        <button
+          onClick={() => setShowBriefing(true)}
+          style={{
+            padding: "5px 13px", borderRadius: 7, fontSize: 11, fontWeight: 700,
+            background: "rgba(200,68,47,0.12)", border: "1px solid rgba(200,68,47,0.35)",
+            color: "#C8442F", cursor: "pointer", transition: "all 0.15s",
+          }}
+        >
+          Morning Briefing
+        </button>
         <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
         <span style={{ fontSize: 11, color: "var(--text-6)" }}>
           LIVE · refreshed {lastRefreshed ? lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "…"}
@@ -977,6 +1107,31 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
             </span>
           </div>
           <span style={{ fontSize: 12, color: "#C8442F", fontWeight: 600, flexShrink: 0 }}>View in Leads Inbox →</span>
+        </div>
+      )}
+
+      {/* ── SOL Alert banner ── */}
+      {solAlertCases.length > 0 && (
+        <div
+          onClick={() => setTab("cases")}
+          style={{
+            padding: "12px 20px", borderRadius: 10,
+            background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.35)",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            cursor: "pointer",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f59e0b", flexShrink: 0, boxShadow: "0 0 8px #f59e0b" }} />
+            <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>
+              {solAlertCases.length} case{solAlertCases.length > 1 ? "s" : ""} with SOL deadline within 60 days
+            </span>
+            <span style={{ color: "#888", fontSize: 12 }}>
+              — {solAlertCases[0].title.slice(0, 60)}
+              {" "}({Math.ceil((new Date(solAlertCases[0].solDate) - TODAY) / 86400000)}d remaining)
+            </span>
+          </div>
+          <span style={{ fontSize: 12, color: "#f59e0b", fontWeight: 600, flexShrink: 0 }}>View SOL Tracker →</span>
         </div>
       )}
 
@@ -1066,6 +1221,137 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
           )}
         </Card>
       </div>
+
+      {/* ── Revenue Pipeline Forecast ── */}
+      {!oppsLoading && opportunities.length > 0 && (
+        <Card style={{ padding: "20px 24px" }}>
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "var(--text-1)" }}>Revenue Pipeline Forecast</div>
+            <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 3 }}>
+              Projected attorney fees across top opportunities · assumes 33% contingency
+            </div>
+          </div>
+
+          {/* Table header */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr 80px 1fr",
+            gap: 12,
+            padding: "6px 10px",
+            borderBottom: "1px solid var(--border)",
+            marginBottom: 6,
+          }}>
+            {["Opportunity", "Est. Fund", "Fee to Firm", "P(win)", "Projected Fee"].map(h => (
+              <div key={h} style={{ fontSize: 10, fontWeight: 700, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em" }}>{h}</div>
+            ))}
+          </div>
+
+          {/* Table rows */}
+          {opportunities.map((opp, i) => {
+            const pwin = opp.probabilityOfSuccess || 0;
+            const pwinFrac = pwin / 100;
+            const barColor = pwin >= 60 ? "#22c55e" : pwin >= 40 ? "#f59e0b" : "#ef4444";
+
+            // Compute projected range from fee string, e.g. "$165M–$660M" → low/high
+            const parseMoneyStr = s => {
+              const n = parseFloat(s);
+              if (/B/i.test(s)) return n * 1000;
+              if (/K/i.test(s)) return n / 1000;
+              return n; // M
+            };
+            let projLow = null, projHigh = null;
+            if (opp.estimatedFeeToFirm && opp.estimatedFeeToFirm !== "Unknown") {
+              const nums = opp.estimatedFeeToFirm.match(/[\d.]+([MBK])/gi) || [];
+              if (nums.length >= 2) {
+                projLow  = (parseMoneyStr(nums[0]) * pwinFrac).toFixed(0);
+                projHigh = (parseMoneyStr(nums[1]) * pwinFrac).toFixed(0);
+              } else if (nums.length === 1) {
+                projLow = projHigh = (parseMoneyStr(nums[0]) * pwinFrac).toFixed(0);
+              }
+            }
+            const projText = projLow != null
+              ? (projLow === projHigh ? `$${projLow}M` : `$${projLow}M–$${projHigh}M`)
+              : "—";
+
+            return (
+              <div
+                key={i}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "2fr 1fr 1fr 80px 1fr",
+                  gap: 12,
+                  padding: "10px 10px",
+                  borderBottom: i < opportunities.length - 1 ? "1px solid var(--border)" : "none",
+                  alignItems: "center",
+                }}
+              >
+                {/* Name */}
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {(opp.opportunityName || "").slice(0, 50)}
+                </div>
+                {/* Est. Fund */}
+                <div style={{ fontSize: 12, color: "#E06050", fontWeight: 600 }}>
+                  {opp.estimatedFund && opp.estimatedFund !== "Unknown" ? opp.estimatedFund : "—"}
+                </div>
+                {/* Fee to Firm */}
+                <div style={{ fontSize: 12, color: "#22c55e", fontWeight: 600 }}>
+                  {opp.estimatedFeeToFirm && opp.estimatedFeeToFirm !== "Unknown" ? opp.estimatedFeeToFirm : "—"}
+                </div>
+                {/* P(win) with bar */}
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: barColor, marginBottom: 3 }}>{pwin}%</div>
+                  <div style={{ height: 4, borderRadius: 2, background: "var(--bg-surface)", overflow: "hidden" }}>
+                    <div style={{ width: `${pwin}%`, height: "100%", background: barColor, borderRadius: 2 }} />
+                  </div>
+                </div>
+                {/* Projected value */}
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
+                  {projText}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Total row */}
+          {(() => {
+            const parseTotalMoney = s => {
+              const n = parseFloat(s);
+              if (/B/i.test(s)) return n * 1000;
+              if (/K/i.test(s)) return n / 1000;
+              return n;
+            };
+            let totalLow = 0, totalHigh = 0, hasAny = false;
+            for (const opp of opportunities) {
+              const pwin = (opp.probabilityOfSuccess || 0) / 100;
+              if (opp.estimatedFeeToFirm && opp.estimatedFeeToFirm !== "Unknown") {
+                const nums = opp.estimatedFeeToFirm.match(/[\d.]+([MBK])/gi) || [];
+                if (nums.length >= 2) {
+                  totalLow  += parseTotalMoney(nums[0]) * pwin;
+                  totalHigh += parseTotalMoney(nums[1]) * pwin;
+                  hasAny = true;
+                } else if (nums.length === 1) {
+                  const v = parseTotalMoney(nums[0]) * pwin;
+                  totalLow += v; totalHigh += v;
+                  hasAny = true;
+                }
+              }
+            }
+            if (!hasAny) return null;
+            const totalText = totalLow === totalHigh
+              ? `$${totalLow.toFixed(0)}M`
+              : `$${totalLow.toFixed(0)}M–$${totalHigh.toFixed(0)}M`;
+            return (
+              <div style={{
+                display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 12,
+                marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--border)",
+              }}>
+                <span style={{ fontSize: 11, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em" }}>Total projected pipeline</span>
+                <span style={{ fontSize: 16, fontWeight: 800, color: "#22c55e" }}>{totalText}</span>
+              </div>
+            );
+          })()}
+        </Card>
+      )}
 
       {/* ── Case pipeline + your top tracked cases ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
