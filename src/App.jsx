@@ -112,7 +112,8 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
 
       {/* Header */}
-      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "stretch", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58 }}>
+      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58 }}>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "stretch", height: "100%" }}>
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0, paddingRight: 32 }}>
@@ -170,11 +171,12 @@ export default function App() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Page header — title + description for each tab */}
       {PAGE_META[tab] && (
-        <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)", padding: "14px 32px" }}>
-          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)" }}>
+          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "14px 32px" }}>
             <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>
               {PAGE_META[tab].title}
             </div>
