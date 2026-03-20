@@ -50,6 +50,12 @@
     },
     "api/briefing.js": {
       "maxDuration": 60
+    },
+    "api/bulk-outreach.js": {
+      "maxDuration": 60
+    },
+    "api/campaigns.js": {
+      "maxDuration": 30
     }
   },
   "headers": [

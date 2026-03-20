@@ -13,11 +13,13 @@ import Chat from "./tabs/Chat.jsx";
 import Sources from "./tabs/Sources.jsx";
 import Clients from "./tabs/Clients.jsx";
 import Intake from "./tabs/Intake.jsx";
+import Campaigns from "./tabs/Campaigns.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
   { id: "clients",      label: "Clients" },
+  { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
   { id: "cases",        label: "Case Tracker" },
@@ -36,6 +38,10 @@ const PAGE_META = {
   leads:        {
     title: "Leads Inbox",
     desc:  "AI-scored leads pulled hourly from 50+ sources — FDA, NHTSA, CFPB, SEC, CourtListener, Reddit, PubMed, Google News, and more. Click any lead to expand a full litigation intelligence report. Use the filters to narrow by score, urgency, case type, or stage.",
+  },
+  campaigns:    {
+    title: "Campaigns",
+    desc:  "Bulk outreach campaign manager. Select a lead, pick matching clients, and generate hundreds of personalized letters at once. Track each client through sent → responded → retained. Export a mail-merge CSV for any campaign.",
   },
   clients:      {
     title: "Clients",
@@ -193,6 +199,7 @@ export default function App() {
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
         {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
         {tab === "clients"      && <Clients />}
+        {tab === "campaigns"    && <Campaigns />}
         {tab === "intake"       && <Intake />}
         {tab === "trends"       && <Trends />}
 {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
