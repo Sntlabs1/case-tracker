@@ -109,14 +109,14 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", overflowX: "hidden" }}>
 
       {/* Header */}
-      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58 }}>
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 32px", display: "flex", justifyContent: "space-between", alignItems: "stretch", height: "100%" }}>
+      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58, overflowX: "hidden" }}>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "stretch", height: "100%" }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 11, flexShrink: 0, paddingRight: 32 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, paddingRight: 16 }}>
           <div style={{ width: 36, height: 36, background: "#C8442F", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <BullIcon />
           </div>
@@ -131,24 +131,25 @@ export default function App() {
         </div>
 
         {/* Nav tabs */}
-        <div style={{ display: "flex", alignItems: "stretch", flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "stretch", flex: 1, overflowX: "auto", scrollbarWidth: "none" }}>
           {TABS.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                padding: "0 20px",
+                padding: "0 12px",
                 border: "none",
                 borderBottom: tab === t.id ? "2px solid #C8442F" : "2px solid transparent",
                 borderTop: "2px solid transparent",
                 background: "transparent",
                 color: tab === t.id ? "var(--text-1)" : "var(--text-6)",
                 cursor: "pointer",
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: tab === t.id ? 600 : 400,
                 letterSpacing: "0.02em",
                 transition: "color 0.15s, border-color 0.15s",
                 whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               {t.label}
@@ -157,7 +158,7 @@ export default function App() {
         </div>
 
         {/* Right: theme toggle + KB count */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, paddingLeft: 24, borderLeft: "1px solid var(--border)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, paddingLeft: 16, borderLeft: "1px solid var(--border)", flexShrink: 0 }}>
           <button
             onClick={() => setLightMode(m => !m)}
             title={lightMode ? "Switch to dark mode" : "Switch to light mode"}
@@ -176,7 +177,7 @@ export default function App() {
       {/* Page header — title + description for each tab */}
       {PAGE_META[tab] && (
         <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)" }}>
-          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "14px 32px" }}>
+          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "14px 24px" }}>
             <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>
               {PAGE_META[tab].title}
             </div>
@@ -188,7 +189,7 @@ export default function App() {
       )}
 
       {/* Content */}
-      <div style={{ padding: "24px 32px", maxWidth: 1400, margin: "0 auto" }}>
+      <div style={{ padding: "24px 24px", maxWidth: 1400, margin: "0 auto" }}>
         {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
         {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
         {tab === "clients"      && <Clients />}
