@@ -34,7 +34,7 @@ export default function AIScanner({ onAddCase }) {
       <p style={{ color: "#888", fontSize: 13, marginBottom: 16 }}>Use AI with web search to discover the latest recalls, class actions, and MDL developments.</p>
       <Card>
         <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-          <input value={webQuery} onChange={e => setWebQuery(e.target.value)} placeholder="e.g., medical device recalls 2025, PFAS litigation updates, recent FDA warning letters..." style={{ flex: 1, padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 13, outline: "none" }} />
+          <input value={webQuery} onChange={e => setWebQuery(e.target.value)} placeholder="e.g., medical device recalls 2025, PFAS litigation updates, recent FDA warning letters..." style={{ flex: 1, padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 13, outline: "none" }} />
           <Btn onClick={searchRecalls}>{webLoading ? "Scanning..." : "Scan Now"}</Btn>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
@@ -45,7 +45,7 @@ export default function AIScanner({ onAddCase }) {
         {webResults.length > 0 && (
           <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: 10, padding: 16, maxHeight: 500, overflow: "auto" }}>
             {webResults.map((r, i) => (
-              <div key={i} style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#c8c8e0", lineHeight: 1.7 }}>{r.text}</div>
+              <div key={i} style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "var(--text-2)", lineHeight: 1.7 }}>{r.text}</div>
             ))}
           </div>
         )}

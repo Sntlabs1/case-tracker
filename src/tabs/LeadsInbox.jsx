@@ -154,7 +154,7 @@ function SignalItem({ text, type }) {
   return (
     <div style={{ display: "flex", gap: 6, marginBottom: 4, fontSize: 12, alignItems: "flex-start" }}>
       <span style={{ color, fontWeight: 700, flexShrink: 0, minWidth: 14 }}>{icons[type]}</span>
-      <span style={{ color: "#c8c8e0", lineHeight: 1.4 }}>{text}</span>
+      <span style={{ color: "var(--text-2)", lineHeight: 1.4 }}>{text}</span>
     </div>
   );
 }
@@ -162,7 +162,7 @@ function SignalItem({ text, type }) {
 function RiskRow({ risk }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto 1fr", gap: 8, padding: "6px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: 12, alignItems: "start" }}>
-      <span style={{ color: "#c8c8e0" }}>{risk.risk}</span>
+      <span style={{ color: "var(--text-2)" }}>{risk.risk}</span>
       <span style={{ padding: "1px 6px", borderRadius: 4, background: `${severityColor(risk.severity)}22`, color: severityColor(risk.severity), fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>{risk.severity}</span>
       <span style={{ padding: "1px 6px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "#888", fontSize: 10, whiteSpace: "nowrap" }}>{risk.likelihood}</span>
       <span style={{ color: "#888", lineHeight: 1.4 }}>{risk.mitigation}</span>
@@ -268,7 +268,7 @@ function AcquisitionBrief({ lead }) {
             {brief.targetDemographics && (
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Target Plaintiff</div>
-                <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{brief.targetDemographics}</div>
+                <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{brief.targetDemographics}</div>
               </div>
             )}
             {brief.outreachScript && (
@@ -285,7 +285,7 @@ function AcquisitionBrief({ lead }) {
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Qualification Criteria</div>
                 {brief.qualificationCriteria.map((c, i) => (
-                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 3, display: "flex", gap: 6, alignItems: "flex-start" }}>
+                  <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 3, display: "flex", gap: 6, alignItems: "flex-start" }}>
                     <span style={{ color: "#22c55e", flexShrink: 0 }}>✓</span><span style={{ lineHeight: 1.4 }}>{c}</span>
                   </div>
                 ))}
@@ -320,7 +320,7 @@ function AcquisitionBrief({ lead }) {
             <div>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Intake Questions</div>
               {brief.intakeQuestions.map((q, i) => (
-                <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4, display: "flex", gap: 8, alignItems: "flex-start" }}>
+                <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 4, display: "flex", gap: 8, alignItems: "flex-start" }}>
                   <span style={{ color: "#f59e0b", fontWeight: 700, flexShrink: 0, minWidth: 16 }}>{i + 1}.</span>
                   <span style={{ lineHeight: 1.4 }}>{q}</span>
                 </div>
@@ -334,7 +334,7 @@ function AcquisitionBrief({ lead }) {
               <div>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#a78bfa", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Documents to Request</div>
                 {brief.intakeDocs.map((d, i) => (
-                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 2 }}>• {d}</div>
+                  <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 2 }}>• {d}</div>
                 ))}
               </div>
             )}
@@ -415,7 +415,7 @@ function JudgeIntel({ lead }) {
       <div style={{ marginBottom: 14 }}>
         {a.assignedJudge ? (
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <span style={{ fontSize: 12, color: "#888" }}>Judge: <strong style={{ color: "#e0e0f0" }}>{a.assignedJudge}</strong></span>
+            <span style={{ fontSize: 12, color: "#888" }}>Judge: <strong style={{ color: "var(--text-1)" }}>{a.assignedJudge}</strong></span>
             {a.assignedJudgeCourt && <span style={{ fontSize: 11, color: "#555" }}>· {a.assignedJudgeCourt}</span>}
             <Btn small variant="secondary" onClick={() => researchJudge(a.assignedJudge)}>Get Judge Intel</Btn>
           </div>
@@ -423,7 +423,7 @@ function JudgeIntel({ lead }) {
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             <input value={judgeInput} onChange={e => setJudgeInput(e.target.value)}
               placeholder="Enter judge name..."
-              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, width: 200 }}
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, width: 200 }}
               onKeyDown={e => { if (e.key === "Enter" && judgeInput.trim()) researchJudge(judgeInput.trim()); }} />
             <Btn small variant="secondary" onClick={() => judgeInput.trim() && researchJudge(judgeInput.trim())}>Research Judge</Btn>
           </div>
@@ -449,7 +449,7 @@ function JudgeIntel({ lead }) {
       <div style={{ padding: "10px 14px", background: "rgba(59,130,246,0.08)", borderBottom: "1px solid rgba(59,130,246,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
           <span style={{ fontSize: 11, fontWeight: 800, color: "#60a5fa", letterSpacing: "0.1em", textTransform: "uppercase" }}>Judge Intelligence</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0" }}>{profile.name}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{profile.name}</span>
           {profile.court && <span style={{ fontSize: 11, color: "#555" }}>{profile.court}</span>}
           {profile.appointedBy && <span style={{ fontSize: 11, color: "#555" }}>· Appt. {profile.appointedBy}</span>}
         </div>
@@ -474,7 +474,7 @@ function JudgeIntel({ lead }) {
           </div>
           {profile.classCertGrantRate && (
             <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#e0e0f0", lineHeight: 1.3 }}>{profile.classCertGrantRate}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.3 }}>{profile.classCertGrantRate}</div>
               <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Class Cert Grant Rate</div>
             </div>
           )}
@@ -496,7 +496,7 @@ function JudgeIntel({ lead }) {
           )}
           {profile.avgDaysToClassCert && (
             <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", textAlign: "center" }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#e0e0f0", lineHeight: 1.3 }}>{profile.avgDaysToClassCert}d</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", lineHeight: 1.3 }}>{profile.avgDaysToClassCert}d</div>
               <div style={{ fontSize: 10, color: "#555", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Avg to Class Cert</div>
             </div>
           )}
@@ -506,7 +506,7 @@ function JudgeIntel({ lead }) {
         {profile.overallAssessment && (
           <div style={{ padding: "10px 14px", background: `${pfColor(pf)}0d`, borderRadius: 8, border: `1px solid ${pfColor(pf)}33` }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: pfColor(pf), letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Assessment for Plaintiff Firm</div>
-            <div style={{ fontSize: 13, color: "#e0e0f0", lineHeight: 1.6 }}>{profile.overallAssessment}</div>
+            <div style={{ fontSize: 13, color: "var(--text-1)", lineHeight: 1.6 }}>{profile.overallAssessment}</div>
           </div>
         )}
 
@@ -520,7 +520,7 @@ function JudgeIntel({ lead }) {
                     <span style={{ color: r.plaintiffResult === "favorable" ? "#22c55e" : r.plaintiffResult === "unfavorable" ? "#ef4444" : "#f59e0b", fontWeight: 700, flexShrink: 0 }}>●</span>
                     <div style={{ lineHeight: 1.4 }}>
                       <span style={{ color: "#888", fontSize: 11 }}>{r.case} ({r.year}) — </span>
-                      <span style={{ color: "#c8c8e0" }}>{r.ruling}</span>
+                      <span style={{ color: "var(--text-2)" }}>{r.ruling}</span>
                     </div>
                   </div>
                 ))}
@@ -532,7 +532,7 @@ function JudgeIntel({ lead }) {
               <div style={{ marginBottom: 10 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Key Tendencies</div>
                 {profile.keyTendencies.map((t, i) => (
-                  <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4, display: "flex", gap: 6 }}>
+                  <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 4, display: "flex", gap: 6 }}>
                     <span style={{ color: "#f59e0b", flexShrink: 0 }}>→</span><span style={{ lineHeight: 1.4 }}>{t}</span>
                   </div>
                 ))}
@@ -638,7 +638,7 @@ function IntakeSiteGenerator({ lead }) {
         <div style={{ padding: "14px 16px" }}>
           <div style={{ marginBottom: 12 }}>
             <div style={{ fontSize: 12, color: "#888", marginBottom: 3 }}>
-              Defendant: <strong style={{ color: "#e0e0f0" }}>{result.defendant}</strong>
+              Defendant: <strong style={{ color: "var(--text-1)" }}>{result.defendant}</strong>
             </div>
           </div>
 
@@ -714,7 +714,7 @@ function InfluencerCard({ inf, rank }) {
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-            <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0", textDecoration: "none" }}>
+            <a href={inf.profileUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", textDecoration: "none" }}>
               {inf.displayName || inf.username}
             </a>
             <span style={{ fontSize: 10, color: platColor, fontWeight: 600 }}>{PLATFORM_LABELS[plat] || plat}</span>
@@ -722,7 +722,7 @@ function InfluencerCard({ inf, rank }) {
             {inf.verified && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>VERIFIED</span>}
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 2, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 11, color: "#888" }}><span style={{ color: "#c8c8e0", fontWeight: 600 }}>{inf.followersFormatted || "Unknown"}</span> followers</span>
+            <span style={{ fontSize: 11, color: "#888" }}><span style={{ color: "var(--text-2)", fontWeight: 600 }}>{inf.followersFormatted || "Unknown"}</span> followers</span>
             {inf.grade && <span style={{ fontSize: 11, color: "#a78bfa" }}>Grade: {inf.grade}</span>}
             {inf.dailyGrowthFormatted && <span style={{ fontSize: 11, color: inf.dailyGrowth >= 0 ? "#22c55e" : "#f87171" }}>{inf.dailyGrowthFormatted}</span>}
             {inf.engagementRate && <span style={{ fontSize: 11, color: "#888" }}>{inf.engagementRate}% eng.</span>}
@@ -738,12 +738,12 @@ function InfluencerCard({ inf, rank }) {
         <div style={{ padding: "10px 14px", background: "rgba(0,0,0,0.15)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           {inf.niche && (
             <div style={{ fontSize: 11, color: "#888", marginBottom: 6 }}>
-              <span style={{ color: "#666" }}>Niche: </span><span style={{ color: "#c8c8e0" }}>{inf.niche}</span>
+              <span style={{ color: "#666" }}>Niche: </span><span style={{ color: "var(--text-2)" }}>{inf.niche}</span>
             </div>
           )}
           {inf.demographics && (
             <div style={{ fontSize: 11, color: "#888", marginBottom: 6 }}>
-              <span style={{ color: "#666" }}>Audience: </span><span style={{ color: "#c8c8e0" }}>{inf.demographics}</span>
+              <span style={{ color: "#666" }}>Audience: </span><span style={{ color: "var(--text-2)" }}>{inf.demographics}</span>
             </div>
           )}
           {inf.whyTargeted && (
@@ -760,7 +760,7 @@ function InfluencerCard({ inf, rank }) {
             <ScoreBar_ label="Geography" value={inf.scores?.geographic || 0} max={20} color="#34d399" />
             <ScoreBar_ label="Reach" value={inf.scores?.reach || 0} max={15} color="#f59e0b" />
             <ScoreBar_ label="Tone / Trust" value={inf.scores?.tone || 0} max={10} color="#f87171" />
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#e0e0f0", marginTop: 4, textAlign: "right" }}>Total: {inf.scores?.total || 0} / 100</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-1)", marginTop: 4, textAlign: "right" }}>Total: {inf.scores?.total || 0} / 100</div>
           </div>
 
           {/* Contact info */}
@@ -864,7 +864,7 @@ function InfluencerOutreach({ lead }) {
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
-              <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.6, fontStyle: "italic" }}>&ldquo;{data.outreachScript}&rdquo;</div>
+              <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6, fontStyle: "italic" }}>&ldquo;{data.outreachScript}&rdquo;</div>
             </div>
           )}
 
@@ -1172,7 +1172,7 @@ Answer specifically for a plaintiff law firm evaluating this case for client acq
             borderRadius: 8,
             padding: "8px 12px",
             fontSize: 12,
-            color: "#e0e0f0",
+            color: "var(--text-1)",
             outline: "none",
           }}
         />
@@ -1325,7 +1325,7 @@ Return ONLY valid JSON (no markdown) with this structure:
       {data && !loading && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {data.settlementName && (
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0" }}>{data.settlementName}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{data.settlementName}</div>
           )}
 
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11 }}>
@@ -1333,7 +1333,7 @@ Return ONLY valid JSON (no markdown) with this structure:
               <span style={{ color: "#fbbf24" }}>Deadline: <strong>{data.deadline}</strong></span>
             )}
             {data.administrator && (
-              <span style={{ color: "#888" }}>Admin: <span style={{ color: "#c8c8e0" }}>{data.administrator}</span></span>
+              <span style={{ color: "#888" }}>Admin: <span style={{ color: "var(--text-2)" }}>{data.administrator}</span></span>
             )}
           </div>
 
@@ -1344,7 +1344,7 @@ Return ONLY valid JSON (no markdown) with this structure:
               {data.eligibilityCriteria.map((c, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
                   <span style={{ color: "#22c55e", flexShrink: 0, marginTop: 1 }}>✓</span>
-                  <span style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{c}</span>
+                  <span style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{c}</span>
                 </div>
               ))}
             </div>
@@ -1461,13 +1461,13 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
             {a.recallIntelligence.estimatedClassSize && (
               <div>
                 <div style={{ fontSize: 10, color: "#666", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>Est. Class Size</div>
-                <div style={{ fontSize: 12, color: "#e0e0f0", fontWeight: 600 }}>{a.recallIntelligence.estimatedClassSize}</div>
+                <div style={{ fontSize: 12, color: "var(--text-1)", fontWeight: 600 }}>{a.recallIntelligence.estimatedClassSize}</div>
               </div>
             )}
             {a.recallIntelligence.recallScope && (
               <div>
                 <div style={{ fontSize: 10, color: "#666", marginBottom: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>Scope</div>
-                <div style={{ fontSize: 12, color: "#e0e0f0" }}>{a.recallIntelligence.recallScope}</div>
+                <div style={{ fontSize: 12, color: "var(--text-1)" }}>{a.recallIntelligence.recallScope}</div>
               </div>
             )}
           </div>
@@ -1490,7 +1490,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
             {a.recallIntelligence.liabilityTheory && (
               <div>
                 <div style={{ fontSize: 10, color: "#666", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Liability Theory</div>
-                <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{a.recallIntelligence.liabilityTheory}</div>
+                <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{a.recallIntelligence.liabilityTheory}</div>
               </div>
             )}
             {a.recallIntelligence.manufacturerKnowledge && (
@@ -1551,7 +1551,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
       {a.executiveSummary && (
         <Section title="Executive Summary" accent="#C8442F">
-          <p style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.7, margin: 0 }}>{a.executiveSummary}</p>
+          <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.7, margin: 0 }}>{a.executiveSummary}</p>
         </Section>
       )}
 
@@ -1560,7 +1560,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
           <Section title="Causes of Action" accent="#B83E2C">
             {a.causesOfAction.map((ca, i) => (
               <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6, fontSize: 12 }}>
-                <span style={{ color: "#c8c8e0", flex: 1, lineHeight: 1.4 }}>{ca.name}</span>
+                <span style={{ color: "var(--text-2)", flex: 1, lineHeight: 1.4 }}>{ca.name}</span>
                 <span style={{ marginLeft: 8, color: strengthColor(ca.strength), fontWeight: 600, fontSize: 11, flexShrink: 0 }}>{ca.strength}</span>
               </div>
             ))}
@@ -1573,7 +1573,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
             <InfoRow label="Size confidence" value={a.classProfile.sizeConfidence} />
             <InfoRow label="Geographic scope" value={a.classProfile.geographicScope} />
             {a.classProfile.commonalityStrength && (
-              <div style={{ fontSize: 12, color: "#c8c8e0", marginTop: 4, lineHeight: 1.5 }}>{a.classProfile.commonalityStrength}</div>
+              <div style={{ fontSize: 12, color: "var(--text-2)", marginTop: 4, lineHeight: 1.5 }}>{a.classProfile.commonalityStrength}</div>
             )}
           </Section>
         )}
@@ -1595,7 +1595,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
                 <div style={{ marginBottom: 8 }}>
                   <div style={{ fontSize: 11, color: "#666", marginBottom: 4 }}>Documentation needed</div>
                   {a.plaintiffProfile.documentationNeeded.map((d, i) => (
-                    <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 2 }}>• {d}</div>
+                    <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 2 }}>• {d}</div>
                   ))}
                 </div>
               )}
@@ -1740,7 +1740,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
               </div>
             )}
             {a.timeline.urgencyReason && (
-              <div style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 8, lineHeight: 1.4 }}>{a.timeline.urgencyReason}</div>
+              <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 8, lineHeight: 1.4 }}>{a.timeline.urgencyReason}</div>
             )}
             {a.timeline.statuteOfLimitationsNote && (
               <InfoRow label="SOL" value={a.timeline.statuteOfLimitationsNote} valueColor="#fbbf24" />
@@ -1811,7 +1811,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
                 </div>
               )}
               {a.kbComparativeAssessment && (
-                <p style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.7, margin: 0, flex: 1 }}>{a.kbComparativeAssessment}</p>
+                <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.7, margin: 0, flex: 1 }}>{a.kbComparativeAssessment}</p>
               )}
             </div>
           )}
@@ -1835,7 +1835,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#86efac", marginBottom: 2 }}>{k.caseName}</div>
                       {k.settlement && <div style={{ fontSize: 11, color: "#22c55e", marginBottom: 4 }}>{k.settlement}</div>}
-                      {k.whyAnalogous && <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, marginBottom: 4 }}>{k.whyAnalogous}</div>}
+                      {k.whyAnalogous && <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, marginBottom: 4 }}>{k.whyAnalogous}</div>}
                       {k.keyLesson && (
                         <div style={{ fontSize: 11, color: "#86efac", padding: "4px 8px", background: "rgba(34,197,94,0.08)", borderRadius: 4, lineHeight: 1.4 }}>
                           Lesson: {k.keyLesson}
@@ -1864,7 +1864,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: "#fca5a5", marginBottom: 2 }}>{k.caseName}</div>
                       {k.failureMode && <div style={{ fontSize: 12, color: "#f87171", lineHeight: 1.5, marginBottom: 4 }}>Failure: {k.failureMode}</div>}
-                      {k.howThisLeadMirrorsIt && <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, marginBottom: 4 }}>{k.howThisLeadMirrorsIt}</div>}
+                      {k.howThisLeadMirrorsIt && <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, marginBottom: 4 }}>{k.howThisLeadMirrorsIt}</div>}
                       {k.mitigationAdvice && (
                         <div style={{ fontSize: 11, color: "#fbbf24", padding: "4px 8px", background: "rgba(251,191,36,0.06)", borderRadius: 4, lineHeight: 1.4 }}>
                           Avoid: {k.mitigationAdvice}
@@ -1885,7 +1885,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {a.kbStrategicPlaybook.map((step, i) => (
-                  <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, padding: "4px 0" }}>
+                  <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "4px 0" }}>
                     <span style={{ color: "#C8442F", fontWeight: 700, flexShrink: 0, minWidth: 18 }}>{i + 1}.</span>
                     <span>{step}</span>
                   </div>
@@ -1904,7 +1904,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         )}
         {a.whyItScored && (
           <Section title="Scoring Rationale" accent="#C8442F">
-            <p style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.6, margin: 0 }}>{a.whyItScored}</p>
+            <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6, margin: 0 }}>{a.whyItScored}</p>
           </Section>
         )}
       </div>
@@ -1998,14 +1998,14 @@ function OpportunityCard({ opp, leadsMap }) {
               </span>
             )}
           </div>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#e0e0f0", marginBottom: 3 }}>{opp.opportunityName}</div>
+          <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-1)", marginBottom: 3 }}>{opp.opportunityName}</div>
           {opp.estimatedFund && (
             <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>
               Fund: <span style={{ color: "#E06050", fontWeight: 600 }}>{opp.estimatedFund}</span>
               {opp.estimatedFeeToFirm && <> · Firm fee: <span style={{ color: "#22c55e", fontWeight: 600 }}>{opp.estimatedFeeToFirm}</span></>}
             </div>
           )}
-          {opp.whyPursue?.[0] && <div style={{ fontSize: 12, color: "#c8c8e0" }}>• {opp.whyPursue[0]}</div>}
+          {opp.whyPursue?.[0] && <div style={{ fontSize: 12, color: "var(--text-2)" }}>• {opp.whyPursue[0]}</div>}
         </div>
         {opp.kbReplicationGrade && opp.kbReplicationGrade !== "Unknown" && (
           <div style={{ textAlign: "center", minWidth: 44, flexShrink: 0 }}>
@@ -2020,13 +2020,13 @@ function OpportunityCard({ opp, leadsMap }) {
           {opp.whyPursue?.length > 0 && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Why Pursue</div>
-              {opp.whyPursue.map((r, i) => <div key={i} style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 4 }}>• {r}</div>)}
+              {opp.whyPursue.map((r, i) => <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 4 }}>• {r}</div>)}
             </div>
           )}
           {opp.immediateAction && (
             <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(200,68,47,0.08)", borderRadius: 8, border: "1px solid rgba(200,68,47,0.25)" }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Immediate Action</div>
-              <div style={{ fontSize: 13, color: "#e0e0f0", fontWeight: 600 }}>{opp.immediateAction}</div>
+              <div style={{ fontSize: 13, color: "var(--text-1)", fontWeight: 600 }}>{opp.immediateAction}</div>
             </div>
           )}
           {opp.keyRisk && (
@@ -2115,7 +2115,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
             {a.subCategory && <Badge label={a.subCategory} color="#B83E2C" />}
           </div>
 
-          <div style={{ fontWeight: 600, fontSize: 14, color: "#e0e0f0", marginBottom: 6, lineHeight: 1.4 }}>
+          <div style={{ fontWeight: 600, fontSize: 14, color: "var(--text-1)", marginBottom: 6, lineHeight: 1.4 }}>
             {a.headline || lead.title}
           </div>
 
@@ -2542,7 +2542,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
         <>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score: <strong style={{ color: "#e0e0f0" }}>{minScore}</strong></span>
+              <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score: <strong style={{ color: "var(--text-1)" }}>{minScore}</strong></span>
               <input type="range" min="0" max="100" step="5" value={minScore} onChange={e => setMinScore(parseInt(e.target.value))}
                 style={{ width: 100, accentColor: "#C8442F", cursor: "pointer" }} />
             </div>
@@ -2554,20 +2554,20 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
               { label: "Urgency", value: filterUrgency, onChange: setFilterUrgency, options: ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
             ].map(({ label, value, onChange, options }) => (
               <select key={label} value={value} onChange={e => onChange(e.target.value)}
-                style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+                style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, cursor: "pointer" }}>
                 <option value="">{label}: All</option>
                 {options.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             ))}
 
             <select value={filterCaseType} onChange={e => setFilterCaseType(e.target.value)}
-              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, cursor: "pointer" }}>
               <option value="">Case Type: All</option>
               {CASE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
 
             <select value={filterCaseStage} onChange={e => setFilterCaseStage(e.target.value)}
-              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}>
+              style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, cursor: "pointer" }}>
               <option value="">Stage: All</option>
               <option value="Pre-Litigation">Pre-Litigation</option>
               <option value="Filed / Discovery">Filed / Discovery</option>

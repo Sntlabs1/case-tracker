@@ -15,7 +15,7 @@ async function callClaude(prompt, maxTokens = 1500) {
 
 function AIResultBox({ text }) {
   return (
-    <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "#c8c8e0", lineHeight: 1.75, padding: "16px 20px", background: "rgba(0,0,0,0.25)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)", maxHeight: 600, overflow: "auto" }}>
+    <div style={{ whiteSpace: "pre-wrap", fontSize: 13, color: "var(--text-2)", lineHeight: 1.75, padding: "16px 20px", background: "rgba(0,0,0,0.25)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)", maxHeight: 600, overflow: "auto" }}>
       {text}
     </div>
   );
@@ -123,10 +123,10 @@ function CaseLibrary({ cases, setCases }) {
               <div onClick={e => e.stopPropagation()} style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
                   {c.settlementAmount && <div><div style={{ fontSize: 11, color: "#888" }}>Settlement</div><div style={{ fontSize: 13, color: "#4ade80", fontWeight: 600 }}>{c.settlementAmount}</div></div>}
-                  {c.classSize && <div><div style={{ fontSize: 11, color: "#888" }}>Class Size</div><div style={{ fontSize: 13, color: "#e0e0f0" }}>{c.classSize}</div></div>}
+                  {c.classSize && <div><div style={{ fontSize: 11, color: "#888" }}>Class Size</div><div style={{ fontSize: 13, color: "var(--text-1)" }}>{c.classSize}</div></div>}
                   {c.rule23bType && <div><div style={{ fontSize: 11, color: "#888" }}>Rule 23(b)</div><div style={{ fontSize: 13, color: "#F07868" }}>{c.rule23bType}</div></div>}
-                  {c.harmCategory && <div><div style={{ fontSize: 11, color: "#888" }}>Harm Type</div><div style={{ fontSize: 13, color: "#e0e0f0" }}>{c.harmCategory}</div></div>}
-                  {c.leadCounsel && <div><div style={{ fontSize: 11, color: "#888" }}>Lead Counsel</div><div style={{ fontSize: 13, color: "#e0e0f0" }}>{c.leadCounsel}</div></div>}
+                  {c.harmCategory && <div><div style={{ fontSize: 11, color: "#888" }}>Harm Type</div><div style={{ fontSize: 13, color: "var(--text-1)" }}>{c.harmCategory}</div></div>}
+                  {c.leadCounsel && <div><div style={{ fontSize: 11, color: "#888" }}>Lead Counsel</div><div style={{ fontSize: 13, color: "var(--text-1)" }}>{c.leadCounsel}</div></div>}
                   {c.keyPrecedent && <div><div style={{ fontSize: 11, color: "#888" }}>Key Precedent</div><div style={{ fontSize: 13, color: "#C8442F" }}>{c.keyPrecedent}</div></div>}
                 </div>
                 {c.certDeniedReason && <div style={{ marginBottom: 8, padding: "8px 12px", background: "#ef444411", borderRadius: 8, border: "1px solid #ef444433" }}><strong style={{ color: "#f87171", fontSize: 12 }}>Why Denied: </strong><span style={{ fontSize: 12, color: "#f87171" }}>{c.certDeniedReason}</span></div>}
@@ -313,7 +313,7 @@ function CourtListenerImport({ cases, setCases }) {
         <h3 style={{ margin: "0 0 4px", fontSize: 15, color: "#F07868" }}>CourtListener Import</h3>
         <p style={{ color: "#888", fontSize: 13, marginBottom: 16 }}>Search the free CourtListener database of federal court opinions. Import cases with one click — Claude extracts all structured data automatically.</p>
         <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-          <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === "Enter" && search()} placeholder='e.g., "product liability class certification" or "MDL pharmaceutical" or "PFAS class action"' style={{ flex: 1, padding: "9px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 13, outline: "none" }} />
+          <input value={query} onChange={e => setQuery(e.target.value)} onKeyDown={e => e.key === "Enter" && search()} placeholder='e.g., "product liability class certification" or "MDL pharmaceutical" or "PFAS class action"' style={{ flex: 1, padding: "9px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 13, outline: "none" }} />
           <Btn onClick={search}>{loading ? "Searching..." : "Search"}</Btn>
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>

@@ -49,7 +49,7 @@ function ElementRow({ el, index }) {
   return (
     <div style={{ marginBottom: 10, padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, borderLeft: `3px solid ${el.classwide ? "#C8442F" : "#f59e0b"}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
-        <div style={{ fontWeight: 600, fontSize: 13, color: "#e0e0f0" }}>
+        <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-1)" }}>
           {index + 1}. {el.element}
         </div>
         <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0, background: el.classwide ? "rgba(200,68,47,0.15)" : "rgba(245,158,11,0.15)", color: el.classwide ? "#E06050" : "#fbbf24", border: `1px solid ${el.classwide ? "#C8442F44" : "#f59e0b44"}` }}>
@@ -77,7 +77,7 @@ function CACard({ ca, onSelect, selected }) {
             <Badge label={ca.category} color={color} />
             <span style={{ fontSize: 11, fontWeight: 700, color: ratingColor }}>Class: {rating}</span>
           </div>
-          <div style={{ fontWeight: 700, fontSize: 14, color: "#e0e0f0", marginBottom: 4 }}>{ca.name}</div>
+          <div style={{ fontWeight: 700, fontSize: 14, color: "var(--text-1)", marginBottom: 4 }}>{ca.name}</div>
           <div style={{ fontSize: 12, color: "#888", lineHeight: 1.5 }}>{ca.overview.slice(0, 140)}...</div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -159,7 +159,7 @@ function CADetail({ ca }) {
           <span style={{ fontSize: 12, color: "#888" }}>{ca.timeToResolution}</span>
           <span style={{ fontSize: 12, color: "#888" }}>· {ca.feeStructure}</span>
         </div>
-        <h3 style={{ margin: "0 0 8px", fontSize: 18, color: "#e0e0f0" }}>{ca.name}</h3>
+        <h3 style={{ margin: "0 0 8px", fontSize: 18, color: "var(--text-1)" }}>{ca.name}</h3>
         <p style={{ margin: 0, fontSize: 13, color: "#a0a0b8", lineHeight: 1.65 }}>{ca.overview}</p>
       </div>
 
@@ -194,11 +194,11 @@ function CADetail({ ca }) {
           <div style={{ marginBottom: 12, padding: "12px 16px", background: `${ratingColor}11`, borderRadius: 10, border: `1px solid ${ratingColor}33` }}>
             <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>Class Action Viability Rating</div>
             <div style={{ fontSize: 22, fontWeight: 800, color: ratingColor }}>{rating}</div>
-            <div style={{ fontSize: 13, color: "#c8c8e0", marginTop: 6, lineHeight: 1.6 }}>{ca.classActionViability?.explanation}</div>
+            <div style={{ fontSize: 13, color: "var(--text-2)", marginTop: 6, lineHeight: 1.6 }}>{ca.classActionViability?.explanation}</div>
           </div>
           <div style={{ padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 6 }}>Certification Path</div>
-            <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.65 }}>{ca.certificationPath}</div>
+            <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.65 }}>{ca.certificationPath}</div>
           </div>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             <div style={{ padding: "12px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
@@ -218,7 +218,7 @@ function CADetail({ ca }) {
         <div style={{ display: "grid", gap: 10 }}>
           <div style={{ padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ fontSize: 12, fontWeight: 600, color: "#f87171", marginBottom: 6 }}>Sovereign Immunity Analysis</div>
-            <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.65 }}>{ca.sovereignImmunity}</div>
+            <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.65 }}>{ca.sovereignImmunity}</div>
           </div>
           {ca.sovereignImmunityWorkaround && (
             <div style={{ padding: "12px 16px", background: "rgba(34,197,94,0.05)", borderRadius: 10, border: "1px solid rgba(34,197,94,0.2)" }}>
@@ -235,7 +235,7 @@ function CADetail({ ca }) {
           {/* Legal qualifier text */}
           <div style={{ padding: "12px 16px", background: "rgba(200,68,47,0.07)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.18)", marginBottom: 16 }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#E06050", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Legal Qualifier</div>
-            <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.65 }}>{ca.idealPlaintiffProfile}</div>
+            <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.65 }}>{ca.idealPlaintiffProfile}</div>
           </div>
 
           {/* Demographic breakdown */}
@@ -247,7 +247,7 @@ function CADetail({ ca }) {
 
           {demographics && !demographics.error && (
             <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#e0e0f0", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em" }}>Who to Target</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em" }}>Who to Target</div>
 
               {/* Primary demographics grid */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
@@ -298,11 +298,11 @@ function CADetail({ ca }) {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div style={{ padding: "12px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)" }}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#E06050", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Ad Hook / Key Message</div>
-                  <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.55, fontStyle: "italic" }}>"{demographics.intakeHook}"</div>
+                  <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55, fontStyle: "italic" }}>"{demographics.intakeHook}"</div>
                 </div>
                 <div style={{ padding: "12px 14px", background: "rgba(34,197,94,0.06)", borderRadius: 10, border: "1px solid rgba(34,197,94,0.2)" }}>
                   <div style={{ fontSize: 10, fontWeight: 700, color: "#4ade80", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Intake Screening Question</div>
-                  <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.55, fontStyle: "italic" }}>"{demographics.qualifyingQuestion}"</div>
+                  <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55, fontStyle: "italic" }}>"{demographics.qualifyingQuestion}"</div>
                 </div>
               </div>
             </div>
@@ -354,7 +354,7 @@ function CADetail({ ca }) {
           {(ca.keyPrecedents || []).map((p, i) => (
             <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
               <span style={{ color: "#C8442F", flexShrink: 0, fontWeight: 700, fontSize: 13 }}>{i + 1}</span>
-              <span style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.55 }}>{p}</span>
+              <span style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55 }}>{p}</span>
             </div>
           ))}
         </div>
@@ -445,7 +445,7 @@ function AnalyzeCaseView() {
           onChange={e => setScenario(e.target.value)}
           rows={7}
           placeholder="Describe the case: product/drug/action involved, who was harmed and how, what defendant knew and when, government action (FDA recall, DOJ investigation, etc.), estimated affected population..."
-          style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "#e0e0f0", fontSize: 13, resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.6 }}
+          style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "var(--text-1)", fontSize: 13, resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.6 }}
         />
         <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
           <Btn onClick={analyze}>{loading ? "Analyzing..." : "Analyze Case"}</Btn>
@@ -475,7 +475,7 @@ function AnalyzeCaseView() {
               {(result.identifiedCauses || []).map((ca, i) => (
                 <div key={i} style={{ marginBottom: 8, padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600, fontSize: 13, color: "#e0e0f0" }}>{ca.caName}</span>
+                    <span style={{ fontWeight: 600, fontSize: 13, color: "var(--text-1)" }}>{ca.caName}</span>
                     <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: CONFIDENCE_COLORS[ca.confidence] + "22", color: CONFIDENCE_COLORS[ca.confidence] }}>{ca.confidence}</span>
                   </div>
                   <div style={{ fontSize: 12, color: "#888" }}>{ca.reasoning}</div>
@@ -497,7 +497,7 @@ function AnalyzeCaseView() {
                     <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: (STATUS_COLORS[el.status] || "#666") + "22", color: STATUS_COLORS[el.status] || "#666" }}>{el.status}</span>
                   </div>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#e0e0f0", marginBottom: 2 }}>{el.element}</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 2 }}>{el.element}</div>
                     <div style={{ fontSize: 11, color: "#888" }}>{el.evidence}</div>
                   </div>
                   <div style={{ fontSize: 11, color: el.status === "MISSING" ? "#fca5a5" : "#666" }}>
@@ -515,18 +515,18 @@ function AnalyzeCaseView() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8 }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Demographics</div>
-                  <div style={{ fontSize: 13, color: "#c8c8e0" }}>{result.plaintiffProfile.demographics}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-2)" }}>{result.plaintiffProfile.demographics}</div>
                 </div>
                 <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8 }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Required Injury</div>
-                  <div style={{ fontSize: 13, color: "#c8c8e0" }}>{result.plaintiffProfile.injuryRequired}</div>
+                  <div style={{ fontSize: 13, color: "var(--text-2)" }}>{result.plaintiffProfile.injuryRequired}</div>
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
                 <div>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 6 }}>Documentation Needed</div>
                   {(result.plaintiffProfile.documentationNeeded || []).map((d, i) => (
-                    <div key={i} style={{ fontSize: 12, color: "#c8c8e0", padding: "3px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{d}</div>
+                    <div key={i} style={{ fontSize: 12, color: "var(--text-2)", padding: "3px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{d}</div>
                   ))}
                 </div>
                 <div>
@@ -674,7 +674,7 @@ function PredictView() {
           onChange={e => setSignals(e.target.value)}
           rows={6}
           placeholder="Describe signals: news reports, social media complaints, government actions, stock movements, industry events, regulatory warnings, academic studies — anything that might signal a developing class action..."
-          style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "#e0e0f0", fontSize: 13, resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.6 }}
+          style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "var(--text-1)", fontSize: 13, resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.6 }}
         />
         <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
           <Btn onClick={predict}>{loading ? "Predicting..." : "Predict"}</Btn>
@@ -703,7 +703,7 @@ function PredictView() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 4 }}>Likely Cause of Action</div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#e0e0f0" }}>{result.likelyCaName}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-1)" }}>{result.likelyCaName}</div>
                 </div>
                 {result.recommendation && (
                   <span style={{ fontSize: 12, fontWeight: 700, padding: "5px 12px", borderRadius: 8, background: (PRED_COLORS[result.recommendation] || "#888") + "22", color: PRED_COLORS[result.recommendation] || "#888", border: `1px solid ${(PRED_COLORS[result.recommendation] || "#888")}44` }}>
@@ -768,7 +768,7 @@ function PredictView() {
           {result.summary && (
             <Card>
               <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 10 }}>Analysis Summary</div>
-              <div style={{ fontSize: 13, color: "#c8c8e0", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>{result.summary}</div>
+              <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>{result.summary}</div>
             </Card>
           )}
         </div>
@@ -838,12 +838,12 @@ export default function CaseIntelligence() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search causes of action..."
-                style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, outline: "none" }}
+                style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, outline: "none" }}
               />
               <select
                 value={filterCategory}
                 onChange={e => setFilterCategory(e.target.value)}
-                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#e0e0f0", fontSize: 12, cursor: "pointer" }}
+                style={{ padding: "7px 10px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "var(--text-1)", fontSize: 12, cursor: "pointer" }}
               >
                 <option value="">All categories</option>
                 {CA_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}

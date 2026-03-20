@@ -170,7 +170,7 @@ function CaseMemo({ caseData, updateCase }) {
         {memo.bottomLine && (
           <div style={{ marginBottom: 20, padding: "14px 16px", background: `${goNoGoColor(memo.goNoGo)}08`, borderRadius: 8, border: `1px solid ${goNoGoColor(memo.goNoGo)}30` }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: goNoGoColor(memo.goNoGo), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Bottom Line</div>
-            <div style={{ fontSize: 14, color: "#e0e0f0", lineHeight: 1.7, fontWeight: 500 }}>{memo.bottomLine}</div>
+            <div style={{ fontSize: 14, color: "var(--text-1)", lineHeight: 1.7, fontWeight: 500 }}>{memo.bottomLine}</div>
           </div>
         )}
 
@@ -262,7 +262,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
               </div>
             )}
           </div>
-          {c.urgencyReason && <div style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 6, lineHeight: 1.5 }}>{c.urgencyReason}</div>}
+          {c.urgencyReason && <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6, lineHeight: 1.5 }}>{c.urgencyReason}</div>}
           <InfoRow label="Statute of Limitations" value={c.sol} valueColor="#fbbf24" />
           <InfoRow label="Next Milestone" value={c.nextMilestone} />
           <InfoRow label="Opportunity Window" value={c.opportunityWindow} valueColor="#f59e0b" />
@@ -350,7 +350,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {c.assignedJudge && (
         <div style={{ marginBottom: 18 }}>
           <SLabel title="Assigned Judge" color="#60a5fa" />
-          <div style={{ fontSize: 13, color: "#e0e0f0", fontWeight: 600 }}>{c.assignedJudge}</div>
+          <div style={{ fontSize: 13, color: "var(--text-1)", fontWeight: 600 }}>{c.assignedJudge}</div>
           {c.assignedJudgeCourt && <div style={{ fontSize: 12, color: "#555", marginTop: 2 }}>{c.assignedJudgeCourt}</div>}
         </div>
       )}
@@ -382,7 +382,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
               </div>
             )}
             {c.kbComparativeAssessment && (
-              <p style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.6, margin: 0, flex: 1 }}>{c.kbComparativeAssessment}</p>
+              <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6, margin: 0, flex: 1 }}>{c.kbComparativeAssessment}</p>
             )}
           </div>
           {c.kbAnalogues?.length > 0 && (
@@ -406,7 +406,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
             <div style={{ marginTop: 12 }}>
               <div style={{ fontSize: 10, color: "#C8442F", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Strategic Playbook</div>
               {c.kbStrategicPlaybook.map((step, i) => (
-                <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "#c8c8e0", lineHeight: 1.5, padding: "3px 0" }}>
+                <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "3px 0" }}>
                   <span style={{ color: "#C8442F", fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span><span>{step}</span>
                 </div>
               ))}
@@ -551,7 +551,7 @@ function SOLTrackerView({ cases }) {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 5, flexWrap: "wrap" }}>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: "#e0e0f0" }}>{c.title}</span>
+                      <span style={{ fontWeight: 700, fontSize: 14, color: "var(--text-1)" }}>{c.title}</span>
                       {expired && (
                         <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 4, background: "rgba(239,68,68,0.2)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.4)", letterSpacing: "0.06em" }}>
                           EXPIRED
@@ -794,7 +794,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
                   <div style={{ flex: 1, minWidth: 0 }}>
                     {/* Row 1: title + badges */}
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 5 }}>
-                      <span style={{ fontWeight: 700, fontSize: 15, color: "#e0e0f0" }}>{c.title}</span>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: "var(--text-1)" }}>{c.title}</span>
                       <Badge label={c.priority} color={PRIORITY_COLORS[c.priority]} />
                       <Badge label={c.status} color={STATUS_COLORS[c.status]} />
                       {c.caseStage && (

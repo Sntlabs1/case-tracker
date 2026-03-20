@@ -333,7 +333,7 @@ export default function Sources() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#fff", margin: 0 }}>Intelligence Sources</h2>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text-1)", margin: 0 }}>Intelligence Sources</h2>
         <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>
           {GRAND_TOTAL} active sources across 8 categories — backend cron runs hourly, browser feed scans every 1–4 hours
         </p>

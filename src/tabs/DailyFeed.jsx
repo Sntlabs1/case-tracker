@@ -120,12 +120,12 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
       )}
 
       {/* Headline + source + recency */}
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#e0e0f0", marginBottom: 4, lineHeight: 1.4 }}>{a.headline || lead.title}</div>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 4, lineHeight: 1.4 }}>{a.headline || lead.title}</div>
       <div style={{ fontSize: 11, color: "#555", marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
         <span>Source: <span style={{ color: "#C8442F" }}>{lead.source}</span></span>
         <span>· Scanned {timeAgo(lead.scannedAt)}</span>
         {age && <span>· Published <span style={{ color: age === "today" || (age?.includes("day") && parseInt(age) < 8) ? "#4ade80" : "#666" }}>{age}</span></span>}
-        {a.timeline?.opportunityWindow && <span>· Window: <span style={{ color: "#c8c8e0" }}>{a.timeline.opportunityWindow}</span></span>}
+        {a.timeline?.opportunityWindow && <span>· Window: <span style={{ color: "var(--text-2)" }}>{a.timeline.opportunityWindow}</span></span>}
       </div>
 
       {/* Targeting readiness reason */}
@@ -151,16 +151,16 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
             {[["Demographics", a.plaintiffProfile.demographics], ["Injury Required", a.plaintiffProfile.requiredInjury], ["Exposure Period", a.plaintiffProfile.injuryTimeframe], ["Geography", a.plaintiffProfile.geographicHotspots?.join(", ")], ["Disqualifiers", a.plaintiffProfile.disqualifiers]].filter(([, v]) => v).map(([lbl, val]) => (
               <div key={lbl}>
                 <div style={{ fontSize: 10, color: "#666", marginBottom: 2, fontWeight: 600 }}>{lbl}</div>
-                <div style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.4 }}>{val}</div>
+                <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.4 }}>{val}</div>
               </div>
             ))}
           </div>
-          {a.plaintiffProfile.whereToFind?.length > 0 && <div style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>WHERE TO FIND: </span>{a.plaintiffProfile.whereToFind.join(" · ")}</div>}
-          {a.plaintiffProfile.documentationNeeded?.length > 0 && <div style={{ fontSize: 12, color: "#c8c8e0", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>DOCS NEEDED: </span>{a.plaintiffProfile.documentationNeeded.join(" · ")}</div>}
+          {a.plaintiffProfile.whereToFind?.length > 0 && <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>WHERE TO FIND: </span>{a.plaintiffProfile.whereToFind.join(" · ")}</div>}
+          {a.plaintiffProfile.documentationNeeded?.length > 0 && <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>DOCS NEEDED: </span>{a.plaintiffProfile.documentationNeeded.join(" · ")}</div>}
           {a.plaintiffProfile.acquisitionHook && (
             <div style={{ padding: "6px 10px", background: "rgba(200,68,47,0.12)", borderRadius: 6 }}>
               <div style={{ fontSize: 10, color: "#E06050", fontWeight: 700, marginBottom: 2 }}>AD HOOK</div>
-              <div style={{ fontSize: 12, color: "#e0e0f0", fontStyle: "italic" }}>"{a.plaintiffProfile.acquisitionHook}"</div>
+              <div style={{ fontSize: 12, color: "var(--text-1)", fontStyle: "italic" }}>"{a.plaintiffProfile.acquisitionHook}"</div>
             </div>
           )}
         </div>
@@ -171,8 +171,8 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
         {a.damagesModel && (
           <div style={{ background: "rgba(34,197,94,0.06)", borderRadius: 8, border: "1px solid rgba(34,197,94,0.18)", padding: "10px 12px" }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#4ade80", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Damages</div>
-            <div style={{ fontSize: 12, color: "#c8c8e0" }}>Per claimant: <strong>{a.damagesModel.perClaimantRange || "?"}</strong></div>
-            <div style={{ fontSize: 12, color: "#c8c8e0" }}>Total fund: <strong>{a.damagesModel.totalFundEstimate || "?"}</strong></div>
+            <div style={{ fontSize: 12, color: "var(--text-2)" }}>Per claimant: <strong>{a.damagesModel.perClaimantRange || "?"}</strong></div>
+            <div style={{ fontSize: 12, color: "var(--text-2)" }}>Total fund: <strong>{a.damagesModel.totalFundEstimate || "?"}</strong></div>
             {a.damagesModel.feeToFirmAt33Pct && <div style={{ fontSize: 11, color: "#4ade80", marginTop: 2 }}>Firm fee: {a.damagesModel.feeToFirmAt33Pct}</div>}
           </div>
         )}
@@ -209,7 +209,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
           {a.defendantProfile?.name && (
             <div style={{ padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, marginBottom: 8 }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#888", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Defendant</div>
-              <div style={{ fontSize: 13, color: "#e0e0f0", fontWeight: 600, marginBottom: 3 }}>{a.defendantProfile.name}</div>
+              <div style={{ fontSize: 13, color: "var(--text-1)", fontWeight: 600, marginBottom: 3 }}>{a.defendantProfile.name}</div>
               {a.defendantProfile.financialHealth && <div style={{ fontSize: 12, color: "#888" }}>Financial health: {a.defendantProfile.financialHealth}</div>}
               {a.defendantProfile.defenseLikelyStrategy && <div style={{ fontSize: 12, color: "#888" }}>Likely defense: {a.defendantProfile.defenseLikelyStrategy}</div>}
             </div>
@@ -227,7 +227,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
               {a.immediateNextSteps.map((step, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, marginBottom: 5 }}>
                   <span style={{ color: "#C8442F", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{i + 1}.</span>
-                  <span style={{ fontSize: 12, color: "#c8c8e0", lineHeight: 1.5 }}>{step}</span>
+                  <span style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{step}</span>
                 </div>
               ))}
             </div>
@@ -470,7 +470,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: "#e0e0f0" }}>Daily Intelligence Feed</h2>
+          <h2 style={{ margin: "0 0 4px", fontSize: 20, fontWeight: 700, color: "var(--text-1)" }}>Daily Intelligence Feed</h2>
           <div style={{ fontSize: 12, color: "#666", display: "flex", gap: 12, flexWrap: "wrap" }}>
             <span>Last scan: <span style={{ color: "#a0a0b8" }}>{timeAgo(lastScanTime)}</span></span>
             {!isScanning && countdown > 0 && (
@@ -521,7 +521,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
       {/* ── Empty state ──────────────────────────────────────────────────────── */}
       {!loading && leads.length === 0 && (
         <Card style={{ textAlign: "center", padding: "48px 24px" }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: "#e0e0f0", marginBottom: 8 }}>No leads yet</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text-1)", marginBottom: 8 }}>No leads yet</div>
           <div style={{ fontSize: 13, color: "#555", maxWidth: 460, margin: "0 auto 20px", lineHeight: 1.6 }}>
             The backend scanner runs automatically every hour on Vercel — no browser required. Click "Run Scan Now" to trigger an immediate scan, or wait for the hourly cron. Leads accumulate in the cloud while you're offline.
           </div>
@@ -543,7 +543,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
             ].map(s => (
               <Card key={s.label} style={{ padding: "14px 16px" }}>
                 <div style={{ fontSize: 26, fontWeight: 700, color: s.color }}>{s.value}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#e0e0f0", marginTop: 2 }}>{s.label}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginTop: 2 }}>{s.label}</div>
                 <div style={{ fontSize: 11, color: "#555" }}>{s.sub}</div>
               </Card>
             ))}

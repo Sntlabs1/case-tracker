@@ -1099,7 +1099,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", flexShrink: 0, boxShadow: "0 0 8px #ef4444" }} />
-            <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>
+            <span style={{ fontWeight: 700, color: "var(--text-1)", fontSize: 13 }}>
               {highPriorityLeads.length} high-priority lead{highPriorityLeads.length > 1 ? "s" : ""} detected (score ≥ 70)
             </span>
             <span style={{ color: "#888", fontSize: 12 }}>
@@ -1123,7 +1123,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f59e0b", flexShrink: 0, boxShadow: "0 0 8px #f59e0b" }} />
-            <span style={{ fontWeight: 700, color: "#fff", fontSize: 13 }}>
+            <span style={{ fontWeight: 700, color: "var(--text-1)", fontSize: 13 }}>
               {solAlertCases.length} case{solAlertCases.length > 1 ? "s" : ""} with SOL deadline within 60 days
             </span>
             <span style={{ color: "#888", fontSize: 12 }}>
