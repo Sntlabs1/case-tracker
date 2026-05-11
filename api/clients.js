@@ -1,14 +1,170 @@
 // Vercel serverless — client database CRUD
-// GET    /api/clients                        — list all clients (optional ?firm=X&state=Y&q=search)
-// POST   /api/clients  body: { clients: [] } — bulk import (or single { client: {} })
+// GET    /api/clients                                         — list all clients (optional ?firm=X&state=Y&q=search)
+// POST   /api/clients?source=credit_com  body: { clients: [] } — bulk import w/ credit.com normalization
+// POST   /api/clients                     body: { clients: [] } — bulk import (or single { client: {} })
 // PATCH  /api/clients  body: { id, retainerStatus, retainerHistory? } — update status
 // DELETE /api/clients?id=xyz               — remove a client
 
 import { kv } from "@vercel/kv";
+import { createHash } from "node:crypto";
 
 const CLIENTS_CACHE_KEY = "clients_cache_v1";
 const CLIENTS_ZSET      = "clients_by_date";
 const CACHE_TTL         = 300; // 5 min
+
+// ── PII / dedup helpers ──────────────────────────────────────────────────────
+function normalizePhone(raw) {
+  if (!raw) return "";
+  const digits = String(raw).replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return digits ? `+${digits}` : "";
+}
+function normalizeEmail(raw) {
+  return String(raw || "").trim().toLowerCase();
+}
+function sha256(s) {
+  if (!s) return "";
+  return createHash("sha256").update(s).digest("hex");
+}
+
+// Default credit.com normalizer — maps loose field names from a credit.com
+// CSV/API payload onto the canonical client shape. Kept inline (rather than in
+// src/lib/creditComNormalizer.js) for now; phase 6 will move it out once the
+// real partnership schema is finalized.
+function normalizeCreditCom(c) {
+  const phones = []
+    .concat(c.phone, c.phones, c.mobile, c.home_phone, c.cell)
+    .filter(Boolean)
+    .map(normalizePhone)
+    .filter(Boolean);
+  const collections = Array.isArray(c.collections || c.collectionsHistory)
+    ? (c.collections || c.collectionsHistory).map((e) => ({
+        creditor:             e.creditor || e.original_creditor || "",
+        creditorCanonicalId:  e.creditorCanonicalId || null,
+        debtBuyer:            e.debtBuyer || e.debt_buyer || e.collector || null,
+        debtBuyerCanonicalId: e.debtBuyerCanonicalId || null,
+        dateRange: {
+          start: e.dateRange?.start || e.start_date || null,
+          end:   e.dateRange?.end   || e.end_date   || null,
+        },
+        amount:         e.amount ?? null,
+        status:         e.status || "active",
+        contactMethods: e.contactMethods || e.contact_methods || [],
+        contactDates:   e.contactDates   || e.contact_dates   || [],
+        source: "credit.com",
+      }))
+    : [];
+  const addresses = Array.isArray(c.addressHistory || c.addresses)
+    ? (c.addressHistory || c.addresses).map((a) => ({
+        state: (a.state || "").toUpperCase().slice(0, 2),
+        city:  a.city  || "",
+        zip:   a.zip   || a.postal_code || "",
+        start: a.start || a.start_date  || null,
+        end:   a.end   || a.end_date    || null,
+      }))
+    : [];
+  return {
+    ...c,
+    phoneNumbers:       phones,
+    phone:              c.phone || phones[0] || "",
+    collectionsHistory: collections,
+    addressHistory:     addresses,
+    ingestSource:       "credit.com",
+    contactRights: {
+      creditor:  true,
+      source:    "credit.com partnership",
+      scopeNote: c.scopeNote || "Credit.com has consent to contact for partnership-relevant matters.",
+    },
+    tcpaOptOut: c.tcpaOptOut === true,
+  };
+}
+
+function buildClientRecord(c, idx, now) {
+  const id = c.id || `c_${now}_${idx}_${Math.random().toString(36).slice(2, 7)}`;
+  const phoneNumbers = Array.isArray(c.phoneNumbers) && c.phoneNumbers.length
+    ? c.phoneNumbers.map(normalizePhone).filter(Boolean)
+    : (c.phone ? [normalizePhone(c.phone)].filter(Boolean) : []);
+  const primaryPhone = phoneNumbers[0] || "";
+  const email = normalizeEmail(c.email);
+  return {
+    id,
+    firstName:       c.firstName   || c.first_name   || "",
+    lastName:        c.lastName    || c.last_name     || "",
+    email,
+    phone:           primaryPhone,
+    phoneNumbers,
+    state:           (c.state      || "").toUpperCase().slice(0, 2),
+    city:            c.city        || "",
+    dob:             c.dob         || c.date_of_birth || "",
+    age:             c.age         ? parseInt(c.age) : null,
+    sourceFirm:      c.sourceFirm  || c.firm          || "Unknown Firm",
+    originalCaseType:c.originalCaseType || c.case_type || "",
+    injuries:        c.injuries    || "",
+    productsUsed:    c.productsUsed || c.products     || "",
+    medicationsUsed: c.medicationsUsed || c.medications || "",
+    exposurePeriod:  c.exposurePeriod  || c.exposure   || "",
+    occupation:      c.occupation  || "",
+    caseNotes:       c.caseNotes   || c.notes         || "",
+    existingCases:   c.existingCases   || "",
+    importedAt:      new Date(c.importedAt || now).toISOString(),
+    matchedLeads:    c.matchedLeads    || [],
+    // ── Partnership-match additions ────────────────────────────────────────
+    phoneHash:          primaryPhone ? sha256(primaryPhone) : "",
+    emailHash:          email ? sha256(email) : "",
+    collectionsHistory: Array.isArray(c.collectionsHistory) ? c.collectionsHistory : [],
+    addressHistory:     Array.isArray(c.addressHistory) ? c.addressHistory : [],
+    ingestSource:       c.ingestSource || "manual",
+    contactRights:      c.contactRights || null,
+    tcpaOptOut:         c.tcpaOptOut === true,
+  };
+}
+
+// Look up an existing client by hashed phone or email. Returns existing client
+// record (parsed) or null.
+async function findExistingByHash({ phoneHash, emailHash }) {
+  for (const hash of [phoneHash, emailHash]) {
+    if (!hash) continue;
+    const existingId = await kv.get(`client_by_phonehash:${hash}`).catch(() => null)
+      || await kv.get(`client_by_emailhash:${hash}`).catch(() => null);
+    if (existingId) {
+      const raw = await kv.get(`client:${existingId}`);
+      if (raw) return typeof raw === "string" ? JSON.parse(raw) : raw;
+    }
+  }
+  return null;
+}
+
+// Merge a fresh record onto an existing one. Credit.com data wins for
+// collectionsHistory; most-recent wins elsewhere.
+function mergeClientRecords(existing, fresh) {
+  const merged = { ...existing };
+  // Most-recent wins for scalar fields (drop empty fresh values)
+  for (const k of ["firstName", "lastName", "city", "state", "dob", "age",
+                   "sourceFirm", "originalCaseType", "injuries", "productsUsed",
+                   "medicationsUsed", "exposurePeriod", "occupation", "caseNotes",
+                   "existingCases", "ingestSource", "contactRights"]) {
+    if (fresh[k] !== undefined && fresh[k] !== null && fresh[k] !== "") merged[k] = fresh[k];
+  }
+  // Merge phone numbers (union)
+  merged.phoneNumbers = [...new Set([...(existing.phoneNumbers || []), ...(fresh.phoneNumbers || [])])];
+  if (fresh.phone) merged.phone = fresh.phone;
+  if (fresh.email) merged.email = fresh.email;
+  if (fresh.phoneHash) merged.phoneHash = fresh.phoneHash;
+  if (fresh.emailHash) merged.emailHash = fresh.emailHash;
+  // Credit.com wins for collectionsHistory if present
+  if (fresh.collectionsHistory?.length) merged.collectionsHistory = fresh.collectionsHistory;
+  // Address history union
+  merged.addressHistory = [...(existing.addressHistory || []), ...(fresh.addressHistory || [])];
+  // OR opt-out (once opted out, stays opted out)
+  merged.tcpaOptOut = !!(existing.tcpaOptOut || fresh.tcpaOptOut);
+  // Audit trail
+  merged.mergeHistory = [
+    ...(existing.mergeHistory || []),
+    { at: new Date().toISOString(), source: fresh.ingestSource || "manual", incomingId: fresh.id },
+  ];
+  return merged;
+}
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -43,7 +199,15 @@ export default async function handler(req, res) {
   if (req.method === "DELETE") {
     const { id } = req.query;
     if (!id) return res.status(400).json({ error: "id required" });
-    await Promise.all([kv.del(`client:${id}`), kv.zrem(CLIENTS_ZSET, id)]);
+    // Read existing record to clean up hash lookups; ignore if already gone.
+    const raw = await kv.get(`client:${id}`).catch(() => null);
+    const ops = [kv.del(`client:${id}`), kv.zrem(CLIENTS_ZSET, id)];
+    if (raw) {
+      const c = typeof raw === "string" ? JSON.parse(raw) : raw;
+      if (c.phoneHash) ops.push(kv.del(`client_by_phonehash:${c.phoneHash}`));
+      if (c.emailHash) ops.push(kv.del(`client_by_emailhash:${c.emailHash}`));
+    }
+    await Promise.all(ops);
     await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
     return res.status(200).json({ deleted: id });
   }
@@ -51,45 +215,58 @@ export default async function handler(req, res) {
   // ── POST — bulk import ─────────────────────────────────────────────────────
   if (req.method === "POST") {
     const body = req.body || {};
-    const incoming = body.clients || (body.client ? [body.client] : []);
-    if (!incoming.length) return res.status(400).json({ error: "clients array required" });
+    const isCreditCom = (req.query?.source || "").toLowerCase() === "credit_com";
+    const rawIncoming = body.clients || (body.client ? [body.client] : []);
+    if (!rawIncoming.length) return res.status(400).json({ error: "clients array required" });
+
+    const incoming = isCreditCom ? rawIncoming.map(normalizeCreditCom) : rawIncoming;
 
     const now = Date.now();
-    const ops = incoming.map((c, i) => {
-      const id = c.id || `c_${now}_${i}_${Math.random().toString(36).slice(2, 7)}`;
-      const record = {
-        id,
-        firstName:       c.firstName   || c.first_name   || "",
-        lastName:        c.lastName    || c.last_name     || "",
-        email:           c.email       || "",
-        phone:           c.phone       || "",
-        state:           (c.state      || "").toUpperCase().slice(0, 2),
-        city:            c.city        || "",
-        dob:             c.dob         || c.date_of_birth || "",
-        age:             c.age         ? parseInt(c.age) : null,
-        sourceFirm:      c.sourceFirm  || c.firm          || "Unknown Firm",
-        originalCaseType:c.originalCaseType || c.case_type || "",
-        injuries:        c.injuries    || "",
-        productsUsed:    c.productsUsed || c.products     || "",
-        medicationsUsed: c.medicationsUsed || c.medications || "",
-        exposurePeriod:  c.exposurePeriod  || c.exposure   || "",
-        occupation:      c.occupation  || "",
-        caseNotes:       c.caseNotes   || c.notes         || "",
-        existingCases:   c.existingCases   || "",
-        importedAt:      new Date(c.importedAt || now).toISOString(),
-        matchedLeads:    [],   // populated by match engine
-      };
-      return { id, record, ts: now + i };
-    });
+    const imported = [];
+    const merged = [];
 
-    // Write in parallel — kv.set + zset score = timestamp
-    await Promise.all(ops.flatMap(({ id, record, ts }) => [
-      kv.set(`client:${id}`, JSON.stringify(record), { ex: 365 * 24 * 3600 }),
-      kv.zadd(CLIENTS_ZSET, { score: ts, member: id }),
-    ]));
+    // Sequential per-record so dedup-merge is consistent within a batch.
+    for (let i = 0; i < incoming.length; i++) {
+      const fresh = buildClientRecord(incoming[i], i, now);
+
+      // Dedup: check phoneHash/emailHash lookups for existing client
+      const existing = await findExistingByHash({
+        phoneHash: fresh.phoneHash,
+        emailHash: fresh.emailHash,
+      });
+
+      if (existing) {
+        const mergedRecord = mergeClientRecords(existing, fresh);
+        await Promise.all([
+          kv.set(`client:${existing.id}`, JSON.stringify(mergedRecord), { ex: 365 * 24 * 3600 }),
+          // Refresh hash lookups (in case fresh added a new hash)
+          fresh.phoneHash ? kv.set(`client_by_phonehash:${fresh.phoneHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
+          fresh.emailHash ? kv.set(`client_by_emailhash:${fresh.emailHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
+        ].filter(Boolean));
+        merged.push(existing.id);
+        continue;
+      }
+
+      const ts = now + i;
+      const ops = [
+        kv.set(`client:${fresh.id}`, JSON.stringify(fresh), { ex: 365 * 24 * 3600 }),
+        kv.zadd(CLIENTS_ZSET, { score: ts, member: fresh.id }),
+      ];
+      if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
+      if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
+      await Promise.all(ops);
+      imported.push(fresh.id);
+    }
+
     await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
 
-    return res.status(200).json({ imported: ops.length, ids: ops.map(o => o.id) });
+    return res.status(200).json({
+      imported: imported.length,
+      mergedExisting: merged.length,
+      ids: imported,
+      mergedIds: merged,
+      source: isCreditCom ? "credit_com" : "manual",
+    });
   }
 
   // ── GET — list clients ─────────────────────────────────────────────────────

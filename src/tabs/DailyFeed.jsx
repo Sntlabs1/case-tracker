@@ -92,7 +92,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", flex: 1, alignItems: "center" }}>
           {a.classification && <Badge label={a.classification} color={a.classification === "CREATE" ? "#22c55e" : a.classification === "INVESTIGATE" ? "#f59e0b" : "#6b7280"} />}
-          {a.joinOrCreate   && <Badge label={a.joinOrCreate}   color={a.joinOrCreate   === "CREATE" ? "#C8442F" : "#3b82f6"} />}
+          {a.joinOrCreate   && <Badge label={a.joinOrCreate}   color={a.joinOrCreate   === "CREATE" ? "var(--accent)" : "#3b82f6"} />}
           {a.timeline?.urgencyLevel && a.timeline.urgencyLevel !== "LOW" && <Badge label={a.timeline.urgencyLevel} color={uc} />}
           {a.opportunityStatus && (
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: ops.bg, color: ops.color, border: `1px solid ${ops.border}` }}>
@@ -122,7 +122,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
       {/* Headline + source + recency */}
       <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 4, lineHeight: 1.4 }}>{a.headline || lead.title}</div>
       <div style={{ fontSize: 11, color: "#555", marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
-        <span>Source: <span style={{ color: "#C8442F" }}>{lead.source}</span></span>
+        <span>Source: <span style={{ color: "var(--accent)" }}>{lead.source}</span></span>
         <span>· Scanned {timeAgo(lead.scannedAt)}</span>
         {age && <span>· Published <span style={{ color: age === "today" || (age?.includes("day") && parseInt(age) < 8) ? "#4ade80" : "#666" }}>{age}</span></span>}
         {a.timeline?.opportunityWindow && <span>· Window: <span style={{ color: "var(--text-2)" }}>{a.timeline.opportunityWindow}</span></span>}
@@ -145,8 +145,8 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
 
       {/* Who to target */}
       {a.plaintiffProfile && (
-        <div style={{ background: "rgba(200,68,47,0.07)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.18)", padding: "12px 14px", marginBottom: 10 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#E06050", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who to Target</div>
+        <div style={{ background: "rgba(94,234,212,0.07)", borderRadius: 10, border: "1px solid rgba(94,234,212,0.18)", padding: "12px 14px", marginBottom: 10 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Who to Target</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
             {[["Demographics", a.plaintiffProfile.demographics], ["Injury Required", a.plaintiffProfile.requiredInjury], ["Exposure Period", a.plaintiffProfile.injuryTimeframe], ["Geography", a.plaintiffProfile.geographicHotspots?.join(", ")], ["Disqualifiers", a.plaintiffProfile.disqualifiers]].filter(([, v]) => v).map(([lbl, val]) => (
               <div key={lbl}>
@@ -158,8 +158,8 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
           {a.plaintiffProfile.whereToFind?.length > 0 && <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>WHERE TO FIND: </span>{a.plaintiffProfile.whereToFind.join(" · ")}</div>}
           {a.plaintiffProfile.documentationNeeded?.length > 0 && <div style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 6 }}><span style={{ color: "#666", fontWeight: 600, fontSize: 10 }}>DOCS NEEDED: </span>{a.plaintiffProfile.documentationNeeded.join(" · ")}</div>}
           {a.plaintiffProfile.acquisitionHook && (
-            <div style={{ padding: "6px 10px", background: "rgba(200,68,47,0.12)", borderRadius: 6 }}>
-              <div style={{ fontSize: 10, color: "#E06050", fontWeight: 700, marginBottom: 2 }}>AD HOOK</div>
+            <div style={{ padding: "6px 10px", background: "rgba(94,234,212,0.12)", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, color: "var(--accent)", fontWeight: 700, marginBottom: 2 }}>AD HOOK</div>
               <div style={{ fontSize: 12, color: "var(--text-1)", fontStyle: "italic" }}>"{a.plaintiffProfile.acquisitionHook}"</div>
             </div>
           )}
@@ -226,7 +226,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
               <div style={{ fontSize: 10, fontWeight: 700, color: "#888", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Immediate Next Steps</div>
               {a.immediateNextSteps.map((step, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, marginBottom: 5 }}>
-                  <span style={{ color: "#C8442F", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{i + 1}.</span>
+                  <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{i + 1}.</span>
                   <span style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{step}</span>
                 </div>
               ))}
@@ -474,9 +474,9 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
           <div style={{ fontSize: 12, color: "#666", display: "flex", gap: 12, flexWrap: "wrap" }}>
             <span>Last scan: <span style={{ color: "#a0a0b8" }}>{timeAgo(lastScanTime)}</span></span>
             {!isScanning && countdown > 0 && (
-              <span>Next auto-scan: <span style={{ color: "#C8442F" }}>{fmtCountdown(countdown)}</span></span>
+              <span>Next auto-scan: <span style={{ color: "var(--accent)" }}>{fmtCountdown(countdown)}</span></span>
             )}
-            {isScanning && <span style={{ color: "#E06050" }}>{scanStatus}</span>}
+            {isScanning && <span style={{ color: "var(--accent)" }}>{scanStatus}</span>}
             <span style={{ color: "#555" }}>Runs hourly on Vercel — accumulates while you're offline</span>
           </div>
         </div>
@@ -487,10 +487,10 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
 
       {/* ── Scan progress bar ────────────────────────────────────────────────── */}
       {isScanning && (
-        <div style={{ marginBottom: 16, padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)" }}>
-          <div style={{ fontSize: 12, color: "#E06050", marginBottom: 6 }}>{scanStatus}</div>
+        <div style={{ marginBottom: 16, padding: "10px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 10, border: "1px solid rgba(94,234,212,0.2)" }}>
+          <div style={{ fontSize: 12, color: "var(--accent)", marginBottom: 6 }}>{scanStatus}</div>
           <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: "100%", background: "linear-gradient(90deg,#C8442F,#B83E2C)", borderRadius: 2, animation: "pulse 2s ease-in-out infinite" }} />
+            <div style={{ height: "100%", width: "100%", background: "linear-gradient(90deg,var(--accent),#B83E2C)", borderRadius: 2, animation: "pulse 2s ease-in-out infinite" }} />
           </div>
         </div>
       )}
@@ -536,7 +536,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
           {/* ── Stats ──────────────────────────────────────────────────────── */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 16 }}>
             {[
-              { label: "Total Leads",       value: stats.total,  color: "#C8442F", sub: "in feed" },
+              { label: "Total Leads",       value: stats.total,  color: "var(--accent)", sub: "in feed" },
               { label: "High Priority",     value: stats.high,   color: "#22c55e", sub: "score 75+" },
               { label: "New Cases",         value: stats.create, color: "#f59e0b", sub: "CREATE opportunities" },
               { label: "Join Existing MDL", value: stats.join,   color: "#3b82f6", sub: "active cases" },
@@ -553,12 +553,12 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
           <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score</span>
-              <input type="range" min={0} max={100} step={5} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: 100, accentColor: "#C8442F" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#E06050", minWidth: 24 }}>{minScore}</span>
+              <input type="range" min={0} max={100} step={5} value={minScore} onChange={e => setMinScore(Number(e.target.value))} style={{ width: 100, accentColor: "var(--accent)" }} />
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--accent)", minWidth: 24 }}>{minScore}</span>
             </div>
             <div style={{ display: "flex", gap: 3 }}>
               {["ALL","CREATE","JOIN"].map(v => (
-                <button key={v} onClick={() => setJoinFilter(v)} style={{ padding: "5px 12px", borderRadius: 6, border: "none", background: joinFilter === v ? "rgba(200,68,47,0.25)" : "rgba(255,255,255,0.05)", color: joinFilter === v ? "#E06050" : "#888", cursor: "pointer", fontSize: 12, fontWeight: joinFilter === v ? 600 : 400 }}>{v}</button>
+                <button key={v} onClick={() => setJoinFilter(v)} style={{ padding: "5px 12px", borderRadius: 6, border: "none", background: joinFilter === v ? "rgba(94,234,212,0.25)" : "rgba(255,255,255,0.05)", color: joinFilter === v ? "var(--accent)" : "#888", cursor: "pointer", fontSize: 12, fontWeight: joinFilter === v ? 600 : 400 }}>{v}</button>
               ))}
             </div>
             <select value={caseTypeFilter} onChange={e => setCaseTypeFilter(e.target.value)} style={{ padding: "5px 10px", borderRadius: 6, border: "1px solid rgba(255,255,255,0.1)", background: "#0d0e18", color: "#888", fontSize: 12, cursor: "pointer" }}>

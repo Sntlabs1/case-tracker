@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import vercelApi from './dev/vercel-api-plugin.js'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), vercelApi()],
   server: {
-    port: 3000,
-    open: true
+    port: 3030,
+    strictPort: false,
+    open: false
   },
   build: {
     outDir: 'dist'

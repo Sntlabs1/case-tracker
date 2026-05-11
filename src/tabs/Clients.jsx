@@ -22,6 +22,172 @@ function scoreColor(s) {
   return s >= 75 ? "#22c55e" : s >= 50 ? "#f59e0b" : s >= 30 ? "#fb923c" : "#ef4444";
 }
 
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const t = Date.parse(dateStr);
+  if (isNaN(t)) return null;
+  return Math.ceil((t - Date.now()) / (1000 * 60 * 60 * 24));
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function ClaimCountdown({ closes }) {
+  const days = daysUntil(closes);
+  if (days === null) return null;
+  let color = "#22c55e";
+  let label = `${days}d to claim`;
+  if (days < 0) { color = "#6b7280"; label = "Window closed"; }
+  else if (days <= 7) { color = "#ef4444"; label = `${days}d left`; }
+  else if (days <= 30) { color = "#f59e0b"; label = `${days}d left`; }
+  return (
+    <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4, background: `${color}20`, color, border: `1px solid ${color}40`, fontWeight: 700 }}>
+      {label}
+    </span>
+  );
+}
+
+function MatchedCasesPanel({ client }) {
+  const [state, setState] = useState("idle"); // idle | loading | done | error
+  const [matches, setMatches] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function run() {
+    setState("loading");
+    setError(null);
+    try {
+      const r = await fetch("/api/match-cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "client-to-cases", clientId: client.id, topN: 25 }),
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      setMatches(d);
+      setState("done");
+    } catch (e) {
+      setError(e.message);
+      setState("error");
+    }
+  }
+
+  // Auto-run when the client changes if they have collections history (TCPA-shaped)
+  // — that's the most likely match candidate.
+  useEffect(() => {
+    setMatches(null);
+    setState("idle");
+  }, [client?.id]);
+
+  if (state === "idle") {
+    return (
+      <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>Matched Cases</div>
+            <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2 }}>
+              Score this client against all TCPA cases and active leads
+            </div>
+          </div>
+          <Btn small onClick={run}>Find matches</Btn>
+        </div>
+      </div>
+    );
+  }
+
+  if (state === "loading") {
+    return (
+      <div style={{ marginTop: 14, padding: "16px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", textAlign: "center", fontSize: 11, color: "var(--text-5)" }}>
+        Scoring across TCPA cases and leads…
+      </div>
+    );
+  }
+
+  if (state === "error") {
+    return (
+      <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(239,68,68,0.08)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", fontSize: 11, color: "#ef4444" }}>
+        {error}
+        <button onClick={run} style={{ marginLeft: 10, fontSize: 10, color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Retry</button>
+      </div>
+    );
+  }
+
+  const all = (matches?.matches || []);
+  const tcpa = all.filter(m => m.kind === "tcpa");
+  const leads = all.filter(m => m.kind === "lead");
+
+  return (
+    <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>Matched Cases</div>
+        <button onClick={run} style={{ fontSize: 10, color: "var(--text-5)", background: "none", border: "none", cursor: "pointer" }}>Re-run</button>
+      </div>
+
+      {tcpa.length === 0 && leads.length === 0 && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", padding: "12px 0", textAlign: "center" }}>
+          No matches found. {client.collectionsHistory?.length ? "" : "This client has no collections history — matching depends on creditor names from credit.com data."}
+        </div>
+      )}
+
+      {tcpa.length > 0 && (
+        <div style={{ marginBottom: leads.length ? 12 : 0 }}>
+          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>TCPA / FDCPA cases ({tcpa.length})</div>
+          {tcpa.map((m, i) => {
+            const c = m.case || {};
+            const sc = scoreColor(m.score || 0);
+            return (
+              <div key={m.id} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 10px", borderRadius: 6, background: "var(--bg-card)", border: "1px solid var(--border)", marginBottom: 4 }}>
+                <div style={{ width: 36, textAlign: "center", flexShrink: 0 }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: sc, lineHeight: 1.1 }}>{m.score}</div>
+                  {m.qualifies && <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e" }}>QUALIFIES</div>}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 2, display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{c.caption || "(missing case)"}</span>
+                    <ClaimCountdown closes={c.settlement?.claimWindowCloses} />
+                  </div>
+                  <div style={{ fontSize: 10, color: "var(--text-6)" }}>
+                    {(c.defendants || []).map(d => d.displayName).join(", ") || "—"}
+                  </div>
+                  {m.reason && <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{m.reason}</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {leads.length > 0 && (
+        <div>
+          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Mass tort leads ({leads.length})</div>
+          {leads.map(m => {
+            const l = m.lead || {};
+            const sc = scoreColor(m.score || 0);
+            return (
+              <div key={m.id} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 10px", borderRadius: 6, background: "var(--bg-card)", border: "1px solid var(--border)", marginBottom: 4 }}>
+                <div style={{ width: 36, textAlign: "center", flexShrink: 0 }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: sc, lineHeight: 1.1 }}>{m.score}</div>
+                  {m.qualifies && <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e" }}>QUALIFIES</div>}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 2 }}>
+                    {l.analysis?.headline || l.title || "(missing lead)"}
+                  </div>
+                  <div style={{ fontSize: 10, color: "var(--text-6)" }}>{l.analysis?.caseType || "—"}</div>
+                  {m.reason && <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{m.reason}</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Simple CSV parser (handles quoted fields, comma + tab + semicolon) ────────
 function parseCSV(text) {
   const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter(l => l.trim());
@@ -84,7 +250,7 @@ function autoMap(headers) {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function StatPill({ label, value, color = "#C8442F" }) {
+function StatPill({ label, value, color = "var(--accent)" }) {
   return (
     <div style={{ padding: "14px 20px", borderRadius: 10, background: "var(--bg-card)", border: "1px solid var(--border)", textAlign: "center" }}>
       <div style={{ fontSize: 28, fontWeight: 800, color, lineHeight: 1 }}>{value ?? "—"}</div>
@@ -118,8 +284,8 @@ function ClientRow({ client, onSelect, onDelete, selected }) {
       style={{
         display: "flex", gap: 12, alignItems: "center", padding: "10px 14px",
         borderRadius: 8, cursor: "pointer", transition: "all 0.13s",
-        background: selected ? "rgba(200,68,47,0.08)" : hov ? "var(--bg-surface)" : "transparent",
-        border: `1px solid ${selected ? "rgba(200,68,47,0.3)" : hov ? "var(--border-hov)" : "var(--border)"}`,
+        background: selected ? "rgba(94,234,212,0.08)" : hov ? "var(--bg-surface)" : "transparent",
+        border: `1px solid ${selected ? "rgba(94,234,212,0.3)" : hov ? "var(--border-hov)" : "var(--border)"}`,
         marginBottom: 4,
       }}
     >
@@ -360,7 +526,7 @@ function MatchResult({ match, rank }) {
             </div>
           )}
           <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-            {c.email && <a href={`mailto:${c.email}`} style={{ fontSize: 11, color: "#C8442F", textDecoration: "none" }}>{c.email}</a>}
+            {c.email && <a href={`mailto:${c.email}`} style={{ fontSize: 11, color: "var(--accent)", textDecoration: "none" }}>{c.email}</a>}
             {c.phone && <span style={{ fontSize: 11, color: "var(--text-5)" }}>{c.phone}</span>}
           </div>
           <OutreachDrafter client={c} lead={match.lead || {}} />
@@ -466,10 +632,10 @@ function ImportWizard({ onImported }) {
 
       {/* Toggle manual vs CSV */}
       <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        <button onClick={() => setManualMode(false)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: !manualMode ? "#C8442F" : "var(--bg-surface)", color: !manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${!manualMode ? "#C8442F" : "var(--border)"}` }}>
+        <button onClick={() => setManualMode(false)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: !manualMode ? "var(--accent)" : "var(--bg-surface)", color: !manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${!manualMode ? "var(--accent)" : "var(--border)"}` }}>
           CSV / Spreadsheet Import
         </button>
-        <button onClick={() => setManualMode(true)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: manualMode ? "#C8442F" : "var(--bg-surface)", color: manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${manualMode ? "#C8442F" : "var(--border)"}` }}>
+        <button onClick={() => setManualMode(true)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: manualMode ? "var(--accent)" : "var(--bg-surface)", color: manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${manualMode ? "var(--accent)" : "var(--border)"}` }}>
           Add Single Client
         </button>
       </div>
@@ -730,7 +896,7 @@ export default function Clients() {
 
       {/* ── Stats row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-        <StatPill label="Total Clients" value={clients.length} color="#C8442F" />
+        <StatPill label="Total Clients" value={clients.length} color="var(--accent)" />
         <StatPill label="Firms Imported" value={firms.length} color="#3b82f6" />
         <StatPill label="Retained" value={retainedCount || "—"} color="#22c55e" />
         <StatPill label="In Progress" value={inProgressCount || "—"} color="#f59e0b" />
@@ -745,7 +911,7 @@ export default function Clients() {
         ].map(v => (
           <button key={v.id} onClick={() => setView(v.id)} style={{
             padding: "9px 18px", border: "none", background: "transparent",
-            borderBottom: view === v.id ? "2px solid #C8442F" : "2px solid transparent",
+            borderBottom: view === v.id ? "2px solid var(--accent)" : "2px solid transparent",
             color: view === v.id ? "var(--text-1)" : "var(--text-5)",
             fontWeight: view === v.id ? 700 : 400, fontSize: 13, cursor: "pointer", marginBottom: -1,
           }}>
@@ -782,7 +948,7 @@ export default function Clients() {
               Showing {filtered.length} of {clients.length} clients
               {hasFilters && (
                 <button onClick={() => { setFirmFilter(""); setStateFilter(""); setRetainerFilter(""); setSearchQ(""); }}
-                  style={{ marginLeft: 8, fontSize: 10, color: "#C8442F", background: "none", border: "none", cursor: "pointer" }}>
+                  style={{ marginLeft: 8, fontSize: 10, color: "var(--accent)", background: "none", border: "none", cursor: "pointer" }}>
                   Clear filters
                 </button>
               )}
@@ -909,13 +1075,15 @@ export default function Clients() {
                   </div>
                 )}
 
+                <MatchedCasesPanel client={selectedClient} />
+
                 <div style={{ marginTop: 14 }}>
                   <Btn small onClick={() => {
                     setMatchLead(null);
                     setMatchView("pick");
                     setView("match");
                   }}>
-                    Find Matching Cases →
+                    Run firm-wide match against a lead →
                   </Btn>
                 </div>
               </div>
@@ -959,8 +1127,8 @@ export default function Clients() {
             </div>
 
             {matchLead ? (
-              <div style={{ marginBottom: 16, padding: "12px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8, border: "1px solid rgba(200,68,47,0.25)" }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Selected Lead</div>
+              <div style={{ marginBottom: 16, padding: "12px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 8, border: "1px solid rgba(94,234,212,0.25)" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Selected Lead</div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 3 }}>{matchLead.analysis?.headline || matchLead.title}</div>
                 <div style={{ fontSize: 11, color: "var(--text-5)" }}>
                   {matchLead.analysis?.caseType} · Score {matchLead.analysis?.score}

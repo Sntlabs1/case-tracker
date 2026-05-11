@@ -65,7 +65,7 @@ function DataPill({ label, value, color = "#888" }) {
   );
 }
 
-function SLabel({ title, color = "#C8442F" }) {
+function SLabel({ title, color = "var(--accent)" }) {
   return (
     <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color, textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: `1px solid ${color}22` }}>
       {title}
@@ -95,7 +95,7 @@ function MemoSection({ title, content, color = "#c8c8e0" }) {
   if (!content) return null;
   return (
     <div style={{ marginBottom: 18 }}>
-      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#C8442F", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(200,68,47,0.2)" }}>
+      <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "var(--accent)", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(94,234,212,0.2)" }}>
         {title}
       </div>
       <div style={{ fontSize: 13, color, lineHeight: 1.75, whiteSpace: "pre-line" }}>{content}</div>
@@ -138,7 +138,7 @@ function CaseMemo({ caseData, updateCase }) {
 
   if (loading) {
     return (
-      <div style={{ marginBottom: 18, padding: "22px 16px", background: "rgba(200,68,47,0.05)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)", textAlign: "center" }}>
+      <div style={{ marginBottom: 18, padding: "22px 16px", background: "rgba(94,234,212,0.05)", borderRadius: 10, border: "1px solid rgba(94,234,212,0.2)", textAlign: "center" }}>
         <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>Writing case evaluation memo...</div>
         <div style={{ fontSize: 11, color: "#555" }}>Analyzing background · legal theory · class analysis · financial model · litigation landscape · risks · recommendation</div>
       </div>
@@ -146,11 +146,11 @@ function CaseMemo({ caseData, updateCase }) {
   }
 
   return (
-    <div style={{ marginBottom: 20, border: "1px solid rgba(200,68,47,0.25)", borderRadius: 12, overflow: "hidden" }}>
+    <div style={{ marginBottom: 20, border: "1px solid rgba(94,234,212,0.25)", borderRadius: 12, overflow: "hidden" }}>
       {/* Header */}
-      <div style={{ padding: "12px 18px", background: "rgba(200,68,47,0.08)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+      <div style={{ padding: "12px 18px", background: "rgba(94,234,212,0.08)", borderBottom: "1px solid rgba(94,234,212,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color: "#C8442F", letterSpacing: "0.1em", textTransform: "uppercase" }}>Case Evaluation Memo</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Case Evaluation Memo</span>
           {memo.goNoGo && (
             <span style={{ fontSize: 12, fontWeight: 800, padding: "2px 10px", borderRadius: 6, background: `${goNoGoColor(memo.goNoGo)}18`, color: goNoGoColor(memo.goNoGo), border: `1px solid ${goNoGoColor(memo.goNoGo)}44` }}>
               {memo.goNoGo}
@@ -177,13 +177,13 @@ function CaseMemo({ caseData, updateCase }) {
         <MemoSection title="Background" content={memo.background} />
         <MemoSection title="Legal Theory" content={memo.legalTheory} />
         <MemoSection title="Class Analysis" content={memo.classAnalysis} />
-        <MemoSection title="Financial Analysis" content={memo.financialAnalysis} color="#E06050" />
+        <MemoSection title="Financial Analysis" content={memo.financialAnalysis} color="var(--accent)" />
         <MemoSection title="Litigation Landscape" content={memo.litigationLandscape} />
 
         {/* Key Risks */}
         {memo.keyRisks?.length > 0 && (
           <div style={{ marginBottom: 18 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#C8442F", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(200,68,47,0.2)" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "var(--accent)", textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: "1px solid rgba(94,234,212,0.2)" }}>
               Key Risks
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -219,12 +219,12 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {/* ── FINANCIAL OVERVIEW ── */}
       {(c.fundEstimate || c.perClaimant || c.feeToFirm) && (
         <div style={{ marginBottom: 18 }}>
-          <SLabel title="Financial Overview" color="#E06050" />
+          <SLabel title="Financial Overview" color="var(--accent)" />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10 }}>
             {c.fundEstimate && (
               <div style={{ padding: "10px 14px", background: "rgba(224,96,80,0.08)", borderRadius: 8, border: "1px solid rgba(224,96,80,0.2)", textAlign: "center" }}>
                 <div style={{ fontSize: 10, color: "#888", marginBottom: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>Est. Fund</div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#E06050" }}>{c.fundEstimate}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--accent)" }}>{c.fundEstimate}</div>
               </div>
             )}
             {c.perClaimant && (
@@ -373,10 +373,10 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {/* ── KB INTELLIGENCE ── */}
       {(c.kbGrade || c.kbComparativeAssessment || c.kbAnalogues?.length > 0) && (
         <div style={{ marginBottom: 18 }}>
-          <SLabel title="KB Historical Comparison" color="#C8442F" />
+          <SLabel title="KB Historical Comparison" color="var(--accent)" />
           <div style={{ display: "flex", gap: 14, marginBottom: 10, alignItems: "flex-start" }}>
             {c.kbGrade && (
-              <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: 10, background: "rgba(200,68,47,0.1)", border: "2px solid rgba(200,68,47,0.3)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ flexShrink: 0, width: 60, height: 60, borderRadius: 10, background: "rgba(94,234,212,0.1)", border: "2px solid rgba(94,234,212,0.3)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
                 <div style={{ fontSize: 24, fontWeight: 900, color: gradeColor(c.kbGrade), lineHeight: 1 }}>{c.kbGrade}</div>
                 <div style={{ fontSize: 9, color: "#555", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>KB Grade</div>
               </div>
@@ -404,10 +404,10 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
           )}
           {c.kbStrategicPlaybook?.length > 0 && (
             <div style={{ marginTop: 12 }}>
-              <div style={{ fontSize: 10, color: "#C8442F", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Strategic Playbook</div>
+              <div style={{ fontSize: 10, color: "var(--accent)", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Strategic Playbook</div>
               {c.kbStrategicPlaybook.map((step, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "3px 0" }}>
-                  <span style={{ color: "#C8442F", fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span><span>{step}</span>
+                  <span style={{ color: "var(--accent)", fontWeight: 700, flexShrink: 0 }}>{i + 1}.</span><span>{step}</span>
                 </div>
               ))}
             </div>
@@ -418,7 +418,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {/* ── SCORE BREAKDOWN ── */}
       {c.scoreDimensions && (
         <div style={{ marginBottom: 18 }}>
-          <SLabel title="Score Breakdown" color="#C8442F" />
+          <SLabel title="Score Breakdown" color="var(--accent)" />
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             {[
               { key: "liabilityCertainty", label: "Liability Certainty" },
@@ -520,7 +520,7 @@ function SOLTrackerView({ cases }) {
         flexWrap: "wrap",
       }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{casesWithSOL.length}</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "var(--accent)", lineHeight: 1 }}>{casesWithSOL.length}</div>
           <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Cases with SOL set</div>
         </div>
         <div style={{ textAlign: "center" }}>
@@ -657,9 +657,9 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
                 onClick={() => setViewMode(v.key)}
                 style={{
                   padding: "5px 13px", borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                  background: viewMode === v.key ? "#C8442F" : "rgba(255,255,255,0.06)",
+                  background: viewMode === v.key ? "var(--accent)" : "rgba(255,255,255,0.06)",
                   color: viewMode === v.key ? "#fff" : "#888",
-                  border: `1px solid ${viewMode === v.key ? "#C8442F" : "rgba(255,255,255,0.12)"}`,
+                  border: `1px solid ${viewMode === v.key ? "var(--accent)" : "rgba(255,255,255,0.12)"}`,
                   transition: "all 0.13s",
                 }}
               >
@@ -695,7 +695,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
             {/* Stats row */}
             <div style={{ display: "flex", gap: 20, marginBottom: 14, flexWrap: "wrap" }}>
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 24, fontWeight: 800, color: "#C8442F", lineHeight: 1 }}>{cases.length}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: "var(--accent)", lineHeight: 1 }}>{cases.length}</div>
                 <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Total Cases</div>
               </div>
               <div style={{ textAlign: "center" }}>
@@ -717,7 +717,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
               {(filterType || filterPriority || filterStatus || searchQ) && (
                 <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
                   <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setSearchQ(""); }}
-                    style={{ fontSize: 11, color: "#C8442F", background: "none", border: "1px solid rgba(200,68,47,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
+                    style={{ fontSize: 11, color: "var(--accent)", background: "none", border: "1px solid rgba(94,234,212,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
                     Clear filters · {filtered.length} shown
                   </button>
                 </div>
@@ -731,9 +731,9 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
                 {Object.entries(typeCounts).sort((a,b) => b[1]-a[1]).map(([type, count]) => (
                   <button key={type} onClick={() => setFilterType(filterType === type ? "" : type)}
                     style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
-                      background: filterType === type ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.04)",
-                      borderColor: filterType === type ? "rgba(200,68,47,0.5)" : "rgba(255,255,255,0.08)",
-                      color: filterType === type ? "#E06050" : "#888" }}>
+                      background: filterType === type ? "rgba(94,234,212,0.2)" : "rgba(255,255,255,0.04)",
+                      borderColor: filterType === type ? "rgba(94,234,212,0.5)" : "rgba(255,255,255,0.08)",
+                      color: filterType === type ? "var(--accent)" : "#888" }}>
                     {type} <span style={{ opacity: 0.6 }}>{count}</span>
                   </button>
                 ))}
@@ -834,7 +834,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
 
                     {/* Row 4: financial + urgency pills */}
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
-                      {c.fundEstimate && <DataPill label="Fund" value={c.fundEstimate} color="#E06050" />}
+                      {c.fundEstimate && <DataPill label="Fund" value={c.fundEstimate} color="var(--accent)" />}
                       {c.perClaimant && <DataPill label="Per Claimant" value={c.perClaimant} color="#a78bfa" />}
                       {c.feeToFirm && <DataPill label="Firm Fee" value={c.feeToFirm} color="#22c55e" />}
                       {c.sol && <DataPill label="SOL" value={c.sol} color="#f59e0b" />}

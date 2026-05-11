@@ -44,18 +44,27 @@ function buildSystemPrompt(cases, leads) {
 
   return `You are a senior class action litigation strategist and expert on the Ticket Toro plaintiff intelligence platform. You speak directly and practically — this is a professional tool, not an educational exercise.
 
-You have full access to:
-1. A 150-case knowledge base of historical class actions with full ratings, strategy, demographics, and acquisition analysis
+You have access to:
+1. A 150-case knowledge base of historical class actions (provided below)
 2. The user's active case tracker (${cases.length} cases)
 3. The user's daily intelligence feed (${leads.length} leads)
 4. The platform's scoring rubric
 
+You ALSO have live tools to query the platform's real database. Use them aggressively whenever a question is about current state — never guess from the static KB when live tools can answer:
+- get_platform_state — counts, last-updated timestamps, scan health, watchlist, top defendants, trends. Call this at the start of most conversations.
+- search_cases — query the 500+ ingested TCPA / FDCPA / FCRA cases by defendant, type, status, state, or keyword
+- get_case — fetch full detail for one case by ID (settlement, conduct, source URL)
+- search_defendants — find a defendant entity (Equifax, Capital One, etc.) and see how many cases it appears on
+- get_defendant_cases — list every case for one canonical defendant
+- search_leads — query the intelligence leads inbox by score/keyword
+- get_source_health — see which of the 38 external data sources are up/degraded/down right now
+
 When answering:
-- Reference specific case IDs and names from the knowledge base
+- Reference specific case IDs and names — from the live database when relevant, from the KB for historical strategy
 - Give frank, actionable assessments — not hedged generalities
+- If asked "how many cases against X" or "what's our biggest settlement" or "is X feed working" — call a tool, do not guess
 - If asked to compare a lead to the KB, do it with specific case analogies and scores
 - If asked about plaintiff targeting, give specific channels, demographics, and hooks
-- If asked about case strategy, reference specific KB cases that succeeded or failed with that approach
 
 ---
 SCORING RUBRIC:
@@ -85,44 +94,133 @@ Claude web search: 30+ targeted queries including DOJ criminal fraud convictions
 }
 
 // ─── STREAMING CALL ───────────────────────────────────────────────────────────
-
-async function streamClaude(apiMessages, systemPrompt, onChunk) {
+//
+// The /api/chat endpoint streams a mixed SSE feed: tool_use / tool_result
+// events for transparency, plus standard content_block_delta events for the
+// final assistant text. We parse named events (event: foo\ndata: {...}) and
+// the default data-only events.
+async function streamClaude(apiMessages, systemPrompt, { onText, onToolUse, onToolResult }) {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ messages: apiMessages, system: systemPrompt }),
   });
-
   if (!res.ok) {
     const txt = await res.text();
     throw new Error(`API ${res.status}: ${txt.slice(0, 200)}`);
   }
 
-  const reader  = res.body.getReader();
+  const reader = res.body.getReader();
   const decoder = new TextDecoder();
-  let buf  = "";
+  let buf = "";
   let text = "";
 
+  // SSE parsing — split on blank lines (event boundaries), each event has
+  // optional `event:` line + one or more `data:` lines.
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
     buf += decoder.decode(value, { stream: true });
-    const lines = buf.split("\n");
-    buf = lines.pop() || "";
-    for (const line of lines) {
-      if (!line.startsWith("data: ")) continue;
-      const raw = line.slice(6).trim();
-      if (raw === "[DONE]") continue;
+    let boundary;
+    while ((boundary = buf.indexOf("\n\n")) !== -1) {
+      const block = buf.slice(0, boundary);
+      buf = buf.slice(boundary + 2);
+      let eventName = null;
+      const dataLines = [];
+      for (const line of block.split("\n")) {
+        if (line.startsWith("event:")) eventName = line.slice(6).trim();
+        else if (line.startsWith("data:")) dataLines.push(line.slice(5).trimStart());
+      }
+      if (!dataLines.length) continue;
+      const dataStr = dataLines.join("\n");
+      if (dataStr === "[DONE]") continue;
       let evt;
-      try { evt = JSON.parse(raw); } catch { continue; }
-      if (evt.type === "error") throw new Error(evt.error?.message || "Stream error");
+      try { evt = JSON.parse(dataStr); } catch { continue; }
+
+      if (eventName === "error" || evt.type === "error") {
+        throw new Error(evt.error?.message || evt.message || "Stream error");
+      }
+      if (eventName === "tool_use" && onToolUse) {
+        onToolUse(evt);
+        continue;
+      }
+      if (eventName === "tool_result" && onToolResult) {
+        onToolResult(evt);
+        continue;
+      }
+      if (eventName === "done") continue;
       if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta") {
         text += evt.delta.text;
-        onChunk(text);
+        onText(text);
       }
     }
   }
   return text;
+}
+
+// ─── TOOL-CALL CHIPS ──────────────────────────────────────────────────────────
+
+const TOOL_LABELS = {
+  get_platform_state:   "Reading platform state",
+  search_cases:         "Searching cases",
+  get_case:             "Loading case",
+  search_defendants:    "Searching defendants",
+  get_defendant_cases:  "Listing defendant's cases",
+  search_leads:         "Searching leads",
+  get_source_health:    "Checking source health",
+};
+
+function fmtToolInput(name, input) {
+  if (!input) return "";
+  if (name === "search_cases") {
+    const parts = [];
+    if (input.defendant) parts.push(`defendant: ${input.defendant}`);
+    if (input.caseType)  parts.push(input.caseType);
+    if (input.status)    parts.push(input.status);
+    if (input.state)     parts.push(input.state);
+    if (input.keyword)   parts.push(`"${input.keyword}"`);
+    return parts.join(" · ");
+  }
+  if (name === "search_defendants") return input.name;
+  if (name === "search_leads")      return input.keyword || `score ≥ ${input.minScore || 0}`;
+  if (name === "get_case")          return input.id;
+  if (name === "get_defendant_cases") return input.canonicalId;
+  return "";
+}
+
+function ToolChips({ events }) {
+  if (!events?.length) return null;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 6 }}>
+      {events.map((e, i) => {
+        const label = TOOL_LABELS[e.name] || e.name;
+        const argLine = fmtToolInput(e.name, e.input);
+        let dotColor = "#f59e0b"; // running
+        if (e.status === "ok") dotColor = "#22c55e";
+        else if (e.status === "error") dotColor = "#ef4444";
+        return (
+          <div key={i} style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            padding: "5px 10px", borderRadius: 7,
+            background: "rgba(94,234,212,0.05)",
+            border: "1px solid rgba(94,234,212,0.15)",
+            fontSize: 11, color: "var(--text-4)",
+            alignSelf: "flex-start",
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: dotColor, flexShrink: 0 }} />
+            <span style={{ color: "var(--accent)", fontWeight: 600 }}>{label}</span>
+            {argLine && <span style={{ color: "var(--text-6)" }}>· {argLine}</span>}
+            {e.status === "ok" && e.summary && (
+              <span style={{ color: "var(--text-5)" }}>→ {e.summary}</span>
+            )}
+            {e.status === "error" && e.error && (
+              <span style={{ color: "#f87171" }}>error: {e.error.slice(0, 80)}</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 // ─── MARKDOWN RENDERER ────────────────────────────────────────────────────────
@@ -136,7 +234,7 @@ function InlineText({ text }) {
     const s = m[0];
     if      (s.startsWith("**")) parts.push(<strong key={m.index} style={{ color: "#e0e0f0", fontWeight: 700 }}>{s.slice(2, -2)}</strong>);
     else if (s.startsWith("*"))  parts.push(<em     key={m.index} style={{ color: "#d0d0e8" }}>{s.slice(1, -1)}</em>);
-    else parts.push(<code key={m.index} style={{ background: "#0d0e18", borderRadius: 4, padding: "1px 6px", fontSize: "0.88em", color: "#E06050", fontFamily: "monospace" }}>{s.slice(1, -1)}</code>);
+    else parts.push(<code key={m.index} style={{ background: "#0d0e18", borderRadius: 4, padding: "1px 6px", fontSize: "0.88em", color: "var(--accent)", fontFamily: "monospace" }}>{s.slice(1, -1)}</code>);
     last = m.index + s.length;
   }
   if (last < text.length) parts.push(text.slice(last));
@@ -257,7 +355,7 @@ function TypingDots() {
   return (
     <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "4px 0" }}>
       {[0, 1, 2].map(i => (
-        <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "#C8442F", opacity: 0.5,
+        <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--accent)", opacity: 0.5,
           animation: `tdot 1.2s ${i * 0.4}s infinite ease-in-out` }} />
       ))}
     </div>
@@ -271,13 +369,14 @@ export default function Chat({ cases }) {
   const [input,      setInput]      = useState("");
   const [loading,    setLoading]    = useState(false);
   const [streamText, setStreamText] = useState("");
+  const [toolEvents, setToolEvents] = useState([]); // [{name, status, summary, error}]
   const bottomRef = useRef(null);
   const inputRef  = useRef(null);
 
-  // Auto-scroll to bottom when messages or stream updates
+  // Auto-scroll to bottom when messages, stream, or tool events update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, streamText]);
+  }, [messages, streamText, toolEvents]);
 
   const send = useCallback(async (text) => {
     const content = (text || input).trim();
@@ -291,17 +390,30 @@ export default function Chat({ cases }) {
 
     setLoading(true);
     setStreamText("");
+    setToolEvents([]);
 
     const leads        = loadFeedLeads();
     const systemPrompt = buildSystemPrompt(cases, leads);
     const apiMessages  = history.map(m => ({ role: m.role, content: m.content }));
 
+    const turnEvents = [];
+
     try {
-      const full = await streamClaude(apiMessages, systemPrompt, chunk => {
-        setStreamText(chunk);
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      const full = await streamClaude(apiMessages, systemPrompt, {
+        onText: (chunk) => setStreamText(chunk),
+        onToolUse: (evt) => {
+          turnEvents.push({ id: evt.id, name: evt.name, input: evt.input, status: "running" });
+          setToolEvents([...turnEvents]);
+        },
+        onToolResult: (evt) => {
+          const idx = turnEvents.findIndex((t) => t.id === evt.id);
+          if (idx >= 0) {
+            turnEvents[idx] = { ...turnEvents[idx], status: evt.ok ? "ok" : "error", summary: evt.summary, error: evt.error };
+            setToolEvents([...turnEvents]);
+          }
+        },
       });
-      const assistantMsg = { role: "assistant", content: full, ts: new Date().toISOString() };
+      const assistantMsg = { role: "assistant", content: full, ts: new Date().toISOString(), toolEvents: turnEvents };
       const final = [...history, assistantMsg];
       setMessages(final);
       saveMessages(final);
@@ -310,6 +422,7 @@ export default function Chat({ cases }) {
     } finally {
       setLoading(false);
       setStreamText("");
+      setToolEvents([]);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [messages, cases, input, loading]);
@@ -364,7 +477,7 @@ export default function Chat({ cases }) {
               {SUGGESTIONS.map((s, i) => (
                 <button key={i} onClick={() => send(s)}
                   style={{ textAlign: "left", padding: "11px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, cursor: "pointer", fontSize: 12, color: "#a0a0b8", lineHeight: 1.55, fontFamily: "inherit", transition: "border-color 0.15s, color 0.15s" }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(200,68,47,0.45)"; e.currentTarget.style.color = "#c8c8e0"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(94,234,212,0.45)"; e.currentTarget.style.color = "#c8c8e0"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = "#a0a0b8"; }}>
                   {s}
                 </button>
@@ -383,13 +496,16 @@ export default function Chat({ cases }) {
                 </div>
                 {msg.role === "user" ? (
                   /* User bubble */
-                  <div style={{ maxWidth: "72%", padding: "10px 14px", background: "rgba(200,68,47,0.13)", border: "1px solid rgba(200,68,47,0.28)", borderRadius: "12px 12px 3px 12px", fontSize: 13, color: "#e0e0f0", lineHeight: 1.65, whiteSpace: "pre-wrap" }}>
+                  <div style={{ maxWidth: "72%", padding: "10px 14px", background: "rgba(94,234,212,0.13)", border: "1px solid rgba(94,234,212,0.28)", borderRadius: "12px 12px 3px 12px", fontSize: 13, color: "#e0e0f0", lineHeight: 1.65, whiteSpace: "pre-wrap" }}>
                     {msg.content}
                   </div>
                 ) : (
                   /* Assistant bubble */
-                  <div style={{ maxWidth: "94%", padding: "14px 18px", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "3px 12px 12px 12px", fontSize: 13, lineHeight: 1.65 }}>
-                    <Markdown text={msg.content} />
+                  <div style={{ maxWidth: "94%" }}>
+                    {msg.toolEvents?.length > 0 && <ToolChips events={msg.toolEvents} />}
+                    <div style={{ padding: "14px 18px", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "3px 12px 12px 12px", fontSize: 13, lineHeight: 1.65 }}>
+                      <Markdown text={msg.content} />
+                    </div>
                   </div>
                 )}
               </div>
@@ -401,8 +517,13 @@ export default function Chat({ cases }) {
                 <div style={{ fontSize: 10, color: "#3a3a4a", marginBottom: 3, paddingLeft: 2 }}>
                   Ticket Toro AI · now
                 </div>
-                <div style={{ maxWidth: "94%", padding: "14px 18px", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(200,68,47,0.18)", borderRadius: "3px 12px 12px 12px", fontSize: 13, lineHeight: 1.65 }}>
-                  {streamText ? <Markdown text={streamText} /> : <TypingDots />}
+                <div style={{ maxWidth: "94%" }}>
+                  {toolEvents.length > 0 && <ToolChips events={toolEvents} />}
+                  {(streamText || toolEvents.length === 0) && (
+                    <div style={{ padding: "14px 18px", background: "rgba(255,255,255,0.035)", border: "1px solid rgba(94,234,212,0.18)", borderRadius: "3px 12px 12px 12px", fontSize: 13, lineHeight: 1.65 }}>
+                      {streamText ? <Markdown text={streamText} /> : <TypingDots />}
+                    </div>
+                  )}
                 </div>
               </div>
             )}

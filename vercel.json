@@ -1,10 +1,23 @@
 {
   "crons": [
-    { "path": "/api/scan", "schedule": "0 8 * * *" }
+    { "path": "/api/scan?mode=fetch", "schedule": "0 8 * * *" },
+    { "path": "/api/scan?mode=fetch", "schedule": "0 14 * * *" },
+    { "path": "/api/scan?mode=fetch", "schedule": "0 20 * * *" },
+    { "path": "/api/scan?mode=analyze", "schedule": "15 * * * *" },
+    { "path": "/api/tcpa-ingest?source=all&mode=daily", "schedule": "0 */2 * * *" },
+    { "path": "/api/agents?run=freshness", "schedule": "0 * * * *" },
+    { "path": "/api/agents?run=source-monitor", "schedule": "30 * * * *" },
+    { "path": "/api/agents?run=tcpa-backfill", "schedule": "45 * * * *" }
   ],
   "functions": {
     "api/scan.js": {
       "maxDuration": 300
+    },
+    "api/tcpa-ingest.js": {
+      "maxDuration": 300
+    },
+    "api/agents.js": {
+      "maxDuration": 60
     },
     "api/leads.js": {
       "maxDuration": 30

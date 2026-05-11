@@ -1,4 +1,7 @@
-// Sources.jsx — Read-only display of all monitored intelligence sources
+// Sources.jsx — Display of all monitored intelligence sources, with a live
+// health panel at the top reading from the source-monitor agent's rollup.
+
+import { useState, useEffect } from "react";
 
 const FEDERAL_RSS = [
   { name: "FDA Recalls",         url: "fda.gov/recalls", category: "Federal" },
@@ -316,6 +319,174 @@ function StatGrid({ stats }) {
   );
 }
 
+// ─── LIVE HEALTH PANEL ────────────────────────────────────────────────────────
+
+const HEALTH_COLOR = {
+  green:   "#22c55e",
+  yellow:  "#f59e0b",
+  red:     "#ef4444",
+  broken:  "#a855f7",  // distinct from "down" — purple = "we know about it, URL needs updating"
+  skipped: "#6b7280",
+};
+
+const HEALTH_LABEL = {
+  green:   "Healthy",
+  yellow:  "Degraded",
+  red:     "Down",
+  broken:  "Needs fix",
+  skipped: "No key",
+};
+
+function fmtRelative(iso) {
+  if (!iso) return "—";
+  const t = Date.parse(iso);
+  if (isNaN(t)) return iso;
+  const min = Math.round((Date.now() - t) / 60000);
+  if (min < 1) return "just now";
+  if (min < 60) return `${min}m ago`;
+  const h = Math.round(min / 60);
+  return h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`;
+}
+
+function HealthDot({ health }) {
+  const c = HEALTH_COLOR[health] || "#6b7280";
+  return (
+    <span style={{
+      width: 8, height: 8, borderRadius: "50%", background: c,
+      boxShadow: health === "green" ? `0 0 6px ${c}80` : "none",
+      flexShrink: 0,
+    }} />
+  );
+}
+
+function LiveHealthPanel() {
+  const [rollup, setRollup] = useState(null);
+  const [running, setRunning] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  async function load() {
+    try {
+      const r = await fetch("/api/agents?rollup=source-monitor");
+      const d = await r.json();
+      setRollup(d.rollup || null);
+    } catch {}
+  }
+  async function probe() {
+    setRunning(true);
+    try {
+      const r = await fetch("/api/agents?run=source-monitor");
+      const d = await r.json();
+      if (d.ok === false && d.reason === "locked") {
+        // already running — just reload
+      }
+    } catch {}
+    await load();
+    setRunning(false);
+  }
+  useEffect(() => { load(); }, []);
+
+  const summary = rollup?.byHealth || { green: 0, yellow: 0, red: 0, skipped: 0 };
+  const ranAt = rollup?.ranAt;
+
+  return (
+    <div style={{ ...card, marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>Live source health</div>
+          <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 2 }}>
+            {ranAt ? `Last probed ${fmtRelative(ranAt)}` : "Never probed"}
+            {rollup?.durationMs != null && ` · ${(rollup.durationMs / 1000).toFixed(1)}s`}
+            {" · "}probed by the source-monitor agent (hourly)
+          </div>
+        </div>
+        <button
+          onClick={probe}
+          disabled={running}
+          style={{
+            padding: "7px 16px", borderRadius: 999,
+            background: "var(--accent)", color: "var(--accent-text)",
+            border: "none", cursor: running ? "wait" : "pointer",
+            fontSize: 12, fontWeight: 700,
+            boxShadow: "0 4px 12px rgba(94,234,212,0.18)",
+          }}
+        >
+          {running ? "Probing…" : "Probe now"}
+        </button>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 12 }}>
+        {["green", "yellow", "red", "broken", "skipped"].map((h) => (
+          <div key={h} style={{
+            padding: "10px 12px", borderRadius: 8,
+            background: "var(--bg-surface2)", border: `1px solid ${HEALTH_COLOR[h]}33`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+              <HealthDot health={h} />
+              <span style={{ fontSize: 10, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+                {HEALTH_LABEL[h]}
+              </span>
+            </div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: HEALTH_COLOR[h], lineHeight: 1 }}>
+              {summary[h] ?? 0}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setExpanded((e) => !e)}
+        style={{
+          width: "100%", padding: "8px 12px", borderRadius: 8,
+          background: "var(--bg-surface)", border: "1px solid var(--border)",
+          color: "var(--text-3)", cursor: "pointer", fontSize: 11, fontWeight: 600,
+        }}
+      >
+        {expanded ? "Hide" : "Show"} per-source detail ({rollup?.sources?.length || 0})
+      </button>
+
+      {expanded && rollup?.sources && (
+        <div style={{ marginTop: 10, maxHeight: 480, overflowY: "auto", display: "flex", flexDirection: "column", gap: 4 }}>
+          {[...rollup.sources].sort((a, b) => {
+            const order = { red: 0, yellow: 1, skipped: 2, green: 3 };
+            return (order[a.health] ?? 9) - (order[b.health] ?? 9);
+          }).map((s) => (
+            <div key={s.id} style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "8px 10px", borderRadius: 6,
+              background: "var(--bg-surface2)", border: "1px solid var(--border)",
+              fontSize: 11,
+            }}>
+              <HealthDot health={s.health} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, color: "var(--text-2)" }}>{s.name}</div>
+                <div style={{ fontSize: 10, color: "var(--text-6)" }}>
+                  {s.category} · {s.kind?.toUpperCase()}
+                  {s.httpStatus ? ` · HTTP ${s.httpStatus}` : ""}
+                  {s.latencyMs != null ? ` · ${s.latencyMs}ms` : ""}
+                  {s.lastIngestAt ? ` · pipeline: ${fmtRelative(s.lastIngestAt)}` : ""}
+                </div>
+                {s.error && (
+                  <div style={{ fontSize: 10, color: "#f87171", marginTop: 2 }}>
+                    {s.error}
+                  </div>
+                )}
+                {s.reason && (
+                  <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 2 }}>
+                    {s.reason}
+                  </div>
+                )}
+              </div>
+              <span style={{ fontSize: 10, color: HEALTH_COLOR[s.health], fontWeight: 700, textTransform: "uppercase" }}>
+                {HEALTH_LABEL[s.health]}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export default function Sources() {
@@ -323,7 +494,7 @@ export default function Sources() {
   const regionalCount = STATE_AG_COVERAGE.filter(s => s.regional).length;
 
   const stats = [
-    { value: GRAND_TOTAL,      label: "Total Sources",      color: "#C8442F" },
+    { value: GRAND_TOTAL,      label: "Total Sources",      color: "var(--accent)" },
     { value: totalFederalRSS,  label: "Federal RSS Feeds",  color: "#3b82f6" },
     { value: 50,               label: "States AGs Covered", color: "#22c55e" },
     { value: totalReddit,      label: "Reddit Communities", color: "#f59e0b" },
@@ -338,6 +509,8 @@ export default function Sources() {
           {GRAND_TOTAL} active sources across 8 categories — backend cron runs hourly, browser feed scans every 1–4 hours
         </p>
       </div>
+
+      <LiveHealthPanel />
 
       <StatGrid stats={stats} />
 
@@ -456,7 +629,7 @@ export default function Sources() {
           {[
             { title: "Backend Cron (Hourly)", desc: "Vercel serverless: RSS feeds, Google News (65+ queries), Reddit (56 subs + complaint cluster AI), CourtListener, SEC EDGAR, FDA FAERS, NHTSA, CFPB, PubMed, X/Twitter (25 queries), Claude web searches. Stored in Vercel KV.", color: "#3b82f6" },
             { title: "Browser Feed (Auto)", desc: "DailyFeed tab: 29 Claude web_search queries running client-side. Two-pass analysis: Haiku triage → Sonnet deep analysis for score ≥55. Stored in localStorage.", color: "#22c55e" },
-            { title: "Convergence Detection", desc: "After every scan, Claude extracts defendant names from all signals and flags entities appearing in 2+ independent source categories (gov + social + legal + news). Highest-confidence pre-litigation alerts bypass triage.", color: "#C8442F" },
+            { title: "Convergence Detection", desc: "After every scan, Claude extracts defendant names from all signals and flags entities appearing in 2+ independent source categories (gov + social + legal + news). Highest-confidence pre-litigation alerts bypass triage.", color: "var(--accent)" },
           ].map((item, i) => (
             <div key={i} style={{ padding: "10px 12px", background: "rgba(255,255,255,0.02)", borderRadius: 6, borderLeft: `3px solid ${item.color}` }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: item.color, marginBottom: 5 }}>{item.title}</div>

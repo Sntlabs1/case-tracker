@@ -55,7 +55,7 @@ function CaseLibrary({ cases, setCases }) {
     <div>
       {/* Stats bar */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
-        {[["Total Cases", stats.total, "#C8442F"], ["Certified", stats.certified, "#22c55e"], ["Denied", stats.denied, "#ef4444"], ["Settled", stats.settled, "#3b82f6"]].map(([label, val, color]) => (
+        {[["Total Cases", stats.total, "var(--accent)"], ["Certified", stats.certified, "#22c55e"], ["Denied", stats.denied, "#ef4444"], ["Settled", stats.settled, "#3b82f6"]].map(([label, val, color]) => (
           <Card key={label} style={{ padding: 14, textAlign: "center" }}>
             <div style={{ fontSize: 26, fontWeight: 700, color }}>{val}</div>
             <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{label}</div>
@@ -103,7 +103,7 @@ function CaseLibrary({ cases, setCases }) {
                   {c.company} · {c.year} · {c.affectedPop && `${c.affectedPop} affected`} {c.jurisdiction && `· ${c.jurisdiction}`}
                 </div>
                 <div style={{ fontSize: 13, color: "#F07868", marginBottom: 4 }}>
-                  <strong style={{ color: "#E06050" }}>Key Factor: </strong>{c.keyFact}
+                  <strong style={{ color: "var(--accent)" }}>Key Factor: </strong>{c.keyFact}
                 </div>
                 {c.settlementAmount && c.settlementAmount !== "Pending" && (
                   <div style={{ fontSize: 12, color: "#4ade80", marginTop: 4 }}>
@@ -127,14 +127,14 @@ function CaseLibrary({ cases, setCases }) {
                   {c.rule23bType && <div><div style={{ fontSize: 11, color: "#888" }}>Rule 23(b)</div><div style={{ fontSize: 13, color: "#F07868" }}>{c.rule23bType}</div></div>}
                   {c.harmCategory && <div><div style={{ fontSize: 11, color: "#888" }}>Harm Type</div><div style={{ fontSize: 13, color: "var(--text-1)" }}>{c.harmCategory}</div></div>}
                   {c.leadCounsel && <div><div style={{ fontSize: 11, color: "#888" }}>Lead Counsel</div><div style={{ fontSize: 13, color: "var(--text-1)" }}>{c.leadCounsel}</div></div>}
-                  {c.keyPrecedent && <div><div style={{ fontSize: 11, color: "#888" }}>Key Precedent</div><div style={{ fontSize: 13, color: "#C8442F" }}>{c.keyPrecedent}</div></div>}
+                  {c.keyPrecedent && <div><div style={{ fontSize: 11, color: "#888" }}>Key Precedent</div><div style={{ fontSize: 13, color: "var(--accent)" }}>{c.keyPrecedent}</div></div>}
                 </div>
                 {c.certDeniedReason && <div style={{ marginBottom: 8, padding: "8px 12px", background: "#ef444411", borderRadius: 8, border: "1px solid #ef444433" }}><strong style={{ color: "#f87171", fontSize: 12 }}>Why Denied: </strong><span style={{ fontSize: 12, color: "#f87171" }}>{c.certDeniedReason}</span></div>}
                 {c.appealOutcome && c.appealOutcome !== "n/a" && <div style={{ marginBottom: 8 }}><span style={{ fontSize: 11, color: "#888" }}>Appeal: </span><span style={{ fontSize: 12, color: "#F07868" }}>{c.appealOutcome}</span></div>}
                 {c.notes && <div style={{ fontSize: 12, color: "#888", lineHeight: 1.6 }}>{c.notes}</div>}
                 {c.tags && c.tags.length > 0 && (
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-                    {c.tags.map(tag => <span key={tag} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "rgba(200,68,47,0.15)", color: "#E06050", border: "1px solid rgba(200,68,47,0.2)" }}>{tag}</span>)}
+                    {c.tags.map(tag => <span key={tag} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "rgba(94,234,212,0.15)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.2)" }}>{tag}</span>)}
                   </div>
                 )}
               </div>
@@ -380,7 +380,7 @@ export default function KnowledgeBase({ cases, setCases }) {
         </div>
         <div style={{ display: "flex", gap: 6 }}>
           {views.map(v => (
-            <button key={v.id} onClick={() => setView(v.id)} style={{ padding: "8px 14px", borderRadius: 8, border: view === v.id ? "1px solid rgba(200,68,47,0.5)" : "1px solid rgba(255,255,255,0.08)", background: view === v.id ? "rgba(200,68,47,0.2)" : "transparent", color: view === v.id ? "#E06050" : "#888", cursor: "pointer", fontSize: 12, fontWeight: view === v.id ? 600 : 400, textAlign: "center" }}>
+            <button key={v.id} onClick={() => setView(v.id)} style={{ padding: "8px 14px", borderRadius: 8, border: view === v.id ? "1px solid rgba(94,234,212,0.5)" : "1px solid rgba(255,255,255,0.08)", background: view === v.id ? "rgba(94,234,212,0.2)" : "transparent", color: view === v.id ? "var(--accent)" : "#888", cursor: "pointer", fontSize: 12, fontWeight: view === v.id ? 600 : 400, textAlign: "center" }}>
               <div>{v.label}</div>
               <div style={{ fontSize: 10, color: view === v.id ? "#7c6fd0" : "#555", marginTop: 1 }}>{v.desc}</div>
             </button>

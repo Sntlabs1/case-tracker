@@ -62,6 +62,253 @@ function timeAgo(iso) {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
+function HeroPill({ label, tone = "default" }) {
+  const palette = {
+    default: { bg: "rgba(94,234,212,0.10)", color: "var(--accent)",   border: "rgba(94,234,212,0.30)" },
+    warn:    { bg: "rgba(245,158,11,0.10)", color: "#fbbf24",         border: "rgba(245,158,11,0.30)" },
+    muted:   { bg: "rgba(255,255,255,0.04)", color: "var(--text-3)",  border: "rgba(255,255,255,0.10)" },
+  };
+  const p = palette[tone] || palette.default;
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 6,
+      padding: "6px 14px", borderRadius: 999,
+      background: p.bg, color: p.color, border: `1px solid ${p.border}`,
+      fontSize: 12, fontWeight: 600, letterSpacing: "0.01em",
+    }}>
+      {label}
+    </span>
+  );
+}
+
+function ScanHealthBanner({ scanHealth }) {
+  const [running, setRunning] = useState(false);
+  const [triggered, setTriggered] = useState(null); // null | "fetch" | "analyze"
+
+  if (!scanHealth) return null;
+  // Only show when there's a problem OR there's queue depth worth surfacing.
+  const hasProblem = scanHealth.status !== "ok";
+  const hasQueueWaiting = (scanHealth.analysisQueueDepth ?? 0) > 0;
+  if (!hasProblem && !hasQueueWaiting) return null;
+
+  const palette = hasProblem
+    ? (scanHealth.status === "broken"
+        ? { bg: "rgba(239,68,68,0.10)", border: "rgba(239,68,68,0.40)", dot: "#ef4444", text: "#fca5a5" }
+        : { bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.40)", dot: "#f59e0b", text: "#fbbf24" })
+    : { bg: "rgba(94,234,212,0.08)",  border: "rgba(94,234,212,0.30)", dot: "var(--accent)", text: "var(--text-4)" };
+
+  async function trigger(mode) {
+    if (running) return;
+    setRunning(true);
+    try {
+      // Fire-and-forget. Fetch takes ~120s; analyze takes ~60-90s. Both
+      // exceed normal browser request lifetime — the freshness agent's next
+      // tick will show success.
+      fetch(`/api/scan?mode=${mode}`).catch(() => {});
+      setTriggered(mode);
+    } finally {
+      setTimeout(() => setRunning(false), 10_000);
+    }
+  }
+
+  const days = scanHealth.daysSince;
+  let headline;
+  if (hasProblem && scanHealth.status === "broken") {
+    headline = `Lead scanner has not run in ${days ?? "?"} days`;
+  } else if (hasProblem) {
+    headline = `Lead scanner is stale — last ran ${days} day${days === 1 ? "" : "s"} ago`;
+  } else {
+    headline = `${scanHealth.analysisQueueDepth} item${scanHealth.analysisQueueDepth === 1 ? "" : "s"} queued for deep analysis`;
+  }
+
+  const subline = hasProblem
+    ? `${scanHealth.fetchRunsLast7 ?? 0} fetch + ${scanHealth.analyzeRunsLast7 ?? 0} analyze runs in the last 7 days. Run a fetch to gather new leads, then analyze to score them.`
+    : "Hourly analyze cron drains 8 items per run; queue clears across the next several hours.";
+
+  return (
+    <div style={{
+      padding: "14px 20px", borderRadius: 12,
+      background: palette.bg, border: `1px solid ${palette.border}`,
+      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: palette.dot, flexShrink: 0, boxShadow: `0 0 10px ${palette.dot}` }} />
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontWeight: 700, color: "var(--text-1)", fontSize: 13, marginBottom: 2 }}>
+            {headline}
+          </div>
+          <div style={{ fontSize: 11, color: palette.text }}>{subline}</div>
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+        <button
+          onClick={() => trigger("fetch")}
+          disabled={running}
+          style={{
+            padding: "8px 16px", borderRadius: 999,
+            background: triggered === "fetch" ? "var(--bg-surface)" : "var(--accent)",
+            color: triggered === "fetch" ? "var(--text-3)" : "var(--accent-text)",
+            border: triggered === "fetch" ? "1px solid var(--border)" : "none",
+            cursor: running ? "wait" : "pointer",
+            fontSize: 12, fontWeight: 700, letterSpacing: "0.01em",
+            boxShadow: triggered === "fetch" ? "none" : "0 4px 14px rgba(94,234,212,0.18)",
+          }}
+        >
+          {triggered === "fetch" ? "Fetch started ✓" : "Run fetch"}
+        </button>
+        <button
+          onClick={() => trigger("analyze")}
+          disabled={running}
+          style={{
+            padding: "8px 16px", borderRadius: 999,
+            background: triggered === "analyze" ? "var(--bg-surface)" : "var(--bg-surface)",
+            color: triggered === "analyze" ? "var(--text-3)" : "var(--text-2)",
+            border: "1px solid var(--border)",
+            cursor: running ? "wait" : "pointer",
+            fontSize: 12, fontWeight: 700, letterSpacing: "0.01em",
+          }}
+        >
+          {triggered === "analyze" ? "Analyze started ✓" : "Drain queue"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function HeroPanel({ rollup, onMorningBriefing, setTab }) {
+  // Headline metric: sum of disclosed settlement funds across every TCPA /
+  // FDCPA / FCRA case the platform has ingested. Backed by real money figures
+  // extracted from CourtListener, TopClassActions, ClassAction.org, TCPAWorld.
+  // When no settlements are disclosed yet, falls back to active case pipeline.
+  const tc = rollup?.counts?.tcpaCases || {};
+  const fundDollars = tc.totalFundDollars || 0;
+  const settledCount = tc.byStatus?.settled || 0;
+  const claimOpenCount = tc.byStatus?.claim_open || 0;
+  const activeCount = tc.byStatus?.active || 0;
+  const totalCases = tc.total || 0;
+
+  // Format dollars with appropriate scale.
+  function fmtDollars(n) {
+    if (!n) return "—";
+    if (n >= 1_000_000_000) return `$${(n / 1_000_000_000).toFixed(1)}B`;
+    if (n >= 1_000_000)     return `$${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000)         return `$${(n / 1_000).toFixed(0)}K`;
+    return "$" + n.toLocaleString();
+  }
+
+  const showSettlementValue = fundDollars > 0;
+  const headline = showSettlementValue ? fmtDollars(fundDollars) : totalCases.toLocaleString();
+  const headlineLabel = showSettlementValue ? "Tracked Settlement Value" : "Active Case Pipeline";
+  const subline = showSettlementValue
+    ? `Across ${settledCount} settled case${settledCount === 1 ? "" : "s"} with disclosed funds${claimOpenCount > 0 ? ` · ${claimOpenCount} claim window${claimOpenCount === 1 ? "" : "s"} open right now` : ""}.`
+    : `${activeCount} active · ${settledCount} settled · across ${totalCases} cases tracked.`;
+
+  return (
+    <div style={{
+      position: "relative",
+      borderRadius: "var(--radius-card)",
+      background: "linear-gradient(180deg, rgba(18,32,55,0.6) 0%, rgba(8,16,30,0.6) 100%)",
+      border: "1px solid var(--border)",
+      padding: "32px 36px",
+      boxShadow: "var(--shadow-card)",
+      backdropFilter: "blur(8px)",
+      overflow: "hidden",
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 2fr) minmax(280px, 1fr)",
+      gap: 32,
+    }}>
+      {/* Subtle glow blob */}
+      <div aria-hidden style={{
+        position: "absolute", top: -120, right: -80,
+        width: 380, height: 380, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(94,234,212,0.08) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+
+      {/* Left — pills + headline + description */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
+          <HeroPill label="✦ Live Intelligence" />
+          <HeroPill label="◐ Multi-source Fusion" tone="warn" />
+          <HeroPill label="Plaintiff-grade signal" tone="muted" />
+        </div>
+        <h1 style={{
+          fontSize: 44, fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.02em",
+          color: "var(--text-1)", margin: 0, marginBottom: 18,
+          maxWidth: 720,
+        }}>
+          The intelligence layer for class-action plaintiff acquisition.
+        </h1>
+        <p style={{
+          fontSize: 14, color: "var(--text-4)", lineHeight: 1.65, margin: 0,
+          maxWidth: 640,
+        }}>
+          Scans 60+ public sources hourly — FDA, NHTSA, CourtListener, FCC, plaintiff-firm
+          announcements — grades every signal against 165 historical class actions, and
+          tells you exactly which existing clients qualify before any claim is filed.
+        </p>
+      </div>
+
+      {/* Right — headline metric card */}
+      <div style={{
+        position: "relative", zIndex: 1,
+        padding: "22px 22px",
+        borderRadius: 14,
+        background: "rgba(5,11,24,0.55)",
+        border: "1px solid var(--border)",
+        display: "flex", flexDirection: "column", gap: 12,
+      }}>
+        <div style={{
+          fontSize: 9, color: "var(--text-6)", letterSpacing: "0.22em",
+          textTransform: "uppercase", fontWeight: 600,
+        }}>
+          {headlineLabel}
+        </div>
+        <div style={{
+          fontSize: 38, fontWeight: 800, color: "var(--accent)",
+          lineHeight: 1, letterSpacing: "-0.01em",
+        }}>
+          {headline}
+        </div>
+        <div style={{ fontSize: 12, color: "var(--text-5)", lineHeight: 1.55 }}>
+          {subline}
+        </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+          {showSettlementValue && setTab && (
+            <button
+              onClick={() => setTab("tcpa")}
+              style={{
+                padding: "10px 18px",
+                background: "var(--accent)", color: "var(--accent-text)",
+                border: "none", borderRadius: 999,
+                fontSize: 13, fontWeight: 700, cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(94,234,212,0.18)",
+              }}
+            >
+              View tracked cases →
+            </button>
+          )}
+          <button
+            onClick={onMorningBriefing}
+            style={{
+              padding: "10px 18px",
+              background: showSettlementValue ? "var(--bg-surface)" : "var(--accent)",
+              color: showSettlementValue ? "var(--text-2)" : "var(--accent-text)",
+              border: showSettlementValue ? "1px solid var(--border)" : "none",
+              borderRadius: 999,
+              fontSize: 13, fontWeight: 700, cursor: "pointer",
+              boxShadow: showSettlementValue ? "none" : "0 4px 14px rgba(94,234,212,0.18)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}
+          >
+            Morning briefing <span aria-hidden>↻</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Skeleton({ height = 54 }) {
   return (
     <div style={{
@@ -98,7 +345,7 @@ function StatCard({ value, label, sub, color, onClick, badge }) {
       </div>
       <div style={{ fontSize: 11, color: "var(--text-6)", lineHeight: 1.5 }}>
         {sub}
-        {onClick && <span style={{ color: "#C8442F", marginLeft: 4 }}>→</span>}
+        {onClick && <span style={{ color: "var(--accent)", marginLeft: 4 }}>→</span>}
       </div>
     </div>
   );
@@ -218,7 +465,7 @@ function OpportunityRow({ opp, onClick }) {
         </div>
         {(opp.estimatedFund && opp.estimatedFund !== "Unknown") && (
           <div style={{ fontSize: 11, color: "var(--text-4)" }}>
-            Fund: <span style={{ color: "#E06050", fontWeight: 600 }}>{opp.estimatedFund}</span>
+            Fund: <span style={{ color: "var(--accent)", fontWeight: 600 }}>{opp.estimatedFund}</span>
             {opp.estimatedFeeToFirm && opp.estimatedFeeToFirm !== "Unknown" && (
               <> · Fee: <span style={{ color: "#22c55e", fontWeight: 600 }}>{opp.estimatedFeeToFirm}</span></>
             )}
@@ -316,11 +563,11 @@ function QuickAction({ label, desc, onClick }) {
       style={{
         padding: 18, borderRadius: 10,
         background: hov ? "var(--bg-card-hov)" : "var(--bg-card)",
-        border: `1px solid ${hov ? "rgba(200,68,47,0.35)" : "var(--border)"}`,
+        border: `1px solid ${hov ? "rgba(94,234,212,0.35)" : "var(--border)"}`,
         cursor: "pointer", transition: "all 0.15s",
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 700, color: "#C8442F", marginBottom: 6 }}>{label} →</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent)", marginBottom: 6 }}>{label} →</div>
       <div style={{ fontSize: 11, color: "var(--text-6)", lineHeight: 1.5 }}>{desc}</div>
     </div>
   );
@@ -397,7 +644,7 @@ Answer questions about this specific lead concisely and precisely.`;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>AI Chat — Ask About This Lead</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>AI Chat — Ask About This Lead</div>
       <div style={{ maxHeight: 280, overflowY: "auto", display: "flex", flexDirection: "column", gap: 8, marginBottom: 10 }}>
         {msgs.length === 0 && (
           <div style={{ fontSize: 12, color: "#555", fontStyle: "italic" }}>Ask about legal theories, damages, defendant vulnerabilities, acquisition strategy...</div>
@@ -405,9 +652,9 @@ Answer questions about this specific lead concisely and precisely.`;
         {msgs.map((m, i) => (
           <div key={i} style={{
             padding: "8px 12px", borderRadius: 8, fontSize: 12, lineHeight: 1.5,
-            background: m.role === "user" ? "rgba(200,68,47,0.08)" : "rgba(255,255,255,0.04)",
+            background: m.role === "user" ? "rgba(94,234,212,0.08)" : "rgba(255,255,255,0.04)",
             color: m.role === "user" ? "#e0c0b8" : "#c8c8e0",
-            border: `1px solid ${m.role === "user" ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.06)"}`,
+            border: `1px solid ${m.role === "user" ? "rgba(94,234,212,0.2)" : "rgba(255,255,255,0.06)"}`,
             alignSelf: m.role === "user" ? "flex-end" : "flex-start",
             maxWidth: "92%",
             whiteSpace: "pre-wrap",
@@ -433,7 +680,7 @@ Answer questions about this specific lead concisely and precisely.`;
           disabled={streaming || !input.trim()}
           style={{
             padding: "8px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-            background: streaming || !input.trim() ? "rgba(200,68,47,0.3)" : "#C8442F",
+            background: streaming || !input.trim() ? "rgba(94,234,212,0.3)" : "var(--accent)",
             color: "#fff", border: "none",
           }}
         >
@@ -507,7 +754,7 @@ function DrawerMemo({ lead }) {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
           Litigation Memo {loading ? "(generating…)" : "(complete)"}
         </div>
         {done && (
@@ -560,7 +807,7 @@ function LeadDetailDrawer({ lead, onClose }) {
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
               <span style={{ fontSize: 28, fontWeight: 800, color: sc, lineHeight: 1 }}>{score}</span>
               <span style={{ fontSize: 11, color: "#555" }}>/ 100</span>
-              {a.caseType && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(200,68,47,0.1)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.25)" }}>{a.caseType}</span>}
+              {a.caseType && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(94,234,212,0.1)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.25)" }}>{a.caseType}</span>}
               {a.caseStage && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(255,255,255,0.06)", color: "#888" }}>{a.caseStage}</span>}
               {a.timeline?.urgencyLevel && a.timeline.urgencyLevel.toUpperCase() !== "LOW" && (
                 <span style={{ fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${urgencyColor(a.timeline.urgencyLevel)}18`, color: urgencyColor(a.timeline.urgencyLevel) }}>
@@ -588,9 +835,9 @@ function LeadDetailDrawer({ lead, onClose }) {
           {["overview", "legal", "damages", "chat", "memo"].map(s => (
             <button key={s} onClick={() => setActiveSection(s)} style={{
               padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
-              background: activeSection === s ? "#C8442F" : "rgba(255,255,255,0.06)",
+              background: activeSection === s ? "var(--accent)" : "rgba(255,255,255,0.06)",
               color: activeSection === s ? "#fff" : "#666",
-              border: `1px solid ${activeSection === s ? "#C8442F" : "rgba(255,255,255,0.1)"}`,
+              border: `1px solid ${activeSection === s ? "var(--accent)" : "rgba(255,255,255,0.1)"}`,
               textTransform: "capitalize",
             }}>
               {s}
@@ -687,7 +934,7 @@ function LeadDetailDrawer({ lead, onClose }) {
                 </div>
                 <div>
                   <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>Total Fund</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: "#E06050" }}>{a.damagesModel?.totalFundEstimate || "Unknown"}</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: "var(--accent)" }}>{a.damagesModel?.totalFundEstimate || "Unknown"}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>Fee to Firm (33%)</div>
@@ -708,7 +955,7 @@ function LeadDetailDrawer({ lead, onClose }) {
             <Field label="Regulatory — EPA" value={a.regulatoryStatus?.epaAction !== "None" ? a.regulatoryStatus?.epaAction : null} />
             <Field label="Regulatory — DOJ/AG" value={a.regulatoryStatus?.dojOrAgAction !== "None" ? a.regulatoryStatus?.dojOrAgAction : null} />
             {lead.url && (
-              <a href={lead.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", marginTop: 12, fontSize: 12, color: "#C8442F", textDecoration: "none" }}>
+              <a href={lead.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", marginTop: 12, fontSize: 12, color: "var(--accent)", textDecoration: "none" }}>
                 View Source Article →
               </a>
             )}
@@ -741,7 +988,7 @@ function OppDetailDrawer({ opp, onClose }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6, flexWrap: "wrap" }}>
-              <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 8px", borderRadius: 6, background: "rgba(200,68,47,0.2)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.4)" }}>
+              <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 8px", borderRadius: 6, background: "rgba(94,234,212,0.2)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.4)" }}>
                 #{opp.rank}
               </span>
               <span style={{ fontSize: 28, fontWeight: 800, color: sc, lineHeight: 1 }}>{opp.combinedScore}</span>
@@ -775,7 +1022,7 @@ function OppDetailDrawer({ opp, onClose }) {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div>
                 <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>Estimated Fund</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#E06050" }}>{opp.estimatedFund}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "var(--accent)" }}>{opp.estimatedFund}</div>
               </div>
               {opp.estimatedFeeToFirm && opp.estimatedFeeToFirm !== "Unknown" && (
                 <div>
@@ -800,7 +1047,7 @@ function OppDetailDrawer({ opp, onClose }) {
         {/* Why pursue */}
         {opp.whyPursue?.length > 0 && (
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Why Pursue</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Why Pursue</div>
             {opp.whyPursue.map((r, i) => (
               <div key={i} style={{ fontSize: 13, color: "#c8c8e0", marginBottom: 6, lineHeight: 1.5 }}>• {r}</div>
             ))}
@@ -809,8 +1056,8 @@ function OppDetailDrawer({ opp, onClose }) {
 
         {/* Immediate action */}
         {opp.immediateAction && (
-          <div style={{ padding: "12px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8, border: "1px solid rgba(200,68,47,0.25)" }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Immediate Action</div>
+          <div style={{ padding: "12px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 8, border: "1px solid rgba(94,234,212,0.25)" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Immediate Action</div>
             <div style={{ fontSize: 14, color: "#e0e0f0", fontWeight: 600, lineHeight: 1.5 }}>{opp.immediateAction}</div>
           </div>
         )}
@@ -955,6 +1202,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedOpp, setSelectedOpp] = useState(null);
   const [showBriefing, setShowBriefing] = useState(false);
+  const [rollup, setRollup] = useState(null);
 
   const kvTotalRef = useRef(null);
 
@@ -997,6 +1245,19 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       })
       .catch(() => {})
       .finally(() => { if (!silent) setOppsLoading(false); });
+
+    // Freshness rollup — authoritative source for "last refreshed" + counts.
+    fetch("/api/agents?rollup=freshness")
+      .then(r => r.json())
+      .then(d => {
+        if (d?.rollup) {
+          setRollup(d.rollup);
+          // Sync counts from the rollup so the hero / stat cards never look stale.
+          const rollupTotal = d.rollup.counts?.leads?.total;
+          if (typeof rollupTotal === "number") setTotalLeads(rollupTotal);
+        }
+      })
+      .catch(() => {});
 
     setLastRefreshed(new Date());
   }, []);
@@ -1068,23 +1329,41 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       {selectedLead && <LeadDetailDrawer lead={selectedLead} onClose={() => setSelectedLead(null)} />}
       {selectedOpp && <OppDetailDrawer opp={selectedOpp} onClose={() => setSelectedOpp(null)} />}
 
+      {/* ── Hero ── */}
+      <HeroPanel
+        rollup={rollup}
+        setTab={setTab}
+        onMorningBriefing={() => setShowBriefing(true)}
+      />
+
       {/* ── Live indicator + Morning Briefing button ── */}
       <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, marginBottom: -12 }}>
         <button
           onClick={() => setShowBriefing(true)}
           style={{
             padding: "5px 13px", borderRadius: 7, fontSize: 11, fontWeight: 700,
-            background: "rgba(200,68,47,0.12)", border: "1px solid rgba(200,68,47,0.35)",
-            color: "#C8442F", cursor: "pointer", transition: "all 0.15s",
+            background: "rgba(94,234,212,0.12)", border: "1px solid rgba(94,234,212,0.35)",
+            color: "var(--accent)", cursor: "pointer", transition: "all 0.15s",
           }}
         >
           Morning Briefing
         </button>
-        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 6px #22c55e" }} />
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: rollup ? "#22c55e" : "#6b7280", boxShadow: rollup ? "0 0 6px #22c55e" : "none" }} />
         <span style={{ fontSize: 11, color: "var(--text-6)" }}>
-          LIVE · refreshed {lastRefreshed ? lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "…"}
+          {rollup
+            ? `Data updated ${(() => {
+                const min = Math.round((Date.now() - new Date(rollup.ranAt).getTime()) / 60000);
+                if (min < 1) return "just now";
+                if (min < 60) return `${min}m ago`;
+                const h = Math.round(min / 60);
+                return h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`;
+              })()}`
+            : `LIVE · refreshed ${lastRefreshed ? lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "…"}`}
         </span>
       </div>
+
+      {/* ── Scan staleness alert — leads aren't growing if the scanner is broken ── */}
+      <ScanHealthBanner scanHealth={rollup?.scanHealth} />
 
       {/* ── Alert banner — only shown when high-priority leads exist ── */}
       {!leadsLoading && highPriorityLeads.length > 0 && (
@@ -1092,7 +1371,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
           onClick={() => setTab("leads")}
           style={{
             padding: "12px 20px", borderRadius: 10,
-            background: "rgba(200,68,47,0.1)", border: "1px solid rgba(200,68,47,0.35)",
+            background: "rgba(94,234,212,0.1)", border: "1px solid rgba(94,234,212,0.35)",
             display: "flex", alignItems: "center", justifyContent: "space-between",
             cursor: "pointer",
           }}
@@ -1106,7 +1385,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
               — {(highPriorityLeads[0]?.analysis?.headline || highPriorityLeads[0]?.title || "").slice(0, 70)}
             </span>
           </div>
-          <span style={{ fontSize: 12, color: "#C8442F", fontWeight: 600, flexShrink: 0 }}>View in Leads Inbox →</span>
+          <span style={{ fontSize: 12, color: "var(--accent)", fontWeight: 600, flexShrink: 0 }}>View in Leads Inbox →</span>
         </div>
       )}
 
@@ -1139,7 +1418,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
         <StatCard
           value={leadsLoading ? "…" : (totalLeads ?? leads.length)}
-          color="#C8442F"
+          color="var(--accent)"
           label="Intelligence Leads"
           sub="Scored and ranked from 50+ live sources"
           onClick={() => setTab("leads")}
@@ -1290,7 +1569,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
                   {(opp.opportunityName || "").slice(0, 50)}
                 </div>
                 {/* Est. Fund */}
-                <div style={{ fontSize: 12, color: "#E06050", fontWeight: 600 }}>
+                <div style={{ fontSize: 12, color: "var(--accent)", fontWeight: 600 }}>
                   {opp.estimatedFund && opp.estimatedFund !== "Unknown" ? opp.estimatedFund : "—"}
                 </div>
                 {/* Fee to Firm */}
@@ -1364,7 +1643,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
           {statusCounts.length === 0 ? (
             <div style={{ fontSize: 12, color: "var(--text-6)", textAlign: "center", padding: "16px 0" }}>
               No cases tracked yet —{" "}
-              <span onClick={() => setTab("cases")} style={{ color: "#C8442F", cursor: "pointer" }}>add one</span>
+              <span onClick={() => setTab("cases")} style={{ color: "var(--accent)", cursor: "pointer" }}>add one</span>
             </div>
           ) : (
             statusCounts.map(s => (
@@ -1384,7 +1663,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
               </div>
               {typeCounts.map(([type, count]) => (
                 <PipelineRow
-                  key={type} label={type} color="#C8442F"
+                  key={type} label={type} color="var(--accent)"
                   count={count} maxCount={maxType}
                   onClick={() => goTo("cases", { caseType: type })}
                 />
@@ -1405,7 +1684,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
           {topCases.length === 0 ? (
             <div style={{ textAlign: "center", padding: "32px 0", color: "#444", fontSize: 12 }}>
               No cases yet —{" "}
-              <span onClick={() => setTab("cases")} style={{ color: "#C8442F", cursor: "pointer" }}>add a case</span>
+              <span onClick={() => setTab("cases")} style={{ color: "var(--accent)", cursor: "pointer" }}>add a case</span>
             </div>
           ) : (
             topCases.map((c, i) => (

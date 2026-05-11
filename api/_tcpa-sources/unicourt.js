@@ -1,0 +1,174 @@
+// UniCourt API integration — primary state-court source (~25 states, normalized).
+//
+// Endpoint: https://app.unicourt.com/api/v1/cases (REST + bearer token)
+// Auth:     UNICOURT_API_KEY env var
+// Docs:     https://app.unicourt.com/api-documentation
+//
+// We query by cause-of-action keyword and filing-date window, paginate, and
+// emit normalized records keyed by `uc_${unicourtCaseId}`.
+
+import { kv } from "@vercel/kv";
+
+const BASE = "https://app.unicourt.com/api/v1/cases";
+
+// Three queries per ingest run — one per statute. Cause-keyword search is
+// the broadest and most accurate filter UniCourt offers.
+const QUERIES = [
+  { caseType: "TCPA",  keywords: "Telephone Consumer Protection Act" },
+  { caseType: "FDCPA", keywords: "Fair Debt Collection Practices"   },
+  { caseType: "FCRA",  keywords: "Fair Credit Reporting Act"        },
+];
+
+function authHeaders() {
+  const key = process.env.UNICOURT_API_KEY;
+  if (!key) throw new Error("UNICOURT_API_KEY not set");
+  return {
+    Authorization: `Bearer ${key}`,
+    Accept: "application/json",
+  };
+}
+
+// UniCourt status values vary by jurisdiction — collapse to our enum.
+function mapStatus(uc) {
+  const s = String(uc || "").toLowerCase();
+  if (s.includes("settle")) return "settled";
+  if (s.includes("dismiss")) return "dismissed";
+  if (s.includes("closed") || s.includes("disposed")) return "claim_closed";
+  return "active";
+}
+
+// UniCourt case → buildCase() input.
+function fromUniCourt(c, caseType) {
+  const courtState = (c.court?.state || c.jurisdiction || "").toUpperCase().slice(0, 2);
+  const isFederal = /district|federal|bankruptcy/i.test(c.court?.name || "");
+  const defendants = (c.parties || [])
+    .filter((p) => /defendant|respondent/i.test(p.role || p.type || ""))
+    .map((p) => p.name)
+    .filter(Boolean);
+
+  return {
+    id: `uc_${c.id || c.case_id}`,
+    caption: c.title || c.case_name || `${c.case_number || ""} (${c.court?.name || ""})`.trim(),
+    caseType,
+    defendants,
+    court: {
+      name: c.court?.name || "",
+      jurisdiction: isFederal ? "federal" : "state",
+      state: courtState,
+      district: c.court?.district || "",
+      docket: c.case_number || "",
+      citation: "",
+    },
+    filingDate: c.filed_date || c.filing_date || null,
+    lastDocketDate: c.last_activity_date || null,
+    status: mapStatus(c.status),
+    conductDescription: c.cause_of_action || "",
+    geographicScope: isFederal ? "nationwide" : "state",
+    eligibleStates: isFederal ? [] : (courtState ? [courtState] : []),
+    source: "unicourt",
+    sourceUrl: c.url || c.unicourt_url || "",
+  };
+}
+
+async function fetchPage(url) {
+  const res = await fetch(url, { headers: authHeaders() });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`UniCourt ${res.status}: ${body.slice(0, 200)}`);
+  }
+  return await res.json();
+}
+
+async function runOneQuery({ caseType, keywords, since, until, maxPages, onBatch }) {
+  const params = new URLSearchParams({
+    keywords,
+    filed_after: since,
+    filed_before: until,
+    page_size: "100",
+  });
+  let url = `${BASE}?${params.toString()}`;
+  let pages = 0;
+  let total = 0;
+
+  while (url && pages < maxPages) {
+    const page = await fetchPage(url);
+    const records = (page.results || page.data || [])
+      .map((c) => fromUniCourt(c, caseType))
+      .filter(Boolean);
+    total += records.length;
+    if (onBatch && records.length) await onBatch(records);
+    url = page.next || page.links?.next || null;
+    pages++;
+  }
+
+  return { pages, total };
+}
+
+export async function runUniCourt({
+  caseTypes = ["TCPA", "FDCPA", "FCRA"],
+  mode = "daily",
+  since = null,
+  importer,
+}) {
+  if (!importer) throw new Error("runUniCourt requires importer fn");
+
+  const cursorKey = "tcpa:ingest:unicourt:cursor";
+  let windowStart = since;
+  if (!windowStart) {
+    if (mode === "backfill") {
+      windowStart = "2021-01-01";
+    } else {
+      const cursor = await kv.get(cursorKey).catch(() => null);
+      windowStart = cursor || new Date(Date.now() - 24 * 3600 * 1000).toISOString().slice(0, 10);
+    }
+  }
+  const today = new Date().toISOString().slice(0, 10);
+
+  let totalCreated = 0, totalUpdated = 0, totalUnchanged = 0, totalErrors = 0;
+
+  for (const q of QUERIES) {
+    if (!caseTypes.includes(q.caseType)) continue;
+    try {
+      await runOneQuery({
+        caseType: q.caseType,
+        keywords: q.keywords,
+        since: windowStart,
+        until: today,
+        maxPages: mode === "backfill" ? 500 : 20,
+        onBatch: async (records) => {
+          const r = await importer(records);
+          totalCreated += r.created;
+          totalUpdated += r.updated;
+          totalUnchanged += r.unchanged;
+          totalErrors += r.errors.length;
+        },
+      });
+    } catch (e) {
+      totalErrors++;
+    }
+  }
+
+  await kv.set(cursorKey, today, { ex: 365 * 24 * 3600 }).catch(() => {});
+  await kv.set("tcpa:ingest:unicourt:stats", JSON.stringify({
+    ranAt: new Date().toISOString(),
+    mode,
+    windowStart,
+    windowEnd: today,
+    caseTypes,
+    created: totalCreated,
+    updated: totalUpdated,
+    unchanged: totalUnchanged,
+    errors: totalErrors,
+  }), { ex: 30 * 24 * 3600 }).catch(() => {});
+
+  return {
+    source: "unicourt",
+    mode,
+    windowStart,
+    windowEnd: today,
+    created: totalCreated,
+    updated: totalUpdated,
+    unchanged: totalUnchanged,
+    errors: totalErrors,
+  };
+}

@@ -31,7 +31,7 @@ export default function SourceMonitor() {
                 s.category === "Federal" ? "#3b82f6" : s.category === "Medical" ? "#ef4444" : s.category === "Judicial" ? "#f59e0b" : s.category === "News" ? "#22c55e" : s.category === "Plaintiff Intel" ? "#B83E2C" : s.category === "State" ? "#ec4899" : "#6b7280"
               } />
             </div>
-            <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#C8442F", wordBreak: "break-all", textDecoration: "none" }}>
+            <a href={s.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "var(--accent)", wordBreak: "break-all", textDecoration: "none" }}>
               {s.url.replace("https://", "").substring(0, 50)}...
             </a>
             <div style={{ marginTop: 10 }}>

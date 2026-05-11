@@ -14,11 +14,15 @@ import Sources from "./tabs/Sources.jsx";
 import Clients from "./tabs/Clients.jsx";
 import Intake from "./tabs/Intake.jsx";
 import Campaigns from "./tabs/Campaigns.jsx";
+import TCPACases from "./tabs/TCPACases.jsx";
+import Agents from "./tabs/Agents.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
   { id: "clients",      label: "Clients" },
+  { id: "tcpa",         label: "TCPA Cases" },
   { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
@@ -28,6 +32,7 @@ const TABS = [
   { id: "knowledge",    label: "Knowledge Base" },
   { id: "chat",         label: "Chat" },
   { id: "sources",      label: "Sources" },
+  { id: "agents",       label: "Agents" },
 ];
 
 const PAGE_META = {
@@ -38,6 +43,10 @@ const PAGE_META = {
   leads:        {
     title: "Leads Inbox",
     desc:  "AI-scored leads pulled hourly from 50+ sources — FDA, NHTSA, CFPB, SEC, CourtListener, Reddit, PubMed, Google News, and more. Click any lead to expand a full litigation intelligence report. Use the filters to narrow by score, urgency, case type, or stage.",
+  },
+  tcpa:         {
+    title: "TCPA Cases",
+    desc:  "Every TCPA, FDCPA, and FCRA case the platform tracks — settled and active, federal and state. Search by defendant, filter by claim-window urgency, and drill into any case to see which credit.com clients are eligible plaintiffs.",
   },
   campaigns:    {
     title: "Campaigns",
@@ -79,6 +88,10 @@ const PAGE_META = {
     title: "Sources",
     desc:  "Every data source the platform monitors. Includes all 50 state attorney general offices, federal regulatory agencies (FDA, NHTSA, CFPB, SEC, EPA, DOJ, EEOC), federal court filings via CourtListener, PubMed, Reddit complaint clusters, social media, and Google News.",
   },
+  agents:       {
+    title: "Agents",
+    desc:  "Recurring background jobs that keep the platform fresh. Each agent runs on a schedule, computes derived data into a rollup, and tells you when it last ran. Trigger any agent manually from this tab.",
+  },
 };
 
 // Ticket Toro bull silhouette
@@ -114,101 +127,191 @@ export default function App() {
     document.body.classList.toggle("light", lightMode);
   }
 
+  const SIDEBAR_W = 240;
+  const [sidebarOpen, setSidebarOpen] = useLocalStorage("tt-sidebar-open", true);
+
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", display: "flex" }}>
 
-      {/* Header */}
-      <div style={{ background: "var(--bg-header)", borderBottom: "1px solid var(--border)", backdropFilter: "blur(16px)", position: "sticky", top: 0, zIndex: 100, height: 58, overflowX: "hidden" }}>
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "stretch", height: "100%" }}>
+      {/* ─── Floating reveal button (visible only when sidebar is hidden) ─── */}
+      {!sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          title="Show sidebar"
+          aria-label="Show sidebar"
+          style={{
+            position: "fixed", top: 16, left: 16, zIndex: 200,
+            width: 36, height: 36, borderRadius: 10,
+            background: "var(--bg-card)", border: "1px solid var(--border)",
+            backdropFilter: "blur(8px)",
+            boxShadow: "var(--shadow-card)",
+            color: "var(--text-2)",
+            cursor: "pointer", fontSize: 16, lineHeight: 1,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "all 0.15s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = "var(--accent)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "var(--text-2)"; }}
+        >
+          ☰
+        </button>
+      )}
 
-        {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, paddingRight: 16 }}>
-          <div style={{ width: 36, height: 36, background: "#C8442F", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <BullIcon />
-          </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: "0.14em", color: "var(--text-1)", fontFamily: "'Playfair Display', Georgia, serif", textTransform: "uppercase", lineHeight: 1.1 }}>
-              Ticket Toro
+      {/* ─── Sidebar ─── */}
+      <aside style={{
+        width: sidebarOpen ? SIDEBAR_W : 0,
+        flexShrink: 0,
+        background: "var(--bg-drawer)",
+        borderRight: sidebarOpen ? "1px solid var(--border)" : "none",
+        backdropFilter: "blur(12px)",
+        position: "sticky", top: 0, height: "100vh",
+        display: "flex", flexDirection: "column",
+        overflow: "hidden",
+        transition: "width 0.22s ease",
+      }}>
+        {/* Brand */}
+        <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid var(--border)", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 28 }}>
+            <div style={{
+              width: 38, height: 38, background: "var(--accent)", borderRadius: 10,
+              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              boxShadow: "0 4px 14px rgba(94,234,212,0.20)",
+            }}>
+              <BullIcon />
             </div>
-            <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 2 }}>
-              Class Action Intelligence
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.22em", textTransform: "uppercase", marginBottom: 2 }}>
+                Ticket Toro
+              </div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-1)", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Class Action Intel
+              </div>
             </div>
           </div>
+          {/* Collapse button */}
+          <button
+            onClick={() => setSidebarOpen(false)}
+            title="Hide sidebar"
+            aria-label="Hide sidebar"
+            style={{
+              position: "absolute", top: 22, right: 14,
+              width: 24, height: 24, borderRadius: 6,
+              background: "var(--bg-surface)", border: "1px solid var(--border)",
+              color: "var(--text-4)",
+              cursor: "pointer", fontSize: 12, lineHeight: 1,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "all 0.15s",
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = "var(--accent)"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-4)"; }}
+          >
+            ‹
+          </button>
         </div>
 
-        {/* Nav tabs */}
-        <div style={{ display: "flex", alignItems: "stretch", flex: 1, overflowX: "auto", scrollbarWidth: "none" }}>
-          {TABS.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              style={{
-                padding: "0 12px",
-                border: "none",
-                borderBottom: tab === t.id ? "2px solid #C8442F" : "2px solid transparent",
-                borderTop: "2px solid transparent",
-                background: "transparent",
-                color: tab === t.id ? "var(--text-1)" : "var(--text-6)",
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: tab === t.id ? 600 : 400,
-                letterSpacing: "0.02em",
-                transition: "color 0.15s, border-color 0.15s",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: "14px 12px", overflowY: "auto" }}>
+          <div style={{
+            fontSize: 9, color: "var(--text-7)", letterSpacing: "0.2em",
+            textTransform: "uppercase", padding: "0 10px", marginBottom: 8,
+          }}>
+            Workspace
+          </div>
+          {TABS.map(t => {
+            const active = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 11,
+                  width: "100%",
+                  padding: "10px 12px",
+                  marginBottom: 2,
+                  border: "none",
+                  borderRadius: 10,
+                  background: active
+                    ? "linear-gradient(180deg, rgba(94,234,212,0.15) 0%, rgba(94,234,212,0.06) 100%)"
+                    : "transparent",
+                  boxShadow: active ? "inset 0 0 0 1px rgba(94,234,212,0.20)" : "none",
+                  color: active ? "var(--accent)" : "var(--text-3)",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: active ? 600 : 500,
+                  letterSpacing: "0.005em",
+                  textAlign: "left",
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-2)"; } }}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-3)"; } }}
+              >
+                <span style={{
+                  width: 6, height: 6, borderRadius: "50%",
+                  background: active ? "var(--accent)" : "var(--text-7)",
+                  boxShadow: active ? "0 0 8px rgba(94,234,212,0.6)" : "none",
+                  flexShrink: 0,
+                }} />
+                {t.label}
+              </button>
+            );
+          })}
+        </nav>
 
-        {/* Right: theme toggle + KB count */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, paddingLeft: 16, borderLeft: "1px solid var(--border)", flexShrink: 0 }}>
+        {/* Footer: theme toggle + KB count */}
+        <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <button
             onClick={() => setLightMode(m => !m)}
             title={lightMode ? "Switch to dark mode" : "Switch to light mode"}
-            style={{ background: "var(--bg-surface)", border: "1px solid var(--border-md)", borderRadius: 6, padding: "5px 8px", cursor: "pointer", fontSize: 14, lineHeight: 1, color: "var(--text-4)" }}
+            style={{ background: "var(--bg-surface)", border: "1px solid var(--border-md)", borderRadius: 6, padding: "5px 9px", cursor: "pointer", fontSize: 13, lineHeight: 1, color: "var(--text-4)" }}
           >
             {lightMode ? "🌙" : "☀️"}
           </button>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#C8442F", lineHeight: 1 }}>{kbCases.length}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)", lineHeight: 1 }}>{kbCases.length}</div>
             <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
           </div>
         </div>
-      </div>
-      </div>
+      </aside>
 
-      {/* Page header — title + description for each tab */}
-      {PAGE_META[tab] && (
-        <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)" }}>
-          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "14px 24px" }}>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>
-              {PAGE_META[tab].title}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--text-6)", lineHeight: 1.6, maxWidth: 860 }}>
-              {PAGE_META[tab].desc}
+      {/* ─── Main column ─── */}
+      <main style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        {/* Page header */}
+        {PAGE_META[tab] && (
+          <div style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-surface2)" }}>
+            <div style={{ padding: "20px 32px" }}>
+              <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 4 }}>
+                Workspace
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "var(--text-1)", marginBottom: 6, letterSpacing: "-0.01em" }}>
+                {PAGE_META[tab].title}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-5)", lineHeight: 1.6, maxWidth: 860 }}>
+                {PAGE_META[tab].desc}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Content */}
-      <div style={{ padding: "24px 24px", maxWidth: 1400, margin: "0 auto" }}>
-        {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
-        {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
-        {tab === "clients"      && <Clients />}
-        {tab === "campaigns"    && <Campaigns />}
-        {tab === "intake"       && <Intake />}
-        {tab === "trends"       && <Trends />}
-{tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
-        {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}
-        {tab === "intelligence" && <CaseIntelligence />}
-        {tab === "knowledge"    && <KnowledgeBase cases={kbCases} setCases={setKbCases} />}
-        {tab === "chat"         && <Chat cases={cases} />}
-        {tab === "sources"      && <Sources />}
-      </div>
+        {/* Content */}
+        <div style={{ padding: "24px 32px", flex: 1 }}>
+          <ErrorBoundary resetKey={tab}>
+            {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
+            {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
+            {tab === "clients"      && <Clients />}
+            {tab === "tcpa"         && <TCPACases />}
+            {tab === "campaigns"    && <Campaigns />}
+            {tab === "intake"       && <Intake />}
+            {tab === "trends"       && <Trends />}
+            {tab === "cases"        && <CaseTracker cases={cases} setCases={setCases} selectedCase={selectedCase} setSelectedCase={setSelectedCase} showAI={showAI} setShowAI={setShowAI} caseFilter={caseFilter} />}
+            {tab === "scanner"      && <AIScanner onAddCase={() => setTab("cases")} />}
+            {tab === "intelligence" && <CaseIntelligence />}
+            {tab === "knowledge"    && <KnowledgeBase cases={kbCases} setCases={setKbCases} />}
+            {tab === "chat"         && <Chat cases={cases} />}
+            {tab === "sources"      && <Sources />}
+            {tab === "agents"       && <Agents />}
+          </ErrorBoundary>
+        </div>
+      </main>
     </div>
   );
 }

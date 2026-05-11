@@ -7,6 +7,7 @@ import { createHash } from "crypto";
 import { kv } from "@vercel/kv";
 import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT, buildDeepAnalysisPromptWithKB } from "../src/lib/kbRubric.js";
 import { KB_CASES } from "../src/data/knowledgeBase.js";
+import { getQueries } from "../src/lib/scannerQueries.js";
 
 // Build KB-enhanced analysis prompt once at startup (static — 165 cases injected)
 const DEEP_ANALYSIS_PROMPT_WITH_KB = buildDeepAnalysisPromptWithKB(KB_CASES);
@@ -1590,8 +1591,113 @@ export default async function handler(req, res) {
     return res.status(200).json({ purged: true, leadsDeleted: ids.length, message: "All leads cleared. Next scan will populate fresh leads." });
   }
 
+  // Mode controls which phase of the scan runs. The full scan repeatedly hits
+  // the Vercel 5-min function limit because deep-analysis (Sonnet × 20 items)
+  // takes ~200s on its own. Splitting lets us run fetch reliably and drain the
+  // analysis queue across multiple shorter runs.
+  //   mode=full     — default; backward-compat; runs everything (timeout-prone)
+  //   mode=fetch    — fetch + dedup + triage + convergence; queue items, skip Sonnet
+  //   mode=analyze  — pull items from queue, run Sonnet, commit leads
+  const mode = req.query.mode || "full";
+  if (!["full", "fetch", "analyze"].includes(mode)) {
+    return res.status(400).json({ error: `invalid mode '${mode}'` });
+  }
+
+  const QUEUE_KEY = "scan:analysis_queue"; // sorted set, score = triageScore (higher = analyze first)
+  const QUEUED_ITEM_KEY = (id) => `scan:queued:${id}`;
+  const QUEUED_TTL = 48 * 3600; // drop unanalyzed items after 48h
+
+  // ── ANALYZE-ONLY MODE: drain the queue, deep-analyze 8 items, return early ──
+  if (mode === "analyze") {
+    const ANALYZE_BATCH = parseInt(req.query.batch || "8", 10);
+    const runId = `scan_analyze_${Date.now()}`;
+    console.log(`[${runId}] mode=analyze, draining up to ${ANALYZE_BATCH} items from queue`);
+
+    // Highest triage scores first
+    const queueIds = await kv.zrange(QUEUE_KEY, 0, ANALYZE_BATCH - 1, { rev: true }).catch(() => []);
+    if (!queueIds.length) {
+      return res.status(200).json({ mode, runId, processed: 0, queueDepth: 0, message: "queue empty" });
+    }
+
+    const items = (await Promise.all(queueIds.map((id) => kv.get(QUEUED_ITEM_KEY(id)))))
+      .map((raw) => raw ? (typeof raw === "string" ? JSON.parse(raw) : raw) : null)
+      .filter(Boolean);
+
+    let analyzedCount = 0;
+    let highCount = 0;
+    let scoreSum = 0;
+    const scored = [];
+
+    const ANALYSIS_CONCURRENCY = 5;
+    for (let i = 0; i < items.length; i += ANALYSIS_CONCURRENCY) {
+      const chunk = items.slice(i, i + ANALYSIS_CONCURRENCY);
+      await Promise.all(chunk.map(async (item) => {
+        const analysis = await deepAnalyzeWithClaude(item);
+        if (!analysis) return;
+        const lead = {
+          id: item.id,
+          title: item.title,
+          url: item.url,
+          description: item.description,
+          pubDate: item.pubDate,
+          source: item.source,
+          category: item.category,
+          analysis,
+          scannedAt: new Date().toISOString(),
+        };
+        await kv.set(`lead:${item.id}`, JSON.stringify(lead), { ex: 180 * 24 * 3600 });
+        await kv.zadd("leads_by_score", { score: analysis.score, member: item.id });
+        analyzedCount++;
+        scoreSum += analysis.score || 0;
+        if ((analysis.score || 0) >= 75) highCount++;
+        scored.push(lead);
+      }));
+    }
+
+    // Remove the processed items from the queue regardless of analyze result —
+    // a null analysis means the item is bad data; better to skip than retry forever.
+    const removeIds = items.map((i) => i.id);
+    if (removeIds.length) {
+      await kv.zrem(QUEUE_KEY, ...removeIds);
+      await Promise.all(removeIds.map((id) => kv.del(QUEUED_ITEM_KEY(id))));
+    }
+
+    // Incremental daily_stats — bump existing values rather than overwriting
+    const today = new Date().toISOString().slice(0, 10);
+    if (analyzedCount > 0) {
+      await kv.hincrby(`daily_stats:${today}`, "leads", analyzedCount);
+      await kv.hincrby(`daily_stats:${today}`, "highPriority", highCount);
+      await kv.expire(`daily_stats:${today}`, 90 * 24 * 3600);
+    }
+
+    const remainingDepth = await kv.zcard(QUEUE_KEY).catch(() => 0);
+
+    // Update last_scan timestamp on every successful analyze pass — this is
+    // what the dashboard reads to determine "scan health".
+    const scanEntry = {
+      runId,
+      timestamp: new Date().toISOString(),
+      mode: "analyze",
+      processed: analyzedCount,
+      highPriority: highCount,
+      avgScore: analyzedCount ? Math.round(scoreSum / analyzedCount) : 0,
+      queueDepthAfter: remainingDepth,
+    };
+    await kv.set("last_scan", JSON.stringify(scanEntry), { ex: 14 * 24 * 3600 });
+    await kv.lpush("scan_history", JSON.stringify(scanEntry));
+    await kv.ltrim("scan_history", 0, 89);
+
+    // Bust paginated leads cache so new leads appear in the inbox immediately.
+    await kv.del("leads_cache_v1").catch(() => {});
+
+    return res.status(200).json({
+      mode, runId, processed: analyzedCount, highPriority: highCount,
+      queueDepthAfter: remainingDepth,
+    });
+  }
+
   const runId = `scan_${Date.now()}`;
-  console.log(`[${runId}] Starting comprehensive scan`);
+  console.log(`[${runId}] Starting comprehensive scan (mode=${mode})`);
 
   // ── 1. FETCH ALL SOURCES IN PARALLEL BATCHES ──────────────────────────────
 
@@ -1785,6 +1891,44 @@ export default async function handler(req, res) {
     }
   }
   console.log(`[${runId}] ${convergenceAlerts.length} convergence alerts injected → ${passedTriage.length} total for deep analysis`);
+
+  // ── FETCH-ONLY MODE: queue items for the analyze cron to drain, then return ──
+  // Skips the 200s of Sonnet calls that cause timeouts; fetch reliably finishes
+  // in ~120s. The hourly /api/scan?mode=analyze cron drains the queue 8 at a time.
+  if (mode === "fetch") {
+    const queueOps = [];
+    for (const item of passedTriage) {
+      queueOps.push(kv.set(QUEUED_ITEM_KEY(item.id), JSON.stringify(item), { ex: QUEUED_TTL }));
+      queueOps.push(kv.zadd(QUEUE_KEY, { score: item.triageScore || 50, member: item.id }));
+    }
+    await Promise.all(queueOps);
+
+    const queueDepth = await kv.zcard(QUEUE_KEY).catch(() => 0);
+    const fetchEntry = {
+      runId,
+      timestamp: new Date().toISOString(),
+      mode: "fetch",
+      sourcesQueried: totalSources,
+      processed: allItems.length,
+      newItems: newItems.length,
+      passedTriage: passedTriage.length,
+      queuedForAnalysis: passedTriage.length,
+      queueDepthAfter: queueDepth,
+    };
+    await kv.set("last_scan", JSON.stringify(fetchEntry), { ex: 14 * 24 * 3600 });
+    await kv.lpush("scan_history", JSON.stringify(fetchEntry));
+    await kv.ltrim("scan_history", 0, 89);
+
+    console.log(`[${runId}] mode=fetch — queued ${passedTriage.length} items for analysis (queue depth: ${queueDepth})`);
+    return res.status(200).json({
+      mode, runId,
+      processed: allItems.length,
+      newItems: newItems.length,
+      passedTriage: passedTriage.length,
+      queuedForAnalysis: passedTriage.length,
+      queueDepthAfter: queueDepth,
+    });
+  }
 
   // ── 4. DEEP ANALYSIS — Sonnet full intelligence report on passing items ───
   // Cap at 20 per scan: 4 batches × 5 concurrent Sonnet calls (~50s each) ≈ 200s deep analysis

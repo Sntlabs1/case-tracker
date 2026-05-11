@@ -4,7 +4,7 @@ import { Card } from "../components/UI.jsx";
 // ─── COLOR HELPERS ────────────────────────────────────────────────────────────
 
 const VELOCITY_CONFIG = {
-  NEW:          { color: "#E06050", label: "NEW",          icon: "★" },
+  NEW:          { color: "var(--accent)", label: "NEW",          icon: "★" },
   ACCELERATING: { color: "#ef4444", label: "ACCELERATING", icon: "↑↑" },
   GROWING:      { color: "#f97316", label: "GROWING",      icon: "↑" },
   STABLE:       { color: "#6b7280", label: "STABLE",       icon: "→" },
@@ -13,7 +13,7 @@ const VELOCITY_CONFIG = {
 };
 
 const CASE_TYPE_COLORS = {
-  "Medical Device":     "#C8442F",
+  "Medical Device":     "var(--accent)",
   "Pharmaceutical":     "#B83E2C",
   "Auto Defect":        "#f59e0b",
   "Environmental":      "#22c55e",
@@ -24,7 +24,7 @@ const CASE_TYPE_COLORS = {
   "Financial Products": "#14b8a6",
   "Employment":         "#ef4444",
   "Antitrust":          "#06b6d4",
-  "Government Liability":"#E06050",
+  "Government Liability":"var(--accent)",
   "Other":              "#6b7280",
 };
 
@@ -36,7 +36,7 @@ const URGENCY_COLORS = {
 };
 
 const SOURCE_COLORS = {
-  Federal:  "#C8442F",
+  Federal:  "var(--accent)",
   Judicial: "#B83E2C",
   News:     "#3b82f6",
   Social:   "#22c55e",
@@ -58,14 +58,14 @@ function BarChart({ data, height = 120, valueKey = "leads", colorKey, dateLabels
           const barH = Math.max((val / max) * height, val > 0 ? 2 : 0);
           const x = i * (barWidth + 2);
           const y = height - barH;
-          const color = colorKey ? (d[colorKey] || "#C8442F") : "#C8442F";
+          const color = colorKey ? (d[colorKey] || "var(--accent)") : "var(--accent)";
           const isRecent = i >= data.length - 7;
 
           return (
             <g key={i}>
               <rect
                 x={x} y={y} width={barWidth} height={barH}
-                fill={isRecent ? "#C8442F" : "#C8442F40"}
+                fill={isRecent ? "var(--accent)" : "var(--accent)40"}
                 rx={2}
               />
               {val > 0 && barH > 14 && (
@@ -100,7 +100,7 @@ function HorizontalBars({ data, total, colorMap }) {
       {sorted.map(({ label, value }) => {
         const pct = Math.round((value / total) * 100);
         const barPct = (value / max) * 100;
-        const color = colorMap?.[label] || "#C8442F";
+        const color = colorMap?.[label] || "var(--accent)";
         return (
           <div key={label} style={{ marginBottom: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3, fontSize: 11 }}>
@@ -134,7 +134,7 @@ function VelocityBadge({ label }) {
 
 // ─── STAT CARD ────────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, sub, color = "#C8442F" }) {
+function StatCard({ label, value, sub, color = "var(--accent)" }) {
   return (
     <Card style={{ padding: "14px 16px" }}>
       <div style={{ fontSize: 28, fontWeight: 800, color, lineHeight: 1 }}>{value ?? "—"}</div>
@@ -207,7 +207,7 @@ export default function Trends() {
 
       {/* ── Summary stats ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12, marginBottom: 24 }}>
-        <StatCard label="Total Leads (30d)" value={summary.totalLeads} color="#C8442F" />
+        <StatCard label="Total Leads (30d)" value={summary.totalLeads} color="var(--accent)" />
         <StatCard label="Avg Per Active Day" value={summary.avgLeadsPerDay} color="#B83E2C" />
         <StatCard label="Avg Viability Score" value={summary.avgScore ? `${summary.avgScore}/100` : "—"} color="#22c55e" />
         <StatCard label="Complaint Clusters" value={summary.totalClusters} color="#f59e0b" sub="pre-litigation signals" />
@@ -227,8 +227,8 @@ export default function Trends() {
             ].map(({ key, label }) => (
               <button key={key} onClick={() => setActiveChart(key)}
                 style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer",
-                  background: activeChart === key ? "rgba(200,68,47,0.2)" : "rgba(255,255,255,0.04)",
-                  color: activeChart === key ? "#E06050" : "#666" }}>
+                  background: activeChart === key ? "rgba(94,234,212,0.2)" : "rgba(255,255,255,0.04)",
+                  color: activeChart === key ? "var(--accent)" : "#666" }}>
                 {label}
               </button>
             ))}
@@ -350,13 +350,13 @@ export default function Trends() {
                     <td style={{ padding: "7px 8px", color: "#c8c8e0", textAlign: "right" }}>{scan.newItems ?? "—"}</td>
                     <td style={{ padding: "7px 8px", color: "#f59e0b", textAlign: "right" }}>{scan.passedTriage ?? "—"}</td>
                     <td style={{ padding: "7px 8px", color: "#22c55e", fontWeight: 700, textAlign: "right" }}>{scan.scored ?? "—"}</td>
-                    <td style={{ padding: "7px 8px", color: "#E06050", textAlign: "right" }}>{scan.complaintClusters ?? "—"}</td>
+                    <td style={{ padding: "7px 8px", color: "var(--accent)", textAlign: "right" }}>{scan.complaintClusters ?? "—"}</td>
                     <td style={{ padding: "7px 8px", color: scan.avgScore >= 75 ? "#22c55e" : scan.avgScore >= 55 ? "#f59e0b" : "#888", textAlign: "right" }}>
                       {scan.avgScore ? `${scan.avgScore}/100` : "—"}
                     </td>
                     <td style={{ padding: "7px 8px", color: "#888", maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {scan.topLead || "—"}
-                      {scan.topScore && <span style={{ color: "#C8442F", marginLeft: 6 }}>({scan.topScore})</span>}
+                      {scan.topScore && <span style={{ color: "var(--accent)", marginLeft: 6 }}>({scan.topScore})</span>}
                     </td>
                   </tr>
                 ))}

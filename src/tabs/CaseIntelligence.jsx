@@ -20,7 +20,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 2000) {
 }
 
 const CATEGORY_COLORS = {
-  "Product Liability":   "#C8442F",
+  "Product Liability":   "var(--accent)",
   "Consumer Protection": "#3b82f6",
   "Securities":          "#f59e0b",
   "Government Liability":"#ef4444",
@@ -29,7 +29,7 @@ const CATEGORY_COLORS = {
   "Employment":          "#ec4899",
   "Antitrust":           "#14b8a6",
   "Complex Litigation":  "#f97316",
-  "Government Fraud":    "#E06050",
+  "Government Fraud":    "var(--accent)",
 };
 
 const VIABILITY_COLORS = {
@@ -47,12 +47,12 @@ function ratingFromText(text) {
 
 function ElementRow({ el, index }) {
   return (
-    <div style={{ marginBottom: 10, padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, borderLeft: `3px solid ${el.classwide ? "#C8442F" : "#f59e0b"}` }}>
+    <div style={{ marginBottom: 10, padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, borderLeft: `3px solid ${el.classwide ? "var(--accent)" : "#f59e0b"}` }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
         <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-1)" }}>
           {index + 1}. {el.element}
         </div>
-        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0, background: el.classwide ? "rgba(200,68,47,0.15)" : "rgba(245,158,11,0.15)", color: el.classwide ? "#E06050" : "#fbbf24", border: `1px solid ${el.classwide ? "#C8442F44" : "#f59e0b44"}` }}>
+        <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap", flexShrink: 0, background: el.classwide ? "rgba(94,234,212,0.15)" : "rgba(245,158,11,0.15)", color: el.classwide ? "var(--accent)" : "#fbbf24", border: `1px solid ${el.classwide ? "var(--accent)44" : "#f59e0b44"}` }}>
           {el.classwide ? "Class-wide" : "Individual"}
         </span>
       </div>
@@ -70,7 +70,7 @@ function CACard({ ca, onSelect, selected }) {
   const ratingColor = VIABILITY_COLORS[rating] || "#888";
 
   return (
-    <Card onClick={() => onSelect(ca)} style={{ cursor: "pointer", border: selected ? "1px solid rgba(200,68,47,0.5)" : "1px solid rgba(255,255,255,0.08)", background: selected ? "rgba(200,68,47,0.08)" : undefined }}>
+    <Card onClick={() => onSelect(ca)} style={{ cursor: "pointer", border: selected ? "1px solid rgba(94,234,212,0.5)" : "1px solid rgba(255,255,255,0.08)", background: selected ? "rgba(94,234,212,0.08)" : undefined }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 6 }}>
@@ -166,7 +166,7 @@ function CADetail({ ca }) {
       {/* Section tabs */}
       <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 10 }}>
         {sections.map(s => (
-          <button key={s.id} onClick={() => setSection(s.id)} style={{ padding: "5px 12px", borderRadius: 6, border: "none", background: section === s.id ? "rgba(200,68,47,0.25)" : "transparent", color: section === s.id ? "#E06050" : "#888", cursor: "pointer", fontSize: 12, fontWeight: section === s.id ? 600 : 400 }}>
+          <button key={s.id} onClick={() => setSection(s.id)} style={{ padding: "5px 12px", borderRadius: 6, border: "none", background: section === s.id ? "rgba(94,234,212,0.25)" : "transparent", color: section === s.id ? "var(--accent)" : "#888", cursor: "pointer", fontSize: 12, fontWeight: section === s.id ? 600 : 400 }}>
             {s.label}
           </button>
         ))}
@@ -197,7 +197,7 @@ function CADetail({ ca }) {
             <div style={{ fontSize: 13, color: "var(--text-2)", marginTop: 6, lineHeight: 1.6 }}>{ca.classActionViability?.explanation}</div>
           </div>
           <div style={{ padding: "12px 16px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)" }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 6 }}>Certification Path</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 6 }}>Certification Path</div>
             <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.65 }}>{ca.certificationPath}</div>
           </div>
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -233,8 +233,8 @@ function CADetail({ ca }) {
       {section === "plaintiff" && (
         <div>
           {/* Legal qualifier text */}
-          <div style={{ padding: "12px 16px", background: "rgba(200,68,47,0.07)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.18)", marginBottom: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#E06050", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Legal Qualifier</div>
+          <div style={{ padding: "12px 16px", background: "rgba(94,234,212,0.07)", borderRadius: 10, border: "1px solid rgba(94,234,212,0.18)", marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--accent)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>Legal Qualifier</div>
             <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.65 }}>{ca.idealPlaintiffProfile}</div>
           </div>
 
@@ -252,7 +252,7 @@ function CADetail({ ca }) {
               {/* Primary demographics grid */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
                 {[
-                  { label: "Age Range",        value: demographics.ageRange,     color: "#C8442F" },
+                  { label: "Age Range",        value: demographics.ageRange,     color: "var(--accent)" },
                   { label: "Gender Split",      value: demographics.gender,       color: "#B83E2C" },
                   { label: "Income Class",      value: demographics.incomeClass,  color: "#f59e0b" },
                   { label: "Race / Ethnicity",  value: demographics.raceEthnicity,color: "#ec4899" },
@@ -296,8 +296,8 @@ function CADetail({ ca }) {
 
               {/* Intake hook + qualifying question */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <div style={{ padding: "12px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 10, border: "1px solid rgba(200,68,47,0.2)" }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#E06050", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Ad Hook / Key Message</div>
+                <div style={{ padding: "12px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 10, border: "1px solid rgba(94,234,212,0.2)" }}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.06em" }}>Ad Hook / Key Message</div>
                   <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55, fontStyle: "italic" }}>"{demographics.intakeHook}"</div>
                 </div>
                 <div style={{ padding: "12px 14px", background: "rgba(34,197,94,0.06)", borderRadius: 10, border: "1px solid rgba(34,197,94,0.2)" }}>
@@ -353,7 +353,7 @@ function CADetail({ ca }) {
         <div>
           {(ca.keyPrecedents || []).map((p, i) => (
             <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: "1px solid rgba(255,255,255,0.06)" }}>
-              <span style={{ color: "#C8442F", flexShrink: 0, fontWeight: 700, fontSize: 13 }}>{i + 1}</span>
+              <span style={{ color: "var(--accent)", flexShrink: 0, fontWeight: 700, fontSize: 13 }}>{i + 1}</span>
               <span style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.55 }}>{p}</span>
             </div>
           ))}
@@ -471,7 +471,7 @@ function AnalyzeCaseView() {
               {result.estimatedClassSize && <div style={{ fontSize: 11, color: "#888", marginTop: 10 }}>Class: {result.estimatedClassSize}</div>}
             </Card>
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 10 }}>Identified Causes of Action</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 10 }}>Identified Causes of Action</div>
               {(result.identifiedCauses || []).map((ca, i) => (
                 <div key={i} style={{ marginBottom: 8, padding: "8px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 8 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
@@ -489,7 +489,7 @@ function AnalyzeCaseView() {
 
           {/* Elements checklist */}
           <Card>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 10 }}>Legal Elements Checklist</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 10 }}>Legal Elements Checklist</div>
             <div style={{ display: "grid", gap: 8 }}>
               {(result.elementsAnalysis || []).map((el, i) => (
                 <div key={i} style={{ display: "grid", gridTemplateColumns: "90px 1fr 1fr", gap: 12, padding: "8px 12px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: `3px solid ${STATUS_COLORS[el.status] || "#666"}` }}>
@@ -511,13 +511,13 @@ function AnalyzeCaseView() {
           {/* Plaintiff profile */}
           {result.plaintiffProfile && (
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 12 }}>Ideal Plaintiff Profile</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 12 }}>Ideal Plaintiff Profile</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8 }}>
+                <div style={{ padding: "10px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 8 }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Demographics</div>
                   <div style={{ fontSize: 13, color: "var(--text-2)" }}>{result.plaintiffProfile.demographics}</div>
                 </div>
-                <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderRadius: 8 }}>
+                <div style={{ padding: "10px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 8 }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Required Injury</div>
                   <div style={{ fontSize: 13, color: "var(--text-2)" }}>{result.plaintiffProfile.injuryRequired}</div>
                 </div>
@@ -573,7 +573,7 @@ function AnalyzeCaseView() {
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>KB analogues</div>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {result.kbAnalogues.map(a => (
-                      <span key={a} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: "rgba(200,68,47,0.15)", color: "#E06050", border: "1px solid rgba(200,68,47,0.25)" }}>{a}</span>
+                      <span key={a} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: "rgba(94,234,212,0.15)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.25)" }}>{a}</span>
                     ))}
                   </div>
                 </div>
@@ -628,7 +628,7 @@ Analyze the described signals and return ONLY a valid JSON object (no markdown):
   "summary": "3-4 paragraph plain English prediction explaining the score, timeline, and what to do"
 }`;
 
-const PRED_COLORS = { MONITOR: "#f59e0b", INVESTIGATE_NOW: "#C8442F", FILE_NOW: "#22c55e" };
+const PRED_COLORS = { MONITOR: "#f59e0b", INVESTIGATE_NOW: "var(--accent)", FILE_NOW: "#22c55e" };
 const PRED_LABELS = { MONITOR: "Monitor — Not Yet Ready", INVESTIGATE_NOW: "Investigate Now — High Potential", FILE_NOW: "File Now — Window Open" };
 
 function PredictView() {
@@ -697,12 +697,12 @@ function PredictView() {
               <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>Prediction Score</div>
               <div style={{ fontSize: 52, fontWeight: 900, color: scoreColor, lineHeight: 1 }}>{result.predictionScore}</div>
               <div style={{ fontSize: 11, color: "#888", marginTop: 6 }}>Confidence: <strong style={{ color: CONFIDENCE_COLORS[result.confidence] }}>{result.confidence}</strong></div>
-              {result.timelineEstimate && <div style={{ fontSize: 11, color: "#C8442F", marginTop: 8, fontWeight: 600 }}>{result.timelineEstimate}</div>}
+              {result.timelineEstimate && <div style={{ fontSize: 11, color: "var(--accent)", marginTop: 8, fontWeight: 600 }}>{result.timelineEstimate}</div>}
             </Card>
             <Card>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                 <div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 4 }}>Likely Cause of Action</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 4 }}>Likely Cause of Action</div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-1)" }}>{result.likelyCaName}</div>
                 </div>
                 {result.recommendation && (
@@ -712,7 +712,7 @@ function PredictView() {
                 )}
               </div>
               {result.opportunityWindow && (
-                <div style={{ padding: "8px 12px", background: "rgba(200,68,47,0.08)", borderRadius: 8, fontSize: 12, color: "#F07868", marginBottom: 10 }}>
+                <div style={{ padding: "8px 12px", background: "rgba(94,234,212,0.08)", borderRadius: 8, fontSize: 12, color: "#F07868", marginBottom: 10 }}>
                   <strong>Opportunity window:</strong> {result.opportunityWindow}
                 </div>
               )}
@@ -755,10 +755,10 @@ function PredictView() {
               ))}
             </Card>
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 10 }}>KB Historical Analogues</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 10 }}>KB Historical Analogues</div>
               {(result.kbAnalogues || []).map((a, i) => (
                 <div key={i} style={{ fontSize: 12, color: "#F07868", padding: "5px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", display: "flex", gap: 8 }}>
-                  <span style={{ color: "#C8442F" }}>{i + 1}.</span>{a}
+                  <span style={{ color: "var(--accent)" }}>{i + 1}.</span>{a}
                 </div>
               ))}
             </Card>
@@ -767,7 +767,7 @@ function PredictView() {
           {/* Summary */}
           {result.summary && (
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "#E06050", marginBottom: 10 }}>Analysis Summary</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--accent)", marginBottom: 10 }}>Analysis Summary</div>
               <div style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>{result.summary}</div>
             </Card>
           )}
@@ -819,7 +819,7 @@ export default function CaseIntelligence() {
         </div>
         <div style={{ display: "flex", gap: 6 }}>
           {views.map(v => (
-            <button key={v.id} onClick={() => setView(v.id)} style={{ padding: "8px 14px", borderRadius: 8, border: view === v.id ? "1px solid rgba(200,68,47,0.5)" : "1px solid rgba(255,255,255,0.08)", background: view === v.id ? "rgba(200,68,47,0.2)" : "transparent", color: view === v.id ? "#E06050" : "#888", cursor: "pointer", fontSize: 12, fontWeight: view === v.id ? 600 : 400, textAlign: "center" }}>
+            <button key={v.id} onClick={() => setView(v.id)} style={{ padding: "8px 14px", borderRadius: 8, border: view === v.id ? "1px solid rgba(94,234,212,0.5)" : "1px solid rgba(255,255,255,0.08)", background: view === v.id ? "rgba(94,234,212,0.2)" : "transparent", color: view === v.id ? "var(--accent)" : "#888", cursor: "pointer", fontSize: 12, fontWeight: view === v.id ? 600 : 400, textAlign: "center" }}>
               <div>{v.label}</div>
               <div style={{ fontSize: 10, color: view === v.id ? "#7c6fd0" : "#555", marginTop: 1 }}>{v.desc}</div>
             </button>

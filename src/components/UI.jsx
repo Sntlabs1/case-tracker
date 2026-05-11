@@ -1,5 +1,20 @@
 export const Card = ({ children, className = "", onClick, style = {} }) => (
-  <div onClick={onClick} className={className} style={{ background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border)", padding: 20, ...(onClick ? { cursor: "pointer" } : {}), ...style }}>{children}</div>
+  <div
+    onClick={onClick}
+    className={className}
+    style={{
+      background: "var(--bg-card)",
+      borderRadius: "var(--radius-card)",
+      border: "1px solid var(--border)",
+      boxShadow: "var(--shadow-card)",
+      backdropFilter: "blur(8px)",
+      padding: 22,
+      ...(onClick ? { cursor: "pointer" } : {}),
+      ...style,
+    }}
+  >
+    {children}
+  </div>
 );
 
 export const Badge = ({ label, color }) => (
@@ -7,9 +22,18 @@ export const Badge = ({ label, color }) => (
 );
 
 export const Btn = ({ children, onClick, variant = "primary", small, style = {} }) => {
-  const base = { border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer", fontSize: small ? 12 : 13, padding: small ? "5px 12px" : "8px 18px", transition: "all 0.2s" };
+  const base = {
+    border: "none",
+    borderRadius: "var(--radius-pill)",
+    fontWeight: 600,
+    cursor: "pointer",
+    fontSize: small ? 12 : 13,
+    padding: small ? "6px 14px" : "10px 22px",
+    transition: "all 0.18s",
+    letterSpacing: "0.01em",
+  };
   const styles = {
-    primary:   { ...base, background: "#C8442F", color: "#fff" },
+    primary:   { ...base, background: "var(--accent)", color: "var(--accent-text)", boxShadow: "0 4px 14px rgba(94,234,212,0.18)" },
     secondary: { ...base, background: "var(--bg-surface)", color: "var(--text-2)", border: "1px solid var(--border-md)" },
     danger:    { ...base, background: "#ef444420", color: "#ef4444", border: "1px solid #ef444440" },
     success:   { ...base, background: "#22c55e20", color: "#4ade80", border: "1px solid #22c55e40" },

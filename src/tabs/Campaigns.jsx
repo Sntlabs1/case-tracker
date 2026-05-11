@@ -40,7 +40,7 @@ function Spinner({ size = 14 }) {
   return (
     <span style={{
       display: "inline-block", width: size, height: size,
-      border: `2px solid var(--border-md)`, borderTopColor: "#C8442F",
+      border: `2px solid var(--border-md)`, borderTopColor: "var(--accent)",
       borderRadius: "50%", animation: "spin 0.7s linear infinite",
     }} />
   );
@@ -498,7 +498,7 @@ export default function Campaigns() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {[
-              { label: "Campaigns",  value: campaigns.length, color: "#C8442F" },
+              { label: "Campaigns",  value: campaigns.length, color: "var(--accent)" },
               { label: "Letters",    value: totalLetters,     color: "var(--text-1)" },
               { label: "Sent",       value: totalSent,        color: "#3b82f6" },
               { label: "Retained",   value: totalRetained,    color: "#22c55e" },
@@ -627,9 +627,9 @@ export default function Campaigns() {
               {i > 0 && <div style={{ width: 24, height: 1, background: "var(--border-md)" }} />}
               <div style={{
                 display: "flex", alignItems: "center", gap: 6, padding: "4px 12px", borderRadius: 999, fontSize: 12, fontWeight: 600,
-                background: wizStep === s.n ? "#C8442F" : wizStep > s.n ? "rgba(200,68,47,0.15)" : "var(--bg-surface)",
-                color: wizStep === s.n ? "#fff" : wizStep > s.n ? "#C8442F" : "var(--text-5)",
-                border: `1px solid ${wizStep >= s.n ? "#C8442F44" : "transparent"}`,
+                background: wizStep === s.n ? "var(--accent)" : wizStep > s.n ? "rgba(94,234,212,0.15)" : "var(--bg-surface)",
+                color: wizStep === s.n ? "#fff" : wizStep > s.n ? "var(--accent)" : "var(--text-5)",
+                border: `1px solid ${wizStep >= s.n ? "var(--accent)44" : "transparent"}`,
               }}>
                 <span>{s.n}</span><span>{s.label}</span>
               </div>
@@ -673,8 +673,8 @@ export default function Campaigns() {
                     onClick={() => selectLead(l)}
                     style={{
                       padding: "10px 14px", borderRadius: 8, cursor: "pointer",
-                      border: `1px solid ${isSelected ? "#C8442F" : "var(--border)"}`,
-                      background: isSelected ? "rgba(200,68,47,0.08)" : "var(--bg-surface2)",
+                      border: `1px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
+                      background: isSelected ? "rgba(94,234,212,0.08)" : "var(--bg-surface2)",
                     }}
                   >
                     <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
@@ -693,7 +693,7 @@ export default function Campaigns() {
                               {matchResults.filter(m => m.qualifies).length} qualify
                             </span>
                           )}
-                          <span style={{ color: "#C8442F", fontWeight: 700, fontSize: 16 }}>✓</span>
+                          <span style={{ color: "var(--accent)", fontWeight: 700, fontSize: 16 }}>✓</span>
                         </div>
                       )}
                     </div>
@@ -704,7 +704,7 @@ export default function Campaigns() {
 
             {/* Matching status */}
             {selectedLead && (
-              <div style={{ marginTop: 14, padding: "10px 14px", borderRadius: 8, background: matching ? "rgba(200,68,47,0.06)" : "rgba(34,197,94,0.06)", border: `1px solid ${matching ? "rgba(200,68,47,0.2)" : "rgba(34,197,94,0.2)"}` }}>
+              <div style={{ marginTop: 14, padding: "10px 14px", borderRadius: 8, background: matching ? "rgba(94,234,212,0.06)" : "rgba(34,197,94,0.06)", border: `1px solid ${matching ? "rgba(94,234,212,0.2)" : "rgba(34,197,94,0.2)"}` }}>
                 {matching ? (
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <Spinner />
@@ -745,7 +745,7 @@ export default function Campaigns() {
 
             {/* Still matching */}
             {matching && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", borderRadius: 8, background: "rgba(200,68,47,0.06)", border: "1px solid rgba(200,68,47,0.2)", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", borderRadius: 8, background: "rgba(94,234,212,0.06)", border: "1px solid rgba(94,234,212,0.2)", marginBottom: 16 }}>
                 <Spinner size={18} />
                 <span style={{ fontSize: 13, color: "var(--text-3)" }}>Scoring clients... results will appear as they load.</span>
               </div>
@@ -761,7 +761,7 @@ export default function Campaigns() {
                 type="range" min={0} max={100} step={5}
                 value={minScore}
                 onChange={e => applyMinScore(Number(e.target.value))}
-                style={{ width: "100%", accentColor: "#C8442F" }}
+                style={{ width: "100%", accentColor: "var(--accent)" }}
               />
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--text-6)", marginTop: 4 }}>
                 <span>0 — Show all</span>
@@ -771,7 +771,7 @@ export default function Campaigns() {
               <div style={{ marginTop: 10, fontSize: 12, color: "var(--text-3)" }}>
                 <span style={{ color: "#22c55e", fontWeight: 700 }}>{qualifyingCount}</span> clients at score ≥ {minScore}
                 {" · "}
-                <span style={{ color: "#C8442F", fontWeight: 700 }}>{selectedIds.size}</span> selected
+                <span style={{ color: "var(--accent)", fontWeight: 700 }}>{selectedIds.size}</span> selected
               </div>
             </div>
 
@@ -828,15 +828,15 @@ export default function Campaigns() {
                     style={{
                       display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px",
                       borderRadius: 7, cursor: "pointer",
-                      border: `1px solid ${checked ? "rgba(200,68,47,0.3)" : "var(--border)"}`,
-                      background: checked ? "rgba(200,68,47,0.06)" : "var(--bg-surface2)",
+                      border: `1px solid ${checked ? "rgba(94,234,212,0.3)" : "var(--border)"}`,
+                      background: checked ? "rgba(94,234,212,0.06)" : "var(--bg-surface2)",
                     }}
                   >
                     {/* Checkbox */}
                     <div style={{
                       width: 16, height: 16, borderRadius: 4, flexShrink: 0, marginTop: 2,
-                      border: `2px solid ${checked ? "#C8442F" : "var(--border-hov)"}`,
-                      background: checked ? "#C8442F" : "transparent",
+                      border: `2px solid ${checked ? "var(--accent)" : "var(--border-hov)"}`,
+                      background: checked ? "var(--accent)" : "transparent",
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
                       {checked && <span style={{ fontSize: 10, color: "#fff", lineHeight: 1, fontWeight: 800 }}>✓</span>}
@@ -931,10 +931,10 @@ export default function Campaigns() {
                 <div style={{ marginTop: 4 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                     <span style={{ fontSize: 12, color: "var(--text-4)" }}>{genDone} / {genTotal} letters</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#C8442F" }}>{genTotal > 0 ? Math.round((genDone / genTotal) * 100) : 0}%</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "var(--accent)" }}>{genTotal > 0 ? Math.round((genDone / genTotal) * 100) : 0}%</span>
                   </div>
                   <div style={{ height: 6, borderRadius: 3, background: "var(--bg-surface)", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${genTotal > 0 ? (genDone / genTotal) * 100 : 0}%`, background: "#C8442F", borderRadius: 3, transition: "width 0.3s" }} />
+                    <div style={{ height: "100%", width: `${genTotal > 0 ? (genDone / genTotal) * 100 : 0}%`, background: "var(--accent)", borderRadius: 3, transition: "width 0.3s" }} />
                   </div>
                 </div>
               </div>

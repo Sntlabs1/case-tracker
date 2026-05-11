@@ -64,7 +64,7 @@ function sourceCategory(source) {
   if (s.includes("jpml") || s.includes("mdl order")) return { label: "JPML / MDL", color: "#3b82f6" };
   if (s.includes("courthouse news")) return { label: "Courthouse News", color: "#3b82f6" };
   if (s.includes("pubmed")) return { label: "PubMed", color: "#22c55e" };
-  if (s.includes("convergence")) return { label: "Convergence Signal", color: "#C8442F" };
+  if (s.includes("convergence")) return { label: "Convergence Signal", color: "var(--accent)" };
   if (s.includes("reddit complaint cluster")) return { label: "Reddit Cluster", color: "#f97316" };
   if (s.includes("reddit")) return { label: "Reddit", color: "#f97316" };
   if (s.includes("x/twitter") || s.includes("twitter")) return { label: "X / Twitter", color: "#60a5fa" };
@@ -72,7 +72,7 @@ function sourceCategory(source) {
   if (s.includes("complaint search")) return { label: "Complaint Search", color: "#f59e0b" };
   if (s.includes("web:") || s.includes("claude web") || s.startsWith("web ")) return { label: "Claude Web Search", color: "#9090c0" };
   if (s.includes("google news")) return { label: "Google News", color: "#60a5fa" };
-  if (s.includes("miller") || s.includes("mass tort") || s.includes("levin") || s.includes("motley") || s.includes("jd supra")) return { label: "Plaintiff Firm Intel", color: "#C8442F" };
+  if (s.includes("miller") || s.includes("mass tort") || s.includes("levin") || s.includes("motley") || s.includes("jd supra")) return { label: "Plaintiff Firm Intel", color: "var(--accent)" };
   return { label: source.split(":")[0].split(" —")[0].trim().slice(0, 22), color: "#666" };
 }
 
@@ -115,7 +115,7 @@ function stageColor(stage) {
 
 // ─── SECTION COMPONENTS ───────────────────────────────────────────────────────
 
-function Section({ title, children, accent = "#C8442F" }) {
+function Section({ title, children, accent = "var(--accent)" }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: accent, textTransform: "uppercase", marginBottom: 8, paddingBottom: 4, borderBottom: `1px solid ${accent}22` }}>
@@ -136,7 +136,7 @@ function InfoRow({ label, value, valueColor }) {
   );
 }
 
-function TagList({ items, color = "#C8442F" }) {
+function TagList({ items, color = "var(--accent)" }) {
   if (!items || items.length === 0) return null;
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
@@ -242,9 +242,9 @@ function AcquisitionBrief({ lead }) {
   }
 
   return (
-    <div style={{ marginBottom: 16, border: "1px solid rgba(200,68,47,0.3)", borderRadius: 10, overflow: "hidden" }}>
-      <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.08)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 11, fontWeight: 800, color: "#C8442F", letterSpacing: "0.1em", textTransform: "uppercase" }}>Plaintiff Acquisition Brief</span>
+    <div style={{ marginBottom: 16, border: "1px solid rgba(94,234,212,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(94,234,212,0.08)", borderBottom: "1px solid rgba(94,234,212,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Plaintiff Acquisition Brief</span>
         <Btn small variant="secondary" onClick={generate} style={{ padding: "2px 10px", fontSize: 10 }}>
           {loading ? "Generating..." : "Regenerate"}
         </Btn>
@@ -267,7 +267,7 @@ function AcquisitionBrief({ lead }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {brief.targetDemographics && (
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Target Plaintiff</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Target Plaintiff</div>
                 <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{brief.targetDemographics}</div>
               </div>
             )}
@@ -973,7 +973,7 @@ function MemoGenerator({ lead }) {
   if (!memo && !loading && !error) {
     return (
       <div style={{ marginBottom: 12 }}>
-        <Btn small onClick={generate} style={{ background: "rgba(200,68,47,0.15)", border: "1px solid rgba(200,68,47,0.4)", color: "#E06050" }}>
+        <Btn small onClick={generate} style={{ background: "rgba(94,234,212,0.15)", border: "1px solid rgba(94,234,212,0.4)", color: "var(--accent)" }}>
           Generate Full Litigation Memo
         </Btn>
       </div>
@@ -981,10 +981,10 @@ function MemoGenerator({ lead }) {
   }
 
   return (
-    <div style={{ marginBottom: 16, border: "1px solid rgba(200,68,47,0.3)", borderRadius: 10, overflow: "hidden" }}>
-      <div style={{ padding: "10px 14px", background: "rgba(200,68,47,0.07)", borderBottom: "1px solid rgba(200,68,47,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div style={{ marginBottom: 16, border: "1px solid rgba(94,234,212,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(94,234,212,0.07)", borderBottom: "1px solid rgba(94,234,212,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color: "#E06050", letterSpacing: "0.1em", textTransform: "uppercase" }}>Litigation Memorandum</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "var(--accent)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Litigation Memorandum</span>
           {loading && <span style={{ fontSize: 10, color: "#666" }}>Drafting...</span>}
           {done && <span style={{ fontSize: 10, color: "#22c55e" }}>Complete</span>}
         </div>
@@ -1550,7 +1550,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       )}
 
       {a.executiveSummary && (
-        <Section title="Executive Summary" accent="#C8442F">
+        <Section title="Executive Summary" accent="var(--accent)">
           <p style={{ fontSize: 13, color: "var(--text-2)", lineHeight: 1.7, margin: 0 }}>{a.executiveSummary}</p>
         </Section>
       )}
@@ -1692,18 +1692,18 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         {a.damagesModel && (
-          <Section title="Damages Model" accent="#E06050">
+          <Section title="Damages Model" accent="var(--accent)">
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
               {a.damagesModel.perClaimantRange && (
                 <div style={{ padding: "8px 10px", background: "rgba(167,139,250,0.08)", borderRadius: 6, border: "1px solid rgba(167,139,250,0.2)", textAlign: "center" }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}>Per Claimant</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#E06050" }}>{a.damagesModel.perClaimantRange}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)" }}>{a.damagesModel.perClaimantRange}</div>
                 </div>
               )}
               {a.damagesModel.totalFundEstimate && (
                 <div style={{ padding: "8px 10px", background: "rgba(167,139,250,0.08)", borderRadius: 6, border: "1px solid rgba(167,139,250,0.2)", textAlign: "center" }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}>Total Fund</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#E06050" }}>{a.damagesModel.totalFundEstimate}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)" }}>{a.damagesModel.totalFundEstimate}</div>
                 </div>
               )}
             </div>
@@ -1754,7 +1754,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       </div>
 
       {a.signalsAnalysis && (
-        <Section title="Signal Analysis" accent="#C8442F">
+        <Section title="Signal Analysis" accent="var(--accent)">
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div>
               {a.signalsAnalysis.present?.length > 0 && (
@@ -1799,14 +1799,14 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
       {/* ── KB INTELLIGENCE — KB-grounded comparison, analogues, warnings, playbook ── */}
       {(a.kbAnalogues?.length > 0 || a.kbWarnings?.length > 0 || a.kbComparativeAssessment) && (
-        <Section title="KB Intelligence — Historical Case Comparison" accent="#C8442F">
+        <Section title="KB Intelligence — Historical Case Comparison" accent="var(--accent)">
 
           {/* Replication grade + comparative assessment */}
           {(a.kbReplicationGrade || a.kbComparativeAssessment) && (
             <div style={{ display: "flex", gap: 16, marginBottom: 16, alignItems: "flex-start" }}>
               {a.kbReplicationGrade && (
-                <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 10, background: "rgba(200,68,47,0.12)", border: "2px solid rgba(200,68,47,0.4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                  <div style={{ fontSize: 28, fontWeight: 900, color: "#C8442F", lineHeight: 1 }}>{a.kbReplicationGrade}</div>
+                <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 10, background: "rgba(94,234,212,0.12)", border: "2px solid rgba(94,234,212,0.4)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ fontSize: 28, fontWeight: 900, color: "var(--accent)", lineHeight: 1 }}>{a.kbReplicationGrade}</div>
                   <div style={{ fontSize: 9, color: "#888", letterSpacing: "0.08em", textTransform: "uppercase", marginTop: 2 }}>Replicate</div>
                 </div>
               )}
@@ -1880,13 +1880,13 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
           {/* KB Strategic Playbook — derived from historical success patterns */}
           {a.kbStrategicPlaybook?.length > 0 && (
             <div>
-              <div style={{ fontSize: 11, color: "#C8442F", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
+              <div style={{ fontSize: 11, color: "var(--accent)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 8 }}>
                 Strategic playbook (from KB patterns)
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {a.kbStrategicPlaybook.map((step, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "4px 0" }}>
-                    <span style={{ color: "#C8442F", fontWeight: 700, flexShrink: 0, minWidth: 18 }}>{i + 1}.</span>
+                    <span style={{ color: "var(--accent)", fontWeight: 700, flexShrink: 0, minWidth: 18 }}>{i + 1}.</span>
                     <span>{step}</span>
                   </div>
                 ))}
@@ -1898,12 +1898,12 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         {a.analogousCases?.length > 0 && !a.kbAnalogues?.length && (
-          <Section title="KB Analogues" accent="#E06050">
-            <TagList items={a.analogousCases} color="#E06050" />
+          <Section title="KB Analogues" accent="var(--accent)">
+            <TagList items={a.analogousCases} color="var(--accent)" />
           </Section>
         )}
         {a.whyItScored && (
-          <Section title="Scoring Rationale" accent="#C8442F">
+          <Section title="Scoring Rationale" accent="var(--accent)">
             <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6, margin: 0 }}>{a.whyItScored}</p>
           </Section>
         )}
@@ -1972,7 +1972,7 @@ function OpportunityCard({ opp, leadsMap }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", marginBottom: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 800, padding: "2px 8px", borderRadius: 6, background: "rgba(200,68,47,0.2)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.4)" }}>
+            <span style={{ fontSize: 12, fontWeight: 800, padding: "2px 8px", borderRadius: 6, background: "rgba(94,234,212,0.2)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.4)" }}>
               #{opp.rank}
             </span>
             <span style={{ fontSize: 22, fontWeight: 800, color: scoreColor(opp.combinedScore), lineHeight: 1 }}>{opp.combinedScore}</span>
@@ -2001,7 +2001,7 @@ function OpportunityCard({ opp, leadsMap }) {
           <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-1)", marginBottom: 3 }}>{opp.opportunityName}</div>
           {opp.estimatedFund && (
             <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>
-              Fund: <span style={{ color: "#E06050", fontWeight: 600 }}>{opp.estimatedFund}</span>
+              Fund: <span style={{ color: "var(--accent)", fontWeight: 600 }}>{opp.estimatedFund}</span>
               {opp.estimatedFeeToFirm && <> · Firm fee: <span style={{ color: "#22c55e", fontWeight: 600 }}>{opp.estimatedFeeToFirm}</span></>}
             </div>
           )}
@@ -2019,13 +2019,13 @@ function OpportunityCard({ opp, leadsMap }) {
         <div style={{ marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 12 }}>
           {opp.whyPursue?.length > 0 && (
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Why Pursue</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 6 }}>Why Pursue</div>
               {opp.whyPursue.map((r, i) => <div key={i} style={{ fontSize: 12, color: "var(--text-2)", marginBottom: 4 }}>• {r}</div>)}
             </div>
           )}
           {opp.immediateAction && (
-            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(200,68,47,0.08)", borderRadius: 8, border: "1px solid rgba(200,68,47,0.25)" }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#C8442F", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Immediate Action</div>
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(94,234,212,0.08)", borderRadius: 8, border: "1px solid rgba(94,234,212,0.25)" }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 4 }}>Immediate Action</div>
               <div style={{ fontSize: 13, color: "var(--text-1)", fontWeight: 600 }}>{opp.immediateAction}</div>
             </div>
           )}
@@ -2097,7 +2097,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
               </span>
             )}
             {a.joinOrCreate && (
-              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: a.joinOrCreate === "JOIN" ? "rgba(59,130,246,0.15)" : "rgba(184,62,44,0.15)", color: a.joinOrCreate === "JOIN" ? "#60a5fa" : "#E06050", border: `1px solid ${a.joinOrCreate === "JOIN" ? "#3b82f644" : "#B83E2C44"}` }}>
+              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: a.joinOrCreate === "JOIN" ? "rgba(59,130,246,0.15)" : "rgba(184,62,44,0.15)", color: a.joinOrCreate === "JOIN" ? "#60a5fa" : "var(--accent)", border: `1px solid ${a.joinOrCreate === "JOIN" ? "#3b82f644" : "#B83E2C44"}` }}>
                 {a.joinOrCreate}
               </span>
             )}
@@ -2111,7 +2111,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
                 {a.caseStage}
               </span>
             )}
-            {a.caseType && <Badge label={a.caseType} color="#C8442F" />}
+            {a.caseType && <Badge label={a.caseType} color="var(--accent)" />}
             {a.subCategory && <Badge label={a.subCategory} color="#B83E2C" />}
           </div>
 
@@ -2154,7 +2154,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
           )}
 
           {a.damagesModel?.totalFundEstimate && (
-            <div style={{ fontSize: 11, color: "#E06050", marginTop: 3 }}>
+            <div style={{ fontSize: 11, color: "var(--accent)", marginTop: 3 }}>
               Est. fund: {a.damagesModel.totalFundEstimate}
               {a.damagesModel.feeToFirmAt33Pct && ` · Fee: ${a.damagesModel.feeToFirmAt33Pct}`}
             </div>
@@ -2162,7 +2162,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
           {(a.kbReplicationGrade || a.kbAnalogues?.length > 0) && (
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
               {a.kbReplicationGrade && (
-                <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 4, background: "rgba(200,68,47,0.12)", color: "#C8442F", border: "1px solid rgba(200,68,47,0.3)" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, padding: "1px 7px", borderRadius: 4, background: "rgba(94,234,212,0.12)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.3)" }}>
                   KB Grade: {a.kbReplicationGrade}
                 </span>
               )}
@@ -2505,10 +2505,10 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 12, marginBottom: 20 }}>
         {[
-          ["Total Leads", stats?.total ?? leads.length, "#C8442F"],
+          ["Total Leads", stats?.total ?? leads.length, "var(--accent)"],
           ["Critical Urgency", criticalCount, "#ef4444"],
           ["High Priority (75+)", highCount, "#22c55e"],
-          ["CREATE Opportunities", createCount, "#E06050"],
+          ["CREATE Opportunities", createCount, "var(--accent)"],
           ["JOIN Existing Cases", joinCount, "#3b82f6"],
         ].map(([label, val, color]) => (
           <Card key={label} style={{ padding: 14, textAlign: "center" }}>
@@ -2529,9 +2529,9 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
             if (id === "opportunities" && opportunities.length === 0) fetchOpportunities();
           }} style={{
             padding: "7px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer",
-            background: viewMode === id ? "#C8442F" : "rgba(255,255,255,0.06)",
+            background: viewMode === id ? "var(--accent)" : "rgba(255,255,255,0.06)",
             color: viewMode === id ? "#fff" : "#888",
-            border: `1px solid ${viewMode === id ? "#C8442F" : "rgba(255,255,255,0.1)"}`,
+            border: `1px solid ${viewMode === id ? "var(--accent)" : "rgba(255,255,255,0.1)"}`,
           }}>
             {label}
           </button>
@@ -2544,7 +2544,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>Min score: <strong style={{ color: "var(--text-1)" }}>{minScore}</strong></span>
               <input type="range" min="0" max="100" step="5" value={minScore} onChange={e => setMinScore(parseInt(e.target.value))}
-                style={{ width: 100, accentColor: "#C8442F", cursor: "pointer" }} />
+                style={{ width: 100, accentColor: "var(--accent)", cursor: "pointer" }} />
             </div>
 
             {[

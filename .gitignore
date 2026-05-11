@@ -6,3 +6,10 @@
 .env
 node_modules
 dist
+.vercel
+.env*.local
+
+# Local-only — IDE state and large reference materials
+.claude/
+reports/
+MDL Outline.*

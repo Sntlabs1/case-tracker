@@ -65,7 +65,7 @@ function IntakeScriptBlock({ questions }) {
         onClick={() => setOpen(o => !o)}
         style={{
           background: "none", border: "none", cursor: "pointer",
-          color: "#C8442F", fontSize: 12, fontWeight: 600, padding: 0,
+          color: "var(--accent)", fontSize: 12, fontWeight: 600, padding: 0,
           display: "flex", alignItems: "center", gap: 4,
         }}
       >
