@@ -13,12 +13,14 @@ import { kv } from "@vercel/kv";
 import freshness from "./_agents/freshness.js";
 import sourceMonitor from "./_agents/source-monitor.js";
 import tcpaBackfill from "./_agents/tcpa-backfill.js";
+import matchRecompute from "./_agents/match-recompute.js";
 
 // Static registry — explicit imports keep cold-start predictable.
 const REGISTRY = [
   freshness,
   sourceMonitor,
   tcpaBackfill,
+  matchRecompute,
 ];
 
 const HISTORY_LEN = 50;

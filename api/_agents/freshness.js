@@ -136,7 +136,9 @@ async function aggregateClients() {
   // Retainer breakdown is not indexed — quick sample of recent clients only.
   const ids = await kv.zrange("clients_by_date", 0, 999, { rev: true }).catch(() => []);
   const byRetainer = {};
+  const byPartner = {}; // partnerId → { total, matched, qualifyingMatches, retained }
   const BATCH = 100;
+
   for (let i = 0; i < ids.length; i += BATCH) {
     const batch = await Promise.all(ids.slice(i, i + BATCH).map((id) => kv.get(`client:${id}`)));
     for (const raw of batch) {
@@ -144,9 +146,24 @@ async function aggregateClients() {
       const c = typeof raw === "string" ? JSON.parse(raw) : raw;
       const r = c.retainerStatus || "Uncontacted";
       byRetainer[r] = (byRetainer[r] || 0) + 1;
+
+      // Partner attribution: prefer explicit partnerId; fall back to
+      // ingestSource string mapping so existing credit.com records still count.
+      const pid = c.partnerId
+        ?? (c.ingestSource === "credit.com" ? "credit_com" : "manual");
+      if (!byPartner[pid]) byPartner[pid] = { total: 0, matched: 0, qualifyingMatches: 0, retained: 0 };
+      byPartner[pid].total++;
+
+      // "Matched" = client has any persisted match (zset has members).
+      const matchCount = (await kv.zcard(`tcpa:client_matches:${c.id}`).catch(() => 0)) || 0;
+      if (matchCount > 0) byPartner[pid].matched++;
+      // "Qualifying" = at least one match score ≥ 80 (range query, cheap).
+      const qualCount = (await kv.zcount(`tcpa:client_matches:${c.id}`, 80, 100).catch(() => 0)) || 0;
+      if (qualCount > 0) byPartner[pid].qualifyingMatches++;
+      if (r === "Retained" || r === "Filed") byPartner[pid].retained++;
     }
   }
-  return { total, byRetainer };
+  return { total, byRetainer, byPartner };
 }
 
 async function aggregateDefendants() {

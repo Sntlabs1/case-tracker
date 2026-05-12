@@ -1,12 +1,32 @@
 // Vercel serverless — client database CRUD
 // GET    /api/clients                                         — list all clients (optional ?firm=X&state=Y&q=search)
-// POST   /api/clients?source=credit_com  body: { clients: [] } — bulk import w/ credit.com normalization
-// POST   /api/clients                     body: { clients: [] } — bulk import (or single { client: {} })
+// POST   /api/clients?partner=credit_com  body: { clients: [] } — bulk import via partner importer (preferred)
+// POST   /api/clients?source=credit_com   body: { clients: [] } — legacy alias for ?partner=credit_com
+// POST   /api/clients                     body: { clients: [] } — manual ingest (no normalization)
 // PATCH  /api/clients  body: { id, retainerStatus, retainerHistory? } — update status
 // DELETE /api/clients?id=xyz               — remove a client
+//
+// Every imported/updated client ID gets pushed to `tcpa:clients_pending_match`
+// so the match-recompute agent picks them up on its next tick.
 
 import { kv } from "@vercel/kv";
 import { createHash } from "node:crypto";
+
+const CLIENTS_PENDING_MATCH = "tcpa:clients_pending_match";
+
+async function loadPartnerImporter(partnerId) {
+  // Verify partner exists in registry; importer file must match the id.
+  const partner = await kv.get(`partner:${partnerId}`).catch(() => null);
+  if (!partner) return null;
+  try {
+    // File names use hyphens (credit-com.js) for the underscore-separated id (credit_com).
+    const filename = partnerId.replace(/_/g, "-");
+    const mod = await import(`./_partner-importers/${filename}.js`);
+    return mod.default;
+  } catch (e) {
+    return null;
+  }
+}
 
 const CLIENTS_CACHE_KEY = "clients_cache_v1";
 const CLIENTS_ZSET      = "clients_by_date";
@@ -28,10 +48,10 @@ function sha256(s) {
   return createHash("sha256").update(s).digest("hex");
 }
 
-// Default credit.com normalizer — maps loose field names from a credit.com
-// CSV/API payload onto the canonical client shape. Kept inline (rather than in
-// src/lib/creditComNormalizer.js) for now; phase 6 will move it out once the
-// real partnership schema is finalized.
+// Legacy inline credit.com normalizer — kept as a fallback for the
+// `?source=credit_com` alias when the partner registry hasn't been seeded yet.
+// New code should rely on the per-partner importer at
+// api/_partner-importers/<id>.js, dispatched via the `partner:<id>` registry.
 function normalizeCreditCom(c) {
   const phones = []
     .concat(c.phone, c.phones, c.mobile, c.home_phone, c.cell)
@@ -70,6 +90,7 @@ function normalizeCreditCom(c) {
     phone:              c.phone || phones[0] || "",
     collectionsHistory: collections,
     addressHistory:     addresses,
+    partnerId:          "credit_com",
     ingestSource:       "credit.com",
     contactRights: {
       creditor:  true,
@@ -115,6 +136,7 @@ function buildClientRecord(c, idx, now) {
     collectionsHistory: Array.isArray(c.collectionsHistory) ? c.collectionsHistory : [],
     addressHistory:     Array.isArray(c.addressHistory) ? c.addressHistory : [],
     ingestSource:       c.ingestSource || "manual",
+    partnerId:          c.partnerId || "manual",
     contactRights:      c.contactRights || null,
     tcpaOptOut:         c.tcpaOptOut === true,
   };
@@ -143,7 +165,7 @@ function mergeClientRecords(existing, fresh) {
   for (const k of ["firstName", "lastName", "city", "state", "dob", "age",
                    "sourceFirm", "originalCaseType", "injuries", "productsUsed",
                    "medicationsUsed", "exposurePeriod", "occupation", "caseNotes",
-                   "existingCases", "ingestSource", "contactRights"]) {
+                   "existingCases", "ingestSource", "partnerId", "contactRights"]) {
     if (fresh[k] !== undefined && fresh[k] !== null && fresh[k] !== "") merged[k] = fresh[k];
   }
   // Merge phone numbers (union)
@@ -215,57 +237,92 @@ export default async function handler(req, res) {
   // ── POST — bulk import ─────────────────────────────────────────────────────
   if (req.method === "POST") {
     const body = req.body || {};
-    const isCreditCom = (req.query?.source || "").toLowerCase() === "credit_com";
     const rawIncoming = body.clients || (body.client ? [body.client] : []);
     if (!rawIncoming.length) return res.status(400).json({ error: "clients array required" });
 
-    const incoming = isCreditCom ? rawIncoming.map(normalizeCreditCom) : rawIncoming;
+    // Partner dispatch: prefer ?partner=<id> (registry-driven); fall back to
+    // ?source=credit_com legacy alias and the inline normalizer.
+    const partnerParam = (req.query?.partner || req.query?.source || "").toLowerCase();
+    const partnerId = partnerParam === "credit_com" || partnerParam === "credit.com"
+      ? "credit_com"
+      : partnerParam;
+
+    let importer = null;
+    if (partnerId) importer = await loadPartnerImporter(partnerId);
+    // Backward-compat: if the legacy alias was used but the partner registry
+    // hasn't been seeded yet, fall back to the inline normalizer.
+    if (!importer && partnerId === "credit_com") importer = normalizeCreditCom;
+
+    const incoming = importer ? rawIncoming.map(importer) : rawIncoming;
 
     const now = Date.now();
     const imported = [];
-    const merged = [];
+    const updated = [];
+    const invalid = [];
+    const queuedIds = [];
 
     // Sequential per-record so dedup-merge is consistent within a batch.
     for (let i = 0; i < incoming.length; i++) {
-      const fresh = buildClientRecord(incoming[i], i, now);
+      let fresh;
+      try { fresh = buildClientRecord(incoming[i], i, now); }
+      catch (e) { invalid.push({ index: i, error: e.message }); continue; }
 
-      // Dedup: check phoneHash/emailHash lookups for existing client
+      // Minimum viability: must have at least one of (phone, email) for dedup
+      // and at least a name. Otherwise the record is too thin to match cases.
+      if (!fresh.phoneHash && !fresh.emailHash) {
+        invalid.push({ index: i, error: "no phone or email — cannot dedup or contact" });
+        continue;
+      }
+      if (!fresh.firstName && !fresh.lastName) {
+        invalid.push({ index: i, error: "no firstName or lastName" });
+        continue;
+      }
+
       const existing = await findExistingByHash({
         phoneHash: fresh.phoneHash,
         emailHash: fresh.emailHash,
       });
 
+      let targetId;
       if (existing) {
         const mergedRecord = mergeClientRecords(existing, fresh);
         await Promise.all([
           kv.set(`client:${existing.id}`, JSON.stringify(mergedRecord), { ex: 365 * 24 * 3600 }),
-          // Refresh hash lookups (in case fresh added a new hash)
           fresh.phoneHash ? kv.set(`client_by_phonehash:${fresh.phoneHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
           fresh.emailHash ? kv.set(`client_by_emailhash:${fresh.emailHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
         ].filter(Boolean));
-        merged.push(existing.id);
-        continue;
+        updated.push(existing.id);
+        targetId = existing.id;
+      } else {
+        const ts = now + i;
+        const ops = [
+          kv.set(`client:${fresh.id}`, JSON.stringify(fresh), { ex: 365 * 24 * 3600 }),
+          kv.zadd(CLIENTS_ZSET, { score: ts, member: fresh.id }),
+        ];
+        if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
+        if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
+        await Promise.all(ops);
+        imported.push(fresh.id);
+        targetId = fresh.id;
       }
 
-      const ts = now + i;
-      const ops = [
-        kv.set(`client:${fresh.id}`, JSON.stringify(fresh), { ex: 365 * 24 * 3600 }),
-        kv.zadd(CLIENTS_ZSET, { score: ts, member: fresh.id }),
-      ];
-      if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
-      if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
-      await Promise.all(ops);
-      imported.push(fresh.id);
+      // Enqueue for the match-recompute agent. Sorted set, score = ingest
+      // time so older items get processed first.
+      await kv.zadd(CLIENTS_PENDING_MATCH, { score: now + i, member: targetId }).catch(() => {});
+      queuedIds.push(targetId);
     }
 
     await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
 
     return res.status(200).json({
+      partnerId: partnerId || "manual",
       imported: imported.length,
-      mergedExisting: merged.length,
+      updated:  updated.length,
+      invalid:  invalid.length,
+      queuedForMatch: queuedIds.length,
       ids: imported,
-      mergedIds: merged,
-      source: isCreditCom ? "credit_com" : "manual",
+      updatedIds: updated,
+      errors: invalid,
     });
   }
 

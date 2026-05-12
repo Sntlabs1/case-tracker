@@ -73,6 +73,8 @@ async function writeProgress(p) {
 async function processOneMonth(yyyymm) {
   const [since, until] = monthBounds(yyyymm);
   let created = 0, updated = 0, errors = 0, rateLimited = false;
+  let configError = null;
+  const errorMessages = [];
 
   for (const caseType of CASE_TYPES) {
     try {
@@ -89,17 +91,22 @@ async function processOneMonth(yyyymm) {
       });
     } catch (e) {
       errors++;
+      errorMessages.push(`${caseType}: ${e.message}`);
       if (e.message?.includes("CourtListener 429")) {
         rateLimited = true;
-        // Don't continue with remaining caseTypes; we're throttled.
+        break; // throttled — try same month next run
+      }
+      // Config errors (missing token) are unrecoverable — surface them and
+      // bail so we don't silently advance the month past data that never got
+      // fetched.
+      if (e.message?.includes("COURTLISTENER_API_TOKEN not set")) {
+        configError = "COURTLISTENER_API_TOKEN not set in environment";
         break;
       }
-      // Other errors (transient 5xx, network) — log but keep going so this
-      // month's other case types still complete.
     }
   }
 
-  return { created, updated, errors, rateLimited };
+  return { created, updated, errors, rateLimited, configError, errorMessages };
 }
 
 export default {
@@ -148,6 +155,45 @@ export default {
           summary: {
             status: "rate_limited",
             stuckOnMonth: month,
+            completedMonths: progress.completedMonths.length,
+            remaining: TOTAL_MONTHS - progress.completedMonths.length,
+            totalCreated: progress.totalCreated,
+          },
+        };
+      }
+
+      // Config error (e.g. missing token) — surface AND don't advance month.
+      if (result.configError) {
+        progress.lastError = result.configError;
+        progress.lastErrorAt = new Date().toISOString();
+        progress.status = "config_error";
+        await writeProgress(progress);
+        return {
+          ok: false,
+          summary: {
+            status: "config_error",
+            stuckOnMonth: month,
+            configError: result.configError,
+            completedMonths: progress.completedMonths.length,
+            remaining: TOTAL_MONTHS - progress.completedMonths.length,
+            totalCreated: progress.totalCreated,
+          },
+        };
+      }
+
+      // If every case type errored for any other reason, don't blindly advance
+      // — bail and retry next hour so we don't skip months silently.
+      if (result.errors >= CASE_TYPES.length && result.created === 0 && result.updated === 0) {
+        progress.lastError = `all case types errored: ${(result.errorMessages || []).join(" | ").slice(0, 300)}`;
+        progress.lastErrorAt = new Date().toISOString();
+        progress.status = "errored";
+        await writeProgress(progress);
+        return {
+          ok: false,
+          summary: {
+            status: "errored",
+            stuckOnMonth: month,
+            error: progress.lastError,
             completedMonths: progress.completedMonths.length,
             remaining: TOTAL_MONTHS - progress.completedMonths.length,
             totalCreated: progress.totalCreated,

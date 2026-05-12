@@ -21,7 +21,24 @@ import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
 
 const DEFAULT_THRESHOLD = 50;
 const DEFAULT_TOP_N = 50;
-const PENDING_QUEUE = "tcpa:cases_pending_match";
+const PENDING_CASES_QUEUE   = "tcpa:cases_pending_match";   // list, populated on case ingest
+const PENDING_CLIENTS_QUEUE = "tcpa:clients_pending_match"; // sorted set, populated on client import
+const OUTREACH_PENDING      = "outreach:pending";           // sorted set, score=match score
+const OUTREACH_DISMISSED    = "outreach:dismissed";         // plain set, sticky dismissals
+
+// A match becomes a Pending Outreach candidate when it scores ≥80 and the
+// rubric flags qualifies=true. The pair key is `${clientId}|${caseId}`.
+const OUTREACH_THRESHOLD = 80;
+
+async function maybeQueueForOutreach(clientId, caseId, scored) {
+  if (!scored || scored.score < OUTREACH_THRESHOLD) return;
+  if (scored.qualifies !== true) return;
+  const member = `${clientId}|${caseId}`;
+  // Skip if previously dismissed — operator already passed on it.
+  const dismissed = await kv.sismember(OUTREACH_DISMISSED, member).catch(() => 0);
+  if (dismissed) return;
+  await kv.zadd(OUTREACH_PENDING, { score: scored.score, member }).catch(() => {});
+}
 
 async function loadAllClients(max = 5000) {
   const ids = await kv.zrange("clients_by_date", 0, -1, { rev: true }).catch(() => []);
@@ -49,7 +66,7 @@ async function loadAllTcpaCases(max = 5000) {
   return out;
 }
 
-async function recomputeClient(clientId, { threshold, topN }) {
+export async function recomputeClient(clientId, { threshold, topN }) {
   const raw = await kv.get(`client:${clientId}`);
   if (!raw) return { error: "client not found" };
   const client = typeof raw === "string" ? JSON.parse(raw) : raw;
@@ -65,14 +82,22 @@ async function recomputeClient(clientId, { threshold, topN }) {
   if (scored.length) {
     await kv.zadd(key, ...scored.map((s) => ({ score: s.score, member: s.caseId })));
   }
-  // Also fan out into the case-side index.
+  // Fan out into the case-side index.
   await Promise.all(scored.map((s) =>
     kv.zadd(`tcpa:case_matches:${s.caseId}`, { score: s.score, member: clientId })
   ));
-  return { clientId, persisted: scored.length, candidates: cases.length };
+  // Enqueue any qualifying ≥80 matches for human-review outreach.
+  let outreachQueued = 0;
+  for (const s of scored) {
+    if (s.score >= OUTREACH_THRESHOLD && s.qualifies) {
+      await maybeQueueForOutreach(clientId, s.caseId, s);
+      outreachQueued++;
+    }
+  }
+  return { clientId, persisted: scored.length, outreachQueued, candidates: cases.length };
 }
 
-async function recomputeCase(caseId, { threshold }) {
+export async function recomputeCase(caseId, { threshold }) {
   const raw = await kv.get(TCPA_KEYS.case(caseId));
   if (!raw) return { error: "case not found" };
   const caseRecord = typeof raw === "string" ? JSON.parse(raw) : raw;
@@ -92,13 +117,21 @@ async function recomputeCase(caseId, { threshold }) {
   await Promise.all(scored.map((s) =>
     kv.zadd(`tcpa:client_matches:${s.clientId}`, { score: s.score, member: caseId })
   ));
-  return { caseId, persisted: scored.length, candidates: clients.length };
+  // Enqueue any qualifying ≥80 matches for human-review outreach.
+  let outreachQueued = 0;
+  for (const s of scored) {
+    if (s.score >= OUTREACH_THRESHOLD && s.qualifies) {
+      await maybeQueueForOutreach(s.clientId, caseId, s);
+      outreachQueued++;
+    }
+  }
+  return { caseId, persisted: scored.length, outreachQueued, candidates: clients.length };
 }
 
-async function drainPending({ threshold, max = 50 }) {
+export async function drainPendingCases({ threshold, max = 50 }) {
   const pending = [];
   for (let i = 0; i < max; i++) {
-    const id = await kv.lpop(PENDING_QUEUE).catch(() => null);
+    const id = await kv.lpop(PENDING_CASES_QUEUE).catch(() => null);
     if (!id) break;
     pending.push(id);
   }
@@ -107,6 +140,21 @@ async function drainPending({ threshold, max = 50 }) {
     results.push(await recomputeCase(caseId, { threshold }));
   }
   return { drained: pending.length, results };
+}
+
+// Drain N clients from the sorted-set queue (oldest first by ingest score).
+// Removes each ID only after a successful recompute so a crash mid-run resumes.
+export async function drainPendingClients({ threshold, topN, max = 20 }) {
+  const ids = await kv.zrange(PENDING_CLIENTS_QUEUE, 0, max - 1).catch(() => []);
+  const results = [];
+  for (const clientId of ids) {
+    const r = await recomputeClient(clientId, { threshold, topN });
+    if (!r.error) {
+      await kv.zrem(PENDING_CLIENTS_QUEUE, clientId).catch(() => {});
+    }
+    results.push(r);
+  }
+  return { drained: ids.length, results };
 }
 
 async function recomputeAll({ threshold, topN }) {
@@ -141,8 +189,12 @@ export default async function handler(req, res) {
       const out = await recomputeCase(id, { threshold });
       return res.status(out.error ? 404 : 200).json(out);
     }
-    if (mode === "pending") {
-      const out = await drainPending({ threshold, max: parseInt(max || "50") });
+    if (mode === "pending" || mode === "cases_pending") {
+      const out = await drainPendingCases({ threshold, max: parseInt(max || "50") });
+      return res.status(200).json(out);
+    }
+    if (mode === "clients_pending") {
+      const out = await drainPendingClients({ threshold, topN, max: parseInt(max || "20") });
       return res.status(200).json(out);
     }
     if (mode === "all") {

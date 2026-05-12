@@ -495,6 +495,9 @@ export default function Campaigns() {
 
     return (
       <div>
+        {/* ── Pending Outreach inbox — auto-populated by the match-recompute agent ── */}
+        <PendingOutreachPanel />
+
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {[
@@ -991,3 +994,146 @@ export default function Campaigns() {
 
   return null;
 }
+
+// ─── PENDING OUTREACH PANEL ─────────────────────────────────────────────────
+// Surfaces high-confidence (score ≥ 80, qualifies=true) client/case matches
+// queued by the match-recompute agent. Each row gets Review/Dismiss buttons.
+function PendingOutreachPanel() {
+  const [items, setItems] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [dismissing, setDismissing] = useState({});
+  const [collapsed, setCollapsed] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const r = await fetch("/api/outreach-pending?limit=50");
+      const d = await r.json();
+      setItems(d.items || []);
+    } catch {
+      setItems([]);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function dismiss(pair) {
+    setDismissing((s) => ({ ...s, [pair]: true }));
+    try {
+      await fetch(`/api/outreach-pending?pair=${encodeURIComponent(pair)}`, { method: "DELETE" });
+      setItems((curr) => curr.filter((i) => i.pair !== pair));
+    } catch {}
+    setDismissing((s) => { const c = { ...s }; delete c[pair]; return c; });
+  }
+
+  if (!items) return null;
+
+  const count = items.length;
+  const high  = items.filter((i) => i.score >= 90).length;
+
+  return (
+    <div style={{
+      marginBottom: 20, padding: "16px 18px", borderRadius: 12,
+      background: "linear-gradient(180deg, rgba(94,234,212,0.06) 0%, rgba(94,234,212,0.02) 100%)",
+      border: "1px solid rgba(94,234,212,0.25)",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--accent)", boxShadow: "0 0 8px var(--accent)" }} />
+            <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>
+              Pending Outreach ({count})
+            </div>
+            {high > 0 && (
+              <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "rgba(34,197,94,0.15)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.30)", fontWeight: 700 }}>
+                {high} score ≥ 90
+              </span>
+            )}
+          </div>
+          <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 4 }}>
+            High-confidence matches auto-queued by the match agent. Review and draft a letter, or dismiss to skip.
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={load} disabled={loading} style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 7, padding: "5px 12px", fontSize: 11, color: "var(--text-3)", cursor: "pointer", fontWeight: 600 }}>
+            {loading ? "Refreshing…" : "Refresh"}
+          </button>
+          <button onClick={() => setCollapsed(c => !c)} style={{ background: "var(--bg-surface)", border: "1px solid var(--border)", borderRadius: 7, padding: "5px 12px", fontSize: 11, color: "var(--text-3)", cursor: "pointer", fontWeight: 600 }}>
+            {collapsed ? "Expand" : "Collapse"}
+          </button>
+        </div>
+      </div>
+
+      {!collapsed && (count === 0 ? (
+        <div style={{ padding: "20px 0", textAlign: "center", fontSize: 11, color: "var(--text-6)" }}>
+          No pending matches yet. They'll appear here once clients are imported and the match agent has run.
+        </div>
+      ) : (
+        <div style={{ maxHeight: 420, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
+          {items.map((item) => {
+            const scoreColor = item.score >= 90 ? "#22c55e" : item.score >= 80 ? "var(--accent)" : "#f59e0b";
+            return (
+              <div key={item.pair} style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 12px", borderRadius: 8,
+                background: "var(--bg-surface2)", border: "1px solid var(--border)",
+              }}>
+                <div style={{
+                  width: 36, textAlign: "center", flexShrink: 0,
+                  fontSize: 18, fontWeight: 800, color: scoreColor, lineHeight: 1,
+                }}>
+                  {item.score}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>
+                    {item.client.firstName} {item.client.lastName}
+                    {item.client.state && <span style={{ marginLeft: 8, fontSize: 10, color: "var(--text-6)" }}>{item.client.state}</span>}
+                    {item.client.partnerId && item.client.partnerId !== "manual" && (
+                      <span style={{ marginLeft: 8, fontSize: 10, padding: "1px 7px", borderRadius: 4, background: "rgba(94,234,212,0.10)", color: "var(--accent)", border: "1px solid rgba(94,234,212,0.25)", fontWeight: 600 }}>
+                        {item.client.partnerId}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    qualifies for <strong style={{ color: "var(--text-3)" }}>{item.case.caption}</strong>
+                  </div>
+                  <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 2 }}>
+                    {item.case.caseType} · {item.case.court}
+                    {item.case.defendants?.length > 0 && ` · defendant: ${item.case.defendants[0]}`}
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                  <button
+                    onClick={() => alert("Letter drafting flow lands here — wires into bulk-outreach with this exact client+case pair.")}
+                    style={{
+                      padding: "6px 12px", borderRadius: 999,
+                      background: "var(--accent)", color: "var(--accent-text)",
+                      border: "none", cursor: "pointer",
+                      fontSize: 11, fontWeight: 700,
+                    }}
+                  >
+                    Review & draft
+                  </button>
+                  <button
+                    onClick={() => dismiss(item.pair)}
+                    disabled={!!dismissing[item.pair]}
+                    style={{
+                      padding: "6px 12px", borderRadius: 999,
+                      background: "var(--bg-surface)", color: "var(--text-5)",
+                      border: "1px solid var(--border)", cursor: dismissing[item.pair] ? "wait" : "pointer",
+                      fontSize: 11, fontWeight: 600,
+                    }}
+                  >
+                    {dismissing[item.pair] ? "…" : "Dismiss"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+}
+

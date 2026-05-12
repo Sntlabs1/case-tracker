@@ -540,13 +540,22 @@ function MatchResult({ match, rank }) {
 function ImportWizard({ onImported }) {
   const [step, setStep] = useState("upload"); // upload → map → confirm → done
   const [firmName, setFirmName] = useState("");
+  const [partnerId, setPartnerId] = useState("manual"); // partner registry dropdown
+  const [partners, setPartners] = useState([]);         // loaded from /api/partners
   const [parsed, setParsed] = useState(null);     // { headers, rows }
   const [mapping, setMapping] = useState({});
   const [preview, setPreview] = useState([]);
   const [importing, setImporting] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(null);     // rich import report
   const [manualMode, setManualMode] = useState(false);
   const fileRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/partners")
+      .then(r => r.json())
+      .then(d => setPartners(d.partners || []))
+      .catch(() => setPartners([]));
+  }, []);
 
   // Manual entry state
   const [manual, setManual] = useState({ firstName: "", lastName: "", email: "", phone: "", state: "", age: "", injuries: "", medicationsUsed: "", productsUsed: "", exposurePeriod: "", occupation: "", caseNotes: "", originalCaseType: "" });
@@ -590,38 +599,98 @@ function ImportWizard({ onImported }) {
 
   async function doImport(clients) {
     setImporting(true);
-    // Send in batches of 500
-    let imported = 0;
+    // Send in batches of 500 — accumulate the rich import report.
+    const aggregate = { imported: 0, updated: 0, invalid: 0, queuedForMatch: 0, errors: [] };
     const BATCH_SIZE = 500;
+    const qs = partnerId && partnerId !== "manual" ? `?partner=${encodeURIComponent(partnerId)}` : "";
     for (let i = 0; i < clients.length; i += BATCH_SIZE) {
-      const r = await fetch("/api/clients", {
+      const r = await fetch(`/api/clients${qs}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clients: clients.slice(i, i + BATCH_SIZE) }),
       });
       const d = await r.json();
-      imported += d.imported || 0;
+      aggregate.imported       += d.imported       || 0;
+      aggregate.updated        += d.updated        || 0;
+      aggregate.invalid        += d.invalid        || 0;
+      aggregate.queuedForMatch += d.queuedForMatch || 0;
+      if (Array.isArray(d.errors)) aggregate.errors.push(...d.errors.slice(0, 10));
     }
-    setResult(imported);
+    setResult(aggregate);
     setImporting(false);
     setStep("done");
-    onImported(imported);
+    onImported(aggregate.imported + aggregate.updated);
   }
 
-  if (step === "done") return (
-    <div style={{ textAlign: "center", padding: "40px 20px" }}>
-      <div style={{ fontSize: 48, fontWeight: 800, color: "#22c55e", lineHeight: 1, marginBottom: 8 }}>{result}</div>
-      <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>Clients Imported</div>
-      <div style={{ fontSize: 13, color: "var(--text-5)", marginBottom: 24 }}>from {firmName || "imported firm"}</div>
-      <Btn onClick={() => { setStep("upload"); setParsed(null); setFirmName(""); setResult(null); }}>Import Another Firm</Btn>
-    </div>
-  );
+  if (step === "done") {
+    const partnerName = partners.find(p => p.id === partnerId)?.name || firmName || "imported firm";
+    const r = result || {};
+    return (
+      <div style={{ padding: "32px 20px" }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 48, fontWeight: 800, color: "#22c55e", lineHeight: 1, marginBottom: 8 }}>
+            {(r.imported || 0) + (r.updated || 0)}
+          </div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>Clients ingested</div>
+          <div style={{ fontSize: 13, color: "var(--text-5)" }}>from {partnerName}</div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20, maxWidth: 600, margin: "0 auto 20px" }}>
+          {[
+            ["New",            r.imported || 0,       "#22c55e"],
+            ["Merged",         r.updated || 0,        "#3b82f6"],
+            ["Invalid",        r.invalid || 0,        "#ef4444"],
+            ["Queued to match", r.queuedForMatch || 0, "var(--accent)"],
+          ].map(([label, value, color]) => (
+            <div key={label} style={{ padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: "1px solid var(--border)", textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
+              <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 4, fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>{label}</div>
+            </div>
+          ))}
+        </div>
+        {r.errors?.length > 0 && (
+          <div style={{ maxWidth: 600, margin: "0 auto 20px", fontSize: 11, color: "var(--text-5)" }}>
+            <details>
+              <summary style={{ cursor: "pointer", color: "#ef4444" }}>{r.errors.length} validation error(s) — first 10 shown</summary>
+              <ul style={{ marginTop: 8, paddingLeft: 20 }}>
+                {r.errors.map((e, i) => <li key={i}>Row {e.index}: {e.error}</li>)}
+              </ul>
+            </details>
+          </div>
+        )}
+        <div style={{ textAlign: "center", fontSize: 12, color: "var(--text-6)", marginBottom: 20 }}>
+          Auto-matching against TCPA case database in background.
+          High-confidence matches will surface in <strong style={{ color: "var(--accent)" }}>Campaigns → Pending Outreach</strong> within an hour.
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <Btn onClick={() => { setStep("upload"); setParsed(null); setFirmName(""); setResult(null); }}>Import another roster</Btn>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* Firm name — always shown */}
+      {/* Partner dropdown — drives which importer normalizes the upload */}
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 6, fontWeight: 600 }}>PARTNER</div>
+        <select
+          value={partnerId}
+          onChange={e => setPartnerId(e.target.value)}
+          style={{ width: "100%", background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 14px", color: "var(--text-1)", fontSize: 13, outline: "none" }}
+        >
+          <option value="manual">Manual / No partner</option>
+          {partners.filter(p => p.status === "active").map(p => (
+            <option key={p.id} value={p.id}>{p.name} ({p.id})</option>
+          ))}
+        </select>
+        <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 4 }}>
+          Picks the per-partner field mapper. Adding a new partner: <code style={{ color: "var(--accent)" }}>POST /api/partners</code> + drop a normalizer in <code style={{ color: "var(--accent)" }}>api/_partner-importers/</code>.
+        </div>
+      </div>
+
+      {/* Firm name — used when partner = manual, or as a sub-grouping under a partner */}
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 6, fontWeight: 600 }}>ACQUIRED FIRM NAME</div>
+        <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 6, fontWeight: 600 }}>ACQUIRED FIRM NAME (optional)</div>
         <input
           value={firmName}
           onChange={e => setFirmName(e.target.value)}
@@ -790,6 +859,52 @@ function LeadPicker({ onPick }) {
   );
 }
 
+// ── Per-partner stat row ──────────────────────────────────────────────────────
+// Reads from the freshness agent's rollup (counts.clients.byPartner). Cheap —
+// one read per render. If the rollup hasn't run yet, renders nothing.
+function PartnerStats() {
+  const [byPartner, setByPartner] = useState(null);
+  const [partners, setPartners] = useState({});
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/agents?rollup=freshness").then(r => r.json()).catch(() => ({})),
+      fetch("/api/partners").then(r => r.json()).catch(() => ({})),
+    ]).then(([rollup, partnerList]) => {
+      setByPartner(rollup?.rollup?.counts?.clients?.byPartner || {});
+      const map = {};
+      (partnerList?.partners || []).forEach(p => { map[p.id] = p; });
+      setPartners(map);
+    });
+  }, []);
+
+  if (!byPartner) return null;
+  const entries = Object.entries(byPartner).sort((a, b) => (b[1].total || 0) - (a[1].total || 0));
+  if (!entries.length) return null;
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(entries.length, 4)}, 1fr)`, gap: 12 }}>
+      {entries.slice(0, 4).map(([pid, stat]) => {
+        const partnerName = partners[pid]?.name || (pid === "manual" ? "Manual / no partner" : pid);
+        const pct = stat.total ? Math.round((stat.qualifyingMatches / stat.total) * 100) : 0;
+        return (
+          <div key={pid} style={{ padding: "14px 16px", borderRadius: 10, background: "var(--bg-card)", border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 10, color: "var(--text-6)", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600 }}>
+              {partnerName}
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "var(--accent)", lineHeight: 1, marginTop: 6 }}>
+              {(stat.total || 0).toLocaleString()}
+            </div>
+            <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 4 }}>
+              {stat.qualifyingMatches || 0} qualifying ({pct}%) · {stat.retained || 0} retained
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Clients tab ───────────────────────────────────────────────────────────
 export default function Clients() {
   const [view, setView] = useState("database"); // database | import | match
@@ -901,6 +1016,9 @@ export default function Clients() {
         <StatPill label="Retained" value={retainedCount || "—"} color="#22c55e" />
         <StatPill label="In Progress" value={inProgressCount || "—"} color="#f59e0b" />
       </div>
+
+      {/* ── Per-partner stat row (data from freshness rollup) ── */}
+      <PartnerStats />
 
       {/* ── View selector ── */}
       <div style={{ display: "flex", gap: 8, borderBottom: "1px solid var(--border)", paddingBottom: 0 }}>
