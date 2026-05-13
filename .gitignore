@@ -13,3 +13,7 @@ dist
 .claude/
 reports/
 MDL Outline.*
+
+# Westlaw CSV exports — kept local only (ToS + session URLs in rows).
+# Ingest path: api/_tcpa-sources/westlaw-csv.js
+*.csv

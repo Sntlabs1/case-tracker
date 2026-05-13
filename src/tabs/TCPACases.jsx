@@ -367,6 +367,121 @@ function CaseBrief({ tcase }) {
   );
 }
 
+const EVENT_LABELS = {
+  settlement_preliminary: { label: "Preliminary settlement",   color: "#f59e0b" },
+  settlement_final:       { label: "Final settlement approval", color: "#22c55e" },
+  claim_window_opens:     { label: "Claim window opened",       color: "#22c55e" },
+  claim_window_closes:    { label: "Claim window closing",      color: "#ef4444" },
+  mtd_filed:              { label: "Motion to dismiss filed",   color: "#3b82f6" },
+  mtd_granted:            { label: "Motion to dismiss granted", color: "#ef4444" },
+  mtd_denied:             { label: "Motion to dismiss denied",  color: "#22c55e" },
+  class_cert_granted:     { label: "Class certified",           color: "#22c55e" },
+  class_cert_denied:      { label: "Class cert denied",         color: "#ef4444" },
+  transfer_mdl:           { label: "Transferred to MDL",        color: "#8b5cf6" },
+  voluntary_dismissal:    { label: "Voluntarily dismissed",     color: "#6b7280" },
+  stay_ordered:           { label: "Stay ordered",              color: "#6b7280" },
+  other_filing:           { label: "Docket activity",           color: "#6b7280" },
+};
+
+function TrackingHistory({ caseId }) {
+  const [history, setHistory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    setError(null);
+    try {
+      const r = await fetch(`/api/tcpa-cases?id=${encodeURIComponent(caseId)}&history=1`);
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      setHistory(Array.isArray(d.history) ? d.history : []);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => { load(); }, [caseId]);
+
+  async function runTracker() {
+    setRefreshing(true);
+    try {
+      const r = await fetch(`/api/agents?run=case-tracker`);
+      await r.json();
+      // The agent walks priority queue, so single-case turnaround isn't guaranteed.
+      // Re-poll history after a beat.
+      setTimeout(load, 1500);
+    } catch {
+      setRefreshing(false);
+    } finally {
+      setTimeout(() => setRefreshing(false), 1500);
+    }
+  }
+
+  return (
+    <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>Tracking history</div>
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2 }}>
+            Settlement, motion-to-dismiss, class cert and other docket events recorded by the case-tracker agent.
+          </div>
+        </div>
+        <Btn small variant="secondary" onClick={runTracker} disabled={refreshing}>
+          {refreshing ? "Running…" : "Run tracker"}
+        </Btn>
+      </div>
+
+      {loading && <div style={{ fontSize: 11, color: "var(--text-5)", padding: "10px 0" }}>Loading history…</div>}
+      {error && <div style={{ fontSize: 11, color: "#ef4444", padding: "8px 10px", background: "rgba(239,68,68,0.08)", borderRadius: 6 }}>{error}</div>}
+      {!loading && !error && (!history || history.length === 0) && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", padding: "16px 12px", background: "var(--bg-surface2)", borderRadius: 6, textAlign: "center" }}>
+          No events recorded yet. The tracker checks active cases on a daily schedule, or click "Run tracker".
+        </div>
+      )}
+      {!loading && !error && history && history.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {history.map((ev, i) => {
+            const meta = EVENT_LABELS[ev.type] || { label: ev.type, color: "#6b7280" };
+            return (
+              <div key={i} style={{
+                padding: "8px 12px", background: "var(--bg-surface2)", borderRadius: 6,
+                border: "1px solid var(--border)", display: "flex", gap: 10, alignItems: "flex-start",
+              }}>
+                <div style={{ width: 8, minWidth: 8, marginTop: 4, height: 8, borderRadius: "50%", background: meta.color }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 2 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: meta.color }}>{meta.label}</span>
+                    {ev.date && <span style={{ fontSize: 10, color: "var(--text-6)" }}>{fmtDate(ev.date)}</span>}
+                    {ev.confidence !== undefined && (
+                      <span style={{ fontSize: 10, color: ev.confidence >= 80 ? "#22c55e" : "var(--text-6)" }}>
+                        conf {ev.confidence}
+                      </span>
+                    )}
+                    {ev.source && <span style={{ fontSize: 10, color: "var(--text-7)" }}>via {ev.source}</span>}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.45 }}>{ev.summary}</div>
+                  {ev.settlementAmount && (
+                    <div style={{ fontSize: 11, color: "#22c55e", marginTop: 3 }}>Fund: {ev.settlementAmount}</div>
+                  )}
+                  {ev.url && (
+                    <a href={ev.url} target="_blank" rel="noopener noreferrer"
+                       style={{ fontSize: 10, color: "var(--accent)", textDecoration: "none", marginTop: 3, display: "inline-block" }}>
+                      source ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CaseDetail({ tcase, onClose }) {
   const [matches, setMatches] = useState(null);
   const [matchLoading, setMatchLoading] = useState(false);
@@ -492,6 +607,8 @@ function CaseDetail({ tcase, onClose }) {
 
       {/* AI-generated brief — Summary / Who qualifies / Damages / Trajectory / Intake / Red flags */}
       <CaseBrief tcase={tcase} />
+
+      <TrackingHistory caseId={tcase.id} />
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>

@@ -27,7 +27,10 @@ import { runClassActionRss } from "./_tcpa-sources/classaction-rss.js";
 import { runUniCourt }       from "./_tcpa-sources/unicourt.js";
 import { runTrellis }        from "./_tcpa-sources/trellis.js";
 import { runFccComplaints }  from "./_tcpa-sources/fcc-complaints.js";
+import { runWestlawCsv }     from "./_tcpa-sources/westlaw-csv.js";
 
+// westlaw-csv reads local files only — left out of "all" so the daily cron
+// doesn't pointlessly scan an empty filesystem in production.
 const ALL_SOURCES = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];
 
 const RUNNERS = {
@@ -37,6 +40,7 @@ const RUNNERS = {
   unicourt:      runUniCourt,
   trellis:       runTrellis,
   fcc:           runFccComplaints,
+  "westlaw-csv": runWestlawCsv,
 };
 
 export default async function handler(req, res) {

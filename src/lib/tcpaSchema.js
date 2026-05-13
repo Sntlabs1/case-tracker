@@ -47,6 +47,7 @@ export const SOURCES = [
   "tcpaworld",
   "unicourt",
   "trellis",
+  "westlaw",
 ];
 
 // Build a fresh, validated record from a partial input. Throws on missing required fields.

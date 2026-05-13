@@ -107,11 +107,17 @@ export default async function handler(req, res) {
   const { id, defendant, state, status, q, limit = "1000" } = req.query;
   const lim = Math.min(parseInt(limit), 5000);
 
-  // Single record fetch
+  // Single record fetch (optionally with ?history=1 for case-tracker events)
   if (id) {
     const raw = await kv.get(KEYS.case(id));
     if (!raw) return res.status(404).json({ error: "TCPA case not found" });
-    return res.status(200).json({ case: typeof raw === "string" ? JSON.parse(raw) : raw });
+    const record = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (req.query.history) {
+      const items = await kv.lrange(`tcpa:case_history:${id}`, 0, 49).catch(() => []);
+      const history = items.map((x) => (typeof x === "string" ? JSON.parse(x) : x));
+      return res.status(200).json({ case: record, history });
+    }
+    return res.status(200).json({ case: record });
   }
 
   // Cache hit only for the unfiltered default fetch

@@ -18,6 +18,12 @@ export async function resolveDefendantsForCase(rawDefendants = []) {
     const displayName = typeof d === "string" ? d : (d?.displayName || d?.name);
     if (!displayName) continue;
     const role = typeof d === "string" ? "primary" : (d?.role || "primary");
+    // Bulk importers pre-resolve canonical IDs to avoid the O(N) per-row
+    // trigram fallback in findCandidates(). Respect a pre-attached canonicalId.
+    if (typeof d === "object" && d?.canonicalId) {
+      resolved.push({ canonicalId: d.canonicalId, displayName, role });
+      continue;
+    }
     const sug = await resolveOrSuggest(displayName);
     let canonicalId = sug.canonicalId;
     if (!canonicalId) {

@@ -14,6 +14,7 @@ import freshness from "./_agents/freshness.js";
 import sourceMonitor from "./_agents/source-monitor.js";
 import tcpaBackfill from "./_agents/tcpa-backfill.js";
 import matchRecompute from "./_agents/match-recompute.js";
+import caseTracker from "./_agents/case-tracker.js";
 
 // Static registry — explicit imports keep cold-start predictable.
 const REGISTRY = [
@@ -21,6 +22,7 @@ const REGISTRY = [
   sourceMonitor,
   tcpaBackfill,
   matchRecompute,
+  caseTracker,
 ];
 
 const HISTORY_LEN = 50;
