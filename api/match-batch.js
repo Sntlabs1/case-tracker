@@ -18,6 +18,11 @@
 import { kv } from "@vercel/kv";
 import { scoreTcpaPair } from "../src/lib/tcpaMatchRubric.js";
 import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
+import { buildClientReport } from "../src/lib/reportBuilder.js";
+import { normalize as normalizeDefendant } from "../src/lib/defendantResolver.js";
+
+const REPORT_KEY = (id) => `tcpa:client_report:${id}`;
+const REPORT_TTL_DAYS = 7;
 
 const DEFAULT_THRESHOLD = 50;
 const DEFAULT_TOP_N = 50;
@@ -66,15 +71,130 @@ async function loadAllTcpaCases(max = 5000) {
   return out;
 }
 
-export async function recomputeClient(clientId, { threshold, topN }) {
+// ── Candidate-set lookup ─────────────────────────────────────────────────────
+// Loading every TCPA case for every client recompute is O(clients × allCases)
+// — fine up to a few thousand cases, intractable past ~50K clients. The
+// inverted indexes maintained at ingest time let us assemble a small candidate
+// set per client (typically <500 IDs) so scoring is O(clients × candidates).
+//
+// Candidate sources (unioned):
+//   1. tcpa:cases_by_defendant:${cId} for each canonical creditor in the
+//      client's collectionsHistory — the strongest signal.
+//   2. tcpa:cases_by_state:${ST}     for the client's state and address-
+//      history states — catches state-eligible cases.
+//   3. tcpa:cases_by_filing_date     latest N as a baseline so we don't miss
+//      nationwide cases the client hasn't directly dealt with the defendant of
+//      (they may still qualify on state + class period).
+//
+// Resolve raw creditor display names to canonicalIds via the alias table when
+// the client record was ingested before defendant resolution.
+const RECENT_CASES_FALLBACK = 500;
+const MAX_CANDIDATES = 2000;
+
+async function resolveCreditorCanonicalIds(client) {
+  const out = new Set();
+  const pendingLookups = []; // [normalizedName] to alias-lookup
+  for (const entry of (client.collectionsHistory || [])) {
+    if (entry.creditorCanonicalId) out.add(entry.creditorCanonicalId);
+    if (entry.debtBuyerCanonicalId) out.add(entry.debtBuyerCanonicalId);
+    if (!entry.creditorCanonicalId && entry.creditor) {
+      const norm = normalizeDefendant(entry.creditor);
+      if (norm) pendingLookups.push(norm);
+    }
+    if (!entry.debtBuyerCanonicalId && entry.debtBuyer) {
+      const norm = normalizeDefendant(entry.debtBuyer);
+      if (norm) pendingLookups.push(norm);
+    }
+  }
+  // Dedup lookups
+  const uniqueLookups = [...new Set(pendingLookups)];
+  if (uniqueLookups.length) {
+    const results = await Promise.all(
+      uniqueLookups.map((n) => kv.get(`tcpa:defendant_alias:${n}`).catch(() => null))
+    );
+    results.forEach((r) => { if (r) out.add(r); });
+  }
+  return [...out];
+}
+
+async function gatherCandidateCaseIds(client) {
+  const set = new Set();
+
+  // 1. Defendant-keyed lookups — the load-bearing signal
+  const canonicalIds = await resolveCreditorCanonicalIds(client);
+  if (canonicalIds.length) {
+    const ops = canonicalIds.map((cId) =>
+      kv.zrange(TCPA_KEYS.byDefendant(cId), 0, -1, { rev: true }).catch(() => [])
+    );
+    const results = await Promise.all(ops);
+    for (const ids of results) for (const id of ids) set.add(id);
+  }
+
+  // 2. State-keyed lookup — current state + any state in addressHistory
+  const states = new Set();
+  if (client.state) states.add(String(client.state).toUpperCase());
+  for (const a of (client.addressHistory || [])) {
+    if (a?.state) states.add(String(a.state).toUpperCase());
+  }
+  if (states.size) {
+    const ops = [...states].map((st) =>
+      kv.zrange(TCPA_KEYS.byState(st), 0, -1, { rev: true }).catch(() => [])
+    );
+    const results = await Promise.all(ops);
+    // State indexes can be large — cap per state to keep candidate set tractable
+    for (const ids of results) {
+      for (let i = 0; i < Math.min(ids.length, 1000); i++) set.add(ids[i]);
+    }
+  }
+
+  // 3. Latest filings — catches nationwide cases that don't surface via
+  // defendant or state lookup (e.g., client has no resolved creditors yet).
+  // Capped to RECENT_CASES_FALLBACK; tunable for higher recall.
+  const recent = await kv
+    .zrange(TCPA_KEYS.byFilingDate(), 0, RECENT_CASES_FALLBACK - 1, { rev: true })
+    .catch(() => []);
+  for (const id of recent) set.add(id);
+
+  // Hard cap to bound memory; very large candidate sets indicate stale state
+  // indexes (a defendant with thousands of cases — rare but possible).
+  return [...set].slice(0, MAX_CANDIDATES);
+}
+
+async function loadCasesByIds(ids) {
+  const out = [];
+  const BATCH = 200;
+  for (let i = 0; i < ids.length; i += BATCH) {
+    const slice = ids.slice(i, i + BATCH);
+    const records = await Promise.all(slice.map((id) => kv.get(TCPA_KEYS.case(id))));
+    records.forEach((r) => {
+      if (!r) return;
+      out.push(typeof r === "string" ? JSON.parse(r) : r);
+    });
+  }
+  return out;
+}
+
+export async function recomputeClient(clientId, { threshold, topN, useCandidateSet = false } = {}) {
   const raw = await kv.get(`client:${clientId}`);
   if (!raw) return { error: "client not found" };
   const client = typeof raw === "string" ? JSON.parse(raw) : raw;
-  const cases = await loadAllTcpaCases();
-  const scored = cases
-    .map((cs) => ({ caseId: cs.id, ...scoreTcpaPair(client, cs) }))
+
+  // Coverage decision: until the scoring rubric is finalized, score every
+  // client × every case so we don't lose visibility into edge cases. Once the
+  // formula stabilizes, set useCandidateSet=true to drop to <500 candidates
+  // per client via the inverted indexes (gatherCandidateCaseIds below).
+  const cases = useCandidateSet
+    ? await loadCasesByIds(await gatherCandidateCaseIds(client))
+    : await loadAllTcpaCases();
+
+  // Score everything once. Keep the full case object on each row so we can
+  // both persist match indexes AND snapshot a report below.
+  const allScored = cases
+    .map((cs) => ({ caseId: cs.id, case: cs, ...scoreTcpaPair(client, cs) }))
+    .sort((a, b) => b.score - a.score);
+
+  const scored = allScored
     .filter((s) => s.score >= threshold)
-    .sort((a, b) => b.score - a.score)
     .slice(0, topN);
 
   const key = `tcpa:client_matches:${clientId}`;
@@ -94,7 +214,44 @@ export async function recomputeClient(clientId, { threshold, topN }) {
       outreachQueued++;
     }
   }
+
+  // Snapshot a printable / CSV-ready report. /api/client-report serves this
+  // when fresh (default 24h). Build it from the rules-only scored data — the
+  // on-demand path can still call /api/match-cases for Haiku escalation.
+  try {
+    const matchResult = {
+      clientId,
+      matches: allScored
+        .filter((s) => s.score >= 25 || (s.disqualifyingFactors || []).length > 0)
+        .slice(0, 200)
+        .map((s) => ({
+          id: s.caseId,
+          kind: "tcpa",
+          case: s.case,
+          score: s.score,
+          qualifies: s.qualifies,
+          matchType: s.matchType,
+          confidence: s.confidence,
+          confidenceSource: s.confidenceSource,
+          matchingFactors: s.matchingFactors,
+          disqualifyingFactors: s.disqualifyingFactors,
+          reason: summarizeFactors(s),
+        })),
+      total: cases.length,
+    };
+    const report = buildClientReport({ client, matchResult });
+    await kv.set(REPORT_KEY(clientId), JSON.stringify(report), { ex: REPORT_TTL_DAYS * 24 * 3600 });
+  } catch (e) {
+    // Don't fail the whole recompute if snapshotting trips
+  }
+
   return { clientId, persisted: scored.length, outreachQueued, candidates: cases.length };
+}
+
+function summarizeFactors(s) {
+  if (s.matchType === "disqualified" && s.disqualifyingFactors?.length) return s.disqualifyingFactors[0];
+  if (s.matchingFactors?.length) return s.matchingFactors.slice(0, 2).join("; ");
+  return "";
 }
 
 export async function recomputeCase(caseId, { threshold }) {
@@ -144,11 +301,11 @@ export async function drainPendingCases({ threshold, max = 50 }) {
 
 // Drain N clients from the sorted-set queue (oldest first by ingest score).
 // Removes each ID only after a successful recompute so a crash mid-run resumes.
-export async function drainPendingClients({ threshold, topN, max = 20 }) {
+export async function drainPendingClients({ threshold, topN, max = 20, useCandidateSet = false }) {
   const ids = await kv.zrange(PENDING_CLIENTS_QUEUE, 0, max - 1).catch(() => []);
   const results = [];
   for (const clientId of ids) {
-    const r = await recomputeClient(clientId, { threshold, topN });
+    const r = await recomputeClient(clientId, { threshold, topN, useCandidateSet });
     if (!r.error) {
       await kv.zrem(PENDING_CLIENTS_QUEUE, clientId).catch(() => {});
     }
@@ -157,12 +314,12 @@ export async function drainPendingClients({ threshold, topN, max = 20 }) {
   return { drained: ids.length, results };
 }
 
-async function recomputeAll({ threshold, topN }) {
+async function recomputeAll({ threshold, topN, useCandidateSet = false }) {
   // Compute by iterating clients (each does case fan-out internally).
   const clients = await loadAllClients();
   const results = [];
   for (const c of clients) {
-    results.push(await recomputeClient(c.id, { threshold, topN }));
+    results.push(await recomputeClient(c.id, { threshold, topN, useCandidateSet }));
   }
   return { clients: clients.length, totalPersisted: results.reduce((acc, r) => acc + (r.persisted || 0), 0) };
 }
@@ -177,11 +334,15 @@ export default async function handler(req, res) {
   const { mode, id, max } = req.query;
   const threshold = parseInt(req.body?.threshold ?? DEFAULT_THRESHOLD);
   const topN = parseInt(req.body?.topN ?? DEFAULT_TOP_N);
+  // ?candidates=1 opts into the candidate-set fast path; default is full scan
+  // so we don't filter any cases out while the scoring rubric is still being
+  // tuned. Flip via query string when scaling becomes the priority.
+  const useCandidateSet = req.query?.candidates === "1";
 
   try {
     if (mode === "client") {
       if (!id) return res.status(400).json({ error: "id required for mode=client" });
-      const out = await recomputeClient(id, { threshold, topN });
+      const out = await recomputeClient(id, { threshold, topN, useCandidateSet });
       return res.status(out.error ? 404 : 200).json(out);
     }
     if (mode === "case") {
@@ -194,11 +355,11 @@ export default async function handler(req, res) {
       return res.status(200).json(out);
     }
     if (mode === "clients_pending") {
-      const out = await drainPendingClients({ threshold, topN, max: parseInt(max || "20") });
+      const out = await drainPendingClients({ threshold, topN, max: parseInt(max || "20"), useCandidateSet });
       return res.status(200).json(out);
     }
     if (mode === "all") {
-      const out = await recomputeAll({ threshold, topN });
+      const out = await recomputeAll({ threshold, topN, useCandidateSet });
       return res.status(200).json(out);
     }
     return res.status(400).json({ error: "mode must be client|case|pending|all" });

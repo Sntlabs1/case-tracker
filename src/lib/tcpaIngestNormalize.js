@@ -151,6 +151,48 @@ export function parseDefendantsFromCaption(caption = "") {
     .filter(Boolean);
 }
 
+// "Smith v. Capital One Bank, N.A." → ["Smith"]
+// "Smith et al. v. Capital One"      → ["Smith"]
+// "In re Acme TCPA Litigation"        → []  (MDL captions have no individual plaintiff)
+// "John Doe and Jane Doe v. Acme"     → ["John Doe", "Jane Doe"]
+//
+// Companion to parseDefendantsFromCaption — extracts the LEFT side of "v."
+// Strips "et al." and class-action notation. Returns at most 4 names to
+// avoid pathological captions blowing up the index.
+export function parsePlaintiffsFromCaption(caption = "") {
+  if (!caption) return [];
+  // Skip MDL / In re / case-name patterns that don't have a named plaintiff
+  if (/^\s*(?:in\s+re|matter\s+of)\b/i.test(caption)) return [];
+  const m = caption.match(/^(.+?)\sv\.?\s+/i);
+  if (!m) return [];
+  const head = m[1]
+    .replace(/\s+et\s+al\.?\s*$/i, "")
+    .replace(/,\s*(?:individually|on\s+behalf\s+of|et\s+al|class\s+representative).*$/i, "")
+    .replace(/,?\s+as\s+representative.*$/i, "")
+    .trim();
+  // Split conjunctions but NOT commas (last names can be followed by middle initials etc.)
+  const names = head
+    .split(/\s*;\s*|\s+and\s+|\s+&\s+/i)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter((s) => s.length >= 2 && s.length <= 80)
+    .slice(0, 4);
+  return names;
+}
+
+// Normalize a plaintiff name for indexing: lowercase, strip punctuation,
+// collapse whitespace. NOT applied to defendants — those have their own
+// canonical normalization in defendantResolver. Used as the key in the
+// tcpa:cases_by_plaintiff:${norm} inverted index.
+export function normalizePlaintiff(name) {
+  if (!name) return "";
+  return String(name)
+    .toLowerCase()
+    .replace(/[.,'"]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // CourtListener docket → buildCase() input.
 // Accepts both the resource shape (snake_case: case_name, date_filed,
 // nature_of_suit) and the search-API shape (camelCase: caseName, dateFiled,
@@ -199,6 +241,7 @@ export function fromCourtListener(docket, { assumeCaseType } = {}) {
     caption,
     caseType,
     defendants: parseDefendantsFromCaption(caption),
+    plaintiffs: parsePlaintiffsFromCaption(caption),
     court: {
       name: courtName,
       jurisdiction: "federal",

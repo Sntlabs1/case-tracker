@@ -11,6 +11,7 @@
 import { kv } from "@vercel/kv";
 import { buildCase, KEYS, CASE_STATUSES, epochOrZero } from "./tcpaSchema.js";
 import { resolveOrSuggest, createDefendant } from "./defendantResolver.js";
+import { normalizePlaintiff } from "./tcpaIngestNormalize.js";
 
 export async function resolveDefendantsForCase(rawDefendants = []) {
   const resolved = [];
@@ -58,6 +59,17 @@ export async function indexCase(record) {
       ops.push(kv.zadd(KEYS.byDefendant(d.canonicalId), { score: epochOrZero(record.filingDate), member: record.id }));
     }
   }
+  for (const p of (record.plaintiffs || [])) {
+    const norm = normalizePlaintiff(p);
+    if (norm) {
+      ops.push(kv.zadd(KEYS.byPlaintiff(norm), { score: epochOrZero(record.filingDate), member: record.id }));
+      // Maintain a sorted-set roster of all plaintiff norms (score is updated
+      // to current count on each index read — for cheap maintenance we just
+      // bump by 1 and let stale scores drift; the Plaintiffs view re-reads
+      // zcard() before display anyway).
+      ops.push(kv.zincrby(KEYS.plaintiffIndex(), 1, norm));
+    }
+  }
   await Promise.all(ops);
 }
 
@@ -72,6 +84,13 @@ export async function unindexCase(record) {
   for (const st of (record.eligibleStates || [])) ops.push(kv.zrem(KEYS.byState(st), record.id));
   for (const d of (record.defendants || [])) {
     if (d.canonicalId) ops.push(kv.zrem(KEYS.byDefendant(d.canonicalId), record.id));
+  }
+  for (const p of (record.plaintiffs || [])) {
+    const norm = normalizePlaintiff(p);
+    if (norm) {
+      ops.push(kv.zrem(KEYS.byPlaintiff(norm), record.id));
+      ops.push(kv.zincrby(KEYS.plaintiffIndex(), -1, norm));
+    }
   }
   await Promise.all(ops);
 }

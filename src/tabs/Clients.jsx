@@ -55,6 +55,16 @@ function MatchedCasesPanel({ client }) {
   const [state, setState] = useState("idle"); // idle | loading | done | error
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState(null);
+  const [reportMeta, setReportMeta] = useState(null);
+
+  useEffect(() => {
+    setReportMeta(null);
+    if (!client?.id) return;
+    fetch(`/api/client-report?clientId=${encodeURIComponent(client.id)}&meta=1`)
+      .then(r => r.json())
+      .then(d => { if (d && d.exists) setReportMeta(d); })
+      .catch(() => {});
+  }, [client?.id]);
 
   async function run() {
     setState("loading");
@@ -119,11 +129,31 @@ function MatchedCasesPanel({ client }) {
   const tcpa = all.filter(m => m.kind === "tcpa");
   const leads = all.filter(m => m.kind === "lead");
 
+  const reportHtmlUrl = `/api/client-report?clientId=${encodeURIComponent(client.id)}&format=html`;
+  const reportCsvUrl  = `/api/client-report?clientId=${encodeURIComponent(client.id)}&format=csv`;
+
   return (
     <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>Matched Cases</div>
-        <button onClick={run} style={{ fontSize: 10, color: "var(--text-5)", background: "none", border: "none", cursor: "pointer" }}>Re-run</button>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {reportMeta && (
+            <span style={{ fontSize: 9, color: "var(--text-6)", padding: "2px 7px", borderRadius: 4, background: "var(--bg-surface)", border: "1px solid var(--border)" }}>
+              {reportMeta.fresh ? "Report fresh" : "Report stale"} ·{" "}
+              {reportMeta.summary?.qualifyingCases ?? 0} qual / {reportMeta.summary?.tcpaCasesEvaluated ?? 0} eval ·{" "}
+              {reportMeta.ageHours < 1 ? "just now" : reportMeta.ageHours < 24 ? `${Math.round(reportMeta.ageHours)}h ago` : `${Math.round(reportMeta.ageHours / 24)}d ago`}
+            </span>
+          )}
+          <a href={reportHtmlUrl} target="_blank" rel="noopener noreferrer"
+             style={{ fontSize: 10, padding: "4px 10px", borderRadius: 5, background: "rgba(59,130,246,0.12)", color: "#3b82f6", border: "1px solid rgba(59,130,246,0.3)", textDecoration: "none", fontWeight: 600 }}>
+            Open report
+          </a>
+          <a href={reportCsvUrl} download
+             style={{ fontSize: 10, padding: "4px 10px", borderRadius: 5, background: "var(--bg-surface)", color: "var(--text-3)", border: "1px solid var(--border-md)", textDecoration: "none", fontWeight: 600 }}>
+            CSV
+          </a>
+          <button onClick={run} style={{ fontSize: 10, color: "var(--text-5)", background: "none", border: "none", cursor: "pointer" }}>Re-run</button>
+        </div>
       </div>
 
       {tcpa.length === 0 && leads.length === 0 && (

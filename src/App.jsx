@@ -15,6 +15,7 @@ import Clients from "./tabs/Clients.jsx";
 import Intake from "./tabs/Intake.jsx";
 import Campaigns from "./tabs/Campaigns.jsx";
 import TCPACases from "./tabs/TCPACases.jsx";
+import Defendants from "./tabs/Defendants.jsx";
 import Agents from "./tabs/Agents.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
@@ -23,6 +24,7 @@ const TABS = [
   { id: "leads",        label: "Leads Inbox" },
   { id: "clients",      label: "Clients" },
   { id: "tcpa",         label: "TCPA Cases" },
+  { id: "defendants",   label: "Defendants" },
   { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
@@ -47,6 +49,10 @@ const PAGE_META = {
   tcpa:         {
     title: "TCPA Cases",
     desc:  "Every TCPA, FDCPA, and FCRA case the platform tracks — settled and active, federal and state. Search by defendant, filter by claim-window urgency, and drill into any case to see which credit.com clients are eligible plaintiffs.",
+  },
+  defendants:   {
+    title: "Defendants",
+    desc:  "The defendant / creditor catalog: every company ever named in a tracked TCPA / FDCPA / FCRA case. Click any defendant to see all their cases and every client in our database whose creditor history names them — the load-bearing cross-reference for the partnership match flow.",
   },
   campaigns:    {
     title: "Campaigns",
@@ -299,6 +305,7 @@ export default function App() {
             {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
             {tab === "clients"      && <Clients />}
             {tab === "tcpa"         && <TCPACases />}
+            {tab === "defendants"   && <Defendants />}
             {tab === "campaigns"    && <Campaigns />}
             {tab === "intake"       && <Intake />}
             {tab === "trends"       && <Trends />}

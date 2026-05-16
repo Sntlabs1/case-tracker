@@ -81,40 +81,83 @@ export default async function handler(req, res) {
     } catch {} // cache miss or KV hiccup — fall through to live fetch
   }
 
-  // Live fetch from KV
-  const totalInKV = await kv.zcard("leads_by_score");
+  // Live fetch from KV. The Upstash TLS connection can drop mid-pipeline,
+  // which used to bubble as an uncaught ETIMEDOUT and crash the request.
+  // Wrap with one retry-on-timeout and a graceful 503 fallback.
+  async function liveFetch() {
+    const totalInKV = await kv.zcard("leads_by_score");
 
-  const ids = await kv.zrange("leads_by_score", max, min, {
-    byScore: true,
-    rev: true,
-    limit: { count: lim, offset: 0 },
-  });
+    const ids = await kv.zrange("leads_by_score", max, min, {
+      byScore: true,
+      rev: true,
+      limit: { count: lim, offset: 0 },
+    });
 
-  if (!ids || ids.length === 0) {
-    return res.status(200).json({ leads: [], total: totalInKV });
+    if (!ids || ids.length === 0) {
+      return { leads: [], total: totalInKV };
+    }
+
+    const pipeline = kv.pipeline();
+    for (const id of ids) pipeline.get(`lead:${id}`);
+    const raw = await pipeline.exec();
+
+    const leads = raw
+      .map(r => {
+        if (!r) return null;
+        try { return typeof r === "string" ? JSON.parse(r) : r; }
+        catch { return null; }
+      })
+      .filter(Boolean)
+      .filter(lead => {
+        if (classification && lead.analysis?.classification !== classification) return false;
+        if (joinOrCreate && lead.analysis?.joinOrCreate !== joinOrCreate) return false;
+        if (category && lead.category !== category) return false;
+        if (caseType && lead.analysis?.caseType !== caseType) return false;
+        return true;
+      })
+      .slice(0, lim);
+
+    return { leads, total: totalInKV };
   }
 
-  const pipeline = kv.pipeline();
-  for (const id of ids) pipeline.get(`lead:${id}`);
-  const raw = await pipeline.exec();
+  function isTransient(err) {
+    const code = err?.cause?.code || err?.code;
+    const name = err?.cause?.name || err?.name;
+    if (code === "ETIMEDOUT" || code === "ECONNRESET" || code === "ECONNABORTED") return true;
+    if (name === "AbortError" || /terminated/i.test(err?.message || "")) return true;
+    return false;
+  }
 
-  const leads = raw
-    .map(r => {
-      if (!r) return null;
-      try { return typeof r === "string" ? JSON.parse(r) : r; }
-      catch { return null; }
-    })
-    .filter(Boolean)
-    .filter(lead => {
-      if (classification && lead.analysis?.classification !== classification) return false;
-      if (joinOrCreate && lead.analysis?.joinOrCreate !== joinOrCreate) return false;
-      if (category && lead.category !== category) return false;
-      if (caseType && lead.analysis?.caseType !== caseType) return false;
-      return true;
-    })
-    .slice(0, lim);
-
-  const result = { leads, total: totalInKV };
+  let result;
+  try {
+    result = await liveFetch();
+  } catch (err) {
+    if (isTransient(err)) {
+      // One retry — Upstash TLS sockets churn occasionally
+      await new Promise((r) => setTimeout(r, 250));
+      try {
+        result = await liveFetch();
+      } catch (err2) {
+        console.error("[api/leads] KV fetch failed after retry:", err2?.message || err2);
+        // Serve stale cache if we have any, even though it's the default-fetch path
+        try {
+          const stale = await kv.get(LEADS_CACHE_KEY);
+          if (stale) {
+            const data = typeof stale === "string" ? JSON.parse(stale) : stale;
+            return res.status(200).json({ ...data, stale: true });
+          }
+        } catch {}
+        return res.status(503).json({
+          error: "kv_unavailable",
+          message: "Upstream KV timed out; try again in a moment.",
+          retriable: true,
+        });
+      }
+    } else {
+      console.error("[api/leads] KV fetch unrecoverable:", err?.message || err);
+      return res.status(500).json({ error: err?.message || "lead fetch failed" });
+    }
+  }
 
   // Store in cache for next 5 minutes (only for the default full fetch)
   if (isDefaultFetch) {

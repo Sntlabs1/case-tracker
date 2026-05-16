@@ -50,6 +50,11 @@ export const SOURCES = [
   "westlaw",
 ];
 
+// Named plaintiffs derived from case captions are stored on each record AND
+// indexed at tcpa:cases_by_plaintiff:${normalizedName}. This lets the UI
+// surface "repeat-player plaintiffs" — names that appear across multiple
+// filings, often class-action serial named plaintiffs.
+
 // Build a fresh, validated record from a partial input. Throws on missing required fields.
 export function buildCase(input) {
   const required = ["caption", "caseType", "court", "filingDate", "status"];
@@ -71,6 +76,7 @@ export function buildCase(input) {
     caption:           input.caption,
     caseType:          input.caseType,
     defendants:        input.defendants || [],
+    plaintiffs:        Array.isArray(input.plaintiffs) ? input.plaintiffs.filter(Boolean) : [],
     court: {
       name:         input.court.name || "",
       jurisdiction: input.court.jurisdiction || "federal",
@@ -143,6 +149,8 @@ export const KEYS = {
   byStatus:           (s) => `tcpa:cases_by_status:${s}`,
   byState:            (st) => `tcpa:cases_by_state:${st}`,
   byDefendant:        (cId) => `tcpa:cases_by_defendant:${cId}`,
+  byPlaintiff:        (norm) => `tcpa:cases_by_plaintiff:${norm}`,
+  plaintiffIndex:     () => "tcpa:plaintiffs_index", // sorted set, score = case count
   cacheFull:          () => "tcpa:cache:full",
 };
 

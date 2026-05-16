@@ -25,6 +25,7 @@ import { createHash } from "node:crypto";
 import {
   detectCaseType,
   parseDefendantsFromCaption,
+  parsePlaintiffsFromCaption,
 } from "../../src/lib/tcpaIngestNormalize.js";
 import {
   normalize as normalizeDefendantName,
@@ -294,6 +295,7 @@ function rowToCase(row, filename) {
     caption: title,
     caseType,
     defendants: parseDefendantsFromCaption(title),
+    plaintiffs: parsePlaintiffsFromCaption(title),
     court: {
       name: court.name,
       jurisdiction: court.jurisdiction,
