@@ -50,7 +50,7 @@ async function readList(key, max = HISTORY_LEN) {
   return items.map((x) => (typeof x === "string" ? JSON.parse(x) : x));
 }
 
-async function runAgent(agent) {
+async function runAgent(agent, runOpts = {}) {
   // Concurrency guard — first writer wins. NX option on @vercel/kv via { nx: true }.
   const acquired = await kv.set(lockKey(agent.name), Date.now(), { ex: LOCK_TTL, nx: true }).catch(() => null);
   if (acquired === null || acquired === false) {
@@ -61,7 +61,7 @@ async function runAgent(agent) {
   const t0 = Date.now();
   let result, runErr = null;
   try {
-    result = await agent.run();
+    result = await agent.run(runOpts);
   } catch (e) {
     runErr = e;
   }
@@ -97,13 +97,32 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "GET") return res.status(405).json({ error: "GET only" });
 
-  const { run, status: statusName, rollup } = req.query || {};
+  const { run, status: statusName, rollup, unlock } = req.query || {};
+
+  // ── Admin: clear a stale lock ────────────────────────────────────────────
+  // After a killed run, the lock key can persist until TTL (10 min). This
+  // lets the operator force-release without waiting.
+  if (unlock) {
+    const agent = find(unlock);
+    if (!agent) return res.status(404).json({ error: `unknown agent '${unlock}'` });
+    await kv.del(lockKey(unlock)).catch(() => {});
+    return res.status(200).json({ ok: true, unlocked: unlock });
+  }
 
   // ── Manual / cron-triggered run ─────────────────────────────────────────
   if (run) {
     const agent = find(run);
     if (!agent) return res.status(404).json({ error: `unknown agent '${run}'` });
-    const result = await runAgent(agent);
+    // Pass through any numeric query params as run options. Agents that
+    // accept `max`, `threshold`, etc. get them automatically.
+    const runOpts = {};
+    for (const k of ["max", "threshold", "topN", "limit", "batchSize"]) {
+      if (req.query?.[k] !== undefined) {
+        const n = parseInt(req.query[k]);
+        if (!isNaN(n)) runOpts[k] = n;
+      }
+    }
+    const result = await runAgent(agent, runOpts);
     if (!result.ok && result.reason === "locked") {
       return res.status(409).json({ ok: false, reason: "locked" });
     }

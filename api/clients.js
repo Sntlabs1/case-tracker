@@ -11,8 +11,85 @@
 
 import { kv } from "@vercel/kv";
 import { createHash } from "node:crypto";
+import {
+  normalize as normalizeDefendant,
+  createDefendant,
+} from "../src/lib/defendantResolver.js";
 
 const CLIENTS_PENDING_MATCH = "tcpa:clients_pending_match";
+
+// ── Bulk-resolve creditor / debt-buyer canonical IDs ────────────────────────
+// Partner ingest delivers raw creditor / debt-buyer strings on each client's
+// collectionsHistory entries. The matcher's candidate-set path relies on
+// those names being linked to canonical defendant IDs so it can pull the
+// inverted-index lookups (tcpa:cases_by_defendant:${cId}).
+//
+// Per-row resolveOrSuggest would hit the O(N) trigram fallback on every new
+// name — fine for a few rows, intractable for a partner batch. This walks an
+// incoming batch once, collects unique normalized names, does ONE alias-table
+// lookup per name (parallel), and createDefendant for misses. Then back-fills
+// canonicalId on each collectionsHistory entry in place.
+//
+// Safe to call with `[]` or rows without collectionsHistory.
+async function bulkResolveCollectionsCanonicalIds(rows) {
+  if (!Array.isArray(rows) || !rows.length) return;
+  // 1. Gather unique normalized names (creditor + debtBuyer) that lack canonicalId
+  const uniqueNames = new Map(); // norm → first-seen display
+  for (const r of rows) {
+    for (const e of (r?.collectionsHistory || [])) {
+      if (e.creditor && !e.creditorCanonicalId) {
+        const norm = normalizeDefendant(e.creditor);
+        if (norm && !uniqueNames.has(norm)) uniqueNames.set(norm, e.creditor);
+      }
+      if (e.debtBuyer && !e.debtBuyerCanonicalId) {
+        const norm = normalizeDefendant(e.debtBuyer);
+        if (norm && !uniqueNames.has(norm)) uniqueNames.set(norm, e.debtBuyer);
+      }
+    }
+  }
+  if (!uniqueNames.size) return;
+
+  // 2. Single alias-table lookup per unique name (batched parallel)
+  const cache = new Map(); // norm → canonicalId
+  const normList = [...uniqueNames.keys()];
+  const LOOKUP_BATCH = 100;
+  for (let i = 0; i < normList.length; i += LOOKUP_BATCH) {
+    const slice = normList.slice(i, i + LOOKUP_BATCH);
+    const results = await Promise.all(
+      slice.map((n) => kv.get(`tcpa:defendant_alias:${n}`).catch(() => null))
+    );
+    slice.forEach((n, j) => {
+      if (results[j]) cache.set(n, results[j]);
+    });
+  }
+
+  // 3. createDefendant for misses (sequential so simultaneous creates don't
+  // collide on the shared sorted-set indexes maintained by createDefendant)
+  for (const norm of normList) {
+    if (cache.has(norm)) continue;
+    const display = uniqueNames.get(norm);
+    try {
+      const created = await createDefendant({ displayName: display });
+      cache.set(norm, created.canonicalId);
+    } catch {
+      // skip — entry will fall back to alias lookup at match time
+    }
+  }
+
+  // 4. Back-fill canonicalIds onto each row's collectionsHistory in place
+  for (const r of rows) {
+    for (const e of (r?.collectionsHistory || [])) {
+      if (!e.creditorCanonicalId && e.creditor) {
+        const cId = cache.get(normalizeDefendant(e.creditor));
+        if (cId) e.creditorCanonicalId = cId;
+      }
+      if (!e.debtBuyerCanonicalId && e.debtBuyer) {
+        const cId = cache.get(normalizeDefendant(e.debtBuyer));
+        if (cId) e.debtBuyerCanonicalId = cId;
+      }
+    }
+  }
+}
 
 async function loadPartnerImporter(partnerId) {
   // Verify partner exists in registry; importer file must match the id.
@@ -254,6 +331,11 @@ export default async function handler(req, res) {
     if (!importer && partnerId === "credit_com") importer = normalizeCreditCom;
 
     const incoming = importer ? rawIncoming.map(importer) : rawIncoming;
+
+    // Bulk-resolve creditor / debt-buyer canonical IDs across the whole batch
+    // BEFORE the per-row dedup/persist loop. Without this, the matcher's
+    // candidate-set path can't link clients to cases via the defendant index.
+    await bulkResolveCollectionsCanonicalIds(incoming);
 
     const now = Date.now();
     const imported = [];

@@ -16,6 +16,7 @@ import Intake from "./tabs/Intake.jsx";
 import Campaigns from "./tabs/Campaigns.jsx";
 import TCPACases from "./tabs/TCPACases.jsx";
 import Defendants from "./tabs/Defendants.jsx";
+import PendingOutreach from "./tabs/PendingOutreach.jsx";
 import Agents from "./tabs/Agents.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
@@ -25,6 +26,7 @@ const TABS = [
   { id: "clients",      label: "Clients" },
   { id: "tcpa",         label: "TCPA Cases" },
   { id: "defendants",   label: "Defendants" },
+  { id: "outreach",     label: "Pending Outreach" },
   { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
@@ -53,6 +55,10 @@ const PAGE_META = {
   defendants:   {
     title: "Defendants",
     desc:  "The defendant / creditor catalog: every company ever named in a tracked TCPA / FDCPA / FCRA case. Click any defendant to see all their cases and every client in our database whose creditor history names them — the load-bearing cross-reference for the partnership match flow.",
+  },
+  outreach:     {
+    title: "Pending Outreach",
+    desc:  "(plaintiff, case) pairs that scored ≥ 80 and qualify=true — the daily action queue. Auto-populated by the match-recompute agent. Drafting a letter or dismissing a pair removes it from the queue; dismissed pairs stay sticky and won't reappear.",
   },
   campaigns:    {
     title: "Campaigns",
@@ -306,6 +312,7 @@ export default function App() {
             {tab === "clients"      && <Clients />}
             {tab === "tcpa"         && <TCPACases />}
             {tab === "defendants"   && <Defendants />}
+            {tab === "outreach"     && <PendingOutreach />}
             {tab === "campaigns"    && <Campaigns />}
             {tab === "intake"       && <Intake />}
             {tab === "trends"       && <Trends />}
