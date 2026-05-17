@@ -305,6 +305,7 @@ export default async function handler(req, res) {
       const c = typeof raw === "string" ? JSON.parse(raw) : raw;
       if (c.phoneHash) ops.push(kv.del(`client_by_phonehash:${c.phoneHash}`));
       if (c.emailHash) ops.push(kv.del(`client_by_emailhash:${c.emailHash}`));
+      if (c.partnerId) ops.push(kv.zrem(`clients_by_partner:${c.partnerId}`, id));
     }
     await Promise.all(ops);
     await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
@@ -366,12 +367,15 @@ export default async function handler(req, res) {
       });
 
       let targetId;
+      const targetPartnerId = fresh.partnerId || partnerId || "manual";
       if (existing) {
         const mergedRecord = mergeClientRecords(existing, fresh);
         await Promise.all([
           kv.set(`client:${existing.id}`, JSON.stringify(mergedRecord), { ex: 365 * 24 * 3600 }),
           fresh.phoneHash ? kv.set(`client_by_phonehash:${fresh.phoneHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
           fresh.emailHash ? kv.set(`client_by_emailhash:${fresh.emailHash}`, existing.id, { ex: 365 * 24 * 3600 }) : null,
+          // Per-partner inverted index — the portfolio aggregator filters by this.
+          kv.zadd(`clients_by_partner:${targetPartnerId}`, { score: now + i, member: existing.id }).catch(() => {}),
         ].filter(Boolean));
         updated.push(existing.id);
         targetId = existing.id;
@@ -380,6 +384,7 @@ export default async function handler(req, res) {
         const ops = [
           kv.set(`client:${fresh.id}`, JSON.stringify(fresh), { ex: 365 * 24 * 3600 }),
           kv.zadd(CLIENTS_ZSET, { score: ts, member: fresh.id }),
+          kv.zadd(`clients_by_partner:${targetPartnerId}`, { score: ts, member: fresh.id }),
         ];
         if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, fresh.id, { ex: 365 * 24 * 3600 }));
         if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, fresh.id, { ex: 365 * 24 * 3600 }));

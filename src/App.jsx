@@ -17,6 +17,7 @@ import Campaigns from "./tabs/Campaigns.jsx";
 import TCPACases from "./tabs/TCPACases.jsx";
 import Defendants from "./tabs/Defendants.jsx";
 import PendingOutreach from "./tabs/PendingOutreach.jsx";
+import Portfolio from "./tabs/Portfolio.jsx";
 import Agents from "./tabs/Agents.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
@@ -27,6 +28,7 @@ const TABS = [
   { id: "tcpa",         label: "TCPA Cases" },
   { id: "defendants",   label: "Defendants" },
   { id: "outreach",     label: "Pending Outreach" },
+  { id: "portfolio",    label: "Portfolio" },
   { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
@@ -59,6 +61,10 @@ const PAGE_META = {
   outreach:     {
     title: "Pending Outreach",
     desc:  "(plaintiff, case) pairs that scored ≥ 80 and qualify=true — the daily action queue. Auto-populated by the match-recompute agent. Drafting a letter or dismissing a pair removes it from the queue; dismissed pairs stay sticky and won't reappear.",
+  },
+  portfolio:    {
+    title: "Portfolio",
+    desc:  "Aggregate recovery report across an entire partner's plaintiff universe. Total estimated $$$ recoverable (floor / ceiling per TCPA, FDCPA, FCRA statutory minimums plus per-claimant settlement amounts where known), top defendants and cases by exposure, claim windows closing within 30 days. Printable + CSV export — the deliverable you bring to a partner meeting.",
   },
   campaigns:    {
     title: "Campaigns",
@@ -313,6 +319,7 @@ export default function App() {
             {tab === "tcpa"         && <TCPACases />}
             {tab === "defendants"   && <Defendants />}
             {tab === "outreach"     && <PendingOutreach />}
+            {tab === "portfolio"    && <Portfolio />}
             {tab === "campaigns"    && <Campaigns />}
             {tab === "intake"       && <Intake />}
             {tab === "trends"       && <Trends />}

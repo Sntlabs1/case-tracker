@@ -599,16 +599,49 @@ function ImportWizard({ onImported }) {
     originalCaseType: "Original Case Type", existingCases: "Prior Cases",
   };
 
-  function handleFile(file) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const { headers, rows } = parseCSV(e.target.result);
-      const map = autoMap(headers);
-      setParsed({ headers, rows });
-      setMapping(map);
-      setStep("map");
-    };
-    reader.readAsText(file);
+  async function handleFile(file) {
+    const name = (file.name || "").toLowerCase();
+    const isExcel = /\.(xlsx|xls)$/.test(name);
+    try {
+      if (isExcel) {
+        // Lazy-load SheetJS only when we actually see an Excel file — keeps
+        // the main bundle clean for the common CSV path.
+        const XLSX = await import("xlsx");
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        const sheetName = wb.SheetNames[0];
+        const sheet = wb.Sheets[sheetName];
+        // Convert to row-of-arrays (matches our parseCSV output shape).
+        const aoa = XLSX.utils.sheet_to_json(sheet, { header: 1, blankrows: false, defval: "" });
+        if (!aoa.length) {
+          alert(`No rows found in sheet '${sheetName}'.`);
+          return;
+        }
+        const headers = aoa[0].map(h => String(h || "").toLowerCase().replace(/[^a-z0-9]/g, "_"));
+        const rows = aoa.slice(1).map(arr => {
+          const obj = {};
+          headers.forEach((h, i) => { obj[h] = arr[i] != null ? String(arr[i]).trim() : ""; });
+          return obj;
+        }).filter(r => Object.values(r).some(v => v));
+        const map = autoMap(headers);
+        setParsed({ headers, rows });
+        setMapping(map);
+        setStep("map");
+        return;
+      }
+      // CSV path — existing behavior
+      const reader = new FileReader();
+      reader.onload = e => {
+        const { headers, rows } = parseCSV(e.target.result);
+        const map = autoMap(headers);
+        setParsed({ headers, rows });
+        setMapping(map);
+        setStep("map");
+      };
+      reader.readAsText(file);
+    } catch (e) {
+      alert(`Failed to parse file: ${e.message}`);
+    }
   }
 
   function buildClients(rows, map) {
@@ -782,7 +815,7 @@ function ImportWizard({ onImported }) {
           <div style={{ fontSize: 36, marginBottom: 12 }}>📂</div>
           <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>Drop CSV or spreadsheet here</div>
           <div style={{ fontSize: 12, color: "var(--text-5)" }}>Supports CSV, TSV, or semicolon-delimited exports from Clio, MyCase, PracticePanther, Filevine, or any spreadsheet</div>
-          <input ref={fileRef} type="file" accept=".csv,.tsv,.txt" style={{ display: "none" }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
+          <input ref={fileRef} type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" style={{ display: "none" }} onChange={e => e.target.files[0] && handleFile(e.target.files[0])} />
         </div>
       )}
 

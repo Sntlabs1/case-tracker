@@ -5,7 +5,9 @@
 // We shape them into a structured report object that the same module can
 // render as HTML, CSV, or JSON.
 
-const DISCLAIMER = "This report is auto-generated from public docket data and the platform's TCPA case database. It is informational and does NOT constitute legal advice. Eligibility is preliminary and subject to attorney review and the rules of each settlement administrator. Statute-of-limitations dates are based on available data and may be inaccurate; consult counsel before relying on any deadline.";
+import { estimateRecovery, formatUSD } from "./recoveryEstimate.js";
+
+const DISCLAIMER = "This report is auto-generated from public docket data and the platform's TCPA case database. It is informational and does NOT constitute legal advice. Eligibility is preliminary and subject to attorney review and the rules of each settlement administrator. Statute-of-limitations dates are based on available data and may be inaccurate; consult counsel before relying on any deadline. Recovery estimates are based on statutory minimums (47 USC § 227(b)(3) and equivalents) and known settlement amounts; actual recovery depends on case-by-case proof and class-administration outcomes.";
 
 // ── Top-level builder ────────────────────────────────────────────────────────
 // matchResult is the body returned from /api/match-cases (mode=client-to-cases):
@@ -20,8 +22,24 @@ export function buildClientReport({ client, matchResult }) {
   const watchlist = tcpa.filter((m) => !m.qualifies && m.score >= 50);
   const disqualified = tcpa.filter((m) => (m.disqualifyingFactors || []).length > 0);
 
+  // Attach recovery estimate to each match. Pure layered model — see
+  // src/lib/recoveryEstimate.js for the rubric.
+  const attachEstimate = (m) => {
+    const est = estimateRecovery(client, m.case, { isQualifying: m.qualifies && m.score >= 50 });
+    return { match: m, estimate: est };
+  };
+  const qualifyingWithEst   = qualifying.map(attachEstimate);
+  const watchlistWithEst    = watchlist.map(attachEstimate);
+  const disqualifiedWithEst = disqualified.map(attachEstimate);
+
+  // Roll up total potential recovery across QUALIFYING matches only.
+  // (Watchlist + disqualified are excluded — they're speculative.)
+  const totalFloor   = qualifyingWithEst.reduce((acc, x) => acc + (x.estimate.floor || 0), 0);
+  const totalCeiling = qualifyingWithEst.reduce((acc, x) => acc + (x.estimate.ceiling || 0), 0);
+  const totalMidpoint = (totalFloor + totalCeiling) / 2;
+
   return {
-    version: 1,
+    version: 2, // bumped: now includes recovery estimates
     generatedAt: new Date().toISOString(),
     disclaimer: DISCLAIMER,
     client: clientSummary(client),
@@ -37,11 +55,21 @@ export function buildClientReport({ client, matchResult }) {
         const d = daysUntil(closes);
         return d !== null && d >= 0 && d <= 30;
       }).length,
+      recovery: {
+        floor:    totalFloor,
+        ceiling:  totalCeiling,
+        midpoint: totalMidpoint,
+        formatted: {
+          floor:    formatUSD(totalFloor),
+          ceiling:  formatUSD(totalCeiling),
+          midpoint: formatUSD(totalMidpoint),
+        },
+      },
     },
-    qualifyingCases: qualifying.map(formatTcpaMatch),
-    watchlistCases: watchlist.map(formatTcpaMatch),
-    disqualifiedCases: disqualified.map(formatTcpaMatch),
-    massTortLeads: leads.slice(0, 25).map(formatLeadMatch),
+    qualifyingCases:    qualifyingWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
+    watchlistCases:     watchlistWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
+    disqualifiedCases:  disqualifiedWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
+    massTortLeads:      leads.slice(0, 25).map(formatLeadMatch),
   };
 }
 
@@ -223,9 +251,9 @@ ${c.creditorHistory.length ? `
 
 <h2>Summary</h2>
 <div class="stat-row">
+  <div class="stat" style="background:#dcfce7;border-color:#bbf7d0"><div class="stat-num" style="color:#15803d;font-size:20px">${escapeHtml(s.recovery?.formatted?.floor || "$0")} – ${escapeHtml(s.recovery?.formatted?.ceiling || "$0")}</div><div class="stat-label">Estimated recovery</div></div>
   <div class="stat"><div class="stat-num" style="color:#16a34a">${s.qualifyingCases}</div><div class="stat-label">Qualifying cases</div></div>
   <div class="stat"><div class="stat-num" style="color:#ea580c">${s.claimWindowsClosingSoon}</div><div class="stat-label">Claim windows closing &lt; 30d</div></div>
-  <div class="stat"><div class="stat-num" style="color:#0891b2">${s.strongMatches}</div><div class="stat-label">Strong matches (score ≥ 75)</div></div>
   <div class="stat"><div class="stat-num" style="color:#666">${s.tcpaCasesEvaluated}</div><div class="stat-label">Cases evaluated</div></div>
 </div>
 
@@ -274,8 +302,8 @@ function renderCaseTable(matches) {
   <thead><tr>
     <th>Score</th>
     <th>Case</th>
+    <th>Estimated $</th>
     <th>Court</th>
-    <th>Filed</th>
     <th>Status</th>
     <th>Claim deadline</th>
   </tr></thead>
@@ -289,8 +317,13 @@ function renderCaseTable(matches) {
           ${m.matchingFactors.length ? `<div class="factors"><span class="pos">+ ${m.matchingFactors.map(escapeHtml).join("</span> <span class=\"pos\">+ ")}</span></div>` : ""}
           ${m.disqualifyingFactors.length ? `<div class="factors"><span class="neg">− ${m.disqualifyingFactors.map(escapeHtml).join("</span> <span class=\"neg\">− ")}</span></div>` : ""}
         </td>
+        <td>
+          ${m.estimate ? `
+            <div style="font-weight:700;color:#15803d">${escapeHtml(formatUSD(m.estimate.floor))} – ${escapeHtml(formatUSD(m.estimate.ceiling))}</div>
+            <div style="font-size:9px;color:#666;margin-top:2px">${escapeHtml(m.estimate.method.replace(/_/g, ' '))}${m.estimate.violations > 1 ? ` · ${m.estimate.violations} violations` : ""}</div>
+          ` : "—"}
+        </td>
         <td><div class="case-meta">${escapeHtml(m.court || "—")}</div></td>
-        <td><div class="case-meta">${escapeHtml(fmtDate(m.filingDate))}</div></td>
         <td><div class="case-meta">${escapeHtml(m.status || "—")}</div></td>
         <td><div class="case-meta ${m.daysToClaim !== null && m.daysToClaim <= 30 && m.daysToClaim >= 0 ? "urgent" : ""}">${escapeHtml(fmtClaimWindow(m))}</div></td>
       </tr>
@@ -314,7 +347,10 @@ export function renderCsv(report) {
     "Plaintiff Name", "Plaintiff ID", "State", "Source",
     "Rank", "Case Caption", "Defendants", "Court", "Jurisdiction",
     "Filed Date", "Status", "Claim Window Closes", "Days To Claim",
-    "Settlement Fund", "Per Claimant", "Score", "Qualifies",
+    "Settlement Fund", "Per Claimant",
+    "Recovery Floor $", "Recovery Ceiling $", "Recovery Midpoint $",
+    "Recovery Method", "Violations Pled",
+    "Score", "Qualifies",
     "Match Type", "Confidence", "Matching Factors", "Disqualifying Factors",
     "Citation", "Docket", "Source URL", "Bucket",
   ]);
@@ -327,11 +363,14 @@ export function renderCsv(report) {
   for (const [bucket, list] of buckets) {
     for (const m of list) {
       rank++;
+      const est = m.estimate || {};
       rows.push([
         c.name, c.id, c.state, c.ingestSource || c.sourceFirm || "",
         rank, m.caption, m.defendants.join("; "), m.court, m.jurisdiction,
         m.filingDate, m.status, m.claimWindowCloses, m.daysToClaim ?? "",
         m.settlementFund || "", m.perClaimantRange || "",
+        est.floor ?? "", est.ceiling ?? "", est.midpoint ?? "",
+        est.method || "", est.violations ?? "",
         m.score, m.qualifies ? "yes" : "no",
         m.matchType || "", m.confidence ?? "",
         (m.matchingFactors || []).join("; "),
