@@ -94,6 +94,65 @@ export const TOOL_SCHEMAS = [
       "last-error per source. Use when the user asks 'why isn't X updating' or 'is the FDA feed working'.",
     input_schema: { type: "object", properties: {}, required: [] },
   },
+  // ── Client / plaintiff tools ──────────────────────────────────────────────
+  {
+    name: "search_clients",
+    description:
+      "Find a plaintiff/client in the database by name, phone, email, or state. Returns up to 25 hits with id, name, " +
+      "state, phone, email, partnerId, and a count of qualifying matched cases. Use this when the user names a person " +
+      "('look up Mary Smith', 'find John Doe', 'who's our Capital One plaintiff in Florida').",
+    input_schema: {
+      type: "object",
+      properties: {
+        name:    { type: "string", description: "First and/or last name (substring, case-insensitive)" },
+        phone:   { type: "string", description: "Phone number — digits in any format" },
+        email:   { type: "string", description: "Email (substring, case-insensitive)" },
+        state:   { type: "string", description: "Two-letter state code, e.g. 'FL'" },
+        partner: { type: "string", description: "Partner ID, e.g. 'credit_com'" },
+        limit:   { type: "integer", description: "Max results (default 25, max 100)" },
+      },
+    },
+  },
+  {
+    name: "get_client",
+    description:
+      "Fetch one client by their ID. Returns the full record: contact info, address history, collections history " +
+      "(creditors / debt buyers / contact dates), partnerId, and retainer status. Use this after search_clients " +
+      "when the user wants the profile, or to inspect the creditor history that drives matching.",
+    input_schema: {
+      type: "object",
+      properties: { id: { type: "string", description: "Client ID, e.g. 'c_1778512586426_0_30bbe'" } },
+      required: ["id"],
+    },
+  },
+  {
+    name: "get_client_matches",
+    description:
+      "For a single client, return every TCPA / FDCPA / FCRA case they qualify for, with per-match score, " +
+      "qualifying/disqualifying factors, claim deadline, and an estimated dollar recovery range (floor / ceiling / " +
+      "midpoint) per match plus a total. Reads the cached client_report snapshot when fresh (< 24h), recomputes " +
+      "otherwise. THIS IS THE ANSWER to 'what is <plaintiff> eligible for' and 'how much could <plaintiff> recover'.",
+    input_schema: {
+      type: "object",
+      properties: {
+        id:    { type: "string", description: "Client ID" },
+        fresh: { type: "boolean", description: "Force recomputation (skip cached snapshot). Default false." },
+      },
+      required: ["id"],
+    },
+  },
+  {
+    name: "estimate_client_recovery",
+    description:
+      "Return just the dollar summary for one client: total floor / ceiling / midpoint across all qualifying " +
+      "matches, count of strong matches (score ≥ 75), claim windows closing in 30 days, and breakdown by case " +
+      "type. Lighter than get_client_matches when the user only asks the money question.",
+    input_schema: {
+      type: "object",
+      properties: { id: { type: "string", description: "Client ID" } },
+      required: ["id"],
+    },
+  },
 ];
 
 // ── Executors (called server-side when Claude requests a tool) ──────────────
@@ -321,6 +380,202 @@ const TOOLS = {
         error: s.error,
         reason: s.reason,
         lastIngestAt: s.lastIngestAt || null,
+      })),
+    };
+  },
+
+  // ── Client / plaintiff tools ──────────────────────────────────────────────
+  async search_clients({ name, phone, email, state, partner, limit = 25 }) {
+    const max = Math.min(parseInt(limit) || 25, 100);
+
+    // Pick a starting set of IDs: per-partner index if specified, else global.
+    const seedIds = partner
+      ? (await kv.zrange(`clients_by_partner:${partner}`, 0, -1, { rev: true }).catch(() => []))
+      : (await kv.zrange("clients_by_date", 0, -1, { rev: true }).catch(() => []));
+    if (!seedIds?.length) return { total: 0, results: [] };
+
+    const nameLower  = (name || "").toLowerCase().trim();
+    const emailLower = (email || "").toLowerCase().trim();
+    const phoneDigits = (phone || "").replace(/\D/g, "");
+    const stateUp = (state || "").toUpperCase().slice(0, 2);
+
+    const results = [];
+    const BATCH = 200;
+    let scanned = 0;
+    for (let i = 0; i < seedIds.length && results.length < max && scanned < 5000; i += BATCH) {
+      const slice = seedIds.slice(i, i + BATCH);
+      const records = await Promise.all(slice.map((id) => kv.get(`client:${id}`)));
+      for (const r of records) {
+        scanned++;
+        if (!r) continue;
+        const c = typeof r === "string" ? JSON.parse(r) : r;
+        if (stateUp && c.state !== stateUp) continue;
+        if (nameLower) {
+          const full = `${c.firstName || ""} ${c.lastName || ""}`.toLowerCase();
+          if (!full.includes(nameLower)) continue;
+        }
+        if (emailLower && !(c.email || "").toLowerCase().includes(emailLower)) continue;
+        if (phoneDigits) {
+          const digits = (c.phoneNumbers || [c.phone])
+            .filter(Boolean)
+            .map(p => String(p).replace(/\D/g, ""))
+            .join(" ");
+          if (!digits.includes(phoneDigits)) continue;
+        }
+        // Count cached matched cases (if any)
+        let matchedCount = 0;
+        try {
+          matchedCount = (await kv.zcard(`tcpa:client_matches:${c.id}`).catch(() => 0)) || 0;
+        } catch {}
+        results.push({
+          id: c.id,
+          name: `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+          state: c.state,
+          phone: c.phone,
+          email: c.email,
+          partnerId: c.partnerId || "manual",
+          city: c.city,
+          age: c.age,
+          ingestSource: c.ingestSource,
+          collectionsCount: (c.collectionsHistory || []).length,
+          matchedCases: matchedCount,
+          retainerStatus: c.retainerStatus || "Uncontacted",
+        });
+        if (results.length >= max) break;
+      }
+    }
+    return { total: results.length, scanned, results };
+  },
+
+  async get_client({ id }) {
+    if (!id) return { error: "id required" };
+    const raw = await kv.get(`client:${id}`).catch(() => null);
+    if (!raw) return { error: "client not found" };
+    const c = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return {
+      id: c.id,
+      name: `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+      firstName: c.firstName,
+      lastName: c.lastName,
+      state: c.state,
+      city: c.city,
+      phone: c.phone,
+      phoneNumbers: c.phoneNumbers,
+      email: c.email,
+      dob: c.dob,
+      age: c.age,
+      partnerId: c.partnerId,
+      ingestSource: c.ingestSource,
+      sourceFirm: c.sourceFirm,
+      retainerStatus: c.retainerStatus || "Uncontacted",
+      tcpaOptOut: c.tcpaOptOut === true,
+      addressHistory: c.addressHistory || [],
+      // Trim collectionsHistory to creditor / debtBuyer / dateRange so the
+      // tool result stays compact for the LLM.
+      collectionsHistory: (c.collectionsHistory || []).map((e) => ({
+        creditor: e.creditor || null,
+        debtBuyer: e.debtBuyer || null,
+        creditorCanonicalId: e.creditorCanonicalId || null,
+        debtBuyerCanonicalId: e.debtBuyerCanonicalId || null,
+        status: e.status || null,
+        dateRange: e.dateRange || null,
+        contactMethods: e.contactMethods || [],
+        contactDatesCount: Array.isArray(e.contactDates) ? e.contactDates.length : 0,
+      })),
+      existingCases: c.existingCases || "",
+      claimedSettlements: c.claimedSettlements || [],
+    };
+  },
+
+  async get_client_matches({ id, fresh = false }) {
+    if (!id) return { error: "id required" };
+    // Reuse the same path as the HTTP endpoint
+    let report = null;
+    if (!fresh) {
+      const cached = await kv.get(`tcpa:client_report:${id}`).catch(() => null);
+      if (cached) {
+        report = typeof cached === "string" ? JSON.parse(cached) : cached;
+      }
+    }
+    if (!report) {
+      // Trigger a fresh build via the client-report module (avoid HTTP self-call)
+      const clientRaw = await kv.get(`client:${id}`).catch(() => null);
+      if (!clientRaw) return { error: "client not found" };
+      const client = typeof clientRaw === "string" ? JSON.parse(clientRaw) : clientRaw;
+      const { generateClientReport } = await import("./client-report.js");
+      report = await generateClientReport(client, { topN: 100 });
+    }
+    // Compact for the LLM — return one row per qualifying case
+    return {
+      clientId: id,
+      clientName: report.client?.name,
+      generatedAt: report.generatedAt,
+      summary: report.summary,
+      qualifyingMatches: (report.qualifyingCases || []).slice(0, 50).map((m) => ({
+        caseId: m.caseId,
+        caption: m.caption,
+        caseType: m.caseType,
+        defendants: m.defendants,
+        court: m.court,
+        status: m.status,
+        score: m.score,
+        qualifies: m.qualifies,
+        claimWindowCloses: m.claimWindowCloses,
+        daysToClaim: m.daysToClaim,
+        matchingFactors: m.matchingFactors,
+        disqualifyingFactors: m.disqualifyingFactors,
+        recovery: m.estimate ? {
+          floor: m.estimate.floor,
+          ceiling: m.estimate.ceiling,
+          midpoint: m.estimate.midpoint,
+          method: m.estimate.method,
+          violations: m.estimate.violations,
+        } : null,
+      })),
+      watchlistCount: report.watchlistCases?.length || 0,
+      disqualifiedCount: report.disqualifiedCases?.length || 0,
+    };
+  },
+
+  async estimate_client_recovery({ id }) {
+    if (!id) return { error: "id required" };
+    let report = null;
+    const cached = await kv.get(`tcpa:client_report:${id}`).catch(() => null);
+    if (cached) {
+      report = typeof cached === "string" ? JSON.parse(cached) : cached;
+    } else {
+      const clientRaw = await kv.get(`client:${id}`).catch(() => null);
+      if (!clientRaw) return { error: "client not found" };
+      const client = typeof clientRaw === "string" ? JSON.parse(clientRaw) : clientRaw;
+      const { generateClientReport } = await import("./client-report.js");
+      report = await generateClientReport(client, { topN: 200 });
+    }
+    const s = report.summary || {};
+    // Per-caseType totals
+    const byCaseType = {};
+    for (const m of (report.qualifyingCases || [])) {
+      const t = m.caseType || "TCPA";
+      byCaseType[t] = byCaseType[t] || { matches: 0, floor: 0, ceiling: 0 };
+      byCaseType[t].matches += 1;
+      byCaseType[t].floor   += m.estimate?.floor   || 0;
+      byCaseType[t].ceiling += m.estimate?.ceiling || 0;
+    }
+    return {
+      clientId: id,
+      clientName: report.client?.name,
+      qualifyingCases: s.qualifyingCases || 0,
+      strongMatches: s.strongMatches || 0,
+      claimWindowsClosingSoon: s.claimWindowsClosingSoon || 0,
+      recovery: s.recovery, // { floor, ceiling, midpoint, formatted: {...} }
+      byCaseType,
+      // Top 5 individual matches for context
+      topMatches: (report.qualifyingCases || []).slice(0, 5).map((m) => ({
+        caption: m.caption,
+        score: m.score,
+        floor: m.estimate?.floor,
+        ceiling: m.estimate?.ceiling,
+        claimWindowCloses: m.claimWindowCloses,
+        daysToClaim: m.daysToClaim,
       })),
     };
   },
