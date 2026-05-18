@@ -6,6 +6,7 @@
 // render as HTML, CSV, or JSON.
 
 import { estimateRecovery, formatUSD } from "./recoveryEstimate.js";
+import { claimGuidance } from "./claimGuidance.js";
 
 const DISCLAIMER = "This report is auto-generated from public docket data and the platform's TCPA case database. It is informational and does NOT constitute legal advice. Eligibility is preliminary and subject to attorney review and the rules of each settlement administrator. Statute-of-limitations dates are based on available data and may be inaccurate; consult counsel before relying on any deadline. Recovery estimates are based on statutory minimums (47 USC § 227(b)(3) and equivalents) and known settlement amounts; actual recovery depends on case-by-case proof and class-administration outcomes.";
 
@@ -22,15 +23,17 @@ export function buildClientReport({ client, matchResult }) {
   const watchlist = tcpa.filter((m) => !m.qualifies && m.score >= 50);
   const disqualified = tcpa.filter((m) => (m.disqualifyingFactors || []).length > 0);
 
-  // Attach recovery estimate to each match. Pure layered model — see
-  // src/lib/recoveryEstimate.js for the rubric.
-  const attachEstimate = (m) => {
+  // Attach recovery estimate + claim guidance to each match.
+  //   recovery: $ floor/ceiling (src/lib/recoveryEstimate.js)
+  //   guidance: what to prove, what to collect, where to file (src/lib/claimGuidance.js)
+  const attachEnrichment = (m) => {
     const est = estimateRecovery(client, m.case, { isQualifying: m.qualifies && m.score >= 50 });
-    return { match: m, estimate: est };
+    const guidance = claimGuidance(m.case, client);
+    return { match: m, estimate: est, guidance };
   };
-  const qualifyingWithEst   = qualifying.map(attachEstimate);
-  const watchlistWithEst    = watchlist.map(attachEstimate);
-  const disqualifiedWithEst = disqualified.map(attachEstimate);
+  const qualifyingWithEst   = qualifying.map(attachEnrichment);
+  const watchlistWithEst    = watchlist.map(attachEnrichment);
+  const disqualifiedWithEst = disqualified.map(attachEnrichment);
 
   // Roll up total potential recovery across QUALIFYING matches only.
   // (Watchlist + disqualified are excluded — they're speculative.)
@@ -66,9 +69,9 @@ export function buildClientReport({ client, matchResult }) {
         },
       },
     },
-    qualifyingCases:    qualifyingWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
-    watchlistCases:     watchlistWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
-    disqualifiedCases:  disqualifiedWithEst.map(({ match, estimate }) => ({ ...formatTcpaMatch(match), estimate })),
+    qualifyingCases:    qualifyingWithEst.map(({ match, estimate, guidance }) => ({ ...formatTcpaMatch(match), estimate, guidance })),
+    watchlistCases:     watchlistWithEst.map(({ match, estimate, guidance }) => ({ ...formatTcpaMatch(match), estimate, guidance })),
+    disqualifiedCases:  disqualifiedWithEst.map(({ match, estimate, guidance }) => ({ ...formatTcpaMatch(match), estimate, guidance })),
     massTortLeads:      leads.slice(0, 25).map(formatLeadMatch),
   };
 }
@@ -260,6 +263,12 @@ ${c.creditorHistory.length ? `
 <h2>Qualifying cases (${report.qualifyingCases.length})</h2>
 ${renderCaseTable(report.qualifyingCases) || `<div class="empty">No qualifying TCPA cases for this plaintiff at this time.</div>`}
 
+${report.qualifyingCases.length ? `
+<h2>Filing playbook — what to do, per match</h2>
+<p style="font-size:11px;color:#666;margin:0 0 14px">For each qualifying match, this is the pathway, deadline, what the plaintiff must prove, and what documents to collect from them at intake.</p>
+${report.qualifyingCases.map(renderGuidance).join("")}
+` : ""}
+
 ${report.watchlistCases.length ? `
 <h2>Watchlist (${report.watchlistCases.length})</h2>
 <p style="font-size:11px;color:#666;margin:0 0 10px">Strong score but disqualified or incomplete data — worth re-evaluating with attorney review.</p>
@@ -336,6 +345,79 @@ function scoreClass(score) {
   if (score >= 75) return "score-high";
   if (score >= 50) return "score-mid";
   return "score-low";
+}
+
+function actionablePill(actionable) {
+  if (actionable === "now")
+    return `<span style="display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;background:#dcfce7;color:#15803d;border:1px solid #86efac">ACTIONABLE NOW</span>`;
+  if (actionable === "if_certified")
+    return `<span style="display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d">IF CLASS CERTIFIED</span>`;
+  if (actionable === "closed")
+    return `<span style="display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;background:#f3f4f6;color:#6b7280;border:1px solid #d1d5db">CLOSED — BENCHMARK</span>`;
+  return `<span style="display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;background:#e0e7ff;color:#3730a3;border:1px solid #c7d2fe">REVIEW REQUIRED</span>`;
+}
+
+function renderGuidance(m) {
+  const g = m.guidance;
+  if (!g) return "";
+  return `
+<div style="margin-bottom:20px;padding:16px 18px;background:#fafafa;border:1px solid #e5e5ee;border-radius:8px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:700;font-size:13px;color:#0b0c14;margin-bottom:2px">${escapeHtml(m.caption || "—")}</div>
+      <div style="font-size:10px;color:#666">${escapeHtml(g.caseType)} · ${escapeHtml(g.statute || "")}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      ${actionablePill(g.actionable)}
+      ${g.deadline ? `<div style="font-size:10px;color:#b91c1c;font-weight:700;margin-top:4px">Deadline: ${escapeHtml(fmtDate(g.deadline))}</div>` : ""}
+    </div>
+  </div>
+
+  <div style="padding:10px 12px;background:#fff;border-radius:6px;border:1px solid #e5e5ee;margin-bottom:10px">
+    <div style="font-size:11px;font-weight:700;color:#0b0c14;margin-bottom:4px">${escapeHtml(g.headline || "")}</div>
+    <div style="font-size:11px;color:#444;line-height:1.5">${escapeHtml(g.filingMechanism || "")}</div>
+    ${g.portalUrl ? `<div style="font-size:10px;margin-top:6px"><a href="${escapeHtml(g.portalUrl)}" target="_blank">Claim portal ↗</a></div>` : ""}
+    ${g.seedCitation ? `<div style="font-size:9px;color:#888;margin-top:4px">Settlement reference: ${escapeHtml(g.seedCitation)}</div>` : ""}
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#888;font-weight:700;margin-bottom:6px">What must be proved</div>
+      <ul style="margin:0;padding-left:18px;font-size:10px;color:#333;line-height:1.5">
+        ${(g.elementsToPlead || []).map((e) => `<li>${escapeHtml(e)}</li>`).join("")}
+      </ul>
+    </div>
+    <div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#888;font-weight:700;margin-bottom:6px">Documents to collect from plaintiff</div>
+      <ul style="margin:0;padding-left:18px;font-size:10px;color:#333;line-height:1.5">
+        ${(g.documentsToCollect || []).map((d) => `<li>${escapeHtml(d)}</li>`).join("")}
+      </ul>
+    </div>
+  </div>
+
+  ${g.factualQuestionsForIntake?.length ? `
+    <div style="margin-top:12px">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#888;font-weight:700;margin-bottom:6px">Intake questions to confirm eligibility</div>
+      <ul style="margin:0;padding-left:18px;font-size:10px;color:#333;line-height:1.5">
+        ${g.factualQuestionsForIntake.map((q) => `<li>${escapeHtml(q)}</li>`).join("")}
+      </ul>
+    </div>
+  ` : ""}
+
+  ${g.redFlags?.length ? `
+    <div style="margin-top:12px;padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:6px">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:#b91c1c;font-weight:700;margin-bottom:4px">Red flags — disqualifies the match if any apply</div>
+      <ul style="margin:0;padding-left:18px;font-size:10px;color:#7f1d1d;line-height:1.5">
+        ${g.redFlags.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}
+      </ul>
+    </div>
+  ` : ""}
+
+  <div style="margin-top:10px;font-size:10px;color:#666;display:flex;justify-content:space-between;gap:10px">
+    <div>Recovery: <strong style="color:#15803d">${escapeHtml(formatUSD(m.estimate?.floor || 0))} – ${escapeHtml(formatUSD(m.estimate?.ceiling || 0))}</strong> (${escapeHtml(g.knownPerClaimant || g.perViolationStatutory || "—")})</div>
+    ${g.classPeriod?.start || g.classPeriod?.end ? `<div>Class period: ${escapeHtml(fmtDate(g.classPeriod.start))} → ${escapeHtml(fmtDate(g.classPeriod.end))}</div>` : ""}
+  </div>
+</div>`;
 }
 
 // ── CSV export ───────────────────────────────────────────────────────────────

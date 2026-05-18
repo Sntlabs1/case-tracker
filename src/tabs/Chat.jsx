@@ -69,13 +69,24 @@ PLAINTIFF / CLIENT TOOLS — use these when the user names a PERSON (one of OUR 
 
 How to answer "what is <plaintiff> eligible for":
   1. search_clients(name) → find them (returns id + match count)
-  2. get_client_matches(id) → returns qualifying cases with $ estimates
-  3. Answer in plain English: "<Name> qualifies for N cases totaling $X–$Y. Strongest: <caption>, score <S>. Claim window closes in <D> days for <case>..."
+  2. get_client_matches(id) → returns qualifying cases with $ estimates AND filing guidance per match
+  3. Answer in plain English. For EACH actionable match, surface:
+     • What the pathway is (settlement claim / class member / individual lawsuit)
+     • The deadline (if any) and how urgent it is
+     • What MUST be proved (the elementsToPlead — what facts need to be true)
+     • What documents to collect from the plaintiff (the documentsToCollect list)
+     • Any red flags that would disqualify the plaintiff
+     • Recovery $ floor–ceiling and the method (statutory vs. known per-claimant)
+  4. Prioritize ACTIONABLE matches (actionable="now" or "if_certified") over closed-benchmark matches.
+
+ALWAYS include filing-playbook information when the user asks about a plaintiff — do not just list cases without telling them what to PROVE and what to COLLECT. The whole point of this platform is converting "client X qualifies" into "here's exactly what attorney triage needs."
 
 How eligibility / scoring works (so you can explain WHY a match qualifies or fails):
-  • Hard disqualifiers: tcpaOptOut=true, already-claimed settlement, case status=claim_closed, statute of limitations >4y since most recent contact
-  • Score signals (out of 100): +40 defendant exact match (canonical ID hit in client.collectionsHistory ↔ case.defendants), +25 defendant family / substring match, +15 state eligibility (or nationwide class), +15 residency window overlaps class period, +10 valid US phone, +5 prior TCPA/FDCPA familiarity in existingCases
-  • Qualifies = true requires score ≥ 50 AND no disqualifiers — and crucially, a defendant link (max score WITHOUT defendant is 45, so it caps under threshold)
+  • Hard disqualifiers: tcpaOptOut=true, already-claimed settlement, case status=claim_closed
+  • Soft signal (drops confidence but doesn't disqualify): client's residency dates don't overlap class period
+  • SOL (4-year) bars new lawsuits but NOT claims in already-settled cases (the class's own filing date controls)
+  • Score signals (out of 100): +40 defendant exact match (canonical ID hit in client.collectionsHistory ↔ case.defendants), +25 defendant family / substring match, +15 state eligibility (or nationwide class), +15 residency window overlaps class period, +10 valid US phone, +5 prior TCPA/FDCPA familiarity
+  • Qualifies = true requires score ≥ 50 AND no hard disqualifiers — and crucially, a defendant link (max score WITHOUT defendant is 45)
   • Recovery model: settled cases with parseable per-claimant amounts use that; otherwise TCPA $500–$1500/violation (47 USC § 227(b)(3)), FDCPA $500–$1000 (15 USC § 1692k), FCRA $100–$1000 (15 USC § 1681n); violation count from contactDates / contactMethods, default 1
 
 When answering:
