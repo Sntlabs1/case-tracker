@@ -9,7 +9,9 @@
     { "path": "/api/agents?run=source-monitor", "schedule": "30 * * * *" },
     { "path": "/api/agents?run=tcpa-backfill", "schedule": "45 * * * *" },
     { "path": "/api/agents?run=match-recompute", "schedule": "5 * * * *" },
-    { "path": "/api/agents?run=case-tracker", "schedule": "30 6 * * *" }
+    { "path": "/api/agents?run=case-tracker", "schedule": "30 6 * * *" },
+    { "path": "/api/agents?run=settlement-enrichment", "schedule": "10 5 * * *" },
+    { "path": "/api/agents?run=class-definition-extractor", "schedule": "20 5 * * *" }
   ],
   "functions": {
     "api/scan.js": {

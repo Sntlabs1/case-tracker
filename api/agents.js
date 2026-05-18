@@ -16,6 +16,8 @@ import tcpaBackfill from "./_agents/tcpa-backfill.js";
 import matchRecompute from "./_agents/match-recompute.js";
 import caseTracker from "./_agents/case-tracker.js";
 import plaintiffBackfill from "./_agents/plaintiff-backfill.js";
+import settlementEnrichment from "./_agents/settlement-enrichment.js";
+import classDefinitionExtractor from "./_agents/class-definition-extractor.js";
 
 // Static registry — explicit imports keep cold-start predictable.
 const REGISTRY = [
@@ -25,6 +27,8 @@ const REGISTRY = [
   matchRecompute,
   caseTracker,
   plaintiffBackfill,
+  settlementEnrichment,
+  classDefinitionExtractor,
 ];
 
 const HISTORY_LEN = 50;

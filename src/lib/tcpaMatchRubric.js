@@ -133,16 +133,23 @@ export function scoreTcpaPair(client, caseRecord) {
   }
 
   // ── Residency / class period overlap ──────────────────────────────────────
+  // Period overlap is a +15 bonus when confirmed. When the case has a class
+  // period AND the client's residency does NOT overlap, we DO NOT disqualify
+  // — class-period data quality varies by source (Westlaw editor summaries,
+  // hand-curated seeds, agent extractions), and a strict-disqualify policy
+  // makes us brittle to data noise. Drop confidence and flag for review.
+  // Hard disqualifiers are reserved for unambiguous signals (opt-out,
+  // claim-closed, already-claimed).
   const overlap = computeResidencyOverlap(client, caseRecord);
   if (overlap.overlaps) {
     score += RULE_WEIGHTS.RESIDENCY_OVERLAP;
     matchingFactors.push(`Residency overlaps class period (${overlap.basis})`);
     confidenceContributors += 15;
     if (matchType === "none" || matchType === "state-eligibility") matchType = "state+period";
-  } else if (overlap.basis === "no-class-period") {
-    // Can't penalize — just don't credit.
   } else if (overlap.basis === "out-of-period") {
-    disqualifyingFactors.push("Client residency outside class period");
+    // Soft signal — note for attorney review, don't disqualify.
+    matchingFactors.push("Period overlap unconfirmed — attorney review");
+    confidenceContributors -= 10;
   }
 
   // ── SOL check ─────────────────────────────────────────────────────────────
@@ -238,8 +245,17 @@ function computeResidencyOverlap(client, caseRecord) {
 }
 
 function isSolExpired(client, caseRecord) {
-  // SOL = 4 yrs from the most recent contact (or class period end if no contact data).
-  // If there's no class period and no collections history, we can't determine — return false (no penalty).
+  // SOL bars filing a NEW lawsuit more than 4 yrs after the violation.
+  // It does NOT bar filing a CLAIM in an existing class settlement — the
+  // class action's filing date controls, not the individual claimant's.
+  // So skip SOL for cases that are already settled / in-claim-window.
+  const status = caseRecord?.status;
+  if (status === "settled" || status === "claim_open") return false;
+  // claim_closed is its own disqualifier (handled separately); dismissed
+  // doesn't matter (the case is dead either way).
+
+  // For ACTIVE / unfiled-case scenarios, SOL = 4 yrs from most recent contact
+  // (or class period end if no contact data). If neither known, can't tell.
   const lastContact = mostRecentContact(client);
   const cpEnd = caseRecord.classPeriod?.end ? Date.parse(caseRecord.classPeriod.end) : null;
   const referenceDate = lastContact ?? cpEnd;
