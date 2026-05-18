@@ -216,6 +216,21 @@ function buildClientRecord(c, idx, now) {
     partnerId:          c.partnerId || "manual",
     contactRights:      c.contactRights || null,
     tcpaOptOut:         c.tcpaOptOut === true,
+    // ── Full credit-report fields (from PDF/JSON ingestion) ────────────────
+    // creditAccounts includes ALL tradelines (cards, loans, mortgages,
+    // collections, closed) — every creditor is a potential TCPA defendant.
+    creditAccounts:         Array.isArray(c.creditAccounts)         ? c.creditAccounts         : [],
+    bankruptcies:           Array.isArray(c.bankruptcies)           ? c.bankruptcies           : [],
+    civilJudgments:         Array.isArray(c.civilJudgments)         ? c.civilJudgments         : [],
+    taxLiens:               Array.isArray(c.taxLiens)               ? c.taxLiens               : [],
+    creditInquiries:        Array.isArray(c.creditInquiries)        ? c.creditInquiries        : [],
+    creditReportAlerts:     Array.isArray(c.creditReportAlerts)     ? c.creditReportAlerts     : [],
+    employmentHistory:      Array.isArray(c.employmentHistory)      ? c.employmentHistory      : [],
+    creditReportSummary:    c.creditReportSummary    || null,
+    creditScore:            c.creditScore            || null,
+    lastCreditReportAt:     c.lastCreditReportAt     || null,
+    lastCreditReportBureau: c.lastCreditReportBureau || null,
+    ssnLast4:               c.ssnLast4               || null,
   };
 }
 
@@ -251,9 +266,21 @@ function mergeClientRecords(existing, fresh) {
   if (fresh.email) merged.email = fresh.email;
   if (fresh.phoneHash) merged.phoneHash = fresh.phoneHash;
   if (fresh.emailHash) merged.emailHash = fresh.emailHash;
-  // Credit.com wins for collectionsHistory if present
+  // Credit report data: fresh wins (newer report supersedes)
   if (fresh.collectionsHistory?.length) merged.collectionsHistory = fresh.collectionsHistory;
-  // Address history union
+  if (fresh.creditAccounts?.length)     merged.creditAccounts     = fresh.creditAccounts;
+  if (fresh.bankruptcies?.length)       merged.bankruptcies       = fresh.bankruptcies;
+  if (fresh.civilJudgments?.length)     merged.civilJudgments     = fresh.civilJudgments;
+  if (fresh.taxLiens?.length)           merged.taxLiens           = fresh.taxLiens;
+  if (fresh.creditInquiries?.length)    merged.creditInquiries    = fresh.creditInquiries;
+  if (fresh.creditReportAlerts?.length) merged.creditReportAlerts = fresh.creditReportAlerts;
+  if (fresh.employmentHistory?.length)  merged.employmentHistory  = fresh.employmentHistory;
+  if (fresh.creditReportSummary)        merged.creditReportSummary = fresh.creditReportSummary;
+  if (fresh.creditScore)                merged.creditScore         = fresh.creditScore;
+  if (fresh.lastCreditReportAt)         merged.lastCreditReportAt  = fresh.lastCreditReportAt;
+  if (fresh.lastCreditReportBureau)     merged.lastCreditReportBureau = fresh.lastCreditReportBureau;
+  if (fresh.ssnLast4)                   merged.ssnLast4            = fresh.ssnLast4;
+  // Address history: union (keep full timeline)
   merged.addressHistory = [...(existing.addressHistory || []), ...(fresh.addressHistory || [])];
   // OR opt-out (once opted out, stays opted out)
   merged.tcpaOptOut = !!(existing.tcpaOptOut || fresh.tcpaOptOut);

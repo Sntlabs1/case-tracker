@@ -566,6 +566,56 @@ function MatchResult({ match, rank }) {
   );
 }
 
+// ── URL-based ingest panel (for large files from credit.com download links) ──
+function UrlIngestPanel({ partner, onStart }) {
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+  const [open, setOpen] = useState(false);
+
+  async function submit() {
+    if (!url.trim()) return;
+    setLoading(true); setErr("");
+    try {
+      const r = await fetch("/api/ingest-credit-report-bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url.trim(), partner }),
+      });
+      const d = await r.json();
+      if (!d.jobId) throw new Error(d.error || "Failed to start");
+      onStart({ jobId: d.jobId, total: d.total || 0, processed: 0, pct: 0, status: "running", imported: 0, updated: 0, failed: 0 });
+    } catch (e) {
+      setErr(e.message);
+      setLoading(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <div style={{ marginBottom: 10 }}>
+        <button onClick={() => setOpen(true)} style={{ fontSize: 11, color: "var(--text-5)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", padding: 0 }}>
+          Ingest from URL (credit.com download link / S3)
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ marginBottom: 14, padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: "1px solid var(--border)" }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-3)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.07em" }}>Ingest from URL</div>
+      <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 8 }}>Paste a direct download URL (CSV or JSON). No size limit — streams directly from the source.</div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <input value={url} onChange={e => setUrl(e.target.value)} placeholder="https://files.credit.com/export/clients-2026-05.csv"
+          style={{ flex: 1, background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 6, padding: "8px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }} />
+        <Btn onClick={submit} disabled={loading || !url.trim()}>{loading ? "Starting…" : "Start"}</Btn>
+        <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-5)", fontSize: 12 }}>Cancel</button>
+      </div>
+      {err && <div style={{ fontSize: 11, color: "#ef4444", marginTop: 6 }}>{err}</div>}
+    </div>
+  );
+}
+
 // ── Import Wizard ─────────────────────────────────────────────────────────────
 function ImportWizard({ onImported }) {
   const [step, setStep] = useState("upload"); // upload → map → confirm → done
@@ -604,36 +654,81 @@ function ImportWizard({ onImported }) {
   };
 
   // ── Credit-report upload handler ─────────────────────────────────────────
+  const [crJob, setCrJob] = useState(null); // { jobId, pct, status, ... }
+  const crPollRef = useRef(null);
+
   async function handleCrFile(file) {
     if (!file) return;
     setCrFile(file);
-    setCrPreview({ status: "parsing", name: file.name, size: (file.size / 1024).toFixed(0) + " KB" });
+    setCrPreview({ status: "ready", name: file.name, size: (file.size / 1024 / 1024).toFixed(1) + " MB" });
+  }
+
+  function stopCrPoll() {
+    if (crPollRef.current) { clearInterval(crPollRef.current); crPollRef.current = null; }
+  }
+
+  async function pollJob(jobId) {
+    try {
+      const r = await fetch(`/api/ingest-job?id=${jobId}`);
+      const d = await r.json();
+      setCrJob(d);
+      if (d.status === "complete" || d.status === "error") {
+        stopCrPoll();
+        setResult({
+          imported:       d.imported || 0,
+          updated:        d.updated  || 0,
+          invalid:        d.failed   || 0,
+          queuedForMatch: d.imported + d.updated || 0,
+          errors:         (d.errors || []).slice(0, 10),
+        });
+        setStep("done");
+        onImported((d.imported || 0) + (d.updated || 0));
+        setImporting(false);
+      }
+    } catch { /* network blip — keep polling */ }
   }
 
   async function submitCrUpload(isBulk) {
     if (!crFile) return;
     setImporting(true);
+    setCrJob(null);
     try {
-      const endpoint = isBulk ? "/api/ingest-credit-report-bulk" : "/api/ingest-credit-report";
-      const fd = new FormData();
-      fd.append("file", crFile);
-      fd.append("partner", partnerId && partnerId !== "manual" ? partnerId : "credit_com");
-      const r = await fetch(endpoint, { method: "POST", body: fd });
-      const d = await r.json();
-      if (!d.ok) throw new Error(d.error || "Ingest failed");
-      setResult({
-        imported:       d.imported || (d.clientId ? 1 : 0),
-        updated:        d.updated  || 0,
-        invalid:        d.invalid  || d.failed || 0,
-        queuedForMatch: d.matchQueued || d.queuedForMatch || 0,
-        errors:         d.errors   || [],
-        name:           d.name,
-      });
-      setStep("done");
-      onImported((d.imported || 0) + (d.updated || 0) || 1);
+      const p = partnerId && partnerId !== "manual" ? partnerId : "credit_com";
+
+      if (isBulk) {
+        // Bulk path — job-based, poll for progress
+        const fd = new FormData();
+        fd.append("file", crFile);
+        fd.append("partner", p);
+        const r = await fetch("/api/ingest-credit-report-bulk", { method: "POST", body: fd });
+        const d = await r.json();
+        if (!d.ok && !d.jobId) throw new Error(d.error || "Ingest failed to start");
+        setCrJob({ jobId: d.jobId, total: d.total, processed: 0, pct: 0, status: "running",
+                   imported: 0, updated: 0, failed: 0 });
+        // Poll every 2 seconds
+        crPollRef.current = setInterval(() => pollJob(d.jobId), 2000);
+      } else {
+        // Single-report path — synchronous
+        const fd = new FormData();
+        fd.append("file", crFile);
+        fd.append("partner", p);
+        const r = await fetch("/api/ingest-credit-report", { method: "POST", body: fd });
+        const d = await r.json();
+        if (!d.ok) throw new Error(d.error || "Ingest failed");
+        setResult({
+          imported:       d.imported || (d.clientId ? 1 : 0),
+          updated:        d.updated  || 0,
+          invalid:        d.failed   || 0,
+          queuedForMatch: d.matchQueued || d.queuedForMatch || 0,
+          errors:         d.errors   || [],
+          name:           d.name,
+        });
+        setStep("done");
+        onImported((d.imported || 0) + (d.updated || 0) || 1);
+        setImporting(false);
+      }
     } catch (e) {
       setCrPreview(p => ({ ...p, status: "error", error: e.message }));
-    } finally {
       setImporting(false);
     }
   }
@@ -879,15 +974,42 @@ function ImportWizard({ onImported }) {
             </div>
           )}
 
-          {crFile && (
+          {/* Live progress bar for bulk jobs */}
+          {crJob && crJob.status === "running" && (
+            <div style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--text-5)", marginBottom: 6 }}>
+                <span>Processing {(crJob.processed || 0).toLocaleString()} / {(crJob.total || 0).toLocaleString()} records</span>
+                <span>{crJob.pct || 0}%</span>
+              </div>
+              <div style={{ height: 8, borderRadius: 4, background: "var(--bg-surface2)", overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${crJob.pct || 0}%`, background: "var(--accent)", borderRadius: 4, transition: "width 0.5s" }} />
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
+                {[["New", crJob.imported || 0, "#22c55e"], ["Merged", crJob.updated || 0, "#3b82f6"], ["Failed", crJob.failed || 0, "#ef4444"]].map(([label, val, color]) => (
+                  <div key={label} style={{ padding: "8px 10px", borderRadius: 6, background: "var(--bg-surface2)", border: "1px solid var(--border)", textAlign: "center" }}>
+                    <div style={{ fontSize: 18, fontWeight: 800, color, lineHeight: 1 }}>{val.toLocaleString()}</div>
+                    <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {crFile && !crJob && (
             <div style={{ display: "flex", gap: 10 }}>
               <Btn onClick={() => submitCrUpload(false)} disabled={importing} style={{ flex: 1 }}>
-                {importing ? "Extracting & saving…" : "Upload single report"}
+                {importing ? "Extracting & saving…" : "Single report (PDF / JSON)"}
               </Btn>
               <Btn onClick={() => submitCrUpload(true)} disabled={importing} style={{ flex: 1, background: "var(--bg-surface2)", color: "var(--text-2)", border: "1px solid var(--border)" }}>
-                {importing ? "Processing…" : "Bulk upload (CSV with many clients)"}
+                {importing ? "Starting…" : "Bulk upload (CSV — millions of records)"}
               </Btn>
             </div>
+          )}
+
+          {/* URL-based ingest for large files */}
+          {!crJob && (
+            <UrlIngestPanel partner={partnerId && partnerId !== "manual" ? partnerId : "credit_com"}
+              onStart={(job) => { setCrJob(job); setImporting(true); crPollRef.current = setInterval(() => pollJob(job.jobId), 2000); }} />
           )}
 
           <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: "1px solid var(--border)", fontSize: 11, color: "var(--text-5)", lineHeight: 1.7 }}>

@@ -45,23 +45,26 @@ function detectFormat(text) {
 // Output MUST be valid JSON matching buildCreditReport()'s input shape.
 // Haiku is instructed to use null for missing fields and to never invent data.
 
-const EXTRACTION_PROMPT = `You are a credit report data extractor. Extract ALL information from the credit report text below into the exact JSON schema provided.
+const EXTRACTION_PROMPT = `You are a credit report data extractor for a plaintiff law firm. Extract EVERY piece of information from the credit report text below. We use this data to identify TCPA/FDCPA/FCRA claims, so completeness is critical.
 
-RULES:
-- Extract EVERY tradeline / account — credit cards, auto loans, mortgages, student loans, collections, ALL of them. They are ALL potential TCPA defendants.
-- For payment history strings: normalise to these codes: C=paid, 1=30d late, 2=60d late, 3=90d late, 4=120d late, 5=150d+ late, 8=repo, 9=collection/CO, -=no data, X=not reported. Left = most recent.
-- For TransUnion format: "1" in payment pattern = paid as agreed (→ map to "C"), "2" = 30d (→"1"), "3" = 60d (→"2"), "4" = 90d (→"3"), "5" = 120d+ (→"4"), "X" = not reported.
-- Late payment counts: count 1s, 2s, 3s in the normalised string for d30/d60/d90.
-- If the report has two consumers (joint report), return consumer[0] for the primary and add consumer2 as a top-level extra field.
-- SSN: only the last 4 digits. NEVER store full SSN.
-- Dates: ISO YYYY-MM-DD format. If only month/year → use YYYY-MM-01.
-- Missing fields → null. Never fabricate data.
-- bureauSources: array of which bureaus reported this account, e.g. ["TU","EX","EQ"].
-- For collections: creditor = the COLLECTION AGENCY, originalCreditor = the ORIGINAL CREDITOR.
-- isCollection: true if this account is in collection, charged off, or "placed for collection".
-- responsibility values: "individual", "joint", "co_signer", "authorized_user", "co_applicant".
+CRITICAL RULES:
+1. ACCOUNTS: Extract EVERY account — open, closed, zero-balance, charged-off, collections, mortgages, auto loans, student loans, store cards, EVERYTHING. Closed accounts with $0 balance are still TCPA defendants (they called during the account relationship). Do NOT skip them.
+2. PAYMENT HISTORY: Normalise all formats to: C=paid-as-agreed, 1=30d-late, 2=60d-late, 3=90d-late, 4=120d-late, 5=150d+, 8=repo, 9=collection/charge-off, -=no-data, X=not-reported. Left digit = most recent month. For TransUnion "Pmt Pattern" format: their "1"=paid→our "C", their "2"=30d→our "1", their "3"=60d→our "2", their "4"=90d→our "3", their "5"=120d+→our "4", "X"=X.
+3. LATE COUNTS: Count 1s, 2s, 3s in the normalised string for d30/d60/d90 fields.
+4. EMPLOYMENT: Extract ALL employment records — employer name, position/title, city/state, hire date, as reported by each bureau. Include all variations (each bureau may report differently).
+5. PUBLIC RECORDS: Extract ALL bankruptcies (Ch7/Ch11/Ch13), civil judgments, AND tax liens. For each: court, docket, disposition, dates filed/discharged/closed, assets, liabilities, attorney, plaintiff, defendant.
+6. LIENS & JUDGMENTS: If the report has a "Liens and Judgments Search" section, extract every record. Use type="civil_judgment" for judgments and "tax_lien_paid"/"tax_lien_unpaid" for liens.
+7. INQUIRIES: Extract ALL — both hard (regular) and soft (account review/promotional). Note the bureau and inquiry type.
+8. ADDRESSES: Extract ALL reported addresses with dates (from/to) and which bureau reported each. The full address history is used for geographic eligibility matching.
+9. JOINT REPORTS: If two consumers (e.g., Stretto joint report), primary consumer goes in "consumer", second goes in "consumer2" at the top level.
+10. CREDIT SCORE: Extract the credit score if shown (e.g., "Your Credit Score is 650" or score table).
+11. SSN: ONLY last 4 digits. NEVER extract full SSN.
+12. DATES: ISO YYYY-MM-DD. Month/year only → YYYY-MM-01. Missing → null.
+13. AMOUNTS: Parse dollar amounts to numbers (remove $, commas). Missing → null.
+14. COLLECTIONS: creditor = the COLLECTION AGENCY name, originalCreditor = the ORIGINAL CREDITOR they collected for.
+15. Never fabricate. Return null for missing fields.
 
-Return ONLY the JSON object, no markdown fences, no commentary.
+Return ONLY the JSON object. No markdown. No commentary.
 
 SCHEMA:
 {
@@ -69,6 +72,7 @@ SCHEMA:
   "reportNumber": "string or null",
   "bureau": "TU | EX | EQ | joint | credit_com | unknown",
   "sourceFormat": "pdf",
+  "creditScore": null,
   "consumer": {
     "firstName": "string",
     "lastName": "string",
@@ -80,15 +84,16 @@ SCHEMA:
     "currentAddress": { "street": "", "city": "", "state": "XX", "zip": "" },
     "addressHistory": [{ "street": "", "city": "", "state": "XX", "zip": "", "from": "YYYY-MM-DD or null", "to": "YYYY-MM-DD or null", "bureau": "TU|EX|EQ or null" }],
     "aliases": [{ "firstName": "", "lastName": "", "type": "maiden|other" }],
-    "employmentHistory": [{ "employer": "", "position": "", "start": "YYYY-MM-DD or null", "end": "YYYY-MM-DD or null", "bureau": "TU|EX|EQ or null" }]
+    "employmentHistory": [{ "employer": "", "position": "", "city": "", "state": "", "start": "YYYY-MM-DD or null", "end": "YYYY-MM-DD or null", "bureau": "TU|EX|EQ or null" }]
   },
+  "consumer2": null,
   "accounts": [
     {
-      "creditor": "NAME OF LENDER/COLLECTOR",
-      "originalCreditor": "null or original creditor for collection accounts",
-      "accountNumber": "masked account number",
+      "creditor": "NAME OF LENDER OR COLLECTION AGENCY",
+      "originalCreditor": "null or name of original creditor (for collection accounts)",
+      "accountNumber": "masked account number e.g. XXXXXX4645",
       "type": "revolving|installment|mortgage|open|collection|other",
-      "loanType": "Credit Card|Automobile|Student Loan|Mortgage|Secured|Medical|Other",
+      "loanType": "Credit Card|Automobile|Student Loan|Mortgage|Secured|Medical|Utility|Other",
       "status": "open_current|open_past_due|closed_paid|closed_charged_off|in_collection|in_dispute|bankruptcy|unknown",
       "responsibility": "individual|joint|co_signer|authorized_user|co_applicant|unknown",
       "dateOpened": "YYYY-MM-DD or null",
@@ -100,28 +105,34 @@ SCHEMA:
       "creditLimit": 0,
       "monthlyPayment": 0,
       "pastDue": 0,
-      "paymentHistory": "CCCCC1CCC",
+      "paymentHistory": "CCCCC1CCC (normalised — see rule 2)",
       "latePayments": { "d30": 0, "d60": 0, "d90": 0 },
-      "remarks": [],
+      "remarks": ["any remarks like ACCOUNT IN DISPUTE, CLOSED BY CONSUMER, etc."],
       "isCollection": false,
       "amountPlacedForCollection": null,
       "datePlacedForCollection": null,
-      "bureauSources": ["TU"]
+      "creditorAddress": { "street": "", "city": "", "state": "", "zip": "", "phone": "" },
+      "bureauSources": ["TU", "EX", "EQ"]
     }
   ],
   "publicRecords": [
     {
       "type": "bankruptcy_ch7|bankruptcy_ch11|bankruptcy_ch13|civil_judgment|tax_lien_paid|tax_lien_unpaid|other",
-      "docket": null,
-      "court": null,
-      "plaintiff": null,
-      "attorney": null,
-      "responsibility": "individual",
-      "dateFiled": null,
-      "dateDischarged": null,
-      "dateClosed": null,
+      "docket": "docket or case number",
+      "court": "court name",
+      "plaintiff": "plaintiff name",
+      "defendant": "defendant name",
+      "attorney": "attorney name",
+      "obligation": "debt type (e.g. Consumer Debt)",
+      "responsibility": "individual|joint",
+      "dateFiled": "YYYY-MM-DD or null",
+      "dateDischarged": "YYYY-MM-DD or null",
+      "dateClosed": "YYYY-MM-DD or null",
       "assets": null,
       "liabilities": null,
+      "originalBalance": null,
+      "currentBalance": null,
+      "disposition": "filed|discharged|dismissed|satisfied",
       "bureauSources": []
     }
   ],
