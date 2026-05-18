@@ -6,8 +6,14 @@
 // escalate to Haiku.
 //
 // Scoring:
-//   +40  Defendant exact canonical-ID hit in client.collectionsHistory
-//   +25  Defendant parent / subsidiary match
+//   +40  Defendant exact canonical-ID hit in client.collectionsHistory/creditAccounts
+//   +30  Creditor-to-buyer chain match (DIRECT): case defendant is a known buyer of
+//        a creditor on the client's credit report — e.g. credit report shows "Chase",
+//        case defendant is "Midland Funding" which is a documented Chase buyer
+//   +25  Defendant parent / subsidiary name match (fuzzy substring)
+//   +20  Creditor-to-buyer chain match (CATEGORY): same buyer family but not explicitly
+//        mapped — e.g. credit report shows "Barclays", case defendant is "Midland Funding"
+//        which is in the same buyer pool as mapped Barclays buyers
 //   +15  client.state ∈ case.eligibleStates  (or case.geographicScope = "nationwide")
 //   +15  Client residency window overlaps case.classPeriod
 //   +10  Phone is valid US 10-digit and not on opt-out list
@@ -21,17 +27,21 @@
 //
 // Confidence: rough proxy for "how sure are we about this score?"
 //   - 90+  : exact defendant hit + state + period overlap
-//   - 75-89: parent/subsidiary defendant OR weak period overlap
+//   - 75-89: chain/family defendant match + state OR period overlap
 //   - 60-74: state + period only, no defendant link → escalate to Haiku
 //   - < 60 : insufficient data → escalate to Haiku
 
+import { chainMatch, getTypicalCreditors } from "./debtCollectorMap.js";
+
 export const RULE_WEIGHTS = {
-  DEFENDANT_EXACT:      40,
-  DEFENDANT_FAMILY:     25,
-  STATE_OR_NATIONWIDE:  15,
-  RESIDENCY_OVERLAP:    15,
-  VALID_PHONE:          10,
-  PRIOR_FAMILIARITY:     5,
+  DEFENDANT_EXACT:        40,
+  CHAIN_MATCH_DIRECT:     30,
+  DEFENDANT_FAMILY:       25,
+  CHAIN_MATCH_CATEGORY:   20,
+  STATE_OR_NATIONWIDE:    15,
+  RESIDENCY_OVERLAP:      15,
+  VALID_PHONE:            10,
+  PRIOR_FAMILIARITY:       5,
 };
 
 export const DISQUALIFY = {
@@ -127,6 +137,71 @@ export function scoreTcpaPair(client, caseRecord) {
       matchType = "parent-subsidiary";
       confidenceContributors += 25;
     }
+
+    // ── Creditor-to-buyer chain match ──────────────────────────────────────
+    // The case defendant is a debt BUYER. The client's credit report shows the
+    // ORIGINAL CREDITOR that sold the account to the buyer. We bridge that gap
+    // here using the documented creditor→buyer relationships in debtCollectorMap.
+    //
+    // Example: credit report says "Chase" → case defendant is "Midland Funding"
+    //          → chainMatch("Chase","Midland Funding") = "direct" → +30
+    //
+    // We only run this when we haven't already found a stronger match.
+    if (!exactDefendantHit && !familyHit) {
+      let bestChain = null;
+      let chainCreditor = null;
+      let chainDefendant = null;
+
+      // Check each case defendant against each creditor on the client's report
+      outer: for (const caseName of caseDefendantNames) {
+        for (const credName of clientCreditorNames) {
+          const result = chainMatch(credName, caseName);
+          if (result === "direct") {
+            bestChain = "direct";
+            chainCreditor = credName;
+            chainDefendant = caseName;
+            break outer;
+          }
+          if (result === "category" && bestChain !== "direct") {
+            bestChain = "category";
+            chainCreditor = credName;
+            chainDefendant = caseName;
+          }
+        }
+      }
+
+      // Also check reverse: given the case defendant (a buyer), do we know which
+      // creditors it buys from, and does the client have any of those creditors?
+      if (!bestChain) {
+        for (const caseName of caseDefendantNames) {
+          const knownCreditors = getTypicalCreditors(caseName);
+          for (const known of knownCreditors) {
+            for (const clientCred of clientCreditorNames) {
+              if (clientCred.includes(known) || known.includes(clientCred)) {
+                bestChain = "direct";
+                chainCreditor = clientCred;
+                chainDefendant = caseName;
+                break;
+              }
+            }
+            if (bestChain) break;
+          }
+          if (bestChain) break;
+        }
+      }
+
+      if (bestChain === "direct") {
+        score += RULE_WEIGHTS.CHAIN_MATCH_DIRECT;
+        matchingFactors.push(`Creditor-to-buyer chain (direct): "${chainCreditor}" account → "${chainDefendant}" is a documented buyer`);
+        matchType = "chain-direct";
+        confidenceContributors += 35;
+      } else if (bestChain === "category") {
+        score += RULE_WEIGHTS.CHAIN_MATCH_CATEGORY;
+        matchingFactors.push(`Creditor-to-buyer chain (category): "${chainCreditor}" account → "${chainDefendant}" is in the same buyer pool`);
+        matchType = "chain-category";
+        confidenceContributors += 20;
+      }
+    }
   }
 
   // ── Geographic eligibility ────────────────────────────────────────────────
@@ -195,6 +270,12 @@ export function scoreTcpaPair(client, caseRecord) {
   let confidence = Math.min(95, confidenceContributors);
   if (exactDefendantHit && overlap.overlaps && (isNationwide || caseStates.has(clientState))) {
     confidence = Math.max(confidence, 90);
+  } else if (matchType === "chain-direct" && (isNationwide || caseStates.has(clientState))) {
+    confidence = Math.max(confidence, 78);  // documented buyer chain + geography = strong
+  } else if (matchType === "chain-direct") {
+    confidence = Math.max(confidence, 70);  // documented chain, geography unconfirmed
+  } else if (matchType === "chain-category") {
+    confidence = Math.min(confidence, 68);  // same buyer pool, needs attorney review
   } else if (matchType === "state+period") {
     confidence = Math.min(confidence, 65);
   } else if (matchType === "state-eligibility") {
