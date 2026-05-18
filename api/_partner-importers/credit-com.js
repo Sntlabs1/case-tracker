@@ -1,8 +1,28 @@
-// Credit.com partner importer.
+// Credit.com partner importer — auto-dispatching entry.
 //
-// Maps a Credit.com client row (with loose field names) onto the canonical
-// shape expected by buildClientRecord() in api/clients.js. Each partner gets
-// its own importer module so adding partner N+2 is a one-file change.
+// Two input shapes supported transparently:
+//
+//   1. Full credit-report JSON (canonical or per-bureau nested) — routes to
+//      credit-com-json.js which produces the rich creditAccounts[] +
+//      bankruptcies[] + civilJudgments[] + creditInquiries[] arrays.
+//
+//   2. Legacy flat shape with collections[] (or collectionsHistory[]) —
+//      kept here for backward compat. Returns the simpler client shape.
+//
+// Auto-detect: if the input has `accounts`, `tradelines`, `publicRecords`,
+// `consumer`, or a recognized per-bureau bucket (TransUnion / Experian /
+// Equifax / TU / EX / EQ), we route through the rich importer.
+
+import richImporter from "./credit-com-json.js";
+
+function looksRich(c) {
+  if (!c || typeof c !== "object") return false;
+  if (Array.isArray(c.accounts) || Array.isArray(c.tradelines)) return true;
+  if (c.consumer && typeof c.consumer === "object") return true;
+  if (Array.isArray(c.publicRecords)) return true;
+  const bureauKeys = ["TransUnion","Experian","Equifax","tu","ex","eq","TU","EX","EQ","transunion","experian","equifax"];
+  return bureauKeys.some((k) => c[k] && typeof c[k] === "object");
+}
 
 function normalizePhone(raw) {
   if (!raw) return "";
@@ -13,6 +33,18 @@ function normalizePhone(raw) {
 }
 
 export default function normalize(c) {
+  // Rich credit-report payload → route to JSON importer
+  if (looksRich(c)) {
+    try {
+      return richImporter(c);
+    } catch {
+      // fall through to flat
+    }
+  }
+  return legacyFlatNormalize(c);
+}
+
+function legacyFlatNormalize(c) {
   const phones = []
     .concat(c.phone, c.phones, c.mobile, c.home_phone, c.cell)
     .filter(Boolean)

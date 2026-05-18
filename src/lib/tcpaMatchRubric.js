@@ -71,6 +71,10 @@ export function scoreTcpaPair(client, caseRecord) {
   }
 
   // ── Defendant match (the load-bearing signal) ──────────────────────────────
+  // We scan BOTH client.collectionsHistory (legacy, FDCPA-shaped) AND
+  // client.creditAccounts (full credit report — every tradeline). Any
+  // creditor on the client's credit report is a potential TCPA defendant if
+  // they autodialed / prerecorded calls — not just collection agencies.
   const caseDefendantIds = new Set((caseRecord.defendants || []).map((d) => d.canonicalId).filter(Boolean));
   const caseDefendantNames = new Set((caseRecord.defendants || []).map((d) => (d.displayName || "").toLowerCase()));
   const clientCreditorIds = new Set();
@@ -80,6 +84,12 @@ export function scoreTcpaPair(client, caseRecord) {
     if (entry.debtBuyerCanonicalId) clientCreditorIds.add(entry.debtBuyerCanonicalId);
     if (entry.creditor) clientCreditorNames.add(entry.creditor.toLowerCase());
     if (entry.debtBuyer) clientCreditorNames.add(entry.debtBuyer.toLowerCase());
+  }
+  for (const account of (client.creditAccounts || [])) {
+    if (account.creditorCanonicalId) clientCreditorIds.add(account.creditorCanonicalId);
+    if (account.originalCreditorCanonicalId) clientCreditorIds.add(account.originalCreditorCanonicalId);
+    if (account.creditor) clientCreditorNames.add(account.creditor.toLowerCase());
+    if (account.originalCreditor) clientCreditorNames.add(account.originalCreditor.toLowerCase());
   }
 
   let exactDefendantHit = false;
@@ -237,6 +247,19 @@ function computeResidencyOverlap(client, caseRecord) {
         return { overlaps: true, basis: "collections history" };
       }
     }
+  }
+
+  // Fall back to creditAccounts opened/closed dates (full credit report)
+  if (Array.isArray(client.creditAccounts) && client.creditAccounts.length) {
+    for (const a of client.creditAccounts) {
+      const aStart = a.dateOpened       ? Date.parse(a.dateOpened) : -Infinity;
+      const aEnd   = (a.dateClosed || a.dateLastActivity || a.dateLastReported)
+                       ? Date.parse(a.dateClosed || a.dateLastActivity || a.dateLastReported)
+                       : Date.now();
+      if (aStart <= cpEnd && aEnd >= cpStart) {
+        return { overlaps: true, basis: "credit account dates" };
+      }
+    }
     return { overlaps: false, basis: "out-of-period" };
   }
 
@@ -266,17 +289,22 @@ function isSolExpired(client, caseRecord) {
 
 function mostRecentContact(client) {
   let latest = null;
+  const consider = (raw) => {
+    if (!raw) return;
+    const t = Date.parse(raw);
+    if (isNaN(t)) return;
+    if (latest === null || t > latest) latest = t;
+  };
   for (const e of (client.collectionsHistory || [])) {
-    const dates = (e.contactDates || [])
-      .map((d) => Date.parse(d))
-      .filter((d) => !isNaN(d));
-    if (e.dateRange?.end) {
-      const t = Date.parse(e.dateRange.end);
-      if (!isNaN(t)) dates.push(t);
-    }
-    for (const t of dates) {
-      if (latest === null || t > latest) latest = t;
-    }
+    for (const d of (e.contactDates || [])) consider(d);
+    consider(e.dateRange?.end);
+  }
+  // Credit report tradelines: last activity / last reported are the best
+  // proxies for "most recent contact from this creditor."
+  for (const a of (client.creditAccounts || [])) {
+    consider(a.dateLastActivity);
+    consider(a.dateLastReported);
+    consider(a.datePlacedForCollection);
   }
   return latest;
 }

@@ -85,22 +85,42 @@ export function parseDollarRange(raw) {
 export function estimateViolations(client, caseRecord) {
   const defendantIds = new Set((caseRecord?.defendants || []).map(d => d.canonicalId).filter(Boolean));
   const defendantNames = new Set((caseRecord?.defendants || []).map(d => (d.displayName || "").toLowerCase()).filter(Boolean));
+  const matchesDefendant = (entry, fields) =>
+    fields.some(({ canonId, name }) =>
+      (canonId && defendantIds.has(canonId)) ||
+      (name && [...defendantNames].some((n) => name.toLowerCase().includes(n) || n.includes(name.toLowerCase())))
+    );
+
   let count = 0;
   let matched = false;
+  // 1. Legacy collectionsHistory entries
   for (const entry of (client?.collectionsHistory || [])) {
-    const linked =
-      (entry.creditorCanonicalId && defendantIds.has(entry.creditorCanonicalId)) ||
-      (entry.debtBuyerCanonicalId && defendantIds.has(entry.debtBuyerCanonicalId)) ||
-      // Substring fallback for unresolved entries
-      (entry.creditor && [...defendantNames].some(n => entry.creditor.toLowerCase().includes(n) || n.includes(entry.creditor.toLowerCase()))) ||
-      (entry.debtBuyer && [...defendantNames].some(n => entry.debtBuyer.toLowerCase().includes(n) || n.includes(entry.debtBuyer.toLowerCase())));
+    const linked = matchesDefendant(entry, [
+      { canonId: entry.creditorCanonicalId,  name: entry.creditor },
+      { canonId: entry.debtBuyerCanonicalId, name: entry.debtBuyer },
+    ]);
     if (!linked) continue;
     matched = true;
-    const dates = Array.isArray(entry.contactDates) ? entry.contactDates.length : 0;
+    const dates   = Array.isArray(entry.contactDates)   ? entry.contactDates.length   : 0;
     const methods = Array.isArray(entry.contactMethods) ? entry.contactMethods.length : 0;
     count += Math.max(dates, methods, 1);
   }
-  if (!matched) return 1; // No direct defendant link in collections — minimum-one plead
+  // 2. Full credit-report tradelines — every account whose creditor is the
+  // defendant is a potential TCPA touchpoint. Estimate contacts from late-
+  // payment markers (each 30/60/90-day late = at least one collection call).
+  for (const a of (client?.creditAccounts || [])) {
+    const linked = matchesDefendant(a, [
+      { canonId: a.creditorCanonicalId,         name: a.creditor },
+      { canonId: a.originalCreditorCanonicalId, name: a.originalCreditor },
+    ]);
+    if (!linked) continue;
+    matched = true;
+    const lates = (a.latePayments?.d30 || 0) + (a.latePayments?.d60 || 0) + (a.latePayments?.d90 || 0);
+    // Each late-payment cycle typically corresponds to 2-4 collection
+    // contacts (calls + letters); use a conservative 1 per cycle.
+    count += Math.max(lates, a.isCollection ? 3 : 1);
+  }
+  if (!matched) return 1; // No direct defendant link — minimum-one plead
   return Math.min(Math.max(count, 1), MAX_VIOLATIONS_PER_MATCH);
 }
 

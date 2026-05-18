@@ -578,7 +578,11 @@ function ImportWizard({ onImported }) {
   const [importing, setImporting] = useState(false);
   const [result, setResult] = useState(null);     // rich import report
   const [manualMode, setManualMode] = useState(false);
+  const [crMode, setCrMode] = useState(false);    // credit-report upload mode
+  const [crFile, setCrFile] = useState(null);
+  const [crPreview, setCrPreview] = useState(null);
   const fileRef = useRef(null);
+  const crFileRef = useRef(null);
 
   useEffect(() => {
     fetch("/api/partners")
@@ -598,6 +602,41 @@ function ImportWizard({ onImported }) {
     occupation: "Occupation", caseNotes: "Case Notes / Comments",
     originalCaseType: "Original Case Type", existingCases: "Prior Cases",
   };
+
+  // ── Credit-report upload handler ─────────────────────────────────────────
+  async function handleCrFile(file) {
+    if (!file) return;
+    setCrFile(file);
+    setCrPreview({ status: "parsing", name: file.name, size: (file.size / 1024).toFixed(0) + " KB" });
+  }
+
+  async function submitCrUpload(isBulk) {
+    if (!crFile) return;
+    setImporting(true);
+    try {
+      const endpoint = isBulk ? "/api/ingest-credit-report-bulk" : "/api/ingest-credit-report";
+      const fd = new FormData();
+      fd.append("file", crFile);
+      fd.append("partner", partnerId && partnerId !== "manual" ? partnerId : "credit_com");
+      const r = await fetch(endpoint, { method: "POST", body: fd });
+      const d = await r.json();
+      if (!d.ok) throw new Error(d.error || "Ingest failed");
+      setResult({
+        imported:       d.imported || (d.clientId ? 1 : 0),
+        updated:        d.updated  || 0,
+        invalid:        d.invalid  || d.failed || 0,
+        queuedForMatch: d.matchQueued || d.queuedForMatch || 0,
+        errors:         d.errors   || [],
+        name:           d.name,
+      });
+      setStep("done");
+      onImported((d.imported || 0) + (d.updated || 0) || 1);
+    } catch (e) {
+      setCrPreview(p => ({ ...p, status: "error", error: e.message }));
+    } finally {
+      setImporting(false);
+    }
+  }
 
   async function handleFile(file) {
     const name = (file.name || "").toLowerCase();
@@ -762,12 +801,15 @@ function ImportWizard({ onImported }) {
         />
       </div>
 
-      {/* Toggle manual vs CSV */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        <button onClick={() => setManualMode(false)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: !manualMode ? "var(--accent)" : "var(--bg-surface)", color: !manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${!manualMode ? "var(--accent)" : "var(--border)"}` }}>
-          CSV / Spreadsheet Import
+      {/* Toggle manual vs CSV vs Credit Report */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+        <button onClick={() => { setManualMode(false); setCrMode(false); }} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: !manualMode && !crMode ? "var(--accent)" : "var(--bg-surface)", color: !manualMode && !crMode ? "#fff" : "var(--text-4)", border: `1px solid ${!manualMode && !crMode ? "var(--accent)" : "var(--border)"}` }}>
+          CSV / Spreadsheet
         </button>
-        <button onClick={() => setManualMode(true)} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: manualMode ? "var(--accent)" : "var(--bg-surface)", color: manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${manualMode ? "var(--accent)" : "var(--border)"}` }}>
+        <button onClick={() => { setManualMode(false); setCrMode(true); setCrFile(null); setCrPreview(null); }} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: crMode ? "var(--accent)" : "var(--bg-surface)", color: crMode ? "#fff" : "var(--text-4)", border: `1px solid ${crMode ? "var(--accent)" : "var(--border)"}` }}>
+          Credit Report (PDF / JSON)
+        </button>
+        <button onClick={() => { setManualMode(true); setCrMode(false); }} style={{ padding: "7px 16px", borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: "pointer", background: manualMode ? "var(--accent)" : "var(--bg-surface)", color: manualMode ? "#fff" : "var(--text-4)", border: `1px solid ${manualMode ? "var(--accent)" : "var(--border)"}` }}>
           Add Single Client
         </button>
       </div>
@@ -801,8 +843,78 @@ function ImportWizard({ onImported }) {
         </div>
       )}
 
+      {/* CREDIT REPORT UPLOAD */}
+      {crMode && (
+        <div>
+          <div style={{ marginBottom: 12, fontSize: 12, color: "var(--text-4)", lineHeight: 1.6 }}>
+            Upload a credit report PDF (TransUnion, Experian, Equifax, Stretto joint) or JSON export.
+            We extract every tradeline as a potential TCPA defendant and run full case matching automatically.
+          </div>
+          {/* Drop zone */}
+          <div
+            onClick={() => crFileRef.current?.click()}
+            onDragOver={e => e.preventDefault()}
+            onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleCrFile(f); }}
+            style={{ border: "2px dashed var(--border-md)", borderRadius: 12, padding: "36px 24px", textAlign: "center", cursor: "pointer", marginBottom: 14, background: crFile ? "var(--bg-surface2)" : "transparent" }}
+          >
+            {crFile ? (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>{crFile.name}</div>
+                <div style={{ fontSize: 11, color: "var(--text-5)" }}>{(crFile.size / 1024).toFixed(0)} KB — click to replace</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize: 28, marginBottom: 8 }}>📋</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>Drop credit report here</div>
+                <div style={{ fontSize: 11, color: "var(--text-5)" }}>PDF (TransUnion, Experian, Equifax, Stretto) · JSON · CSV tradeline export</div>
+              </div>
+            )}
+            <input ref={crFileRef} type="file" accept=".pdf,.json,.csv,.tsv,.txt" style={{ display: "none" }}
+              onChange={e => e.target.files[0] && handleCrFile(e.target.files[0])} />
+          </div>
+
+          {crPreview?.status === "error" && (
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "#fee2e2", border: "1px solid #fca5a5", fontSize: 12, color: "#b91c1c", marginBottom: 12 }}>
+              {crPreview.error}
+            </div>
+          )}
+
+          {crFile && (
+            <div style={{ display: "flex", gap: 10 }}>
+              <Btn onClick={() => submitCrUpload(false)} disabled={importing} style={{ flex: 1 }}>
+                {importing ? "Extracting & saving…" : "Upload single report"}
+              </Btn>
+              <Btn onClick={() => submitCrUpload(true)} disabled={importing} style={{ flex: 1, background: "var(--bg-surface2)", color: "var(--text-2)", border: "1px solid var(--border)" }}>
+                {importing ? "Processing…" : "Bulk upload (CSV with many clients)"}
+              </Btn>
+            </div>
+          )}
+
+          <div style={{ marginTop: 16, padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: "1px solid var(--border)", fontSize: 11, color: "var(--text-5)", lineHeight: 1.7 }}>
+            <strong style={{ color: "var(--text-3)", display: "block", marginBottom: 6 }}>What gets extracted from each report:</strong>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2px 20px" }}>
+              {[
+                ["Name, DOB, SSN last 4", "Identity + dedup key"],
+                ["All phone numbers", "TCPA contact evidence"],
+                ["Address history + dates", "Geographic eligibility"],
+                ["Every tradeline (all creditors)", "TCPA defendant matching"],
+                ["Payment history strings", "Violation count estimate"],
+                ["Collection accounts", "FDCPA defendant matching"],
+                ["Bankruptcy records", "§ 362/524 claims"],
+                ["Hard inquiries", "FCRA permissible-purpose"],
+              ].map(([field, use]) => (
+                <div key={field}>
+                  <span style={{ color: "var(--text-2)", fontWeight: 600 }}>{field}</span>
+                  <span style={{ color: "var(--text-6)" }}> — {use}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CSV UPLOAD */}
-      {!manualMode && step === "upload" && (
+      {!manualMode && !crMode && step === "upload" && (
         <div
           onClick={() => fileRef.current?.click()}
           onDragOver={e => e.preventDefault()}
@@ -820,7 +932,7 @@ function ImportWizard({ onImported }) {
       )}
 
       {/* COLUMN MAPPING */}
-      {!manualMode && step === "map" && parsed && (
+      {!manualMode && !crMode && step === "map" && parsed && (
         <div>
           <div style={{ marginBottom: 14, fontSize: 13, color: "var(--text-2)" }}>
             Detected <strong style={{ color: "var(--text-1)" }}>{parsed.rows.length} rows</strong>. Map your columns to client fields:

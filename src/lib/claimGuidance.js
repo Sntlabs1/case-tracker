@@ -269,11 +269,70 @@ function resolvePathway(caseRecord) {
 //     knownPerClaimant: string or null,  // when we have a real seeded amount
 //     seedCitation: string or null,
 //   }
+// Detect bankruptcy-related side-channel claims:
+//   • Automatic stay violation (11 U.S.C. § 362) — collector contacted plaintiff
+//     between petition date and discharge
+//   • Discharge injunction violation (11 U.S.C. § 524) — collector contacted
+//     plaintiff after discharge on a discharged debt
+//
+// Each violation carries $5,000 minimum statutory damages + actual + punitive
+// + attorney fees, and is a separate cause of action from the underlying
+// TCPA / FDCPA claim. So a single plaintiff with a discharged Ch 7 and 3
+// post-discharge collection contacts could have a $15,000+ floor independent
+// of any class action recovery.
+function bankruptcyOpportunities(caseRecord, client) {
+  if (!client?.bankruptcies?.length) return [];
+  const targets = (caseRecord?.defendants || []).map((d) => ({
+    id: d.canonicalId,
+    name: (d.displayName || "").toLowerCase(),
+  }));
+  const out = [];
+  for (const bk of client.bankruptcies) {
+    const filedMs = bk.dateFiled ? Date.parse(bk.dateFiled) : null;
+    const dischargedMs = bk.dateDischarged ? Date.parse(bk.dateDischarged) : null;
+    if (!filedMs) continue;
+
+    for (const a of (client.creditAccounts || [])) {
+      const isDefendant =
+        targets.some((t) =>
+          (t.id && (a.creditorCanonicalId === t.id || a.originalCreditorCanonicalId === t.id)) ||
+          (t.name && a.creditor && a.creditor.toLowerCase().includes(t.name)) ||
+          (t.name && a.originalCreditor && a.originalCreditor.toLowerCase().includes(t.name))
+        );
+      if (!isDefendant) continue;
+      const lastActivityMs = a.dateLastActivity ? Date.parse(a.dateLastActivity) : null;
+      const lastReportedMs = a.dateLastReported ? Date.parse(a.dateLastReported) : null;
+      const ref = lastActivityMs || lastReportedMs;
+      if (!ref) continue;
+
+      if (dischargedMs && ref > dischargedMs) {
+        out.push({
+          claim: "Discharge injunction violation (11 U.S.C. § 524)",
+          floor: 5000,
+          ceiling: 50000,
+          summary: `${a.creditor} had account activity on ${a.dateLastActivity || a.dateLastReported}, AFTER bankruptcy discharge on ${bk.dateDischarged}. Each post-discharge collection contact violates the discharge injunction.`,
+          evidence: ["Discharge order", "Account activity records post-discharge", "Plaintiff's affidavit re any contacts received"],
+        });
+      } else if (ref > filedMs && (!dischargedMs || ref <= dischargedMs)) {
+        out.push({
+          claim: "Automatic stay violation (11 U.S.C. § 362)",
+          floor: 5000,
+          ceiling: 50000,
+          summary: `${a.creditor} had account activity on ${a.dateLastActivity || a.dateLastReported}, between bankruptcy petition ${bk.dateFiled} and discharge. Each contact during the stay is a separate violation.`,
+          evidence: ["Bankruptcy petition + notice-of-filing", "Account activity records during stay period", "Any collection letter or call log"],
+        });
+      }
+    }
+  }
+  return out;
+}
+
 export function claimGuidance(caseRecord, client = null) {
   const caseType = caseRecord?.caseType || "TCPA";
   const baseline = STATUTORY_BASELINE[caseType] || STATUTORY_BASELINE.TCPA;
   const pathway = resolvePathway(caseRecord);
   const seed = seedEntryForCase(caseRecord);
+  const bankruptcyOpps = bankruptcyOpportunities(caseRecord, client);
 
   return {
     caseId: caseRecord?.id,
@@ -297,6 +356,8 @@ export function claimGuidance(caseRecord, client = null) {
     classDefinition: caseRecord?.classDefinition || seed?.classDefinition || null,
     classPeriod: caseRecord?.classPeriod || seed?.classPeriod || null,
     eligibleStates: caseRecord?.eligibleStates || [],
+    // Side-channel opportunities derived from the client's credit report
+    bankruptcyOpportunities: bankruptcyOpps,
   };
 }
 
