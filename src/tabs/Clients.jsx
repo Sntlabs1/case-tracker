@@ -1603,12 +1603,23 @@ export default function Clients() {
   const [selectedClient, setSelectedClient] = useState(null);
   const [importCount, setImportCount] = useState(0);
 
+  // Reset client tab when selection changes; open Credit Report tab automatically
+  // for clients that have credit report data
+  useEffect(() => {
+    if (!selectedClient) return;
+    const hasCreditReport = selectedClient.creditAccounts?.length > 0 ||
+                            selectedClient.collectionsHistory?.length > 0 ||
+                            selectedClient.bankruptcies?.length > 0;
+    setClientTab(hasCreditReport ? "credit" : "profile");
+  }, [selectedClient?.id]);
+
   // Match state
   const [matchView, setMatchView] = useState("pick"); // pick | running | results
   const [matchLead, setMatchLead] = useState(null);
   const [matchFirmFilter, setMatchFirmFilter] = useState("");
   const [matchResults, setMatchResults] = useState(null);
   const [matchLoading, setMatchLoading] = useState(false);
+  const [clientTab, setClientTab] = useState("profile"); // profile | credit | cases
 
   const fetchClients = useCallback((params = "") => {
     setLoading(true);
@@ -1781,171 +1792,256 @@ export default function Clients() {
           </Card>
 
           {/* Right: client detail */}
-          <Card>
+          <Card style={{ padding: 0, overflow: "hidden" }}>
             {!selectedClient ? (
               <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--text-6)", fontSize: 12 }}>
                 Click a client to view their full profile
               </div>
             ) : (
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                  <div>
-                    <div style={{ fontSize: 17, fontWeight: 800, color: "var(--text-1)" }}>
-                      {selectedClient.firstName} {selectedClient.lastName}
-                    </div>
-                    <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 2 }}>{selectedClient.sourceFirm}</div>
-                  </div>
-                  <button onClick={() => setSelectedClient(null)} style={{ background: "none", border: "none", color: "var(--text-5)", cursor: "pointer", fontSize: 14 }}>✕</button>
-                </div>
+              <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                  {[
-                    ["State", selectedClient.state],
-                    ["Age", selectedClient.age],
-                    ["DOB", selectedClient.dob],
-                    ["Occupation", selectedClient.occupation],
-                    ["Original Case", selectedClient.originalCaseType],
-                    ["Email", selectedClient.email],
-                    ["Phone", selectedClient.phone],
-                  ].map(([l, v]) => v ? (
-                    <div key={l}>
-                      <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
-                      <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
-                    </div>
-                  ) : null)}
-                </div>
-
-                {/* Retainer Status section */}
-                <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-                  <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontWeight: 700 }}>Retainer Status</div>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: selectedClient.retainerHistory?.length > 0 ? 10 : 0 }}>
-                    <select
-                      value={selectedClient.retainerStatus || "Uncontacted"}
-                      onChange={e => updateRetainerStatus(selectedClient.id, e.target.value)}
-                      style={{
-                        background: "var(--bg-input)", border: "1px solid var(--border)",
-                        borderRadius: 6, padding: "6px 10px", fontSize: 12,
-                        color: retainerColor(selectedClient.retainerStatus || "Uncontacted"),
-                        outline: "none", cursor: "pointer", fontWeight: 600,
-                      }}
-                    >
-                      {RETAINER_STATUSES.map(s => (
-                        <option key={s} value={s} style={{ color: retainerColor(s) }}>{s}</option>
-                      ))}
-                    </select>
-                    <RetainerBadge status={selectedClient.retainerStatus || "Uncontacted"} />
-                  </div>
-                  {selectedClient.retainerHistory?.length > 0 && (
+                {/* ── Header ── */}
+                <div style={{ padding: "14px 16px 0", borderBottom: "1px solid var(--border)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                     <div>
-                      <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>History</div>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        {selectedClient.retainerHistory.map((entry, i) => (
-                          <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <span style={{ width: 8, height: 8, borderRadius: "50%", background: retainerColor(entry.status), flexShrink: 0, display: "inline-block" }} />
-                            <span style={{ fontSize: 11, color: "var(--text-3)", fontWeight: 600 }}>{entry.status}</span>
-                            <span style={{ fontSize: 10, color: "var(--text-6)" }}>
-                              {entry.date ? new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
-                            </span>
-                          </div>
-                        ))}
+                      <div style={{ fontSize: 16, fontWeight: 800, color: "var(--text-1)" }}>
+                        {selectedClient.firstName} {selectedClient.lastName}
                       </div>
+                      <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 1, display: "flex", gap: 10 }}>
+                        <span>{selectedClient.sourceFirm}</span>
+                        {selectedClient.state && <span>{selectedClient.state}</span>}
+                        {selectedClient.phone && <span>{selectedClient.phone}</span>}
+                        {selectedClient.creditScore && <span style={{ color: "var(--accent)", fontWeight: 700 }}>Score {selectedClient.creditScore}</span>}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      <RetainerBadge status={selectedClient.retainerStatus || "Uncontacted"} />
+                      <button onClick={() => setSelectedClient(null)} style={{ background: "none", border: "none", color: "var(--text-5)", cursor: "pointer", fontSize: 14, padding: "2px 6px" }}>✕</button>
+                    </div>
+                  </div>
+
+                  {/* ── Tab bar ── */}
+                  <div style={{ display: "flex", gap: 0 }}>
+                    {[
+                      { id: "profile", label: "Profile" },
+                      ...(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0 || selectedClient.bankruptcies?.length > 0
+                        ? [{ id: "credit", label: `Credit Report (${(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0)})` }]
+                        : []),
+                      { id: "cases", label: "Matched Cases" },
+                    ].map(t => (
+                      <button key={t.id} onClick={() => setClientTab(t.id)} style={{
+                        padding: "7px 14px", border: "none", background: "transparent", fontSize: 11, cursor: "pointer",
+                        borderBottom: clientTab === t.id ? "2px solid var(--accent)" : "2px solid transparent",
+                        color: clientTab === t.id ? "var(--text-1)" : "var(--text-5)",
+                        fontWeight: clientTab === t.id ? 700 : 400, marginBottom: -1,
+                      }}>{t.label}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Tab content ── */}
+                <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px" }}>
+
+                  {/* PROFILE TAB */}
+                  {clientTab === "profile" && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                        {[
+                          ["State", selectedClient.state], ["DOB", selectedClient.dob],
+                          ["Age", selectedClient.age], ["SSN last 4", selectedClient.ssnLast4 ? `···${selectedClient.ssnLast4}` : null],
+                          ["Email", selectedClient.email], ["Phone", selectedClient.phone],
+                          ["Occupation", selectedClient.occupation], ["Original Case", selectedClient.originalCaseType],
+                        ].map(([l, v]) => v ? (
+                          <div key={l}>
+                            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
+                            <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
+                          </div>
+                        ) : null)}
+                      </div>
+
+                      <div style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+                        <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontWeight: 700 }}>Retainer Status</div>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <select value={selectedClient.retainerStatus || "Uncontacted"} onChange={e => updateRetainerStatus(selectedClient.id, e.target.value)}
+                            style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 6, padding: "6px 10px", fontSize: 12, color: retainerColor(selectedClient.retainerStatus || "Uncontacted"), outline: "none", cursor: "pointer", fontWeight: 600 }}>
+                            {RETAINER_STATUSES.map(s => <option key={s} value={s} style={{ color: retainerColor(s) }}>{s}</option>)}
+                          </select>
+                        </div>
+                        {selectedClient.retainerHistory?.length > 0 && (
+                          <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 3 }}>
+                            {selectedClient.retainerHistory.map((entry, i) => (
+                              <div key={i} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                <span style={{ width: 7, height: 7, borderRadius: "50%", background: retainerColor(entry.status), flexShrink: 0, display: "inline-block" }} />
+                                <span style={{ fontSize: 11, color: "var(--text-3)", fontWeight: 600 }}>{entry.status}</span>
+                                <span style={{ fontSize: 10, color: "var(--text-6)" }}>{entry.date ? new Date(entry.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedClient.injuries && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Injuries / Conditions</div><div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.injuries}</div></div>}
+                      {selectedClient.medicationsUsed && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Medications</div><div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.medicationsUsed}</div></div>}
+                      {selectedClient.productsUsed && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Products / Devices</div><div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{selectedClient.productsUsed}</div></div>}
+                      {selectedClient.caseNotes && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Case Notes</div><div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.caseNotes}</div></div>}
                     </div>
                   )}
-                </div>
 
-                {selectedClient.injuries && (
-                  <div style={{ marginTop: 12 }}>
-                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Injuries / Conditions</div>
-                    <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.injuries}</div>
-                  </div>
-                )}
-                {selectedClient.medicationsUsed && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Medications</div>
-                    <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.medicationsUsed}</div>
-                  </div>
-                )}
-                {selectedClient.productsUsed && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Products / Devices</div>
-                    <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{selectedClient.productsUsed}</div>
-                  </div>
-                )}
-                {selectedClient.caseNotes && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Case Notes</div>
-                    <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.caseNotes}</div>
-                  </div>
-                )}
+                  {/* CREDIT REPORT TAB */}
+                  {clientTab === "credit" && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
-                {/* Credit report data section */}
-                {(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0 || selectedClient.bankruptcies?.length > 0) && (
-                  <div style={{ marginTop: 14 }}>
-                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontWeight: 700 }}>
-                      Credit Report
-                      {selectedClient.creditScore && <span style={{ marginLeft: 8, color: "var(--accent)", fontWeight: 700 }}>Score: {selectedClient.creditScore}</span>}
-                    </div>
-
-                    {/* Summary chips */}
-                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
-                      {[
-                        [(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0), "tradelines", "var(--accent)"],
-                        [(selectedClient.creditAccounts || []).filter(a => a.isCollection).length + (selectedClient.collectionsHistory?.length || 0), "collections", "#ef4444"],
-                        [(selectedClient.creditAccounts || []).filter(a => (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0)>0).length, "late accts", "#f59e0b"],
-                        [selectedClient.bankruptcies?.length || 0, "bankruptcies", "#8b5cf6"],
-                        [selectedClient.taxLiens?.length || 0, "tax liens", "#f59e0b"],
-                        [selectedClient.creditInquiries?.length || 0, "inquiries", "#6b7280"],
-                      ].filter(([n]) => n > 0).map(([n, label, color]) => (
-                        <span key={label} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: `${color}18`, color, border: `1px solid ${color}35`, fontWeight: 600 }}>
-                          {n} {label}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* All creditors/accounts */}
-                    {(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0) && (
-                      <details>
-                        <summary style={{ fontSize: 11, color: "var(--text-4)", cursor: "pointer", marginBottom: 6, fontWeight: 600 }}>
-                          All accounts ({(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0)}) — potential TCPA defendants
-                        </summary>
-                        <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 6 }}>
-                          {[...(selectedClient.creditAccounts || []), ...(selectedClient.collectionsHistory || [])].map((a, i) => {
-                            const name = a.creditor || a.originalCreditor || a.debtBuyer || "Unknown";
-                            const isCol = a.isCollection || a.type === "collection";
-                            const lates = (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0);
-                            return (
-                              <div key={a.id || i} style={{ display: "flex", justifyContent: "space-between", padding: "5px 8px", borderBottom: "1px solid var(--border)", fontSize: 10 }}>
-                                <div>
-                                  <span style={{ color: isCol ? "#ef4444" : "var(--text-2)", fontWeight: isCol ? 600 : 400 }}>{name}</span>
-                                  {a.loanType && <span style={{ color: "var(--text-6)", marginLeft: 6 }}>{a.loanType}</span>}
-                                </div>
-                                <div style={{ color: "var(--text-6)", display: "flex", gap: 8 }}>
-                                  {a.balance != null && <span>${Number(a.balance).toLocaleString()}</span>}
-                                  {lates > 0 && <span style={{ color: "#f59e0b" }}>{lates} late</span>}
-                                  {isCol && <span style={{ color: "#ef4444" }}>collection</span>}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </details>
-                    )}
-
-                    {/* Bankruptcies */}
-                    {selectedClient.bankruptcies?.length > 0 && (
-                      <div style={{ marginTop: 8 }}>
-                        {selectedClient.bankruptcies.map((b, i) => (
-                          <div key={i} style={{ fontSize: 10, color: "#8b5cf6", padding: "4px 8px", background: "rgba(139,92,246,0.08)", borderRadius: 4, marginBottom: 3 }}>
-                            {b.type?.replace("_", " ").toUpperCase()} · Filed {b.dateFiled || "—"} · {b.disposition || "Filed"}
+                      {/* Summary row */}
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                        {[
+                          [(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0), "Accounts", "var(--accent)"],
+                          [(selectedClient.creditAccounts || []).filter(a => a.isCollection).length + (selectedClient.collectionsHistory?.length || 0), "Collections", "#ef4444"],
+                          [(selectedClient.creditAccounts || []).filter(a => (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0)>0).length, "Late Accts", "#f59e0b"],
+                          [selectedClient.bankruptcies?.length || 0, "Bankruptcies", "#8b5cf6"],
+                          [selectedClient.taxLiens?.length || 0, "Tax Liens", "#f59e0b"],
+                          [selectedClient.creditInquiries?.length || 0, "Inquiries", "#6b7280"],
+                        ].filter(([n]) => n > 0).map(([n, label, color]) => (
+                          <div key={label} style={{ padding: "8px 10px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${color}28`, textAlign: "center" }}>
+                            <div style={{ fontSize: 20, fontWeight: 800, color, lineHeight: 1 }}>{n}</div>
+                            <div style={{ fontSize: 9, color: "var(--text-6)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
                           </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
 
-                <MatchedCasesPanel client={selectedClient} />
-                <InlineLeadMatch client={selectedClient} />
+                      {/* Collections — highlighted first */}
+                      {(() => {
+                        const cols = [...(selectedClient.creditAccounts || []).filter(a => a.isCollection), ...(selectedClient.collectionsHistory || [])];
+                        if (!cols.length) return null;
+                        return (
+                          <div>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#ef4444", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
+                              Collections ({cols.length}) — primary FDCPA/TCPA targets
+                            </div>
+                            {cols.map((a, i) => (
+                              <div key={i} style={{ padding: "8px 10px", borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.2)", marginBottom: 4 }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                  <div>
+                                    <div style={{ fontSize: 12, fontWeight: 700, color: "#ef4444" }}>{a.creditor || a.debtBuyer || "Unknown collector"}</div>
+                                    {(a.originalCreditor || a.creditor !== a.debtBuyer) && <div style={{ fontSize: 10, color: "var(--text-5)" }}>Original: {a.originalCreditor || a.creditor}</div>}
+                                  </div>
+                                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                                    {a.balance != null && <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>${Number(a.balance).toLocaleString()}</div>}
+                                    {a.dateLastActivity && <div style={{ fontSize: 9, color: "var(--text-6)" }}>{a.dateLastActivity}</div>}
+                                  </div>
+                                </div>
+                                {(a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0) > 0 && (
+                                  <div style={{ fontSize: 9, color: "#f59e0b", marginTop: 4 }}>
+                                    {a.latePayments?.d30 > 0 && `${a.latePayments.d30}× 30d  `}
+                                    {a.latePayments?.d60 > 0 && `${a.latePayments.d60}× 60d  `}
+                                    {a.latePayments?.d90 > 0 && `${a.latePayments.d90}× 90d+ late`}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+
+                      {/* All other tradelines */}
+                      {(() => {
+                        const others = (selectedClient.creditAccounts || []).filter(a => !a.isCollection);
+                        if (!others.length) return null;
+                        return (
+                          <details open>
+                            <summary style={{ fontSize: 10, fontWeight: 700, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: "0.07em", cursor: "pointer", marginBottom: 6 }}>
+                              All tradelines ({others.length})
+                            </summary>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 6 }}>
+                              {others.map((a, i) => {
+                                const lates = (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0);
+                                return (
+                                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 8px", borderRadius: 5, background: "var(--bg-surface2)", border: "1px solid var(--border)" }}>
+                                    <div>
+                                      <span style={{ fontSize: 11, color: "var(--text-2)", fontWeight: 500 }}>{a.creditor || "Unknown"}</span>
+                                      {a.type && <span style={{ fontSize: 9, color: "var(--text-6)", marginLeft: 6 }}>{a.type}</span>}
+                                    </div>
+                                    <div style={{ display: "flex", gap: 8, fontSize: 10, color: "var(--text-6)", alignItems: "center" }}>
+                                      {a.balance != null && <span>${Number(a.balance).toLocaleString()}</span>}
+                                      {lates > 0 && <span style={{ color: "#f59e0b", fontWeight: 600 }}>{lates} late</span>}
+                                      <span style={{ color: a.status?.includes("charged_off") || a.status?.includes("collection") ? "#ef4444" : "var(--text-6)" }}>
+                                        {(a.status || "").replace(/_/g, " ")}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </details>
+                        );
+                      })()}
+
+                      {/* Bankruptcies */}
+                      {selectedClient.bankruptcies?.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: "#8b5cf6", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Bankruptcies</div>
+                          {selectedClient.bankruptcies.map((b, i) => (
+                            <div key={i} style={{ padding: "8px 10px", borderRadius: 6, background: "rgba(139,92,246,0.07)", border: "1px solid rgba(139,92,246,0.2)", marginBottom: 4 }}>
+                              <div style={{ fontSize: 12, fontWeight: 700, color: "#8b5cf6" }}>{(b.type || "Bankruptcy").replace(/_/g, " ").toUpperCase()}</div>
+                              <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
+                                {b.dateFiled && `Filed ${b.dateFiled}`}
+                                {b.dateDischarged && ` · Discharged ${b.dateDischarged}`}
+                                {b.disposition && ` · ${b.disposition}`}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Inquiries */}
+                      {selectedClient.creditInquiries?.length > 0 && (
+                        <details>
+                          <summary style={{ fontSize: 10, fontWeight: 700, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: "0.07em", cursor: "pointer", marginBottom: 6 }}>
+                            Inquiries ({selectedClient.creditInquiries.length})
+                          </summary>
+                          <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 6 }}>
+                            {selectedClient.creditInquiries.map((q, i) => (
+                              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "5px 8px", borderRadius: 5, background: "var(--bg-surface2)", border: "1px solid var(--border)", fontSize: 10 }}>
+                                <span style={{ color: "var(--text-2)" }}>{q.creditor}</span>
+                                <span style={{ color: "var(--text-6)" }}>{q.date} · {q.type}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
+
+                      {/* Employment + Address */}
+                      {(selectedClient.employmentHistory?.length > 0 || selectedClient.addressHistory?.length > 0) && (
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                          {selectedClient.employmentHistory?.length > 0 && (
+                            <div>
+                              <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Employment</div>
+                              {selectedClient.employmentHistory.map((e, i) => (
+                                <div key={i} style={{ fontSize: 10, color: "var(--text-3)", marginBottom: 3 }}>{e.employer || e}{e.city ? `, ${e.city}` : ""}{e.state ? ` ${e.state}` : ""}</div>
+                              ))}
+                            </div>
+                          )}
+                          {selectedClient.addressHistory?.length > 0 && (
+                            <div>
+                              <div style={{ fontSize: 9, fontWeight: 700, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Address History</div>
+                              {selectedClient.addressHistory.map((a, i) => (
+                                <div key={i} style={{ fontSize: 10, color: "var(--text-3)", marginBottom: 3 }}>{a.city ? `${a.city}, ` : ""}{a.state}{a.start ? ` (${a.start.slice(0,4)})` : ""}</div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* MATCHED CASES TAB */}
+                  {clientTab === "cases" && (
+                    <div>
+                      <MatchedCasesPanel client={selectedClient} />
+                      <InlineLeadMatch client={selectedClient} />
+                    </div>
+                  )}
+
+                </div>
               </div>
             )}
           </Card>
