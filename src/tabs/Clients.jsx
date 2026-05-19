@@ -51,6 +51,145 @@ function ClaimCountdown({ closes }) {
   );
 }
 
+// ── Inline lead match — run match-cases for this client vs a selected lead ─────
+function InlineLeadMatch({ client }) {
+  const [open, setOpen] = useState(false);
+  const [leads, setLeads] = useState(null);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [result, setResult] = useState(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (!open || leads) return;
+    fetch("/api/leads?limit=200")
+      .then(r => r.json())
+      .then(d => setLeads(d.leads || d.items || []))
+      .catch(() => setLeads([]));
+  }, [open]);
+
+  async function runMatch() {
+    if (!selectedLead || !client?.id) return;
+    setStatus("loading");
+    setResult(null);
+    try {
+      const r = await fetch("/api/match-cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "client-to-cases",
+          clientId: client.id,
+          leadId: selectedLead.id,
+          topN: 1,
+        }),
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      const matches = d.matches || [];
+      const m = matches[0];
+      setResult({ match: m, lead: selectedLead });
+      setStatus("done");
+    } catch (e) {
+      setResult({ error: e.message });
+      setStatus("error");
+    }
+  }
+
+  const filtered = (leads || []).filter(l => {
+    if (!search) return true;
+    const h = `${l.analysis?.headline || l.title || ""} ${l.analysis?.caseType || ""}`.toLowerCase();
+    return h.includes(search.toLowerCase());
+  });
+
+  const sc = result?.match?.score ?? null;
+  const scoreColor = sc == null ? "var(--text-5)" : sc >= 70 ? "#22c55e" : sc >= 45 ? "#f59e0b" : "#ef4444";
+
+  return (
+    <div style={{ marginTop: 10, borderTop: "1px solid var(--border)", paddingTop: 10 }}>
+      <button onClick={() => setOpen(o => !o)}
+        style={{ fontSize: 11, fontWeight: 600, color: "var(--accent)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+        {open ? "▾ Hide lead match" : "▸ Run firm-wide match against a lead"}
+      </button>
+
+      {open && (
+        <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+          <input
+            placeholder="Search leads…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ fontSize: 11, padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-1)", outline: "none" }}
+          />
+          <div style={{ maxHeight: 180, overflowY: "auto", border: "1px solid var(--border)", borderRadius: 6, background: "var(--bg-surface)" }}>
+            {leads === null ? (
+              <div style={{ padding: "12px 14px", fontSize: 11, color: "var(--text-5)" }}>Loading leads…</div>
+            ) : filtered.length === 0 ? (
+              <div style={{ padding: "12px 14px", fontSize: 11, color: "var(--text-5)" }}>No leads found.</div>
+            ) : filtered.map(l => {
+              const headline = l.analysis?.headline || l.title || l.id;
+              const isSelected = selectedLead?.id === l.id;
+              return (
+                <div key={l.id} onClick={() => { setSelectedLead(l); setStatus("idle"); setResult(null); }}
+                  style={{ padding: "8px 12px", borderBottom: "1px solid var(--border)", cursor: "pointer", fontSize: 11,
+                    background: isSelected ? "rgba(var(--accent-rgb, 94,234,212),0.12)" : "transparent",
+                    color: isSelected ? "var(--accent)" : "var(--text-2)", fontWeight: isSelected ? 600 : 400 }}>
+                  <div>{headline}</div>
+                  {l.analysis?.caseType && <div style={{ fontSize: 9, color: "var(--text-6)", marginTop: 2 }}>{l.analysis.caseType}</div>}
+                </div>
+              );
+            })}
+          </div>
+
+          {selectedLead && (
+            <button onClick={runMatch} disabled={status === "loading"}
+              style={{ fontSize: 11, padding: "7px 14px", borderRadius: 6, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600, opacity: status === "loading" ? 0.7 : 1 }}>
+              {status === "loading" ? "Matching…" : `Match ${client.firstName || "client"} against "${(selectedLead.analysis?.headline || selectedLead.title || "").slice(0, 40)}"`}
+            </button>
+          )}
+
+          {status === "done" && result?.match && (
+            <div style={{ padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${result.match.qualifies ? "#22c55e40" : "var(--border)"}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)" }}>Match result</div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <span style={{ fontSize: 20, fontWeight: 800, color: scoreColor }}>{sc}/100</span>
+                  {result.match.qualifies && (
+                    <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 4, background: "#22c55e20", color: "#22c55e", fontWeight: 700, border: "1px solid #22c55e40" }}>QUALIFIES</span>
+                  )}
+                </div>
+              </div>
+              {result.match.reason && <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 6 }}>{result.match.reason}</div>}
+              {result.match.matchingFactors?.length > 0 && (
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
+                  {result.match.matchingFactors.map((f, i) => (
+                    <span key={i} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.25)" }}>{f}</span>
+                  ))}
+                </div>
+              )}
+              {result.match.disqualifyingFactors?.length > 0 && (
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                  {result.match.disqualifyingFactors.map((f, i) => (
+                    <span key={i} style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, background: "rgba(239,68,68,0.1)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.25)" }}>{f}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {status === "done" && !result?.match && (
+            <div style={{ fontSize: 11, color: "var(--text-5)", padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+              No match data returned for this lead.
+            </div>
+          )}
+          {status === "error" && (
+            <div style={{ fontSize: 11, color: "#ef4444", padding: "10px 12px", background: "rgba(239,68,68,0.08)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)" }}>
+              {result?.error}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MatchedCasesPanel({ client }) {
   const [state, setState] = useState("idle"); // idle | loading | done | error
   const [matches, setMatches] = useState(null);
@@ -1806,16 +1945,7 @@ export default function Clients() {
                 )}
 
                 <MatchedCasesPanel client={selectedClient} />
-
-                <div style={{ marginTop: 14 }}>
-                  <Btn small onClick={() => {
-                    setMatchLead(null);
-                    setMatchView("pick");
-                    setView("match");
-                  }}>
-                    Run firm-wide match against a lead →
-                  </Btn>
-                </div>
+                <InlineLeadMatch client={selectedClient} />
               </div>
             )}
           </Card>
