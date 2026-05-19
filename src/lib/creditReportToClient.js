@@ -156,6 +156,47 @@ export function creditReportToClient(report, baseClient = {}) {
   return out;
 }
 
+// Multi-consumer entry: given a credit report that may contain two consumers
+// (joint report, e.g. Stretto joint credit file), return an array of client
+// records — one for each consumer present. The second consumer gets:
+//   isJointConsumer: true
+//   jointConsumerName: "<first consumer's full name>"
+// so downstream code knows they came from the same PDF file.
+//
+// If the report only has one consumer, returns a single-element array for
+// uniform handling by the caller.
+export function creditReportToClients(report, baseClient = {}) {
+  // Always build the primary consumer client record
+  const primary = creditReportToClient(report, baseClient);
+  const clients = [primary];
+
+  const c2 = report.consumer2;
+  if (!c2 || (!c2.firstName && !c2.lastName)) return clients;
+
+  // Build a synthetic report for the second consumer using the same accounts,
+  // public records, inquiries, and summary — only the identity block differs.
+  const report2 = {
+    ...report,
+    consumer: c2,
+    consumer2: null, // prevent infinite recursion if called recursively
+  };
+  const joint = creditReportToClient(report2, {
+    ...baseClient,
+    // Override email/phone — second consumer may not have their own contact info
+    // in the PDF; don't carry over primary consumer's contact details.
+    email: baseClient.jointEmail || "",
+    phone: baseClient.jointPhone || "",
+    phoneNumbers: baseClient.jointPhoneNumbers || [],
+  });
+
+  const primaryFullName = [primary.firstName, primary.lastName].filter(Boolean).join(" ") || "primary consumer";
+  joint.isJointConsumer = true;
+  joint.jointConsumerName = primaryFullName;
+
+  clients.push(joint);
+  return clients;
+}
+
 // Unique defendant signatures present on a client's credit accounts.
 // Returns a Set of normalized defendant names — used by the matcher's
 // candidate-set path so a Capital One credit card on the report triggers

@@ -202,6 +202,14 @@ export const CREDITOR_TO_BUYERS = {
     "convergent outsourcing",
   ],
 
+  // Ally Financial as a TCPA / FDCPA defendant — auto loan servicer with high
+  // call volume on delinquent accounts. Also sells charged-off auto debt.
+  // (Ally appears in CREDITOR_ALIASES: "ally" → "ally financial" above)
+
+  // Barclays Bank Delaware — credit card issuer; TCPA defendant in autodialer
+  // cases. Charged-off accounts go to the buyers listed under "barclays" above.
+  // (Barclays already in CREDITOR_TO_BUYERS above at line ~124)
+
   "household finance": [
     "midland credit management",
     "midland funding",
@@ -1023,7 +1031,11 @@ export const CREDITOR_TO_BUYERS = {
     "united collection bureau",
   ],
 
+  // OneMain Financial (formerly Springleaf Financial) — high-volume personal loans;
+  // Springleaf→OneMain merger (2015) means accounts transferred, likely violating
+  // FDCPA § 1692g notice requirements. Appears 3x on Stretto joint reports.
   "springleaf financial": [
+    "onemain financial",      // same company post-merger; cross-reference
     "convergent outsourcing",
     "firstsource advantage",
     "united collection bureau",
@@ -1244,6 +1256,27 @@ export const BUYER_ALIASES = {
   // National Recoveries
   "national recoveries":                 "national recoveries",
   "national recoveries inc":             "national recoveries",
+
+  // OneMain Financial / Springleaf Financial (same company, post-merger aliases)
+  "onemain financial":                   "onemain financial",
+  "onemain financial inc":               "onemain financial",
+  "onemain":                             "onemain financial",
+  "one main financial":                  "onemain financial",
+  "springleaf financial":                "onemain financial",   // rebranded 2015
+  "springleaf financial services":       "onemain financial",
+  "springleaf":                          "onemain financial",
+
+  // Ally Financial (auto loans — TCPA + FDCPA collection calls)
+  "ally financial":                      "ally financial",
+  "ally financial inc":                  "ally financial",
+  "ally bank":                           "ally financial",
+
+  // Barclays Bank Delaware (credit cards)
+  "barclays bank delaware":              "barclays",
+  "barclays bank":                       "barclays",
+  "barclays":                            "barclays",
+  "barclays us":                         "barclays",
+  "barclaycard us":                      "barclays",
 };
 
 // ── Creditor aliases (common names / abbreviations → canonical key) ─────────
@@ -1424,6 +1457,10 @@ export const CREDITOR_ALIASES = {
   "upgrade":                      "webbank",
   "best egg":                     "webbank",
   "one main":                     "onemain financial",
+  "onemain":                      "onemain financial",
+  "springleaf":                   "onemain financial",   // OneMain acquired Springleaf brand
+  "springleaf financial":         "onemain financial",
+  "springleaf financial s":       "onemain financial",   // Stretto format
   "world acceptance corporation": "world acceptance",
 
   // Payday

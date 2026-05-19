@@ -192,9 +192,10 @@ function InlineLeadMatch({ client }) {
 
 // Quick client-side recovery estimate from a match object.
 // Full calculation is in src/lib/recoveryEstimate.js (server-side).
-// This version is for inline display only.
+// This version is for inline display only — mirrors the PER_VIOLATION table.
 function quickRecovery(m) {
   const c = m.case || {};
+  const client = m.client || {};
   const range = c.settlement?.perClaimantRange;
   if (range) {
     const nums = [...String(range).matchAll(/\$?([\d,]+)/g)]
@@ -202,9 +203,35 @@ function quickRecovery(m) {
     if (nums.length >= 2) return { floor: Math.min(...nums), ceiling: Math.max(...nums), source: "settlement" };
     if (nums.length === 1) return { floor: nums[0], ceiling: nums[0], source: "settlement" };
   }
-  const perV = c.caseType === "FDCPA" ? { floor: 500, ceiling: 1000 }
-             : c.caseType === "FCRA"  ? { floor: 100, ceiling: 1000 }
-             : { floor: 500, ceiling: 1500 }; // TCPA default
+  const ct = (c.caseType || "TCPA").toUpperCase();
+  const clientState = (client.state || "").toUpperCase();
+  // State-aware statutory table (mirrors recoveryEstimate.js PER_VIOLATION)
+  const perVMap = {
+    TCPA:           { floor: 500,  ceiling: 1500  },
+    FDCPA:          { floor: 500,  ceiling: 1000  },
+    FCRA:           { floor: 100,  ceiling: 1000  },
+    "TCPA+FDCPA":   { floor: 1000, ceiling: 2500  },
+    CROA:           { floor: 1000, ceiling: 5000  },
+    CIPA:           { floor: 5000, ceiling: 5000  }, // CA fixed $5k; override below for other states
+    FL_FTSA:        { floor: 500,  ceiling: 1500  },
+    UDAAP:          { floor: 500,  ceiling: 10000 },
+    FCRA_FURNISHER: { floor: 100,  ceiling: 1000  },
+    ECOA:           { floor: 500,  ceiling: 10000 },
+    ROSENTHAL:      { floor: 100,  ceiling: 1000  },
+    FCCPA:          { floor: 1000, ceiling: 1000  },
+    GLBA:           { floor: 100,  ceiling: 2500  },
+  };
+  let perV = perVMap[ct] || { floor: 500, ceiling: 1500 };
+  // State-specific overrides for the most common scenarios
+  if (ct === "CIPA" && !["CA","FL","MA"].includes(clientState)) {
+    perV = { floor: 1000, ceiling: 5000 };
+  }
+  if (ct === "FL_FTSA" && clientState !== "FL") {
+    perV = { floor: 500, ceiling: 1500 }; // fall back — still worth noting
+  }
+  if (ct === "UDAAP" && clientState === "MA") {
+    perV = { floor: 1000, ceiling: 10000 }; // MA 93A 2x-3x multiplier
+  }
   return { floor: perV.floor, ceiling: perV.ceiling, source: "statutory" };
 }
 
@@ -2180,6 +2207,55 @@ export default function Clients() {
                           </div>
                         </details>
                       )}
+
+                      {/* FCRA Signals — address variations, collection '9' codes, multi-bureau */}
+                      {(() => {
+                        const addrCount = selectedClient.addressHistory?.length || 0;
+                        const allAccts  = [
+                          ...(selectedClient.creditAccounts || []),
+                          ...(selectedClient.collectionsHistory || []),
+                        ];
+                        // Accounts where payment history contains '9' = collection contact events
+                        const nineAccts = allAccts.filter(a =>
+                          a.paymentHistory && /9/.test(a.paymentHistory)
+                        );
+                        // Collection accounts with a balance outstanding (FDCPA + TCPA targets)
+                        const colAccts = allAccts.filter(a =>
+                          a.isCollection || a.type === "collection" || a.status === "in_collection"
+                        );
+                        const signals = [];
+                        if (addrCount > 3) signals.push({
+                          label: `${addrCount} address variations`,
+                          detail: "Multiple address entries across bureaus = FCRA inaccuracy signal (§ 1681s-2 dispute)",
+                          color: "#f59e0b",
+                        });
+                        if (nineAccts.length > 0) signals.push({
+                          label: `${nineAccts.length} account${nineAccts.length > 1 ? "s" : ""} with '9' payment code`,
+                          detail: `Collection-status contacts: ${nineAccts.map(a => a.creditor || a.debtBuyer || "Unknown").join(", ")}. Each '9' = FDCPA + TCPA contact event.`,
+                          color: "#ef4444",
+                        });
+                        if (colAccts.length > 0) signals.push({
+                          label: `${colAccts.length} collection account${colAccts.length > 1 ? "s" : ""}`,
+                          detail: `Total: $${colAccts.reduce((s,a)=>s+(a.balance||a.amount||0),0).toLocaleString()} past due. Primary FDCPA + TCPA targets.`,
+                          color: "#ef4444",
+                        });
+                        if (!signals.length) return null;
+                        return (
+                          <div style={{ marginTop: 4 }}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
+                              FCRA Signals
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                              {signals.map((s, i) => (
+                                <div key={i} style={{ padding: "8px 10px", borderRadius: 6, background: `rgba(245,158,11,0.07)`, border: `1px solid ${s.color}40` }}>
+                                  <div style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{s.label}</div>
+                                  <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2, lineHeight: 1.4 }}>{s.detail}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       {/* Employment + Address */}
                       {(selectedClient.employmentHistory?.length > 0 || selectedClient.addressHistory?.length > 0) && (

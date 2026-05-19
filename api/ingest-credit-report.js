@@ -23,7 +23,7 @@ import { parseCreditReportPdfBase64 }  from "./_ingest-parsers/pdf-parser.js";
 import { parseCreditReportCsv }         from "./_ingest-parsers/csv-parser.js";
 import normalize                         from "./_partner-importers/credit-com-json.js";
 import { buildCreditReport }             from "../src/lib/creditReportSchema.js";
-import { creditReportToClient }          from "../src/lib/creditReportToClient.js";
+import { creditReportToClient, creditReportToClients } from "../src/lib/creditReportToClient.js";
 import { kv }                            from "@vercel/kv";
 import { put }                           from "@vercel/blob";
 import { createHash }                    from "node:crypto";
@@ -199,7 +199,9 @@ async function parseFile(base64, filename, contentType) {
   if (ext === "pdf" || (contentType || "").includes("pdf")) {
     const parsed = await parseCreditReportPdfBase64(base64, filename);
     const report = buildCreditReport(parsed);
-    return [creditReportToClient(report, { partnerId: "credit_com", ingestSource: "credit.com" })];
+    // Use the plural form — handles both single-consumer and joint reports.
+    // For joint reports (consumer2 present), returns TWO client records.
+    return creditReportToClients(report, { partnerId: "credit_com", ingestSource: "credit.com" });
   }
 
   const text = Buffer.from(base64, "base64").toString("utf8");

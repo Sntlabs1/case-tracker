@@ -259,6 +259,115 @@ export function scoreTcpaPair(client, caseRecord) {
     matchingFactors.push("Prior TCPA/FDCPA case in client history");
   }
 
+  // ── Claim-type-specific bonuses ───────────────────────────────────────────
+  // These fire AFTER the generic scoring above and adjust the score for
+  // claim types that have additional qualifying criteria.
+  // Note: clientState is already declared above in the geographic eligibility block.
+  const ct = (caseRecord.caseType || "").toUpperCase();
+  const ingestSrc = (client.ingestSource || "").toLowerCase();
+  const hasCollections = (client.creditAccounts || []).some(a => a.isCollection)
+    || (client.collectionsHistory || []).length > 0;
+  const hasInquiries = (client.creditInquiries || []).length > 0;
+  const addressCount = (client.addressHistory || []).length;
+
+  if (ct === "CROA") {
+    // Credit Repair Organizations Act — Lexington Law referrals via Credit.com
+    if (ingestSrc.includes("credit.com") || ingestSrc.includes("credit_com")) {
+      score += 40; matchingFactors.push("Client sourced from Credit.com (CROA exposure)");
+      confidenceContributors += 20;
+    }
+    if (hasCollections) {
+      score += 30; matchingFactors.push("Collection accounts present (credit repair context)");
+    }
+    const caseCaption = (caseRecord.caption || "").toLowerCase();
+    if (caseCaption.includes("lexington") || caseCaption.includes("pgx")) {
+      score += 25; matchingFactors.push("Case involves Lexington Law / PGX Holdings");
+      confidenceContributors += 15;
+    }
+  }
+
+  if (ct === "CIPA") {
+    // CA Penal Code 631/632 + FL 934 + MA G.L. ch. 272
+    if (["CA", "FL", "MA"].includes(clientState)) {
+      score += 40; matchingFactors.push(`Client in ${clientState} — CIPA/wiretap state`);
+      confidenceContributors += 20;
+    }
+    const caseDefs = (caseRecord.defendants || []).map(d => (d.displayName || "").toLowerCase()).join(" ");
+    if (caseDefs.includes("credit.com") || caseDefs.includes("lexington")) {
+      score += 25; matchingFactors.push("Case involves Credit.com / Lexington Law (session-replay exposure)");
+    }
+    if (hasInquiries) {
+      score += 20; matchingFactors.push("Credit inquiries on file — data was pulled (CIPA signal)");
+    }
+  }
+
+  if (ct === "FL_FTSA") {
+    // Florida FTSA — broader than TCPA, SMS-heavy
+    if (clientState === "FL") {
+      score += 35; matchingFactors.push("Client is FL resident — FL FTSA eligible");
+      confidenceContributors += 20;
+    }
+    // Reuse defendant match logic: any SMS contact by defendant gets +30
+    // (already handled by generic defendant matching above — add a type bonus)
+    if (clientState === "FL" && hasCollections) {
+      score += 30; matchingFactors.push("FL resident with collection accounts — FL FTSA SMS contact likely");
+    }
+  }
+
+  if (ct === "FCRA_FURNISHER") {
+    // FCRA § 1681s-2(b) — failure to investigate disputes
+    if (exactDefendantHit && hasCollections) {
+      score += 40; matchingFactors.push("Defendant match + collection accounts (FCRA furnisher exposure)");
+      confidenceContributors += 20;
+    }
+    if (addressCount > 3) {
+      score += 25; matchingFactors.push(`${addressCount} address variations — FCRA inaccuracy signal`);
+    }
+  }
+
+  if (ct === "UDAAP") {
+    if (ingestSrc.includes("credit.com") || ingestSrc.includes("credit_com")) {
+      score += 30; matchingFactors.push("Credit.com client — UDAAP unfair/deceptive exposure");
+    }
+    if (hasCollections) {
+      score += 25; matchingFactors.push("Collection accounts — potential UDAAP misleading-contact history");
+    }
+  }
+
+  if (ct === "ROSENTHAL") {
+    // CA Rosenthal FDCPA parallel — CA clients with collection accounts
+    if (clientState === "CA" && hasCollections) {
+      score += 40; matchingFactors.push("CA resident with collections — Rosenthal Act exposure");
+      confidenceContributors += 20;
+    } else if (clientState === "CA") {
+      score += 20; matchingFactors.push("CA resident — Rosenthal Act scope");
+    }
+  }
+
+  if (ct === "FCCPA") {
+    // FL FCCPA parallel — FL clients with collection accounts
+    if (clientState === "FL" && hasCollections) {
+      score += 40; matchingFactors.push("FL resident with collections — FCCPA exposure");
+      confidenceContributors += 20;
+    } else if (clientState === "FL") {
+      score += 20; matchingFactors.push("FL resident — FCCPA scope");
+    }
+  }
+
+  if (ct === "ECOA") {
+    // ECOA / Reg B — adverse-action notice failures
+    if (hasInquiries) {
+      score += 20; matchingFactors.push("Credit inquiries on file — potential ECOA adverse-action notice failure");
+    }
+  }
+
+  if (ct === "GLBA") {
+    // GLBA / data breach — any credit report client is potentially exposed
+    if (ingestSrc.includes("credit.com") || ingestSrc.includes("credit_com")) {
+      score += 25; matchingFactors.push("Credit.com client — GLBA safeguard exposure");
+    }
+  }
+
   // ── Determine qualifies ────────────────────────────────────────────────────
   const qualifies =
     disqualifyingFactors.length === 0 &&

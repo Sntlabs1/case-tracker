@@ -20,7 +20,19 @@
 //   claim_closed  — claim window closed; no new filings accepted
 //   dismissed     — case dismissed without recovery
 
-export const CASE_TYPES = ["TCPA", "FDCPA", "FCRA", "TCPA+FDCPA"];
+export const CASE_TYPES = [
+  "TCPA", "FDCPA", "FCRA", "TCPA+FDCPA",
+  // New claim types — see src/lib/recoveryEstimate.js for per-violation amounts
+  "CROA",           // 15 U.S.C. § 1679 — Credit Repair Organizations Act
+  "CIPA",           // CA Penal Code 631/632 — session-replay / wiretap
+  "FL_FTSA",        // FL Stat. § 501.059 — FL Telephone Solicitation Act
+  "UDAAP",          // Dodd-Frank § 1031+1036 + state UDAP
+  "FCRA_FURNISHER", // 15 U.S.C. § 1681s-2(b) — furnisher dispute liability
+  "ECOA",           // 15 U.S.C. § 1691 — adverse-action notice failures
+  "ROSENTHAL",      // CA Civil Code § 1788 — CA FDCPA parallel
+  "FCCPA",          // FL Stat. § 559.55 — FL FDCPA parallel
+  "GLBA",           // 15 U.S.C. § 6801 — data breach / inadequate safeguards
+];
 
 export const CASE_STATUSES = [
   "active",

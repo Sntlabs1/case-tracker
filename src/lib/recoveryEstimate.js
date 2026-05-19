@@ -31,10 +31,19 @@
 // available from credit.com.
 
 const PER_VIOLATION = {
-  TCPA:        { floor: 500, ceiling: 1500 },   // 47 USC § 227(b)(3)
-  FDCPA:       { floor: 500, ceiling: 1000 },   // 15 USC § 1692k
-  FCRA:        { floor: 100, ceiling: 1000 },   // 15 USC § 1681n
-  "TCPA+FDCPA":{ floor: 1000, ceiling: 2500 },  // combined claims (conservative)
+  TCPA:             { floor: 500,  ceiling: 1500  },  // 47 USC § 227(b)(3)
+  FDCPA:            { floor: 500,  ceiling: 1000  },  // 15 USC § 1692k
+  FCRA:             { floor: 100,  ceiling: 1000  },  // 15 USC § 1681n
+  "TCPA+FDCPA":     { floor: 1000, ceiling: 2500  },  // combined claims (conservative)
+  CROA:             { floor: 1000, ceiling: 5000  },  // 15 USC § 1679 actual + punitive
+  CIPA:             { floor: 5000, ceiling: 5000  },  // CA Penal Code 631/632 fixed
+  FL_FTSA:          { floor: 500,  ceiling: 1500  },  // FL F.S. § 501.059
+  UDAAP:            { floor: 500,  ceiling: 10000 },  // state UDAP range
+  FCRA_FURNISHER:   { floor: 100,  ceiling: 1000  },  // § 1681s-2(b) willful
+  ECOA:             { floor: 500,  ceiling: 10000 },  // individual; class cap $500K
+  ROSENTHAL:        { floor: 100,  ceiling: 1000  },  // CA FDCPA parallel
+  FCCPA:            { floor: 1000, ceiling: 1000  },  // FL FDCPA parallel (fixed)
+  GLBA:             { floor: 100,  ceiling: 2500  },  // conservative per-member est.
 };
 
 const MAX_VIOLATIONS_PER_MATCH = 50;   // hard ceiling absent direct call-log evidence
@@ -166,7 +175,37 @@ export function estimateRecovery(client, caseRecord, { isQualifying = true } = {
   }
 
   // 2. Statutory damages by case type
-  const statutory = PER_VIOLATION[caseRecord.caseType] || PER_VIOLATION.TCPA;
+  // Apply state-based overrides for cases where per-violation amounts depend
+  // on the client's state (e.g. CA CIPA $5k fixed; FL FTSA same as TCPA).
+  let statutory = PER_VIOLATION[caseRecord.caseType] || PER_VIOLATION.TCPA;
+  const clientStateUpper = (client?.state || "").toUpperCase();
+  const caseTypeUpper = (caseRecord.caseType || "").toUpperCase();
+  // FL_FTSA — only meaningful for FL residents
+  if (caseTypeUpper === "FL_FTSA" && clientStateUpper !== "FL") {
+    statutory = PER_VIOLATION.TCPA; // fall back to TCPA rates for non-FL
+  }
+  // CIPA — only meaningful for CA/FL/MA residents (though CA has the $5k fixed floor)
+  if (caseTypeUpper === "CIPA") {
+    if (clientStateUpper === "CA") statutory = PER_VIOLATION.CIPA;
+    else if (clientStateUpper === "FL") statutory = { floor: 5000, ceiling: 5000 }; // FL 934 same
+    else if (clientStateUpper === "MA") statutory = { floor: 5000, ceiling: 5000 }; // MA G.L. ch. 272
+    else statutory = { floor: 1000, ceiling: 5000 }; // other states, conservative
+  }
+  // ROSENTHAL — CA only
+  if (caseTypeUpper === "ROSENTHAL" && clientStateUpper !== "CA") {
+    statutory = PER_VIOLATION.FDCPA; // fall back to federal FDCPA rates
+  }
+  // FCCPA — FL only
+  if (caseTypeUpper === "FCCPA" && clientStateUpper !== "FL") {
+    statutory = PER_VIOLATION.FDCPA;
+  }
+  // UDAAP — state-specific ceiling adjustments
+  if (caseTypeUpper === "UDAAP") {
+    if (clientStateUpper === "CA") statutory = { floor: 1000, ceiling: 10000 }; // CA UCL/CLRA
+    else if (clientStateUpper === "FL") statutory = { floor: 500, ceiling: 10000 };  // FL FDUTPA
+    else if (clientStateUpper === "NY") statutory = { floor: 500, ceiling: 10000 };  // NY GBL 349
+    else if (clientStateUpper === "MA") statutory = { floor: 1000, ceiling: 10000 }; // MA 93A (2x/3x)
+  }
   const violations = estimateViolations(client, caseRecord);
   const floor = statutory.floor * violations;
   const ceiling = Math.min(statutory.ceiling * violations, SOFT_CAP_PER_MATCH);
