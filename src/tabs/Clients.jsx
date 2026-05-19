@@ -764,23 +764,22 @@ function ImportWizard({ onImported, onGoToClient }) {
           throw new Error(`Server error ${r.status} — the PDF may be too large, or the extraction service timed out. Try a smaller file.`);
         }
         if (!d.ok) throw new Error(d.error || "Ingest failed");
-        // Store full response including extraction summary and immediate matches
-        setResult({
-          imported:       d.imported || (d.client?.id ? 1 : 0),
-          updated:        d.updated  || 0,
-          invalid:        0,
-          queuedForMatch: d.matchQueued || 0,
-          errors:         [],
-          // Credit report specific
-          client:      d.client     || null,
-          extraction:  d.extraction || null,
-          matches:     d.matches    || [],
-          isCreditReport: true,
-        });
         stopCrTimer();
-        setStep("done");
-        onImported((d.imported || 0) + (d.updated || 0) || 1);
         setImporting(false);
+        onImported((d.imported || 0) + (d.updated || 0) || 1);
+        // Navigate straight to the client card — no intermediate done screen
+        if (d.client?.id && onGoToClient) {
+          onGoToClient(d.client.id);
+        } else {
+          // Fallback: show done screen if no ID came back
+          setResult({
+            imported: d.imported || 0, updated: d.updated || 0,
+            invalid: 0, queuedForMatch: d.matchQueued || 0, errors: [],
+            client: d.client || null, extraction: d.extraction || null,
+            matches: [], isCreditReport: true,
+          });
+          setStep("done");
+        }
       }
     } catch (e) {
       stopCrTimer();
@@ -1834,17 +1833,18 @@ export default function Clients() {
           <ImportWizard
             onImported={count => { setImportCount(x => x + count); }}
             onGoToClient={async (clientId) => {
-              // Reload clients then switch to database view and select the new client
-              setImportCount(x => x + 1);
               setView("database");
-              // Give KV a moment to be consistent, then fetch fresh and select
-              await new Promise(r => setTimeout(r, 600));
-              const d = await fetch("/api/clients").then(r => r.json()).catch(() => ({}));
-              const all = d.clients || [];
-              setClients(all);
-              setFirms(d.firms || []);
-              const found = all.find(c => c.id === clientId);
-              if (found) setSelectedClient(found);
+              // Fetch fresh list — retry once if the client isn't in the first response
+              // (KV propagation can lag by a few hundred ms)
+              for (let attempt = 0; attempt < 3; attempt++) {
+                await new Promise(r => setTimeout(r, attempt === 0 ? 300 : 800));
+                const d = await fetch("/api/clients").then(r => r.json()).catch(() => ({}));
+                const all = d.clients || [];
+                setClients(all);
+                setFirms(d.firms || []);
+                const found = all.find(c => c.id === clientId);
+                if (found) { setSelectedClient(found); break; }
+              }
             }}
           />
         </Card>
