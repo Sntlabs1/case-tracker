@@ -85,11 +85,14 @@ function MatchedCasesPanel({ client }) {
     }
   }
 
-  // Auto-run when the client changes if they have collections history (TCPA-shaped)
-  // — that's the most likely match candidate.
+  // Auto-run for credit-report clients (they always have creditAccounts)
   useEffect(() => {
     setMatches(null);
-    setState("idle");
+    if (client?.creditAccounts?.length > 0 || client?.collectionsHistory?.length > 0) {
+      run();
+    } else {
+      setState("idle");
+    }
   }, [client?.id]);
 
   if (state === "idle") {
@@ -631,6 +634,8 @@ function ImportWizard({ onImported, onGoToClient }) {
   const [crMode, setCrMode] = useState(false);    // credit-report upload mode
   const [crFile, setCrFile] = useState(null);
   const [crPreview, setCrPreview] = useState(null);
+  const [crMatches, setCrMatches] = useState(null);   // loaded after ingest
+  const [crMatchState, setCrMatchState] = useState("idle"); // idle|loading|done|error
   const fileRef = useRef(null);
   const crFileRef = useRef(null);
 
@@ -640,6 +645,22 @@ function ImportWizard({ onImported, onGoToClient }) {
       .then(d => setPartners(d.partners || []))
       .catch(() => setPartners([]));
   }, []);
+
+  // Auto-run case matching once the credit report client is saved
+  useEffect(() => {
+    const clientId = result?.client?.id;
+    if (!result?.isCreditReport || !clientId) return;
+    setCrMatchState("loading");
+    setCrMatches(null);
+    fetch("/api/match-cases", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "client-to-cases", clientId, caseType: "AUTO", topN: 20 }),
+    })
+      .then(r => r.json())
+      .then(d => { setCrMatches(d.matches || []); setCrMatchState("done"); })
+      .catch(() => { setCrMatchState("error"); });
+  }, [result?.client?.id]);
 
   // Manual entry state
   const [manual, setManual] = useState({ firstName: "", lastName: "", email: "", phone: "", state: "", age: "", injuries: "", medicationsUsed: "", productsUsed: "", exposurePeriod: "", occupation: "", caseNotes: "", originalCaseType: "" });
@@ -861,72 +882,68 @@ function ImportWizard({ onImported, onGoToClient }) {
     if (r.isCreditReport) {
       const c = r.client || {};
       const x = r.extraction || {};
-      const matches = r.matches || [];
       const SCORE_COLOR = s => s >= 70 ? "#22c55e" : s >= 50 ? "#f59e0b" : "#6b7280";
+      const qualifying = (crMatches || []).filter(m => m.qualifies);
+      const nonQual    = (crMatches || []).filter(m => !m.qualifies && m.score >= 40);
 
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+
+          {/* ── Client card saved banner ────────────────────────────── */}
+          <div style={{ padding: "14px 16px", borderRadius: 10, background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.3)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>
-                {c.name || "Client"} {r.updated ? "(merged with existing record)" : "(new)"}
+              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>
+                {c.name || "Client"} — saved to database
+                {r.updated && <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text-5)", marginLeft: 8 }}>(merged with existing record)</span>}
               </div>
-              <div style={{ fontSize: 12, color: "var(--text-5)", display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <div style={{ fontSize: 11, color: "var(--text-5)", display: "flex", gap: 14, flexWrap: "wrap" }}>
                 {c.state && <span>{c.state}</span>}
                 {c.dob && <span>DOB {c.dob}</span>}
-                {c.creditScore && <span>Credit score {c.creditScore}</span>}
+                {c.creditScore && <span>Score {c.creditScore}</span>}
+                {c.ssnLast4 && <span>SSN ···{c.ssnLast4}</span>}
                 {c.phones?.[0] && <span>{c.phones[0]}</span>}
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {c.id && onGoToClient && (
                 <button onClick={() => onGoToClient(c.id)}
-                  style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                  Open client profile →
+                  style={{ fontSize: 12, padding: "8px 16px", borderRadius: 6, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 700 }}>
+                  View client profile →
                 </button>
               )}
               {c.id && (
                 <a href={`/api/client-report?clientId=${encodeURIComponent(c.id)}&format=html`}
                    target="_blank" rel="noopener noreferrer"
-                   style={{ fontSize: 11, padding: "6px 12px", borderRadius: 6, background: "var(--bg-surface2)", color: "var(--text-2)", textDecoration: "none", fontWeight: 600, border: "1px solid var(--border)" }}>
+                   style={{ fontSize: 12, padding: "8px 14px", borderRadius: 6, background: "var(--bg-surface2)", color: "var(--text-2)", textDecoration: "none", fontWeight: 600, border: "1px solid var(--border)" }}>
                   Full report ↗
                 </a>
               )}
-              <Btn onClick={() => { setStep("upload"); setParsed(null); setResult(null); setCrFile(null); setCrPreview(null); setCrJob(null); }}>
-                Upload another
-              </Btn>
             </div>
           </div>
 
-          {/* Extraction summary chips */}
-          <div>
-            <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
-              Extracted from report
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {[
-                [`${x.totalAccounts || 0} total accounts`, "var(--accent)"],
-                [`${x.collections || 0} collections`, "#ef4444"],
-                [`${x.lateAccounts || 0} accounts with late payments`, "#f59e0b"],
-                x.bankruptcies > 0 && [`${x.bankruptcies} bankruptc${x.bankruptcies === 1 ? "y" : "ies"}`, "#8b5cf6"],
-                x.taxLiens > 0 && [`${x.taxLiens} tax lien${x.taxLiens !== 1 ? "s" : ""}`, "#f59e0b"],
-                x.civilJudgments > 0 && [`${x.civilJudgments} civil judgment${x.civilJudgments !== 1 ? "s" : ""}`, "#f59e0b"],
-                [`${x.inquiries || 0} inquiries`, "#6b7280"],
-              ].filter(Boolean).map(([label, color]) => (
-                <span key={label} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, background: `${color}18`, color, border: `1px solid ${color}35`, fontWeight: 600 }}>
-                  {label}
-                </span>
-              ))}
-            </div>
+          {/* ── Extraction snapshot ─────────────────────────────────── */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8 }}>
+            {[
+              [x.totalAccounts || 0,  "Total accounts",  "var(--accent)"],
+              [x.collections   || 0,  "Collections",      "#ef4444"],
+              [x.lateAccounts  || 0,  "Accounts w/ lates","#f59e0b"],
+              [x.bankruptcies  || 0,  "Bankruptcies",     "#8b5cf6"],
+              [x.taxLiens      || 0,  "Tax liens",        "#f59e0b"],
+              [x.civilJudgments|| 0,  "Civil judgments",  "#f59e0b"],
+              [x.inquiries     || 0,  "Inquiries",        "#6b7280"],
+            ].filter(([n]) => n > 0).map(([n, label, color]) => (
+              <div key={label} style={{ padding: "10px 12px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${color}30`, textAlign: "center" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color, lineHeight: 1 }}>{n}</div>
+                <div style={{ fontSize: 9, color: "var(--text-6)", marginTop: 3, textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Creditors found */}
+          {/* ── Creditors extracted ─────────────────────────────────── */}
           {x.creditors?.length > 0 && (
             <div>
               <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
-                Creditors on file ({x.creditors.length})
-                <span style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 400, marginLeft: 6, textTransform: "none" }}>— each is a potential TCPA defendant</span>
+                {x.creditors.length} creditors on file — each a potential TCPA/FDCPA defendant
               </div>
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                 {x.creditors.map(cr => (
@@ -938,43 +955,65 @@ function ImportWizard({ onImported, onGoToClient }) {
             </div>
           )}
 
-          {/* Immediate TCPA matches */}
+          {/* ── Case analysis ───────────────────────────────────────── */}
           <div>
-            <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
-              {matches.length > 0 ? `TCPA / FDCPA cases matched (${matches.length})` : "TCPA case matching"}
+            <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 10 }}>
+              TCPA / FDCPA case analysis
             </div>
-            {matches.length === 0 ? (
-              <div style={{ fontSize: 12, color: "var(--text-5)", padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-                No qualifying matches found yet. The match agent will run again within the hour as new cases are ingested.
+
+            {crMatchState === "loading" && (
+              <div style={{ padding: "16px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", fontSize: 12, color: "var(--text-5)", textAlign: "center" }}>
+                Scoring against case database…
               </div>
-            ) : (
+            )}
+
+            {crMatchState === "error" && (
+              <div style={{ padding: "12px 14px", background: "rgba(239,68,68,0.08)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", fontSize: 12, color: "#ef4444" }}>
+                Match analysis unavailable — view the client profile for manual matching.
+              </div>
+            )}
+
+            {crMatchState === "done" && qualifying.length === 0 && nonQual.length === 0 && (
+              <div style={{ padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", fontSize: 12, color: "var(--text-5)" }}>
+                No qualifying matches against current case database. As new cases are ingested this client will be re-scored automatically each hour.
+              </div>
+            )}
+
+            {crMatchState === "done" && (qualifying.length > 0 || nonQual.length > 0) && (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {matches.map((m, i) => (
-                  <div key={m.caseId || i} style={{ padding: "10px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${m.qualifies ? "#22c55e40" : "var(--border)"}` }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", flex: 1, marginRight: 10 }}>
+                {[...qualifying, ...nonQual].map((m, i) => (
+                  <div key={m.caseId || i} style={{ padding: "12px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${m.qualifies ? "#22c55e40" : "var(--border)"}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, marginBottom: 4 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", flex: 1 }}>
                         {m.caption || m.caseId}
                       </div>
                       <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
-                        <span style={{ fontSize: 11, fontWeight: 800, color: SCORE_COLOR(m.score) }}>
-                          {m.score}/100
-                        </span>
+                        <span style={{ fontSize: 12, fontWeight: 800, color: SCORE_COLOR(m.score) }}>{m.score}/100</span>
                         {m.qualifies && (
-                          <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "#22c55e20", color: "#22c55e", fontWeight: 700, border: "1px solid #22c55e40" }}>
+                          <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3, background: "#22c55e20", color: "#22c55e", fontWeight: 700, border: "1px solid #22c55e40", whiteSpace: "nowrap" }}>
                             QUALIFIES
                           </span>
                         )}
                       </div>
                     </div>
-                    <div style={{ fontSize: 10, color: "var(--text-5)", marginBottom: m.matchingFactors?.length ? 4 : 0 }}>
+                    <div style={{ fontSize: 10, color: "var(--text-5)", marginBottom: 4 }}>
                       {m.caseType} · {m.status}
-                      {m.perClaimantRange && ` · Est. ${m.perClaimantRange} per claimant`}
+                      {m.perClaimantRange && <span style={{ color: "#22c55e", fontWeight: 600 }}> · Est. {m.perClaimantRange}</span>}
                       {m.claimWindowCloses && ` · Claim closes ${m.claimWindowCloses}`}
                     </div>
                     {m.matchingFactors?.length > 0 && (
-                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 4 }}>
-                        {m.matchingFactors.slice(0, 3).map((f, j) => (
+                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                        {m.matchingFactors.slice(0, 4).map((f, j) => (
                           <span key={j} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.08)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.2)" }}>
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {m.disqualifyingFactors?.length > 0 && (
+                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 4 }}>
+                        {m.disqualifyingFactors.slice(0, 2).map((f, j) => (
+                          <span key={j} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
                             {f}
                           </span>
                         ))}
@@ -986,7 +1025,7 @@ function ImportWizard({ onImported, onGoToClient }) {
             )}
           </div>
 
-          {/* Address + employment */}
+          {/* ── Address + employment sidebar ────────────────────────── */}
           {(x.addressHistory?.length > 0 || x.employmentHistory?.length > 0) && (
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {x.addressHistory?.length > 0 && (
@@ -1003,6 +1042,15 @@ function ImportWizard({ onImported, onGoToClient }) {
               )}
             </div>
           )}
+
+          <div style={{ borderTop: "1px solid var(--border)", paddingTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ fontSize: 11, color: "var(--text-6)" }}>
+              Client ID: <span style={{ fontFamily: "monospace", color: "var(--text-4)" }}>{c.id}</span>
+            </div>
+            <Btn onClick={() => { setStep("upload"); setParsed(null); setResult(null); setCrFile(null); setCrPreview(null); setCrJob(null); setCrMatches(null); setCrMatchState("idle"); }}>
+              Upload another
+            </Btn>
+          </div>
         </div>
       );
     }
