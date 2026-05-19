@@ -932,18 +932,28 @@ export default function TCPACases() {
   async function runIngest(mode) {
     setIngesting(true);
     setIngestResult(null);
-    try {
-      // Backfill: only CourtListener (free, no paid key needed).
-      // Daily: all sources.
-      const source = mode === "backfill" ? "courtlistener,classaction,topclassactions" : "all";
-      const r = await fetch(`/api/tcpa-ingest?source=${source}&mode=${mode}`);
-      const d = await r.json();
-      setIngestResult(d);
+    // Fire-and-forget — don't await the full ingest (takes 30-120s).
+    // Poll stats every 4s until the source cursor advances.
+    const source = mode === "backfill" ? "courtlistener" : "all";
+    fetch(`/api/tcpa-ingest?source=${source}&mode=${mode}`).catch(() => {});
+    let polls = 0;
+    const prev = ingestStats?.courtlistener?.ranAt;
+    const interval = setInterval(async () => {
+      polls++;
       await Promise.all([load(), loadStats()]);
-    } catch (e) {
-      setIngestResult({ ok: false, error: e.message });
-    }
-    setIngesting(false);
+      // Stop polling once the cursor has advanced (new ranAt) or after 2 min
+      const next = ingestStats?.courtlistener?.ranAt;
+      if ((next && next !== prev) || polls >= 30) {
+        clearInterval(interval);
+        setIngesting(false);
+        const r = await fetch("/api/tcpa-ingest?stats=1").then(r => r.json()).catch(() => ({}));
+        const cl = r.stats?.courtlistener;
+        setIngestResult(cl
+          ? { ok: true, totals: { created: cl.created || 0, updated: cl.updated || 0, errors: cl.errors || 0 }, runs: [] }
+          : { ok: false, error: "No stats returned — check Vercel logs" }
+        );
+      }
+    }, 4000);
   }
   useEffect(() => { load(); loadStats(); loadRollup(); }, []);
 
