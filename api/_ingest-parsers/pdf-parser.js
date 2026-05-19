@@ -17,12 +17,14 @@ async function callClaude(model, max_tokens, messages) {
       "Content-Type": "application/json",
       "x-api-key": ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
-      "anthropic-beta": "pdfs-2024-09-25",  // required for PDF document blocks
+      // pdfs-2024-09-25 beta enables native PDF document blocks on all models
+      "anthropic-beta": "pdfs-2024-09-25",
     },
     body: JSON.stringify({ model, max_tokens, messages }),
+    signal: AbortSignal.timeout(90000),
   });
   if (!res.ok) {
-    const err = await res.text().catch(() => res.status);
+    const err = await res.text().catch(() => String(res.status));
     throw new Error(`Anthropic ${res.status}: ${err}`);
   }
   const data = await res.json();

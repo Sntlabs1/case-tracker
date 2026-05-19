@@ -719,13 +719,18 @@ function ImportWizard({ onImported, onGoToClient }) {
         // Poll every 2 seconds
         crPollRef.current = setInterval(() => pollJob(d.jobId), 2000);
       } else {
-        // Single-report path — synchronous
+        // Single-report path — synchronous (120s timeout on backend)
         const r = await fetch("/api/ingest-credit-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ file: base64, filename: crFile.name, contentType: crFile.type || "", partner: p }),
         });
-        const d = await r.json();
+        let d;
+        try {
+          d = await r.json();
+        } catch {
+          throw new Error(`Server error ${r.status} — the PDF may be too large, or the extraction service timed out. Try a smaller file.`);
+        }
         if (!d.ok) throw new Error(d.error || "Ingest failed");
         // Store full response including extraction summary and immediate matches
         setResult({

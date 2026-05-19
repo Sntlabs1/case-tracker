@@ -77,6 +77,18 @@
     },
     "api/campaigns.js": {
       "maxDuration": 30
+    },
+    "api/ingest-credit-report.js": {
+      "maxDuration": 120
+    },
+    "api/ingest-credit-report-bulk.js": {
+      "maxDuration": 300
+    },
+    "api/match-cases.js": {
+      "maxDuration": 120
+    },
+    "api/ingest-job.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
