@@ -96,7 +96,14 @@ function toCaseInput(extracted, articleUrl, articleDate, sourceTag) {
       docket: extracted.docket || "",
     },
     filingDate: extracted.filingDate || articleDate || new Date().toISOString().slice(0, 10),
-    status: extracted.status || "settled",
+    status: (() => {
+      const closes = extracted.claimDeadline;
+      if (closes) {
+        const now = new Date().toISOString().slice(0, 10);
+        return closes >= now ? "claim_open" : "claim_closed";
+      }
+      return extracted.status || "settled";
+    })(),
     settlement: {
       totalFund: extracted.settlementTotal || null,
       claimWindowCloses: extracted.claimDeadline || null,

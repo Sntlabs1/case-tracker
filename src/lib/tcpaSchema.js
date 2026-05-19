@@ -104,7 +104,17 @@ export function buildCase(input) {
       start: normalizeDate(input.classPeriod?.start),
       end:   normalizeDate(input.classPeriod?.end),
     },
-    status:            input.status,
+    // Auto-promote status based on claim window dates so cases don't sit
+    // as "settled" forever when we actually know the window is open or closed.
+    status: (() => {
+      const closes = normalizeDate(input.settlement?.claimWindowCloses);
+      const opens  = normalizeDate(input.settlement?.claimWindowOpens);
+      const now2   = new Date().toISOString().slice(0, 10);
+      if (closes && closes < now2) return "claim_closed";
+      if (closes && closes >= now2) return "claim_open";
+      if (opens  && opens  <= now2) return "claim_open";
+      return input.status;
+    })(),
     settlement: {
       totalFund:           input.settlement?.totalFund || null,
       perClaimantRange:    input.settlement?.perClaimantRange || null,
