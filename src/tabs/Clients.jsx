@@ -662,7 +662,9 @@ function ImportWizard({ onImported, onGoToClient }) {
   async function handleCrFile(file) {
     if (!file) return;
     setCrFile(file);
-    setCrPreview({ status: "ready", name: file.name, size: (file.size / 1024 / 1024).toFixed(1) + " MB" });
+    const mb = file.size / 1024 / 1024;
+    const warn = mb > 8 ? `File is ${mb.toFixed(1)} MB — extraction may take 60+ seconds. For faster processing, print the credit report to a smaller PDF or export as JSON.` : null;
+    setCrPreview({ status: warn ? "warn" : "ready", name: file.name, size: mb.toFixed(1) + " MB", warn });
   }
 
   function stopCrPoll() {
@@ -1155,7 +1157,12 @@ function ImportWizard({ onImported, onGoToClient }) {
 
           {crPreview?.status === "error" && (
             <div style={{ padding: "10px 14px", borderRadius: 8, background: "#fee2e2", border: "1px solid #fca5a5", fontSize: 12, color: "#b91c1c", marginBottom: 12 }}>
-              {crPreview.error}
+              <strong>Extraction failed:</strong> {crPreview.error}
+            </div>
+          )}
+          {crPreview?.status === "warn" && (
+            <div style={{ padding: "10px 14px", borderRadius: 8, background: "#fef3c7", border: "1px solid #fcd34d", fontSize: 12, color: "#92400e", marginBottom: 12 }}>
+              {crPreview.warn}
             </div>
           )}
 

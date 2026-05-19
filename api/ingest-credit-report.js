@@ -256,42 +256,8 @@ export default async function handler(req, res) {
       (a.latePayments?.d30 || 0) + (a.latePayments?.d60 || 0) + (a.latePayments?.d90 || 0) > 0
     );
 
-    // Run TCPA case matching immediately (top 20 results) so UI shows matches right away
-    let immediateMatches = [];
-    if (result.matchQueued > 0) {
-      try {
-        const matchUrl = process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : "http://localhost:3000";
-        const clientId = result.ids?.[0] || result.updatedIds?.[0];
-        if (clientId) {
-          const mr = await fetch(`${matchUrl}/api/match-cases`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mode: "client-to-cases", clientId, caseType: "TCPA", topN: 20 }),
-            signal: AbortSignal.timeout(25000),
-          });
-          if (mr.ok) {
-            const md = await mr.json();
-            immediateMatches = (md.matches || [])
-              .filter(m => m.qualifies || m.score >= 40)
-              .slice(0, 10)
-              .map(m => ({
-                caseId:        m.caseId,
-                caption:       m.caption || m.caseCaption,
-                caseType:      m.caseType,
-                score:         m.score,
-                qualifies:     m.qualifies,
-                status:        m.status,
-                matchType:     m.matchType,
-                matchingFactors: m.matchingFactors,
-                claimWindowCloses: m.claimWindowCloses,
-                perClaimantRange:  m.perClaimantRange,
-              }));
-          }
-        }
-      } catch { /* non-fatal — matching will still run via cron */ }
-    }
+    // Matching runs via the hourly cron — don't block the response on it.
+    // Clients are already queued in PENDING_MATCH by persistClients().
 
     return res.status(200).json({
       ok: true,
@@ -322,7 +288,7 @@ export default async function handler(req, res) {
         employmentHistory: (c.employmentHistory || []).map(e => e.employer).filter(Boolean).slice(0, 5),
         addressHistory:   (c.addressHistory || []).map(a => `${a.city || ""} ${a.state || ""}`.trim()).filter(Boolean).slice(0, 5),
       },
-      matches: immediateMatches,
+      matches: [],  // populated by cron match agent within the hour
     });
 
   } catch (e) {

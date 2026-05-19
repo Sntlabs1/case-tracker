@@ -59,102 +59,44 @@ function sanitizeForParse(text) {
   return out;
 }
 
-const EXTRACTION_PROMPT = `You are extracting a credit report for a TCPA/FDCPA plaintiff law firm. Extract EVERY piece of information.
+// Slim prompt — only the fields the TCPA matcher actually needs.
+// Full detail (payment history strings, court info, etc.) massively inflates
+// output tokens and causes 90-120s timeouts. This version targets ~800-1200
+// output tokens and runs in 10-20s.
+const EXTRACTION_PROMPT = `Extract this credit report for a TCPA/FDCPA plaintiff law firm.
 
-CRITICAL RULES:
-1. ACCOUNTS: Extract EVERY account — open, closed, zero-balance, charged-off, collections, mortgages, auto loans, student loans, store cards, ALL of them. Closed accounts with $0 balance are still TCPA defendants. Do NOT skip them.
-2. PAYMENT HISTORY: Normalise to: C=paid, 1=30d-late, 2=60d-late, 3=90d-late, 4=120d-late, 5=150d+, 8=repo, 9=collection/CO, -=no-data, X=not-reported. Left = most recent month.
-   For TransUnion "Pmt Pattern": their "1"=paid→"C", "2"=30d→"1", "3"=60d→"2", "4"=90d→"3", "5"=120d+→"4".
-3. LATE COUNTS: Count 1s, 2s, 3s in normalised string for d30/d60/d90.
-4. EMPLOYMENT: Extract ALL employer records including city, state, dates, bureau.
-5. PUBLIC RECORDS: ALL bankruptcies (Ch7/Ch11/Ch13), civil judgments, tax liens. Include court, docket, disposition, dates, assets, liabilities, attorney.
-6. LIENS & JUDGMENTS: Use type="civil_judgment" for judgments, "tax_lien_paid"/"tax_lien_unpaid" for liens.
-7. INQUIRIES: ALL — hard and soft. Note bureau and type.
-8. ADDRESSES: ALL reported addresses with dates and bureau.
-9. JOINT REPORTS: Primary consumer → "consumer", second → "consumer2" top-level.
-10. CREDIT SCORE: Extract if shown.
-11. SSN: ONLY last 4 digits. NEVER full SSN.
-12. DATES: ISO YYYY-MM-DD. Month/year only → YYYY-MM-01.
-13. AMOUNTS: Numbers only (strip $ and commas). Missing → null.
-14. COLLECTIONS: creditor = the COLLECTION AGENCY, originalCreditor = the ORIGINAL CREDITOR they collected for.
-15. Never fabricate. Return null for missing fields.
+RULES:
+- Include EVERY account (all creditors, open and closed — each is a potential TCPA defendant).
+- For collections: creditor = the COLLECTION AGENCY, originalCreditor = who they collected for.
+- latePayments: count 30-day-late, 60-day-late, 90+-day-late occurrences from the payment history.
+- SSN: last 4 digits ONLY. Dates: YYYY-MM-DD. Amounts: numbers only (no $ or commas). Missing → null.
+- Be concise. Omit null/empty/zero fields to save space.
+- Return ONLY a JSON object. No markdown, no explanation.
 
-Return ONLY the JSON object. No markdown. No commentary.
-
-SCHEMA:
 {
-  "reportDate": "YYYY-MM-DD",
-  "reportNumber": null,
-  "bureau": "TU | EX | EQ | joint | credit_com | unknown",
-  "sourceFormat": "pdf",
+  "bureau": "TU|EX|EQ|joint|unknown",
   "creditScore": null,
   "consumer": {
-    "firstName": "",
-    "lastName": "",
-    "middleName": null,
-    "ssnLast4": null,
-    "dob": null,
-    "emails": [],
+    "firstName": "", "lastName": "", "ssnLast4": null, "dob": null,
     "phoneNumbers": [],
-    "currentAddress": { "street": "", "city": "", "state": "", "zip": "" },
-    "addressHistory": [{ "street": "", "city": "", "state": "", "zip": "", "from": null, "to": null, "bureau": null }],
-    "aliases": [],
-    "employmentHistory": [{ "employer": "", "position": "", "city": "", "state": "", "start": null, "end": null, "bureau": null }]
+    "currentAddress": { "city": "", "state": "", "zip": "" },
+    "addressHistory": [{ "city": "", "state": "", "from": null, "to": null }],
+    "employmentHistory": [{ "employer": "", "city": "", "state": "" }]
   },
-  "consumer2": null,
   "accounts": [
     {
-      "creditor": "",
-      "originalCreditor": null,
-      "accountNumber": "",
-      "type": "revolving|installment|mortgage|open|collection|other",
-      "loanType": null,
-      "status": "open_current|open_past_due|closed_paid|closed_charged_off|in_collection|in_dispute|bankruptcy|unknown",
-      "responsibility": "individual|joint|co_signer|authorized_user|co_applicant|unknown",
-      "dateOpened": null,
-      "dateLastActivity": null,
-      "dateLastReported": null,
-      "dateClosed": null,
-      "balance": null,
-      "highCredit": null,
-      "creditLimit": null,
-      "monthlyPayment": null,
-      "pastDue": null,
-      "paymentHistory": "",
-      "latePayments": { "d30": 0, "d60": 0, "d90": 0 },
-      "remarks": [],
+      "creditor": "", "originalCreditor": null,
+      "type": "revolving|installment|mortgage|collection|other",
+      "status": "open_current|open_past_due|closed_paid|closed_charged_off|in_collection|other",
       "isCollection": false,
-      "amountPlacedForCollection": null,
-      "datePlacedForCollection": null,
-      "creditorAddress": null,
-      "bureauSources": []
+      "balance": null, "dateOpened": null, "dateLastActivity": null,
+      "latePayments": { "d30": 0, "d60": 0, "d90": 0 }
     }
   ],
   "publicRecords": [
-    {
-      "type": "bankruptcy_ch7|bankruptcy_ch11|bankruptcy_ch13|civil_judgment|tax_lien_paid|tax_lien_unpaid|other",
-      "docket": null,
-      "court": null,
-      "plaintiff": null,
-      "defendant": null,
-      "attorney": null,
-      "obligation": null,
-      "responsibility": "individual",
-      "dateFiled": null,
-      "dateDischarged": null,
-      "dateClosed": null,
-      "assets": null,
-      "liabilities": null,
-      "disposition": null,
-      "bureauSources": []
-    }
+    { "type": "bankruptcy_ch7|bankruptcy_ch13|civil_judgment|tax_lien|other", "dateFiled": null, "disposition": null }
   ],
-  "inquiries": [
-    { "creditor": "", "date": null, "type": "hard|soft", "bureau": null }
-  ],
-  "alerts": [
-    { "type": "ssn_mismatch|fraud_alert|identity_theft|address_mismatch|other", "message": "", "bureau": null, "severity": "high|medium|low" }
-  ]
+  "inquiries": [{ "creditor": "", "date": null, "type": "hard|soft" }]
 }`;
 
 // Parse a credit report PDF given as a base64 string.
@@ -166,11 +108,10 @@ export async function parseCreditReportPdfBase64(base64, filename = "report.pdf"
 
   let parsed;
   try {
-    // Use Sonnet (not Haiku) — PDF document blocks are most reliable on Sonnet.
-    // Haiku 4.5 with pdfs-2024-09-25 beta is inconsistent.
+    // Sonnet with slim schema — targets ~800-1200 output tokens → 10-20s
     const raw = await callClaude(
       "claude-sonnet-4-6",
-      12000,
+      4000,
       [{
         role: "user",
         content: [
