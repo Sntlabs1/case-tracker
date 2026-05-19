@@ -76,8 +76,10 @@ function accountToCollectionsEntry(a) {
 export function creditReportToClient(report, baseClient = {}) {
   const c = report.consumer || {};
   const accounts = report.accounts || [];
-  const bankruptcies = (report.publicRecords || []).filter((p) => /^bankruptcy_/.test(p.type));
-  const civilJudgments = (report.publicRecords || []).filter((p) => p.type === "civil_judgment");
+  const publicRecords = report.publicRecords || [];
+  const bankruptcies  = publicRecords.filter((p) => /^bankruptcy_/.test(p.type));
+  const civilJudgments = publicRecords.filter((p) => p.type === "civil_judgment");
+  const taxLiens      = publicRecords.filter((p) => /^tax_lien/.test(p.type));
 
   // Collections subset (for the legacy matcher path)
   const collectionsHistory = accounts
@@ -113,9 +115,18 @@ export function creditReportToClient(report, baseClient = {}) {
       ...(baseClient.phoneNumbers || []),
     ])].filter(Boolean),
     state,
-    city: c.currentAddress?.city || baseClient.city || "",
-    dob: c.dob || baseClient.dob || null,
+    city:    c.currentAddress?.city || baseClient.city || "",
+    dob:     c.dob || baseClient.dob || null,
+    ssnLast4: c.ssnLast4 || baseClient.ssnLast4 || null,
+    creditScore: report.creditScore || baseClient.creditScore || null,
     addressHistory,
+    employmentHistory: (c.employmentHistory || []).map(e => ({
+      employer: e.employer || e.name || "",
+      city:     e.city     || "",
+      state:    (e.state   || "").toUpperCase().slice(0, 2),
+      start:    e.start    || null,
+      end:      e.end      || null,
+    })).filter(e => e.employer),
 
     // Source tagging
     partnerId: baseClient.partnerId || "credit_com",
@@ -133,6 +144,7 @@ export function creditReportToClient(report, baseClient = {}) {
     creditAccounts: accounts,
     bankruptcies,
     civilJudgments,
+    taxLiens,
     creditInquiries: report.inquiries || [],
     creditReportAlerts: report.alerts || [],
     creditReportSummary: report.summary || null,

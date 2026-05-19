@@ -66,37 +66,51 @@ function sanitizeForParse(text) {
 const EXTRACTION_PROMPT = `Extract this credit report for a TCPA/FDCPA plaintiff law firm.
 
 RULES:
-- Include EVERY account (all creditors, open and closed — each is a potential TCPA defendant).
-- For collections: creditor = the COLLECTION AGENCY, originalCreditor = who they collected for.
-- latePayments: count 30-day-late, 60-day-late, 90+-day-late occurrences from the payment history.
-- SSN: last 4 digits ONLY. Dates: YYYY-MM-DD. Amounts: numbers only (no $ or commas). Missing → null.
-- Be concise. Omit null/empty/zero fields to save space.
-- Return ONLY a JSON object. No markdown, no explanation.
+- Extract EVERY account (open, closed, collections, charged-off — each creditor is a potential defendant).
+- For collection accounts: creditor = the COLLECTION AGENCY, originalCreditor = who they collected for.
+- latePayments: count how many 30-day, 60-day, and 90+-day late occurrences appear in the payment history.
+- SSN: ONLY the last 4 digits. Never full SSN.
+- Dates: YYYY-MM-DD. Month/year only → YYYY-MM-01.
+- Amounts: numbers only (strip $ and commas). Missing → null.
+- Return ONLY a JSON object — no markdown, no explanation, no commentary.
 
 {
   "bureau": "TU|EX|EQ|joint|unknown",
   "creditScore": null,
   "consumer": {
     "firstName": "", "lastName": "", "ssnLast4": null, "dob": null,
-    "phoneNumbers": [],
-    "currentAddress": { "city": "", "state": "", "zip": "" },
-    "addressHistory": [{ "city": "", "state": "", "from": null, "to": null }],
-    "employmentHistory": [{ "employer": "", "city": "", "state": "" }]
+    "phoneNumbers": ["include ALL phone numbers listed"],
+    "currentAddress": { "street": "", "city": "", "state": "", "zip": "" },
+    "addressHistory": [{ "street": "", "city": "", "state": "", "zip": "", "from": null, "to": null }],
+    "employmentHistory": [{ "employer": "", "city": "", "state": "", "start": null, "end": null }]
   },
   "accounts": [
     {
-      "creditor": "", "originalCreditor": null,
+      "creditor": "",
+      "originalCreditor": null,
+      "accountNumber": "last 4 digits only, or null",
       "type": "revolving|installment|mortgage|collection|other",
       "status": "open_current|open_past_due|closed_paid|closed_charged_off|in_collection|other",
       "isCollection": false,
-      "balance": null, "dateOpened": null, "dateLastActivity": null,
+      "balance": null,
+      "creditLimit": null,
+      "dateOpened": null,
+      "dateLastActivity": null,
       "latePayments": { "d30": 0, "d60": 0, "d90": 0 }
     }
   ],
   "publicRecords": [
-    { "type": "bankruptcy_ch7|bankruptcy_ch13|civil_judgment|tax_lien|other", "dateFiled": null, "disposition": null }
+    {
+      "type": "bankruptcy_ch7|bankruptcy_ch11|bankruptcy_ch13|civil_judgment|tax_lien_paid|tax_lien_unpaid|other",
+      "dateFiled": null,
+      "dateDischarged": null,
+      "disposition": null,
+      "amount": null
+    }
   ],
-  "inquiries": [{ "creditor": "", "date": null, "type": "hard|soft" }]
+  "inquiries": [
+    { "creditor": "", "date": null, "type": "hard|soft" }
+  ]
 }`;
 
 // Parse a credit report PDF given as a base64 string.
