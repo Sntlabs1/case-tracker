@@ -2105,6 +2105,26 @@ export default function Clients() {
                           )}
                         </div>
                       )}
+
+                      {/* Diagnostic — shows what's in the record so we can confirm data was saved */}
+                      <details style={{ marginTop: 10 }}>
+                        <summary style={{ fontSize: 9, color: "var(--text-7)", cursor: "pointer", letterSpacing: "0.05em" }}>
+                          Record fields (diagnostic)
+                        </summary>
+                        <div style={{ marginTop: 6, fontSize: 10, color: "var(--text-5)", fontFamily: "monospace", padding: "8px 10px", background: "var(--bg-surface)", borderRadius: 6, lineHeight: 1.8 }}>
+                          <div>accounts: {selectedClient.creditAccounts?.length ?? 0}</div>
+                          <div>collections: {selectedClient.collectionsHistory?.length ?? 0}</div>
+                          <div>bankruptcies: {selectedClient.bankruptcies?.length ?? 0}</div>
+                          <div>taxLiens: {selectedClient.taxLiens?.length ?? 0}</div>
+                          <div>inquiries: {selectedClient.creditInquiries?.length ?? 0}</div>
+                          <div>employment: {selectedClient.employmentHistory?.length ?? 0}</div>
+                          <div>addresses: {selectedClient.addressHistory?.length ?? 0}</div>
+                          <div>creditScore: {selectedClient.creditScore ?? "null"}</div>
+                          <div>ssnLast4: {selectedClient.ssnLast4 ?? "null"}</div>
+                          <div>pdfUrl: {selectedClient.creditReportPdfUrl ? "yes" : "no"}</div>
+                          <div>clientId: {selectedClient.id}</div>
+                        </div>
+                      </details>
                     </div>
                   )}
 
