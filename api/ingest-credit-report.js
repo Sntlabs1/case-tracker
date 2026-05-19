@@ -25,6 +25,7 @@ import normalize                         from "./_partner-importers/credit-com-j
 import { buildCreditReport }             from "../src/lib/creditReportSchema.js";
 import { creditReportToClient }          from "../src/lib/creditReportToClient.js";
 import { kv }                            from "@vercel/kv";
+import { put }                           from "@vercel/blob";
 import { createHash }                    from "node:crypto";
 import {
   normalize as normalizeDefendant,
@@ -99,6 +100,7 @@ function buildRecord(c, now, idx) {
     employmentHistory:  Array.isArray(c.employmentHistory)  ? c.employmentHistory  : [],
     creditReportSummary: c.creditReportSummary || null,
     lastCreditReportAt:  c.lastCreditReportAt  || new Date(now).toISOString(),
+    creditReportPdfUrl:  c.creditReportPdfUrl  || null,
     existingCases: c.existingCases || "",
     matchedLeads: [],
   };
@@ -237,6 +239,22 @@ export default async function handler(req, res) {
     if (body.file) {
       // base64 file upload (single report)
       clients = await parseFile(body.file, body.filename || "upload", body.contentType || "");
+
+      // Upload the original PDF to Blob storage so it can be shown in the client card.
+      // Fire-and-forget with graceful fallback — ingest still succeeds without Blob.
+      const isPdf = (body.filename || "").toLowerCase().endsWith(".pdf") ||
+                    (body.contentType || "").includes("pdf");
+      if (isPdf && process.env.BLOB_READ_WRITE_TOKEN) {
+        try {
+          const pdfBuf = Buffer.from(body.file, "base64");
+          const slug = `credit-reports/${Date.now()}-${(body.filename || "report.pdf").replace(/[^a-z0-9.\-_]/gi, "_")}`;
+          const blob = await put(slug, pdfBuf, { access: "public", contentType: "application/pdf" });
+          // Attach the URL to each parsed client so buildRecord persists it
+          clients.forEach(c => { if (c) c.creditReportPdfUrl = blob.url; });
+        } catch (e) {
+          console.warn("Blob upload skipped:", e.message);
+        }
+      }
     } else if (Array.isArray(body.clients)) {
       clients = body.clients.map(item => normalize(item));
     } else if (body.firstName || body.consumer) {

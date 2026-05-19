@@ -1891,6 +1891,31 @@ export default function Clients() {
                   {clientTab === "credit" && (
                     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
+                      {/* PDF viewer */}
+                      {selectedClient.creditReportPdfUrl && (
+                        <div>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            Original PDF
+                            <a href={selectedClient.creditReportPdfUrl} target="_blank" rel="noopener noreferrer"
+                               style={{ fontSize: 10, color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+                              Open full screen ↗
+                            </a>
+                          </div>
+                          <object
+                            data={selectedClient.creditReportPdfUrl}
+                            type="application/pdf"
+                            style={{ width: "100%", height: 480, borderRadius: 8, border: "1px solid var(--border)", background: "#fff" }}
+                          >
+                            <div style={{ padding: 16, textAlign: "center", fontSize: 12, color: "var(--text-5)" }}>
+                              PDF preview not supported in this browser.{" "}
+                              <a href={selectedClient.creditReportPdfUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--accent)" }}>
+                                Open PDF →
+                              </a>
+                            </div>
+                          </object>
+                        </div>
+                      )}
+
                       {/* Summary row */}
                       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                         {[
