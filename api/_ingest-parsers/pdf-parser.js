@@ -94,6 +94,7 @@ RULES:
       "isCollection": false,
       "balance": null,
       "creditLimit": null,
+      "monthlyPayment": null,
       "dateOpened": null,
       "dateLastActivity": null,
       "latePayments": { "d30": 0, "d60": 0, "d90": 0 }

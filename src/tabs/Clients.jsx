@@ -1972,37 +1972,82 @@ export default function Clients() {
                         );
                       })()}
 
-                      {/* All other tradelines */}
+                      {/* Tradelines grouped by type */}
                       {(() => {
-                        const others = (selectedClient.creditAccounts || []).filter(a => !a.isCollection);
-                        if (!others.length) return null;
-                        return (
-                          <details open>
-                            <summary style={{ fontSize: 10, fontWeight: 700, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: "0.07em", cursor: "pointer", marginBottom: 6 }}>
-                              All tradelines ({others.length})
-                            </summary>
-                            <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 6 }}>
-                              {others.map((a, i) => {
+                        const nonCol = (selectedClient.creditAccounts || []).filter(a => !a.isCollection);
+                        if (!nonCol.length) return null;
+
+                        const groups = [
+                          { key: "revolving",    label: "Credit Cards",       color: "#3b82f6", accts: nonCol.filter(a => a.type === "revolving") },
+                          { key: "installment",  label: "Installment Loans",  color: "#8b5cf6", accts: nonCol.filter(a => a.type === "installment") },
+                          { key: "mortgage",     label: "Mortgages",          color: "#22c55e", accts: nonCol.filter(a => a.type === "mortgage") },
+                          { key: "other",        label: "Other Accounts",     color: "#6b7280", accts: nonCol.filter(a => !["revolving","installment","mortgage"].includes(a.type)) },
+                        ].filter(g => g.accts.length > 0);
+
+                        const fmt = n => n != null ? `$${Number(n).toLocaleString()}` : null;
+                        const statusColor = s => s?.includes("charged_off") || s?.includes("collection") ? "#ef4444"
+                          : s?.includes("past_due") ? "#f59e0b" : "var(--text-6)";
+
+                        return groups.map(g => (
+                          <div key={g.key}>
+                            <div style={{ fontSize: 10, fontWeight: 700, color: g.color, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
+                              {g.label} ({g.accts.length})
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
+                              {g.accts.map((a, i) => {
                                 const lates = (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0);
+                                const util = a.creditLimit > 0 && a.balance != null
+                                  ? Math.round((a.balance / a.creditLimit) * 100) : null;
                                 return (
-                                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 8px", borderRadius: 5, background: "var(--bg-surface2)", border: "1px solid var(--border)" }}>
-                                    <div>
-                                      <span style={{ fontSize: 11, color: "var(--text-2)", fontWeight: 500 }}>{a.creditor || "Unknown"}</span>
-                                      {a.type && <span style={{ fontSize: 9, color: "var(--text-6)", marginLeft: 6 }}>{a.type}</span>}
-                                    </div>
-                                    <div style={{ display: "flex", gap: 8, fontSize: 10, color: "var(--text-6)", alignItems: "center" }}>
-                                      {a.balance != null && <span>${Number(a.balance).toLocaleString()}</span>}
-                                      {lates > 0 && <span style={{ color: "#f59e0b", fontWeight: 600 }}>{lates} late</span>}
-                                      <span style={{ color: a.status?.includes("charged_off") || a.status?.includes("collection") ? "#ef4444" : "var(--text-6)" }}>
+                                  <div key={i} style={{ padding: "9px 11px", borderRadius: 7, background: "var(--bg-surface2)", border: `1px solid ${lates > 0 ? "#f59e0b40" : "var(--border)"}` }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+                                      <div>
+                                        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>{a.creditor || "Unknown"}</span>
+                                        {a.accountNumber && <span style={{ fontSize: 9, color: "var(--text-6)", marginLeft: 6 }}>···{a.accountNumber}</span>}
+                                        {a.dateOpened && <span style={{ fontSize: 9, color: "var(--text-6)", marginLeft: 6 }}>opened {a.dateOpened.slice(0,7)}</span>}
+                                      </div>
+                                      <span style={{ fontSize: 10, color: statusColor(a.status), fontWeight: 500 }}>
                                         {(a.status || "").replace(/_/g, " ")}
                                       </span>
+                                    </div>
+                                    <div style={{ display: "flex", gap: 14, fontSize: 10, flexWrap: "wrap" }}>
+                                      {a.balance != null && (
+                                        <span>
+                                          <span style={{ color: "var(--text-6)" }}>Balance </span>
+                                          <span style={{ fontWeight: 700, color: "var(--text-2)" }}>{fmt(a.balance)}</span>
+                                        </span>
+                                      )}
+                                      {a.creditLimit != null && (
+                                        <span>
+                                          <span style={{ color: "var(--text-6)" }}>Limit </span>
+                                          <span style={{ color: "var(--text-3)" }}>{fmt(a.creditLimit)}</span>
+                                          {util != null && (
+                                            <span style={{ marginLeft: 4, color: util >= 90 ? "#ef4444" : util >= 60 ? "#f59e0b" : "#22c55e", fontWeight: 700 }}>
+                                              {util}% util
+                                            </span>
+                                          )}
+                                        </span>
+                                      )}
+                                      {a.monthlyPayment != null && (
+                                        <span>
+                                          <span style={{ color: "var(--text-6)" }}>Monthly </span>
+                                          <span style={{ color: "var(--text-3)" }}>{fmt(a.monthlyPayment)}</span>
+                                        </span>
+                                      )}
+                                      {lates > 0 && (
+                                        <span style={{ color: "#f59e0b", fontWeight: 700 }}>
+                                          {a.latePayments?.d30 > 0 && `${a.latePayments.d30}×30d `}
+                                          {a.latePayments?.d60 > 0 && `${a.latePayments.d60}×60d `}
+                                          {a.latePayments?.d90 > 0 && `${a.latePayments.d90}×90d+`}
+                                        </span>
+                                      )}
                                     </div>
                                   </div>
                                 );
                               })}
                             </div>
-                          </details>
-                        );
+                          </div>
+                        ));
                       })()}
 
                       {/* Bankruptcies */}
