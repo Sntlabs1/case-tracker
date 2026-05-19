@@ -245,14 +245,84 @@ export default async function handler(req, res) {
     const result = await persistClients(validClients);
 
     const c = validClients[0];
+
+    // Build a human-readable extraction summary to show in the UI immediately
+    const allAccounts = [...(c.creditAccounts || []), ...(c.collectionsHistory || [])];
+    const creditorNames = [...new Set(
+      allAccounts.map(a => a.creditor || a.originalCreditor || a.debtBuyer).filter(Boolean)
+    )];
+    const collectionAccounts = allAccounts.filter(a => a.isCollection || a.type === "collection");
+    const lateAccounts = (c.creditAccounts || []).filter(a =>
+      (a.latePayments?.d30 || 0) + (a.latePayments?.d60 || 0) + (a.latePayments?.d90 || 0) > 0
+    );
+
+    // Run TCPA case matching immediately (top 20 results) so UI shows matches right away
+    let immediateMatches = [];
+    if (result.matchQueued > 0) {
+      try {
+        const matchUrl = process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "http://localhost:3000";
+        const clientId = result.ids?.[0] || result.updatedIds?.[0];
+        if (clientId) {
+          const mr = await fetch(`${matchUrl}/api/match-cases`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mode: "client-to-cases", clientId, caseType: "TCPA", topN: 20 }),
+            signal: AbortSignal.timeout(25000),
+          });
+          if (mr.ok) {
+            const md = await mr.json();
+            immediateMatches = (md.matches || [])
+              .filter(m => m.qualifies || m.score >= 40)
+              .slice(0, 10)
+              .map(m => ({
+                caseId:        m.caseId,
+                caption:       m.caption || m.caseCaption,
+                caseType:      m.caseType,
+                score:         m.score,
+                qualifies:     m.qualifies,
+                status:        m.status,
+                matchType:     m.matchType,
+                matchingFactors: m.matchingFactors,
+                claimWindowCloses: m.claimWindowCloses,
+                perClaimantRange:  m.perClaimantRange,
+              }));
+          }
+        }
+      } catch { /* non-fatal — matching will still run via cron */ }
+    }
+
     return res.status(200).json({
       ok: true,
-      imported:        result.imported,
-      updated:         result.updated,
-      name:            validClients.length === 1 ? `${c.firstName || ""} ${c.lastName || ""}`.trim() : null,
-      count:           validClients.length,
-      accountsExtracted: (c.creditAccounts?.length || 0) + (c.collectionsHistory?.length || 0),
-      matchQueued:     result.matchQueued,
+      imported:     result.imported,
+      updated:      result.updated,
+      count:        validClients.length,
+      matchQueued:  result.matchQueued,
+      // Extraction summary
+      client: {
+        id:        result.ids?.[0] || result.updatedIds?.[0],
+        name:      `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+        dob:       c.dob || null,
+        state:     c.state || null,
+        phones:    (c.phoneNumbers || []).slice(0, 3),
+        creditScore: c.creditScore || null,
+        ssnLast4:  c.ssnLast4 || null,
+      },
+      extraction: {
+        totalAccounts:    allAccounts.length,
+        creditAccounts:   (c.creditAccounts || []).length,
+        collections:      collectionAccounts.length,
+        lateAccounts:     lateAccounts.length,
+        bankruptcies:     (c.bankruptcies || []).length,
+        taxLiens:         (c.taxLiens || []).length,
+        civilJudgments:   (c.civilJudgments || []).length,
+        inquiries:        (c.creditInquiries || []).length,
+        creditors:        creditorNames.slice(0, 20),
+        employmentHistory: (c.employmentHistory || []).map(e => e.employer).filter(Boolean).slice(0, 5),
+        addressHistory:   (c.addressHistory || []).map(a => `${a.city || ""} ${a.state || ""}`.trim()).filter(Boolean).slice(0, 5),
+      },
+      matches: immediateMatches,
     });
 
   } catch (e) {

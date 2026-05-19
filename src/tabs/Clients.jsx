@@ -727,13 +727,18 @@ function ImportWizard({ onImported }) {
         });
         const d = await r.json();
         if (!d.ok) throw new Error(d.error || "Ingest failed");
+        // Store full response including extraction summary and immediate matches
         setResult({
-          imported:       d.imported || (d.clientId ? 1 : 0),
+          imported:       d.imported || (d.client?.id ? 1 : 0),
           updated:        d.updated  || 0,
-          invalid:        d.failed   || 0,
-          queuedForMatch: d.matchQueued || d.queuedForMatch || 0,
-          errors:         d.errors   || [],
-          name:           d.name,
+          invalid:        0,
+          queuedForMatch: d.matchQueued || 0,
+          errors:         [],
+          // Credit report specific
+          client:      d.client     || null,
+          extraction:  d.extraction || null,
+          matches:     d.matches    || [],
+          isCreditReport: true,
         });
         setStep("done");
         onImported((d.imported || 0) + (d.updated || 0) || 1);
@@ -832,8 +837,154 @@ function ImportWizard({ onImported }) {
   }
 
   if (step === "done") {
-    const partnerName = partners.find(p => p.id === partnerId)?.name || firmName || "imported firm";
     const r = result || {};
+
+    // ── Credit report extraction result ──────────────────────────────────────
+    if (r.isCreditReport) {
+      const c = r.client || {};
+      const x = r.extraction || {};
+      const matches = r.matches || [];
+      const SCORE_COLOR = s => s >= 70 ? "#22c55e" : s >= 50 ? "#f59e0b" : "#6b7280";
+
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Header */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>
+                {c.name || "Client"} {r.updated ? "(merged with existing record)" : "(new)"}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-5)", display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {c.state && <span>{c.state}</span>}
+                {c.dob && <span>DOB {c.dob}</span>}
+                {c.creditScore && <span>Credit score {c.creditScore}</span>}
+                {c.phones?.[0] && <span>{c.phones[0]}</span>}
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {c.id && (
+                <a href={`/api/client-report?clientId=${encodeURIComponent(c.id)}&format=html`}
+                   target="_blank" rel="noopener noreferrer"
+                   style={{ fontSize: 11, padding: "6px 12px", borderRadius: 6, background: "var(--accent)", color: "#fff", textDecoration: "none", fontWeight: 600 }}>
+                  Full report ↗
+                </a>
+              )}
+              <Btn onClick={() => { setStep("upload"); setParsed(null); setResult(null); setCrFile(null); setCrPreview(null); setCrJob(null); }}>
+                Upload another
+              </Btn>
+            </div>
+          </div>
+
+          {/* Extraction summary chips */}
+          <div>
+            <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
+              Extracted from report
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {[
+                [`${x.totalAccounts || 0} total accounts`, "var(--accent)"],
+                [`${x.collections || 0} collections`, "#ef4444"],
+                [`${x.lateAccounts || 0} accounts with late payments`, "#f59e0b"],
+                x.bankruptcies > 0 && [`${x.bankruptcies} bankruptc${x.bankruptcies === 1 ? "y" : "ies"}`, "#8b5cf6"],
+                x.taxLiens > 0 && [`${x.taxLiens} tax lien${x.taxLiens !== 1 ? "s" : ""}`, "#f59e0b"],
+                x.civilJudgments > 0 && [`${x.civilJudgments} civil judgment${x.civilJudgments !== 1 ? "s" : ""}`, "#f59e0b"],
+                [`${x.inquiries || 0} inquiries`, "#6b7280"],
+              ].filter(Boolean).map(([label, color]) => (
+                <span key={label} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, background: `${color}18`, color, border: `1px solid ${color}35`, fontWeight: 600 }}>
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Creditors found */}
+          {x.creditors?.length > 0 && (
+            <div>
+              <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
+                Creditors on file ({x.creditors.length})
+                <span style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 400, marginLeft: 6, textTransform: "none" }}>— each is a potential TCPA defendant</span>
+              </div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {x.creditors.map(cr => (
+                  <span key={cr} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, background: "var(--bg-surface2)", border: "1px solid var(--border)", color: "var(--text-2)" }}>
+                    {cr}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Immediate TCPA matches */}
+          <div>
+            <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
+              {matches.length > 0 ? `TCPA / FDCPA cases matched (${matches.length})` : "TCPA case matching"}
+            </div>
+            {matches.length === 0 ? (
+              <div style={{ fontSize: 12, color: "var(--text-5)", padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+                No qualifying matches found yet. The match agent will run again within the hour as new cases are ingested.
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {matches.map((m, i) => (
+                  <div key={m.caseId || i} style={{ padding: "10px 14px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${m.qualifies ? "#22c55e40" : "var(--border)"}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", flex: 1, marginRight: 10 }}>
+                        {m.caption || m.caseId}
+                      </div>
+                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
+                        <span style={{ fontSize: 11, fontWeight: 800, color: SCORE_COLOR(m.score) }}>
+                          {m.score}/100
+                        </span>
+                        {m.qualifies && (
+                          <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "#22c55e20", color: "#22c55e", fontWeight: 700, border: "1px solid #22c55e40" }}>
+                            QUALIFIES
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, color: "var(--text-5)", marginBottom: m.matchingFactors?.length ? 4 : 0 }}>
+                      {m.caseType} · {m.status}
+                      {m.perClaimantRange && ` · Est. ${m.perClaimantRange} per claimant`}
+                      {m.claimWindowCloses && ` · Claim closes ${m.claimWindowCloses}`}
+                    </div>
+                    {m.matchingFactors?.length > 0 && (
+                      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 4 }}>
+                        {m.matchingFactors.slice(0, 3).map((f, j) => (
+                          <span key={j} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.08)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.2)" }}>
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Address + employment */}
+          {(x.addressHistory?.length > 0 || x.employmentHistory?.length > 0) && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {x.addressHistory?.length > 0 && (
+                <div>
+                  <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Address history</div>
+                  {x.addressHistory.map((a, i) => <div key={i} style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 2 }}>{a}</div>)}
+                </div>
+              )}
+              {x.employmentHistory?.length > 0 && (
+                <div>
+                  <div style={{ fontSize: 10, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Employment</div>
+                  {x.employmentHistory.map((e, i) => <div key={i} style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 2 }}>{e}</div>)}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ── CSV / bulk import result (existing) ──────────────────────────────────
+    const partnerName = partners.find(p => p.id === partnerId)?.name || firmName || "imported firm";
     return (
       <div style={{ padding: "32px 20px" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
