@@ -81,6 +81,9 @@
     "api/ingest-credit-report.js": {
       "maxDuration": 120
     },
+    "api/client-pdf.js": {
+      "maxDuration": 15
+    },
     "api/ingest-credit-report-bulk.js": {
       "maxDuration": 300
     },
