@@ -295,9 +295,8 @@ export function buildAlert(input) {
 
 // Top-level builder. Computes summary stats. Throws on missing required fields.
 export function buildCreditReport(input) {
-  if (!input?.consumer?.firstName && !input?.consumer?.lastName) {
-    throw new Error("creditReport: consumer.firstName or lastName required");
-  }
+  // Name is preferred but not required — a credit report with accounts is
+  // still useful even if the name block wasn't parsed correctly.
   const accounts = (input.accounts || []).map(buildAccount);
   const publicRecords = (input.publicRecords || []).map(buildPublicRecord);
   const inquiries = (input.inquiries || []).map(buildInquiry);

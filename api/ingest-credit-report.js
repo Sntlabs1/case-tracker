@@ -111,15 +111,23 @@ async function persistClients(records) {
 
   for (let i = 0; i < records.length; i++) {
     const fresh = buildRecord(records[i], now, i);
-    if (!fresh.phoneHash && !fresh.emailHash) continue;
 
-    // Dedup check
+    // Dedup: prefer phone > email > name+dob fingerprint.
+    // Never skip a record just because it lacks phone/email — credit reports
+    // often have neither and that was silently dropping every PDF client.
     let existingId = null;
     for (const hash of [fresh.phoneHash, fresh.emailHash]) {
       if (!hash) continue;
       const field = fresh.phoneHash === hash ? "client_by_phonehash" : "client_by_emailhash";
       const id = await kv.get(`${field}:${hash}`).catch(() => null);
       if (id) { existingId = id; break; }
+    }
+    // Name+DOB fingerprint fallback — prevents duplicates when phone is absent
+    if (!existingId && fresh.firstName && fresh.lastName && fresh.dob) {
+      const nameKey = sha256(`${fresh.firstName.toLowerCase()}|${fresh.lastName.toLowerCase()}|${fresh.dob}`);
+      const id = await kv.get(`client_by_namekey:${nameKey}`).catch(() => null);
+      if (id) existingId = id;
+      fresh._nameKey = nameKey; // carry forward so we can write the index
     }
 
     const id = existingId || fresh.id;
@@ -132,6 +140,7 @@ async function persistClients(records) {
     ];
     if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, id, { ex: CLIENT_TTL }));
     if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, id, { ex: CLIENT_TTL }));
+    if (fresh._nameKey)  ops.push(kv.set(`client_by_namekey:${fresh._nameKey}`,    id, { ex: CLIENT_TTL }));
     ops.push(kv.zadd(PENDING_MATCH, { score, member: id }).catch(() => {}));
     await Promise.all(ops);
 
@@ -236,13 +245,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: "Provide { file, filename, contentType } or { clients: [...] }" });
     }
 
-    const validClients = clients.filter(c => c && (c.firstName || c.lastName || c.phone || c.email));
+    // Accept any client with at least a name, phone, email, OR credit accounts.
+    // Credit reports are valid even if contact fields are sparse.
+    const validClients = clients.filter(c => c && (
+      c.firstName || c.lastName || c.phone || c.email ||
+      (Array.isArray(c.creditAccounts) && c.creditAccounts.length > 0) ||
+      (Array.isArray(c.collectionsHistory) && c.collectionsHistory.length > 0)
+    ));
     if (!validClients.length) {
       return res.status(400).json({ ok: false, error: "No client records could be extracted from the file" });
     }
 
     await resolveDefendants(validClients);
     const result = await persistClients(validClients);
+
+    if (!result.ids?.length && !result.updatedIds?.length) {
+      return res.status(500).json({ ok: false, error: "Client record could not be saved. The report may lack a phone number and email — add at least one contact field and re-upload." });
+    }
 
     const c = validClients[0];
 
