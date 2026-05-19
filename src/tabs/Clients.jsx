@@ -656,6 +656,8 @@ function ImportWizard({ onImported, onGoToClient }) {
   // ── Credit-report upload handler ─────────────────────────────────────────
   const [crJob, setCrJob] = useState(null); // { jobId, pct, status, ... }
   const crPollRef = useRef(null);
+  const [crElapsed, setCrElapsed] = useState(0); // seconds since extraction started
+  const crTimerRef = useRef(null);
 
   async function handleCrFile(file) {
     if (!file) return;
@@ -688,10 +690,17 @@ function ImportWizard({ onImported, onGoToClient }) {
     } catch { /* network blip — keep polling */ }
   }
 
+  function stopCrTimer() {
+    if (crTimerRef.current) { clearInterval(crTimerRef.current); crTimerRef.current = null; }
+  }
+
   async function submitCrUpload(isBulk) {
     if (!crFile) return;
     setImporting(true);
     setCrJob(null);
+    setCrElapsed(0);
+    stopCrTimer();
+    crTimerRef.current = setInterval(() => setCrElapsed(s => s + 1), 1000);
     try {
       const p = partnerId && partnerId !== "manual" ? partnerId : "credit_com";
 
@@ -745,12 +754,14 @@ function ImportWizard({ onImported, onGoToClient }) {
           matches:     d.matches    || [],
           isCreditReport: true,
         });
+        stopCrTimer();
         setStep("done");
         onImported((d.imported || 0) + (d.updated || 0) || 1);
         setImporting(false);
       }
     } catch (e) {
-      setCrPreview(p => ({ ...p, status: "error", error: e.message }));
+      stopCrTimer();
+      setCrPreview({ status: "error", error: e.message });
       setImporting(false);
     }
   }
@@ -1170,13 +1181,23 @@ function ImportWizard({ onImported, onGoToClient }) {
           )}
 
           {crFile && !crJob && (
-            <div style={{ display: "flex", gap: 10 }}>
-              <Btn onClick={() => submitCrUpload(false)} disabled={importing} style={{ flex: 1 }}>
-                {importing ? "Extracting & saving…" : "Single report (PDF / JSON)"}
-              </Btn>
-              <Btn onClick={() => submitCrUpload(true)} disabled={importing} style={{ flex: 1, background: "var(--bg-surface2)", color: "var(--text-2)", border: "1px solid var(--border)" }}>
-                {importing ? "Starting…" : "Bulk upload (CSV — millions of records)"}
-              </Btn>
+            <div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <Btn onClick={() => submitCrUpload(false)} disabled={importing} style={{ flex: 1 }}>
+                  {importing
+                    ? `Extracting… (${crElapsed}s — Claude is reading the PDF, usually 30-60s)`
+                    : "Single report (PDF / JSON)"}
+                </Btn>
+                <Btn onClick={() => submitCrUpload(true)} disabled={importing} style={{ flex: 1, background: "var(--bg-surface2)", color: "var(--text-2)", border: "1px solid var(--border)" }}>
+                  {importing ? "Starting…" : "Bulk upload (CSV — millions of records)"}
+                </Btn>
+              </div>
+              {importing && crElapsed > 5 && (
+                <div style={{ marginTop: 8, fontSize: 11, color: "var(--text-5)", textAlign: "center" }}>
+                  Claude is reading every tradeline, address, employment record, and public filing from the PDF.
+                  This takes 30–60 seconds — do not close this tab.
+                </div>
+              )}
             </div>
           )}
 

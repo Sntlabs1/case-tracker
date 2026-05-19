@@ -31,6 +31,34 @@ async function callClaude(model, max_tokens, messages) {
   return data.content?.[0]?.text || "";
 }
 
+// Repair the two most common LLM JSON bugs: literal control chars inside
+// strings and unescaped double-quotes inside string values.
+function sanitizeForParse(text) {
+  let out = "";
+  let inStr = false;
+  let prevSlash = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const code = text.charCodeAt(i);
+    if (inStr) {
+      if (prevSlash) { out += ch; prevSlash = false; continue; }
+      if (ch === "\\") { out += ch; prevSlash = true; continue; }
+      if (ch === '"') { inStr = false; out += ch; continue; }
+      if (code < 0x20) { // literal control char inside string
+        if (code === 0x0a) { out += "\\n"; continue; }
+        if (code === 0x0d) { out += "\\r"; continue; }
+        if (code === 0x09) { out += "\\t"; continue; }
+        continue; // drop other control chars
+      }
+      out += ch;
+    } else {
+      if (ch === '"') inStr = true;
+      out += ch;
+    }
+  }
+  return out;
+}
+
 const EXTRACTION_PROMPT = `You are extracting a credit report for a TCPA/FDCPA plaintiff law firm. Extract EVERY piece of information.
 
 CRITICAL RULES:
@@ -138,9 +166,11 @@ export async function parseCreditReportPdfBase64(base64, filename = "report.pdf"
 
   let parsed;
   try {
+    // Use Sonnet (not Haiku) — PDF document blocks are most reliable on Sonnet.
+    // Haiku 4.5 with pdfs-2024-09-25 beta is inconsistent.
     const raw = await callClaude(
-      "claude-haiku-4-5-20251001",
-      8000,
+      "claude-sonnet-4-6",
+      12000,
       [{
         role: "user",
         content: [
@@ -153,11 +183,16 @@ export async function parseCreditReportPdfBase64(base64, filename = "report.pdf"
       }]
     );
 
+    if (!raw || !raw.trim()) throw new Error("Model returned empty response");
+
     const clean = raw
       .replace(/^```(?:json)?\s*/i, "")
       .replace(/\s*```\s*$/, "")
       .trim();
-    parsed = JSON.parse(clean);
+
+    // Repair common LLM JSON bugs (unescaped quotes, literal newlines in strings)
+    const repaired = sanitizeForParse(clean);
+    parsed = JSON.parse(repaired);
   } catch (e) {
     throw new Error(`PDF extraction failed: ${e.message}`);
   }
