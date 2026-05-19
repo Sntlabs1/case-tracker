@@ -208,11 +208,10 @@ function quickRecovery(m) {
   return { floor: perV.floor, ceiling: perV.ceiling, source: "statutory" };
 }
 
-function MatchedCasesPanel({ client }) {
+function MatchedCasesPanel({ client, onMatchDone }) {
   const [state, setState] = useState("idle"); // idle | loading | done | error
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState(null);
-  const [generatingReport, setGeneratingReport] = useState(false);
 
   async function run() {
     setState("loading");
@@ -227,6 +226,14 @@ function MatchedCasesPanel({ client }) {
       if (d.error) throw new Error(d.error);
       setMatches(d);
       setState("done");
+      // Notify parent so it can show the banner + tab badge
+      if (onMatchDone) {
+        const allM = d.matches || [];
+        const qual = allM.filter(m => m.kind === "tcpa" && m.qualifies);
+        const floor   = qual.reduce((s, m) => s + (quickRecovery(m).floor   || 0), 0);
+        const ceiling = qual.reduce((s, m) => s + (quickRecovery(m).ceiling || 0), 0);
+        onMatchDone({ qualifying: qual.length, totalFloor: floor, totalCeiling: ceiling });
+      }
     } catch (e) {
       setError(e.message);
       setState("error");
@@ -1675,6 +1682,7 @@ export default function Clients() {
   // for clients that have credit report data
   useEffect(() => {
     if (!selectedClient) return;
+    setClientMatchData(null);
     const hasCreditReport = selectedClient.creditAccounts?.length > 0 ||
                             selectedClient.collectionsHistory?.length > 0 ||
                             selectedClient.bankruptcies?.length > 0;
@@ -1688,6 +1696,7 @@ export default function Clients() {
   const [matchResults, setMatchResults] = useState(null);
   const [matchLoading, setMatchLoading] = useState(false);
   const [clientTab, setClientTab] = useState("profile"); // profile | credit | cases
+  const [clientMatchData, setClientMatchData] = useState(null); // { qualifying, totalFloor, totalCeiling }
 
   const fetchClients = useCallback((params = "") => {
     setLoading(true);
@@ -1895,16 +1904,36 @@ export default function Clients() {
                       ...(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0 || selectedClient.bankruptcies?.length > 0
                         ? [{ id: "credit", label: `Credit Report (${(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0)})` }]
                         : []),
-                      { id: "cases", label: "Matched Cases" },
+                      {
+                        id: "cases",
+                        label: clientMatchData?.qualifying > 0
+                          ? `Matched Cases (${clientMatchData.qualifying})`
+                          : "Matched Cases",
+                        badge: clientMatchData?.qualifying > 0,
+                      },
                     ].map(t => (
                       <button key={t.id} onClick={() => setClientTab(t.id)} style={{
                         padding: "7px 14px", border: "none", background: "transparent", fontSize: 11, cursor: "pointer",
                         borderBottom: clientTab === t.id ? "2px solid var(--accent)" : "2px solid transparent",
-                        color: clientTab === t.id ? "var(--text-1)" : "var(--text-5)",
-                        fontWeight: clientTab === t.id ? 700 : 400, marginBottom: -1,
+                        color: t.badge ? "#22c55e" : clientTab === t.id ? "var(--text-1)" : "var(--text-5)",
+                        fontWeight: (clientTab === t.id || t.badge) ? 700 : 400, marginBottom: -1,
                       }}>{t.label}</button>
                     ))}
                   </div>
+
+                  {/* Match results banner — shown on Profile and Credit Report tabs */}
+                  {clientMatchData?.qualifying > 0 && clientTab !== "cases" && (
+                    <button onClick={() => setClientTab("cases")}
+                      style={{ margin: "10px 16px 0", padding: "10px 14px", borderRadius: 8, background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", width: "calc(100% - 32px)", textAlign: "left" }}>
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e" }}>
+                          {clientMatchData.qualifying} case{clientMatchData.qualifying !== 1 ? "s" : ""} matched — Est. ${Math.round(clientMatchData.totalFloor/1000)}k – ${Math.round(clientMatchData.totalCeiling/1000)}k recovery
+                        </div>
+                        <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 1 }}>Click to view cases and generate report</div>
+                      </div>
+                      <span style={{ fontSize: 14, color: "#22c55e" }}>→</span>
+                    </button>
+                  )}
                 </div>
 
                 {/* ── Tab content ── */}
@@ -2198,7 +2227,7 @@ export default function Clients() {
 
                   {/* MATCHED CASES TAB — always rendered so auto-run fires even when on another tab */}
                   <div style={{ display: clientTab === "cases" ? "block" : "none" }}>
-                    <MatchedCasesPanel client={selectedClient} />
+                    <MatchedCasesPanel client={selectedClient} onMatchDone={setClientMatchData} />
                     <InlineLeadMatch client={selectedClient} />
                   </div>
 
