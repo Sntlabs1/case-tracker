@@ -934,24 +934,25 @@ export default function TCPACases() {
     setIngestResult(null);
     // Fire-and-forget — don't await the full ingest (takes 30-120s).
     // Poll stats every 4s until the source cursor advances.
-    const source = mode === "backfill" ? "courtlistener" : "all";
+    // Backfill uses RSS sources only — CourtListener has a 125/day rate limit
+    // that the crons burn through; use it only in the scheduled daily job.
+    const source = mode === "backfill" ? "classaction,topclassactions" : "courtlistener,classaction,topclassactions";
     fetch(`/api/tcpa-ingest?source=${source}&mode=${mode}`).catch(() => {});
     let polls = 0;
-    const prev = ingestStats?.courtlistener?.ranAt;
+    const prev = ingestStats?.classaction?.ranAt;
     const interval = setInterval(async () => {
       polls++;
-      await Promise.all([load(), loadStats()]);
-      // Stop polling once the cursor has advanced (new ranAt) or after 2 min
-      const next = ingestStats?.courtlistener?.ranAt;
+      const [, statsRes] = await Promise.all([load(), fetch("/api/tcpa-ingest?stats=1").then(r => r.json()).catch(() => ({}))]);
+      setIngestStats(statsRes.stats || {});
+      const next = statsRes.stats?.classaction?.ranAt;
       if ((next && next !== prev) || polls >= 30) {
         clearInterval(interval);
         setIngesting(false);
-        const r = await fetch("/api/tcpa-ingest?stats=1").then(r => r.json()).catch(() => ({}));
-        const cl = r.stats?.courtlistener;
-        setIngestResult(cl
-          ? { ok: true, totals: { created: cl.created || 0, updated: cl.updated || 0, errors: cl.errors || 0 }, runs: [] }
-          : { ok: false, error: "No stats returned — check Vercel logs" }
-        );
+        const cl = statsRes.stats?.classaction;
+        const tca = statsRes.stats?.topclassactions;
+        const created = (cl?.created || 0) + (tca?.created || 0);
+        const errors = (cl?.errors || 0) + (tca?.errors || 0);
+        setIngestResult({ ok: true, totals: { created, updated: 0, errors }, runs: [] });
       }
     }, 4000);
   }
