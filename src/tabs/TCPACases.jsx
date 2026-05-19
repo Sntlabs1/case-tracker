@@ -92,7 +92,7 @@ function fmtRelativeTime(iso) {
   return `${d}d ago`;
 }
 
-function SourcesPanel({ stats, busy, onRun }) {
+function SourcesPanel({ stats, busy, onRun, lastResult }) {
   const sources = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];
   return (
     <Card>
@@ -140,6 +140,21 @@ function SourcesPanel({ stats, busy, onRun }) {
           );
         })}
       </div>
+      {lastResult && (
+        <div style={{
+          marginTop: 12, padding: "10px 14px", borderRadius: 7, fontSize: 12,
+          background: lastResult.ok === false ? "#ef444420" : "#22c55e20",
+          border: `1px solid ${lastResult.ok === false ? "#ef4444" : "#22c55e"}40`,
+          color: lastResult.ok === false ? "#ef4444" : "var(--text-2)",
+        }}>
+          {lastResult.ok === false
+            ? `Error: ${lastResult.error || JSON.stringify(lastResult)}`
+            : `Done — ${lastResult.totals?.created ?? 0} new cases, ${lastResult.totals?.updated ?? 0} updated, ${lastResult.totals?.errors ?? 0} errors. ${
+                (lastResult.runs || []).filter(r => r.error).map(r => `${r.source}: ${r.error}`).join(" | ") || ""
+              }`
+          }
+        </div>
+      )}
     </Card>
   );
 }
@@ -882,6 +897,7 @@ export default function TCPACases() {
   const [view, setView] = useState("all"); // "all" | "closing" | "by-defendant"
   const [ingestStats, setIngestStats] = useState(null);
   const [ingesting, setIngesting] = useState(false);
+  const [ingestResult, setIngestResult] = useState(null);
   const [rollup, setRollup] = useState(null);
 
   async function load() {
@@ -915,11 +931,17 @@ export default function TCPACases() {
   }
   async function runIngest(mode) {
     setIngesting(true);
+    setIngestResult(null);
     try {
-      await fetch(`/api/tcpa-ingest?source=all&mode=${mode}`);
+      // Backfill: only CourtListener (free, no paid key needed).
+      // Daily: all sources.
+      const source = mode === "backfill" ? "courtlistener,classaction,topclassactions" : "all";
+      const r = await fetch(`/api/tcpa-ingest?source=${source}&mode=${mode}`);
+      const d = await r.json();
+      setIngestResult(d);
       await Promise.all([load(), loadStats()]);
-    } catch {
-      // surfaced via stats panel error count on next load
+    } catch (e) {
+      setIngestResult({ ok: false, error: e.message });
     }
     setIngesting(false);
   }
@@ -995,7 +1017,7 @@ export default function TCPACases() {
         <StatPill label="Tracked Settlements ($M)" value={totalFundMillions ? Math.round(totalFundMillions) : "—"} color="#3b82f6" />
       </div>
 
-      <SourcesPanel stats={ingestStats} busy={ingesting} onRun={runIngest} />
+      <SourcesPanel stats={ingestStats} busy={ingesting} onRun={runIngest} lastResult={ingestResult} />
 
       <div style={{ display: "flex", gap: 8, borderBottom: "1px solid var(--border)" }}>
         {[

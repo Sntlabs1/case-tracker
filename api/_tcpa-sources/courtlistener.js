@@ -147,7 +147,7 @@ export async function runCourtListener({
         caseType,
         since: windowStart,
         until: today,
-        maxPages: mode === "backfill" ? 200 : 10,
+        maxPages: mode === "backfill" ? 20 : 10,
         onBatch: async (records) => {
           const r = await importer(records);
           totalCreated += r.created;
