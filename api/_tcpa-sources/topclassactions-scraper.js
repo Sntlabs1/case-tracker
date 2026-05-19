@@ -16,10 +16,19 @@
 // These fields are the most valuable for the claim-filing tracker (item 3).
 
 import { kv } from "@vercel/kv";
-import Anthropic from "@anthropic-ai/sdk";
 import { importCases } from "../../src/lib/tcpaCaseStore.js";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+async function callHaiku(prompt) {
+  if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not set");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+    body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 4000, messages: [{ role: "user", content: prompt }] }),
+  });
+  if (!res.ok) throw new Error(`Anthropic ${res.status}`);
+  return (await res.json()).content?.[0]?.text || "";
+}
 
 const PAGES = [
   // TopClassActions — TCPA/robocall category + open settlements
@@ -79,12 +88,7 @@ PAGE TEXT:
 
 async function extractWithHaiku(text, source) {
   try {
-    const msg = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 4000,
-      messages: [{ role: "user", content: PROMPT.replace("{text}", text.slice(0, 12000)) }],
-    });
-    const raw = msg.content[0]?.text || "[]";
+    const raw = await callHaiku(PROMPT.replace("{text}", text.slice(0, 12000)));
     const clean = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
     const items = JSON.parse(clean);
     return Array.isArray(items) ? items : [];

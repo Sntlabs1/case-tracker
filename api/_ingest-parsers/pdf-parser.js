@@ -7,9 +7,27 @@
 // Input:  base64-encoded PDF string
 // Output: canonical CreditReport object (buildCreditReport() input shape)
 
-import Anthropic from "@anthropic-ai/sdk";
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const ANTHROPIC_URL     = "https://api.anthropic.com/v1/messages";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+async function callClaude(model, max_tokens, messages) {
+  const res = await fetch(ANTHROPIC_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+      "anthropic-beta": "pdfs-2024-09-25",  // required for PDF document blocks
+    },
+    body: JSON.stringify({ model, max_tokens, messages }),
+  });
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.status);
+    throw new Error(`Anthropic ${res.status}: ${err}`);
+  }
+  const data = await res.json();
+  return data.content?.[0]?.text || "";
+}
 
 const EXTRACTION_PROMPT = `You are extracting a credit report for a TCPA/FDCPA plaintiff law firm. Extract EVERY piece of information.
 
@@ -118,30 +136,22 @@ export async function parseCreditReportPdfBase64(base64, filename = "report.pdf"
 
   let parsed;
   try {
-    const response = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 8000,
-      messages: [{
+    const raw = await callClaude(
+      "claude-haiku-4-5-20251001",
+      8000,
+      [{
         role: "user",
         content: [
           {
             type: "document",
-            source: {
-              type: "base64",
-              media_type: "application/pdf",
-              data: base64,
-            },
+            source: { type: "base64", media_type: "application/pdf", data: base64 },
           },
-          {
-            type: "text",
-            text: EXTRACTION_PROMPT,
-          },
+          { type: "text", text: EXTRACTION_PROMPT },
         ],
-      }],
-    });
+      }]
+    );
 
-    const content = response.content[0]?.text || "";
-    const clean = content
+    const clean = raw
       .replace(/^```(?:json)?\s*/i, "")
       .replace(/\s*```\s*$/, "")
       .trim();

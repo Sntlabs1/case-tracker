@@ -12,11 +12,20 @@
 // Haiku only called for articles that pass a keyword filter (~20% hit rate).
 
 import { kv } from "@vercel/kv";
-import Anthropic from "@anthropic-ai/sdk";
 import Parser from "rss-parser";
 import { importCases } from "../../src/lib/tcpaCaseStore.js";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+async function callHaiku(prompt) {
+  if (!ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not set");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-api-key": ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01" },
+    body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
+  });
+  if (!res.ok) throw new Error(`Anthropic ${res.status}`);
+  return (await res.json()).content?.[0]?.text || "";
+}
 const rssParser = new Parser({ timeout: 12000 });
 
 // ── State AG definitions ──────────────────────────────────────────────────────
@@ -80,12 +89,7 @@ ARTICLE:
 
 async function extractWithHaiku(text) {
   try {
-    const msg = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1500,
-      messages: [{ role: "user", content: PROMPT.replace("{text}", text.slice(0, 6000)) }],
-    });
-    const raw = msg.content[0]?.text || "[]";
+    const raw = await callHaiku(PROMPT.replace("{text}", text.slice(0, 6000)));
     const clean = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
     const items = JSON.parse(clean);
     return Array.isArray(items) ? items : [];
