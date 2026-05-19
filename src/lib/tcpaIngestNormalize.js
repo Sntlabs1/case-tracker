@@ -231,7 +231,13 @@ export function fromCourtListener(docket, { assumeCaseType } = {}) {
   const dateFiled = docket.date_filed || docket.dateFiled;
   const dateLast = docket.date_last_filing || docket.dateLastFiling;
   const docketNum = docket.docket_number || docket.docketNumber || "";
-  const status = dateTerminated ? "dismissed" : "active";
+  // TCPA class actions almost never get dismissed on the merits — they settle.
+  // CourtListener marks a case terminated once it concludes (settlement OR
+  // dismissal). We can't distinguish from the docket header alone, so use
+  // "settled" rather than "dismissed" — the settlement-enrichment agent will
+  // promote it to "claim_open" when it finds an active claim window. Marking
+  // as dismissed would silently bury these cases from matching entirely.
+  const status = dateTerminated ? "settled" : "active";
   const state = FEDERAL_COURT_TO_STATE[courtId] || "";
   const dockId = docket.id || docket.docket_id || docket.docketId;
   if (!dockId) return null;

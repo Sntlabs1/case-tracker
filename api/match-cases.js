@@ -277,7 +277,12 @@ async function handleClientToCases({ clientId, caseType, topN = 10 }) {
     const topTcpaIds = tcpaIds.slice(0, 200);
     const tcpaCases = (await Promise.all(topTcpaIds.map((id) => kv.get(TCPA_KEYS.case(id)))))
       .map((r) => (r ? (typeof r === "string" ? JSON.parse(r) : r) : null))
-      .filter(Boolean);
+      .filter(Boolean)
+      // Only score against actionable cases — skip dismissed and closed claim windows.
+      // "active" = being litigated (named plaintiff opportunity)
+      // "settled" = concluded but enrichment agent may find an open claim window
+      // "claim_open" = file a claim NOW
+      .filter((c) => c.status !== "dismissed" && c.status !== "claim_closed");
     tcpaMap = Object.fromEntries(tcpaCases.map((c) => [c.id, c]));
     tcpaScored = tcpaCases.map((tc) => {
       const r = scoreTcpaPair(client, tc);
@@ -291,14 +296,24 @@ async function handleClientToCases({ clientId, caseType, topN = 10 }) {
   }
 
   // ── Score against legacy leads ────────────────────────────────────────────
+  // Skip entirely for credit-report clients — they should only match TCPA/FDCPA
+  // cases via the rubric path above. The leads pool is mass-tort injury cases
+  // (drugs, products) which are irrelevant for debt/collection clients.
+  const isCreditClient = client.ingestSource === "credit.com" || !!client.creditAccounts?.length;
   let leadScored = [];
   let leadMap = {};
-  if (caseType !== "TCPA") {
+  if (caseType !== "TCPA" && !isCreditClient) {
     const leadIds = await kv.zrange("leads_by_score", 0, -1, { rev: true }).catch(() => []);
     const topIds = leadIds.slice(0, 50);
-    const leads = (await Promise.all(topIds.map((id) => kv.get(`lead:${id}`))))
+    const allLeads = (await Promise.all(topIds.map((id) => kv.get(`lead:${id}`))))
       .map((r) => (r ? (typeof r === "string" ? JSON.parse(r) : r) : null))
       .filter(Boolean);
+    // Only score against open/active opportunities — skip anything the scanner
+    // already marked CLOSED so stale settled cases never surface as matches.
+    const leads = allLeads.filter((l) => {
+      const s = (l.analysis?.opportunityStatus || l.opportunityStatus || "OPEN").toUpperCase();
+      return s !== "CLOSED";
+    });
     leadMap = Object.fromEntries(leads.map((l) => [l.id, l]));
 
     const clientProfile = `Client: ${client.firstName} ${client.lastName}
