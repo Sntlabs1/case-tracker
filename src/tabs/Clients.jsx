@@ -190,20 +190,29 @@ function InlineLeadMatch({ client }) {
   );
 }
 
+// Quick client-side recovery estimate from a match object.
+// Full calculation is in src/lib/recoveryEstimate.js (server-side).
+// This version is for inline display only.
+function quickRecovery(m) {
+  const c = m.case || {};
+  const range = c.settlement?.perClaimantRange;
+  if (range) {
+    const nums = [...String(range).matchAll(/\$?([\d,]+)/g)]
+      .map(x => parseInt(x[1].replace(/,/g, ""), 10)).filter(n => n > 0);
+    if (nums.length >= 2) return { floor: Math.min(...nums), ceiling: Math.max(...nums), source: "settlement" };
+    if (nums.length === 1) return { floor: nums[0], ceiling: nums[0], source: "settlement" };
+  }
+  const perV = c.caseType === "FDCPA" ? { floor: 500, ceiling: 1000 }
+             : c.caseType === "FCRA"  ? { floor: 100, ceiling: 1000 }
+             : { floor: 500, ceiling: 1500 }; // TCPA default
+  return { floor: perV.floor, ceiling: perV.ceiling, source: "statutory" };
+}
+
 function MatchedCasesPanel({ client }) {
   const [state, setState] = useState("idle"); // idle | loading | done | error
   const [matches, setMatches] = useState(null);
   const [error, setError] = useState(null);
-  const [reportMeta, setReportMeta] = useState(null);
-
-  useEffect(() => {
-    setReportMeta(null);
-    if (!client?.id) return;
-    fetch(`/api/client-report?clientId=${encodeURIComponent(client.id)}&meta=1`)
-      .then(r => r.json())
-      .then(d => { if (d && d.exists) setReportMeta(d); })
-      .catch(() => {});
-  }, [client?.id]);
+  const [generatingReport, setGeneratingReport] = useState(false);
 
   async function run() {
     setState("loading");
@@ -212,7 +221,7 @@ function MatchedCasesPanel({ client }) {
       const r = await fetch("/api/match-cases", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "client-to-cases", clientId: client.id, topN: 25 }),
+        body: JSON.stringify({ mode: "client-to-cases", clientId: client.id, topN: 30 }),
       });
       const d = await r.json();
       if (d.error) throw new Error(d.error);
@@ -224,43 +233,38 @@ function MatchedCasesPanel({ client }) {
     }
   }
 
-  // Auto-run for credit-report clients (they always have creditAccounts)
+  // Auto-run whenever a client with credit data is selected
   useEffect(() => {
     setMatches(null);
-    if (client?.creditAccounts?.length > 0 || client?.collectionsHistory?.length > 0) {
+    setState("idle");
+    if (client?.id && (client?.creditAccounts?.length > 0 || client?.collectionsHistory?.length > 0)) {
       run();
-    } else {
-      setState("idle");
     }
   }, [client?.id]);
 
+  const fmtUSD = n => n >= 1000 ? `$${(n/1000).toFixed(0)}k` : `$${n}`;
+  const reportUrl = client?.id ? `/api/client-report?clientId=${encodeURIComponent(client.id)}&format=html&fresh=1` : null;
+
   if (state === "idle") {
     return (
-      <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>Matched Cases</div>
-            <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2 }}>
-              Score this client against all TCPA cases and active leads
-            </div>
-          </div>
-          <Btn small onClick={run}>Find matches</Btn>
-        </div>
+      <div style={{ padding: "14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", textAlign: "center" }}>
+        <div style={{ fontSize: 12, color: "var(--text-5)", marginBottom: 10 }}>Score this client against all TCPA / FDCPA cases and active leads</div>
+        <Btn small onClick={run}>Find matches</Btn>
       </div>
     );
   }
 
   if (state === "loading") {
     return (
-      <div style={{ marginTop: 14, padding: "16px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", textAlign: "center", fontSize: 11, color: "var(--text-5)" }}>
-        Scoring across TCPA cases and leads…
+      <div style={{ padding: "16px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", textAlign: "center", fontSize: 11, color: "var(--text-5)" }}>
+        Scoring against TCPA case database…
       </div>
     );
   }
 
   if (state === "error") {
     return (
-      <div style={{ marginTop: 14, padding: "12px 14px", background: "rgba(239,68,68,0.08)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", fontSize: 11, color: "#ef4444" }}>
+      <div style={{ padding: "12px 14px", background: "rgba(239,68,68,0.08)", borderRadius: 8, border: "1px solid rgba(239,68,68,0.25)", fontSize: 11, color: "#ef4444" }}>
         {error}
         <button onClick={run} style={{ marginLeft: 10, fontSize: 10, color: "var(--accent)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>Retry</button>
       </div>
@@ -268,94 +272,158 @@ function MatchedCasesPanel({ client }) {
   }
 
   const all = (matches?.matches || []);
-  const tcpa = all.filter(m => m.kind === "tcpa");
-  const leads = all.filter(m => m.kind === "lead");
+  const qualifying = all.filter(m => m.kind === "tcpa" && m.qualifies);
+  const watchlist  = all.filter(m => m.kind === "tcpa" && !m.qualifies && m.score >= 40);
+  const leads      = all.filter(m => m.kind === "lead");
 
-  const reportHtmlUrl = `/api/client-report?clientId=${encodeURIComponent(client.id)}&format=html`;
-  const reportCsvUrl  = `/api/client-report?clientId=${encodeURIComponent(client.id)}&format=csv`;
+  // Total recovery estimate across qualifying cases
+  const totalFloor   = qualifying.reduce((s, m) => s + (quickRecovery(m).floor || 0), 0);
+  const totalCeiling = qualifying.reduce((s, m) => s + (quickRecovery(m).ceiling || 0), 0);
 
   return (
-    <div style={{ marginTop: 14, padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>Matched Cases</div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          {reportMeta && (
-            <span style={{ fontSize: 9, color: "var(--text-6)", padding: "2px 7px", borderRadius: 4, background: "var(--bg-surface)", border: "1px solid var(--border)" }}>
-              {reportMeta.fresh ? "Report fresh" : "Report stale"} ·{" "}
-              {reportMeta.summary?.qualifyingCases ?? 0} qual / {reportMeta.summary?.tcpaCasesEvaluated ?? 0} eval ·{" "}
-              {reportMeta.ageHours < 1 ? "just now" : reportMeta.ageHours < 24 ? `${Math.round(reportMeta.ageHours)}h ago` : `${Math.round(reportMeta.ageHours / 24)}d ago`}
-            </span>
-          )}
-          <a href={reportHtmlUrl} target="_blank" rel="noopener noreferrer"
-             style={{ fontSize: 10, padding: "4px 10px", borderRadius: 5, background: "rgba(59,130,246,0.12)", color: "#3b82f6", border: "1px solid rgba(59,130,246,0.3)", textDecoration: "none", fontWeight: 600 }}>
-            Open report
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+      {/* Recovery summary + report button */}
+      {qualifying.length > 0 && (
+        <div style={{ padding: "14px 16px", borderRadius: 10, background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.25)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>
+                {qualifying.length} qualifying case{qualifying.length !== 1 ? "s" : ""} found
+              </div>
+              <div style={{ fontSize: 12, color: "#22c55e", fontWeight: 700 }}>
+                Est. {fmtUSD(totalFloor)} – {fmtUSD(totalCeiling)} potential recovery
+              </div>
+              <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2 }}>
+                Based on statutory minimums and known settlement amounts
+              </div>
+            </div>
+            {reportUrl && (
+              <a href={reportUrl} target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: 12, padding: "10px 18px", borderRadius: 8, background: "var(--accent)", color: "#fff", textDecoration: "none", fontWeight: 700, flexShrink: 0 }}>
+                Generate Full Report →
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+
+      {qualifying.length === 0 && watchlist.length === 0 && leads.length === 0 && (
+        <div style={{ padding: "14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)", fontSize: 11, color: "var(--text-5)", textAlign: "center" }}>
+          No matches found in the current case database. As new TCPA cases are ingested this client will be re-scored automatically.
+        </div>
+      )}
+
+      {/* Qualifying cases */}
+      {qualifying.length > 0 && (
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#22c55e", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8 }}>
+            Qualifying — file claim now ({qualifying.length})
+          </div>
+          {qualifying.map((m, i) => {
+            const cs = m.case || {};
+            const sc = scoreColor(m.score || 0);
+            const rec = quickRecovery(m);
+            return (
+              <div key={m.id || i} style={{ padding: "11px 12px", borderRadius: 8, background: "var(--bg-card)", border: "1px solid rgba(34,197,94,0.3)", marginBottom: 6 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", marginBottom: 3 }}>
+                      {cs.caption || m.caseId || "—"}
+                    </div>
+                    <div style={{ fontSize: 10, color: "var(--text-5)", marginBottom: 4 }}>
+                      {(cs.defendants || []).map(d => d.displayName).filter(Boolean).join(", ") || cs.caseType || "—"}
+                      {cs.settlement?.claimWindowCloses && (
+                        <span style={{ marginLeft: 8, color: "#f59e0b", fontWeight: 600 }}>
+                          · Claim closes {cs.settlement.claimWindowCloses}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {(m.matchingFactors || []).slice(0, 3).map((f, j) => (
+                        <span key={j} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "rgba(34,197,94,0.1)", color: "#22c55e", border: "1px solid rgba(34,197,94,0.25)" }}>{f}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 800, color: "#22c55e" }}>
+                      {fmtUSD(rec.floor)} – {fmtUSD(rec.ceiling)}
+                    </div>
+                    <div style={{ fontSize: 9, color: "var(--text-6)" }}>
+                      {rec.source === "settlement" ? "settlement range" : "statutory est."}
+                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: sc, marginTop: 4 }}>{m.score}/100</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Watchlist */}
+      {watchlist.length > 0 && (
+        <details>
+          <summary style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.07em", cursor: "pointer", marginBottom: 6 }}>
+            Watchlist — review eligibility ({watchlist.length})
+          </summary>
+          <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 5 }}>
+            {watchlist.map((m, i) => {
+              const cs = m.case || {};
+              const rec = quickRecovery(m);
+              return (
+                <div key={m.id || i} style={{ padding: "8px 10px", borderRadius: 6, background: "var(--bg-surface2)", border: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-2)" }}>{cs.caption || "—"}</div>
+                    <div style={{ fontSize: 9, color: "var(--text-6)", marginTop: 2 }}>{(m.disqualifyingFactors || []).slice(0, 2).join(" · ")}</div>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "#f59e0b" }}>{fmtUSD(rec.floor)} – {fmtUSD(rec.ceiling)}</div>
+                    <div style={{ fontSize: 10, color: "var(--text-5)" }}>{m.score}/100</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </details>
+      )}
+
+      {/* Mass tort leads */}
+      {leads.length > 0 && (
+        <details>
+          <summary style={{ fontSize: 10, fontWeight: 700, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: "0.07em", cursor: "pointer", marginBottom: 6 }}>
+            Mass tort leads ({leads.length})
+          </summary>
+          <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
+            {leads.map((m, i) => {
+              const l = m.lead || {};
+              return (
+                <div key={m.id || i} style={{ padding: "7px 10px", borderRadius: 6, background: "var(--bg-surface2)", border: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: 8 }}>
+                  <div style={{ fontSize: 11, color: "var(--text-2)" }}>{l.analysis?.headline || l.title || "—"}</div>
+                  <div style={{ fontSize: 10, color: scoreColor(m.score || 0), fontWeight: 700, flexShrink: 0 }}>{m.score}/100</div>
+                </div>
+              );
+            })}
+          </div>
+        </details>
+      )}
+
+      {/* Report + re-run controls */}
+      <div style={{ display: "flex", gap: 8, alignItems: "center", borderTop: "1px solid var(--border)", paddingTop: 10 }}>
+        {reportUrl && (
+          <a href={reportUrl} target="_blank" rel="noopener noreferrer"
+            style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, background: qualifying.length ? "var(--accent)" : "var(--bg-surface2)", color: qualifying.length ? "#fff" : "var(--text-3)", border: qualifying.length ? "none" : "1px solid var(--border)", textDecoration: "none", fontWeight: 600 }}>
+            {qualifying.length ? "Full eligibility report →" : "Generate report →"}
           </a>
-          <a href={reportCsvUrl} download
-             style={{ fontSize: 10, padding: "4px 10px", borderRadius: 5, background: "var(--bg-surface)", color: "var(--text-3)", border: "1px solid var(--border-md)", textDecoration: "none", fontWeight: 600 }}>
+        )}
+        {reportUrl && (
+          <a href={`/api/client-report?clientId=${encodeURIComponent(client.id)}&format=csv`} download
+            style={{ fontSize: 11, padding: "6px 12px", borderRadius: 6, background: "var(--bg-surface2)", color: "var(--text-4)", border: "1px solid var(--border)", textDecoration: "none" }}>
             CSV
           </a>
-          <button onClick={run} style={{ fontSize: 10, color: "var(--text-5)", background: "none", border: "none", cursor: "pointer" }}>Re-run</button>
-        </div>
+        )}
+        <button onClick={run} style={{ fontSize: 10, color: "var(--text-6)", background: "none", border: "none", cursor: "pointer", marginLeft: "auto" }}>Re-run</button>
       </div>
-
-      {tcpa.length === 0 && leads.length === 0 && (
-        <div style={{ fontSize: 11, color: "var(--text-6)", padding: "12px 0", textAlign: "center" }}>
-          No matches found. {client.collectionsHistory?.length ? "" : "This client has no collections history — matching depends on creditor names from credit.com data."}
-        </div>
-      )}
-
-      {tcpa.length > 0 && (
-        <div style={{ marginBottom: leads.length ? 12 : 0 }}>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>TCPA / FDCPA cases ({tcpa.length})</div>
-          {tcpa.map((m, i) => {
-            const c = m.case || {};
-            const sc = scoreColor(m.score || 0);
-            return (
-              <div key={m.id} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 10px", borderRadius: 6, background: "var(--bg-card)", border: "1px solid var(--border)", marginBottom: 4 }}>
-                <div style={{ width: 36, textAlign: "center", flexShrink: 0 }}>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: sc, lineHeight: 1.1 }}>{m.score}</div>
-                  {m.qualifies && <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e" }}>QUALIFIES</div>}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 2, display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{c.caption || "(missing case)"}</span>
-                    <ClaimCountdown closes={c.settlement?.claimWindowCloses} />
-                  </div>
-                  <div style={{ fontSize: 10, color: "var(--text-6)" }}>
-                    {(c.defendants || []).map(d => d.displayName).join(", ") || "—"}
-                  </div>
-                  {m.reason && <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{m.reason}</div>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {leads.length > 0 && (
-        <div>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Mass tort leads ({leads.length})</div>
-          {leads.map(m => {
-            const l = m.lead || {};
-            const sc = scoreColor(m.score || 0);
-            return (
-              <div key={m.id} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 10px", borderRadius: 6, background: "var(--bg-card)", border: "1px solid var(--border)", marginBottom: 4 }}>
-                <div style={{ width: 36, textAlign: "center", flexShrink: 0 }}>
-                  <div style={{ fontSize: 18, fontWeight: 800, color: sc, lineHeight: 1.1 }}>{m.score}</div>
-                  {m.qualifies && <div style={{ fontSize: 8, fontWeight: 700, color: "#22c55e" }}>QUALIFIES</div>}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 2 }}>
-                    {l.analysis?.headline || l.title || "(missing lead)"}
-                  </div>
-                  <div style={{ fontSize: 10, color: "var(--text-6)" }}>{l.analysis?.caseType || "—"}</div>
-                  {m.reason && <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{m.reason}</div>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 }
@@ -2128,13 +2196,11 @@ export default function Clients() {
                     </div>
                   )}
 
-                  {/* MATCHED CASES TAB */}
-                  {clientTab === "cases" && (
-                    <div>
-                      <MatchedCasesPanel client={selectedClient} />
-                      <InlineLeadMatch client={selectedClient} />
-                    </div>
-                  )}
+                  {/* MATCHED CASES TAB — always rendered so auto-run fires even when on another tab */}
+                  <div style={{ display: clientTab === "cases" ? "block" : "none" }}>
+                    <MatchedCasesPanel client={selectedClient} />
+                    <InlineLeadMatch client={selectedClient} />
+                  </div>
 
                 </div>
               </div>
