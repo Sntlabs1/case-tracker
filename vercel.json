@@ -11,7 +11,11 @@
     { "path": "/api/agents?run=match-recompute", "schedule": "5 * * * *" },
     { "path": "/api/agents?run=case-tracker", "schedule": "30 6 * * *" },
     { "path": "/api/agents?run=settlement-enrichment", "schedule": "10 5 * * *" },
-    { "path": "/api/agents?run=class-definition-extractor", "schedule": "20 5 * * *" }
+    { "path": "/api/agents?run=class-definition-extractor", "schedule": "20 5 * * *" },
+    { "path": "/api/agents?run=claim-deadline-alert", "schedule": "0 8 * * *" },
+    { "path": "/api/tcpa-ingest?source=fcc_enforcement&mode=daily", "schedule": "0 6 * * *" },
+    { "path": "/api/tcpa-ingest?source=state_ag&mode=daily", "schedule": "30 6 * * *" },
+    { "path": "/api/tcpa-ingest?source=topclassactions&mode=daily", "schedule": "0 7 * * *" }
   ],
   "functions": {
     "api/scan.js": {

@@ -18,6 +18,15 @@ import caseTracker from "./_agents/case-tracker.js";
 import plaintiffBackfill from "./_agents/plaintiff-backfill.js";
 import settlementEnrichment from "./_agents/settlement-enrichment.js";
 import classDefinitionExtractor from "./_agents/class-definition-extractor.js";
+import { run as runClaimDeadlineAlert } from "./_agents/claim-deadline-alert.js";
+
+// Wrap claim-deadline-alert to match agent shape
+const claimDeadlineAgent = {
+  name: "claim-deadline-alert",
+  description: "Daily scan for claim windows closing within 30 days — alerts clients",
+  schedule: "0 8 * * *",
+  run: runClaimDeadlineAlert,
+};
 
 // Static registry — explicit imports keep cold-start predictable.
 const REGISTRY = [
@@ -29,6 +38,7 @@ const REGISTRY = [
   plaintiffBackfill,
   settlementEnrichment,
   classDefinitionExtractor,
+  claimDeadlineAgent,
 ];
 
 const HISTORY_LEN = 50;

@@ -21,26 +21,35 @@
 
 import { kv } from "@vercel/kv";
 import { importCases } from "../src/lib/tcpaCaseStore.js";
-import { runCourtListener }  from "./_tcpa-sources/courtlistener.js";
-import { runTcpaWorld }      from "./_tcpa-sources/tcpaworld.js";
-import { runClassActionRss } from "./_tcpa-sources/classaction-rss.js";
-import { runUniCourt }       from "./_tcpa-sources/unicourt.js";
-import { runTrellis }        from "./_tcpa-sources/trellis.js";
-import { runFccComplaints }  from "./_tcpa-sources/fcc-complaints.js";
-import { runWestlawCsv }     from "./_tcpa-sources/westlaw-csv.js";
+import { runCourtListener }      from "./_tcpa-sources/courtlistener.js";
+import { runTcpaWorld }          from "./_tcpa-sources/tcpaworld.js";
+import { runClassActionRss }     from "./_tcpa-sources/classaction-rss.js";
+import { runUniCourt }           from "./_tcpa-sources/unicourt.js";
+import { runTrellis }            from "./_tcpa-sources/trellis.js";
+import { runFccComplaints }      from "./_tcpa-sources/fcc-complaints.js";
+import { runFccEnforcement }     from "./_tcpa-sources/fcc-enforcement.js";
+import { runStateAgEnforcement } from "./_tcpa-sources/state-ag-enforcement.js";
+import { runTopClassActions }    from "./_tcpa-sources/topclassactions-scraper.js";
+import { runWestlawCsv }        from "./_tcpa-sources/westlaw-csv.js";
 
 // westlaw-csv reads local files only — left out of "all" so the daily cron
 // doesn't pointlessly scan an empty filesystem in production.
-const ALL_SOURCES = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];
+const ALL_SOURCES = [
+  "courtlistener", "tcpaworld", "classaction", "unicourt", "trellis",
+  "fcc", "fcc_enforcement", "state_ag", "topclassactions",
+];
 
 const RUNNERS = {
-  courtlistener: runCourtListener,
-  tcpaworld:     runTcpaWorld,
-  classaction:   runClassActionRss,
-  unicourt:      runUniCourt,
-  trellis:       runTrellis,
-  fcc:           runFccComplaints,
-  "westlaw-csv": runWestlawCsv,
+  courtlistener:    runCourtListener,
+  tcpaworld:        runTcpaWorld,
+  classaction:      runClassActionRss,
+  unicourt:         runUniCourt,
+  trellis:          runTrellis,
+  fcc:              runFccComplaints,
+  fcc_enforcement:  runFccEnforcement,
+  state_ag:         runStateAgEnforcement,
+  topclassactions:  runTopClassActions,
+  "westlaw-csv":    runWestlawCsv,
 };
 
 export default async function handler(req, res) {

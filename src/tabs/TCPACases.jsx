@@ -482,6 +482,207 @@ function TrackingHistory({ caseId }) {
   );
 }
 
+// ── Claim Filing Panel ────────────────────────────────────────────────────────
+function ClaimFilingPanel({ tcase }) {
+  const [claims, setClaims] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [filing, setFiling] = useState(null); // clientId being filed
+  const [open, setOpen] = useState(false);
+
+  const isClaimable = ["settled", "claim_open"].includes(tcase.status);
+  if (!isClaimable) return null;
+
+  async function loadClaims() {
+    setLoading(true);
+    try {
+      const r = await fetch(`/api/claims?caseId=${encodeURIComponent(tcase.id)}`);
+      const d = await r.json();
+      setClaims(d.claims || []);
+    } catch { setClaims([]); }
+    setLoading(false);
+  }
+
+  async function fileClaim(client) {
+    setFiling(client.id);
+    try {
+      const r = await fetch("/api/claims", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          caseId:          tcase.id,
+          clientId:        client.id,
+          clientName:      `${client.firstName || ""} ${client.lastName || ""}`.trim(),
+          caseCaption:     tcase.caption,
+          caseType:        tcase.caseType,
+          defendant:       (tcase.defendants || [])[0]?.displayName || "",
+          claimPortalUrl:  tcase.settlement?.claimPortalUrl || null,
+          claimWindowCloses: tcase.settlement?.claimWindowCloses || null,
+          estimatedPayout: tcase.settlement?.perClaimantRange || null,
+        }),
+      });
+      await r.json();
+      await loadClaims();
+    } catch { /* ignore */ }
+    setFiling(null);
+  }
+
+  async function updateStatus(claimId, status) {
+    await fetch("/api/claims", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: claimId, status }),
+    });
+    await loadClaims();
+  }
+
+  const STATUS_COLORS = { identified: "#f59e0b", drafted: "#3b82f6", submitted: "#8b5cf6", confirmed: "#22c55e", paid: "#22c55e", rejected: "#ef4444", dismissed: "#6b7280" };
+  const closingDays = tcase.settlement?.claimWindowCloses
+    ? Math.ceil((Date.parse(tcase.settlement.claimWindowCloses) - Date.now()) / (1000 * 60 * 60 * 24))
+    : null;
+
+  return (
+    <div style={{ marginBottom: 16, borderRadius: 8, border: "1px solid #22c55e40", background: "rgba(34,197,94,0.04)" }}>
+      <div
+        onClick={() => { setOpen(o => !o); if (!open && !claims) loadClaims(); }}
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", cursor: "pointer" }}
+      >
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#22c55e" }}>Claim Filing</span>
+          {closingDays !== null && closingDays >= 0 && (
+            <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4, background: closingDays <= 14 ? "rgba(239,68,68,0.15)" : "rgba(34,197,94,0.12)", color: closingDays <= 14 ? "#ef4444" : "#22c55e", fontWeight: 700 }}>
+              {closingDays}d left to claim
+            </span>
+          )}
+          {claims !== null && (
+            <span style={{ fontSize: 10, color: "var(--text-5)" }}>{claims.length} claim{claims.length !== 1 ? "s" : ""} on file</span>
+          )}
+          {tcase.settlement?.claimPortalUrl && (
+            <a href={tcase.settlement.claimPortalUrl} target="_blank" rel="noopener noreferrer"
+               onClick={e => e.stopPropagation()}
+               style={{ fontSize: 10, color: "#3b82f6", textDecoration: "none", fontWeight: 600 }}>
+              Claim Portal ↗
+            </a>
+          )}
+        </div>
+        <span style={{ fontSize: 11, color: "var(--text-5)" }}>{open ? "▲" : "▼"}</span>
+      </div>
+
+      {open && (
+        <div style={{ padding: "0 14px 14px" }}>
+          {loading ? (
+            <div style={{ fontSize: 11, color: "var(--text-5)", textAlign: "center", padding: "12px 0" }}>Loading claims…</div>
+          ) : (
+            <>
+              {/* Existing claims */}
+              {(claims || []).length > 0 && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 9, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>Filed claims</div>
+                  {claims.map(c => (
+                    <div key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 10px", background: "var(--bg-surface2)", border: "1px solid var(--border)", borderRadius: 6, marginBottom: 4 }}>
+                      <div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-1)" }}>{c.clientName}</div>
+                        <div style={{ fontSize: 10, color: "var(--text-5)" }}>
+                          {c.claimNumber ? `Claim #${c.claimNumber} · ` : ""}
+                          {c.submittedAt ? `Submitted ${fmtDate(c.submittedAt)}` : `Created ${fmtDate(c.createdAt)}`}
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <span style={{ fontSize: 10, padding: "1px 7px", borderRadius: 4, background: `${STATUS_COLORS[c.status] || "#6b7280"}20`, color: STATUS_COLORS[c.status] || "#6b7280", border: `1px solid ${STATUS_COLORS[c.status] || "#6b7280"}40`, fontWeight: 600 }}>
+                          {c.status}
+                        </span>
+                        {c.status === "identified" && (
+                          <button onClick={() => updateStatus(c.id, "submitted")}
+                            style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "#8b5cf6", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                            Mark submitted
+                          </button>
+                        )}
+                        {c.status === "submitted" && (
+                          <button onClick={() => updateStatus(c.id, "confirmed")}
+                            style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "#22c55e", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                            Mark confirmed
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Quick-file for eligible clients */}
+              <div style={{ fontSize: 9, color: "var(--text-6)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>
+                File claim for a client
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <QuickFileSearch tcase={tcase} existingClientIds={new Set((claims || []).map(c => c.clientId))} onFile={fileClaim} filing={filing} />
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function QuickFileSearch({ tcase, existingClientIds, onFile, filing }) {
+  const [q, setQ] = useState("");
+  const [results, setResults] = useState(null);
+  const [searching, setSearching] = useState(false);
+
+  async function search() {
+    if (!q.trim()) return;
+    setSearching(true);
+    try {
+      const r = await fetch(`/api/clients?q=${encodeURIComponent(q)}&limit=20`);
+      const d = await r.json();
+      setResults(d.clients || []);
+    } catch { setResults([]); }
+    setSearching(false);
+  }
+
+  return (
+    <div style={{ width: "100%" }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+        <input
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && search()}
+          placeholder="Search client by name, phone, or email…"
+          style={{ flex: 1, background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 6, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}
+        />
+        <button onClick={search} disabled={searching || !q.trim()}
+          style={{ padding: "7px 14px", borderRadius: 6, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>
+          {searching ? "…" : "Search"}
+        </button>
+      </div>
+      {results !== null && (
+        <div>
+          {results.length === 0 ? (
+            <div style={{ fontSize: 11, color: "var(--text-5)" }}>No clients found.</div>
+          ) : results.map(c => {
+            const alreadyFiled = existingClientIds.has(c.id);
+            return (
+              <div key={c.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "7px 10px", background: "var(--bg-surface2)", border: "1px solid var(--border)", borderRadius: 5, marginBottom: 3 }}>
+                <div>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "var(--text-1)" }}>{c.firstName} {c.lastName}</span>
+                  <span style={{ fontSize: 10, color: "var(--text-5)", marginLeft: 8 }}>{c.state || "—"} · {c.email || c.phone || "—"}</span>
+                </div>
+                {alreadyFiled ? (
+                  <span style={{ fontSize: 10, color: "#22c55e", fontWeight: 600 }}>Already filed</span>
+                ) : (
+                  <button onClick={() => onFile(c)} disabled={filing === c.id}
+                    style={{ fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#22c55e", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                    {filing === c.id ? "Filing…" : "File claim"}
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CaseDetail({ tcase, onClose }) {
   const [matches, setMatches] = useState(null);
   const [matchLoading, setMatchLoading] = useState(false);
@@ -609,6 +810,8 @@ function CaseDetail({ tcase, onClose }) {
       <CaseBrief tcase={tcase} />
 
       <TrackingHistory caseId={tcase.id} />
+
+      <ClaimFilingPanel tcase={tcase} />
 
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
