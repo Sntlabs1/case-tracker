@@ -271,39 +271,34 @@ export default async function handler(req, res) {
     const clientId = result.ids?.[0] || result.updatedIds?.[0];
 
     // Store PDF now that we have the clientId.
-    // Primary: Vercel Blob (public URL, fast to serve)
-    // Fallback: KV raw storage, served via /api/client-pdf?clientId=
+    // Always store in KV first (reliable), then try Blob as an upgrade.
+    let pdfUrl = null;
     if (body.file && isPdf && clientId) {
-      let pdfUrl = null;
       try {
-        const pdfBuf = Buffer.from(body.file, "base64");
+        // KV storage: always works, served via /api/client-pdf
+        await kv.set(`client_pdf:${clientId}`, body.file, { ex: CLIENT_TTL });
+        pdfUrl = `/api/client-pdf?clientId=${clientId}`;
+
+        // Try Blob upgrade for a public CDN URL
         if (process.env.BLOB_READ_WRITE_TOKEN) {
-          const slug = `credit-reports/${clientId}.pdf`;
-          const blob = await put(slug, pdfBuf, { access: "public", contentType: "application/pdf", addRandomSuffix: false });
-          pdfUrl = blob.url;
-        } else {
-          // KV fallback: store raw base64, serve via /api/client-pdf
-          await kv.set(`client_pdf:${clientId}`, body.file, { ex: CLIENT_TTL });
-          pdfUrl = `/api/client-pdf?clientId=${clientId}`;
+          try {
+            const pdfBuf = Buffer.from(body.file, "base64");
+            const blob = await put(`credit-reports/${clientId}.pdf`, pdfBuf,
+              { access: "public", contentType: "application/pdf", addRandomSuffix: false });
+            pdfUrl = blob.url;
+          } catch { /* keep KV URL */ }
         }
+
+        // Patch the saved client KV record and bust the list cache
+        const raw = await kv.get(`client:${clientId}`);
+        if (raw) {
+          const rec = typeof raw === "string" ? JSON.parse(raw) : raw;
+          rec.creditReportPdfUrl = pdfUrl;
+          await kv.set(`client:${clientId}`, JSON.stringify(rec), { ex: CLIENT_TTL });
+        }
+        await kv.del(CLIENTS_CACHE).catch(() => {}); // bust stale list cache
       } catch (e) {
-        // Blob failed — fall back to KV
-        try {
-          await kv.set(`client_pdf:${clientId}`, body.file, { ex: CLIENT_TTL });
-          pdfUrl = `/api/client-pdf?clientId=${clientId}`;
-        } catch { /* non-fatal */ }
-        console.warn("Blob upload fell back to KV:", e.message);
-      }
-      if (pdfUrl) {
-        // Patch the saved client record with the PDF URL
-        try {
-          const raw = await kv.get(`client:${clientId}`);
-          if (raw) {
-            const rec = typeof raw === "string" ? JSON.parse(raw) : raw;
-            rec.creditReportPdfUrl = pdfUrl;
-            await kv.set(`client:${clientId}`, JSON.stringify(rec), { ex: CLIENT_TTL });
-          }
-        } catch { /* non-fatal */ }
+        console.error("PDF storage error:", e.message);
       }
     }
 
@@ -330,13 +325,14 @@ export default async function handler(req, res) {
       matchQueued:  result.matchQueued,
       // Extraction summary
       client: {
-        id:        result.ids?.[0] || result.updatedIds?.[0],
-        name:      `${c.firstName || ""} ${c.lastName || ""}`.trim(),
-        dob:       c.dob || null,
-        state:     c.state || null,
-        phones:    (c.phoneNumbers || []).slice(0, 3),
-        creditScore: c.creditScore || null,
-        ssnLast4:  c.ssnLast4 || null,
+        id:               clientId,
+        name:             `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+        dob:              c.dob || null,
+        state:            c.state || null,
+        phones:           (c.phoneNumbers || []).slice(0, 3),
+        creditScore:      c.creditScore || null,
+        ssnLast4:         c.ssnLast4 || null,
+        creditReportPdfUrl: pdfUrl,       // carry back so UI can use it immediately
       },
       extraction: {
         totalAccounts:    allAccounts.length,

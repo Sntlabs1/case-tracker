@@ -906,9 +906,9 @@ function ImportWizard({ onImported, onGoToClient }) {
         stopCrTimer();
         setImporting(false);
         onImported((d.imported || 0) + (d.updated || 0) || 1);
-        // Navigate straight to the client card — no intermediate done screen
+        // Navigate straight to the client card — pass pdfUrl so card shows it immediately
         if (d.client?.id && onGoToClient) {
-          onGoToClient(d.client.id);
+          onGoToClient(d.client.id, d.client.creditReportPdfUrl || null);
         } else {
           // Fallback: show done screen if no ID came back
           setResult({
@@ -2088,18 +2088,21 @@ export default function Clients() {
           </div>
           <ImportWizard
             onImported={count => { setImportCount(x => x + count); }}
-            onGoToClient={async (clientId) => {
+            onGoToClient={async (clientId, pdfUrl) => {
               setView("database");
-              // Fetch fresh list — retry once if the client isn't in the first response
-              // (KV propagation can lag by a few hundred ms)
               for (let attempt = 0; attempt < 3; attempt++) {
-                await new Promise(r => setTimeout(r, attempt === 0 ? 300 : 800));
+                await new Promise(r => setTimeout(r, attempt === 0 ? 400 : 1000));
                 const d = await fetch("/api/clients").then(r => r.json()).catch(() => ({}));
                 const all = d.clients || [];
                 setClients(all);
                 setFirms(d.firms || []);
                 const found = all.find(c => c.id === clientId);
-                if (found) { setSelectedClient(found); break; }
+                if (found) {
+                  // Inject pdfUrl from ingest response — KV cache may not have it yet
+                  if (pdfUrl && !found.creditReportPdfUrl) found.creditReportPdfUrl = pdfUrl;
+                  setSelectedClient({ ...found });
+                  break;
+                }
               }
             }}
           />
