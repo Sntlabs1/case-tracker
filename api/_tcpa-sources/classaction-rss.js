@@ -7,16 +7,23 @@ import { kv } from "@vercel/kv";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-// Both classaction.org and topclassactions.com block direct RSS access
-// (404 / 403 / Cloudflare). We pull via Google News' RSS search with
-// site-restriction — same content, public route, no rate limit issue.
+// Google News RSS — plain queries work; site: restrictions return 0 results.
+// Multiple targeted queries to maximize coverage of open claim windows.
 const FEEDS = [
   {
-    url: "https://news.google.com/rss/search?q=site%3Aclassaction.org+TCPA+OR+FDCPA+OR+FCRA+settlement+OR+claim+OR+filed&hl=en-US&gl=US",
+    url: "https://news.google.com/rss/search?q=TCPA+settlement+claim+deadline&hl=en-US&gl=US&ceid=US:en",
     source: "ClassAction.org",
   },
   {
-    url: "https://news.google.com/rss/search?q=site%3Atopclassactions.com+TCPA+OR+FDCPA+OR+FCRA+settlement+OR+claim&hl=en-US&gl=US",
+    url: "https://news.google.com/rss/search?q=FDCPA+class+action+settlement+claim+form&hl=en-US&gl=US&ceid=US:en",
+    source: "TopClassActions",
+  },
+  {
+    url: "https://news.google.com/rss/search?q=robocall+autodialer+settlement+file+claim&hl=en-US&gl=US&ceid=US:en",
+    source: "ClassAction.org",
+  },
+  {
+    url: "https://news.google.com/rss/search?q=TCPA+class+action+settlement+2025+OR+2026&hl=en-US&gl=US&ceid=US:en",
     source: "TopClassActions",
   },
 ];
@@ -102,7 +109,10 @@ function toCaseInput(extracted, articleUrl, articleDate, sourceTag) {
 }
 
 async function processFeed(feedUrl, sourceTag, cutoff) {
-  const parser = new Parser({ timeout: 15000 });
+  const parser = new Parser({
+    timeout: 15000,
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; LegalResearchBot/1.0)" },
+  });
   const feed = await parser.parseURL(feedUrl);
   const items = (feed.items || []).filter((it) => {
     const pub = it.isoDate || it.pubDate;
