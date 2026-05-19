@@ -617,7 +617,7 @@ function UrlIngestPanel({ partner, onStart }) {
 }
 
 // ── Import Wizard ─────────────────────────────────────────────────────────────
-function ImportWizard({ onImported }) {
+function ImportWizard({ onImported, onGoToClient }) {
   const [step, setStep] = useState("upload"); // upload → map → confirm → done
   const [firmName, setFirmName] = useState("");
   const [partnerId, setPartnerId] = useState("manual"); // partner registry dropdown
@@ -862,10 +862,16 @@ function ImportWizard({ onImported }) {
               </div>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
+              {c.id && onGoToClient && (
+                <button onClick={() => onGoToClient(c.id)}
+                  style={{ fontSize: 11, padding: "6px 14px", borderRadius: 6, background: "var(--accent)", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                  Open client profile →
+                </button>
+              )}
               {c.id && (
                 <a href={`/api/client-report?clientId=${encodeURIComponent(c.id)}&format=html`}
                    target="_blank" rel="noopener noreferrer"
-                   style={{ fontSize: 11, padding: "6px 12px", borderRadius: 6, background: "var(--accent)", color: "#fff", textDecoration: "none", fontWeight: 600 }}>
+                   style={{ fontSize: 11, padding: "6px 12px", borderRadius: 6, background: "var(--bg-surface2)", color: "var(--text-2)", textDecoration: "none", fontWeight: 600, border: "1px solid var(--border)" }}>
                   Full report ↗
                 </a>
               )}
@@ -1653,6 +1659,72 @@ export default function Clients() {
                   </div>
                 )}
 
+                {/* Credit report data section */}
+                {(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0 || selectedClient.bankruptcies?.length > 0) && (
+                  <div style={{ marginTop: 14 }}>
+                    <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontWeight: 700 }}>
+                      Credit Report
+                      {selectedClient.creditScore && <span style={{ marginLeft: 8, color: "var(--accent)", fontWeight: 700 }}>Score: {selectedClient.creditScore}</span>}
+                    </div>
+
+                    {/* Summary chips */}
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                      {[
+                        [(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0), "tradelines", "var(--accent)"],
+                        [(selectedClient.creditAccounts || []).filter(a => a.isCollection).length + (selectedClient.collectionsHistory?.length || 0), "collections", "#ef4444"],
+                        [(selectedClient.creditAccounts || []).filter(a => (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0)>0).length, "late accts", "#f59e0b"],
+                        [selectedClient.bankruptcies?.length || 0, "bankruptcies", "#8b5cf6"],
+                        [selectedClient.taxLiens?.length || 0, "tax liens", "#f59e0b"],
+                        [selectedClient.creditInquiries?.length || 0, "inquiries", "#6b7280"],
+                      ].filter(([n]) => n > 0).map(([n, label, color]) => (
+                        <span key={label} style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: `${color}18`, color, border: `1px solid ${color}35`, fontWeight: 600 }}>
+                          {n} {label}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* All creditors/accounts */}
+                    {(selectedClient.creditAccounts?.length > 0 || selectedClient.collectionsHistory?.length > 0) && (
+                      <details>
+                        <summary style={{ fontSize: 11, color: "var(--text-4)", cursor: "pointer", marginBottom: 6, fontWeight: 600 }}>
+                          All accounts ({(selectedClient.creditAccounts?.length || 0) + (selectedClient.collectionsHistory?.length || 0)}) — potential TCPA defendants
+                        </summary>
+                        <div style={{ maxHeight: 220, overflowY: "auto", marginTop: 6 }}>
+                          {[...(selectedClient.creditAccounts || []), ...(selectedClient.collectionsHistory || [])].map((a, i) => {
+                            const name = a.creditor || a.originalCreditor || a.debtBuyer || "Unknown";
+                            const isCol = a.isCollection || a.type === "collection";
+                            const lates = (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0);
+                            return (
+                              <div key={a.id || i} style={{ display: "flex", justifyContent: "space-between", padding: "5px 8px", borderBottom: "1px solid var(--border)", fontSize: 10 }}>
+                                <div>
+                                  <span style={{ color: isCol ? "#ef4444" : "var(--text-2)", fontWeight: isCol ? 600 : 400 }}>{name}</span>
+                                  {a.loanType && <span style={{ color: "var(--text-6)", marginLeft: 6 }}>{a.loanType}</span>}
+                                </div>
+                                <div style={{ color: "var(--text-6)", display: "flex", gap: 8 }}>
+                                  {a.balance != null && <span>${Number(a.balance).toLocaleString()}</span>}
+                                  {lates > 0 && <span style={{ color: "#f59e0b" }}>{lates} late</span>}
+                                  {isCol && <span style={{ color: "#ef4444" }}>collection</span>}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    )}
+
+                    {/* Bankruptcies */}
+                    {selectedClient.bankruptcies?.length > 0 && (
+                      <div style={{ marginTop: 8 }}>
+                        {selectedClient.bankruptcies.map((b, i) => (
+                          <div key={i} style={{ fontSize: 10, color: "#8b5cf6", padding: "4px 8px", background: "rgba(139,92,246,0.08)", borderRadius: 4, marginBottom: 3 }}>
+                            {b.type?.replace("_", " ").toUpperCase()} · Filed {b.dateFiled || "—"} · {b.disposition || "Filed"}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <MatchedCasesPanel client={selectedClient} />
 
                 <div style={{ marginTop: 14 }}>
@@ -1678,7 +1750,22 @@ export default function Clients() {
             Import client lists from acquired firms. Supports CSV exports from Clio, MyCase, PracticePanther, Filevine, or any spreadsheet.
             All client data is stored securely in your database and used only for matching.
           </div>
-          <ImportWizard onImported={count => { setImportCount(x => x + count); setView("database"); }} />
+          <ImportWizard
+            onImported={count => { setImportCount(x => x + count); }}
+            onGoToClient={async (clientId) => {
+              // Reload clients then switch to database view and select the new client
+              setImportCount(x => x + 1);
+              setView("database");
+              // Give KV a moment to be consistent, then fetch fresh and select
+              await new Promise(r => setTimeout(r, 600));
+              const d = await fetch("/api/clients").then(r => r.json()).catch(() => ({}));
+              const all = d.clients || [];
+              setClients(all);
+              setFirms(d.firms || []);
+              const found = all.find(c => c.id === clientId);
+              if (found) setSelectedClient(found);
+            }}
+          />
         </Card>
       )}
 

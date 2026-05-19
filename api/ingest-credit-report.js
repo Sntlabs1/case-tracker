@@ -107,7 +107,7 @@ function buildRecord(c, now, idx) {
 async function persistClients(records) {
   const now = Date.now();
   let imported = 0, updated = 0;
-  const matchIds = [];
+  const matchIds = [], importedIds = [], updatedIds = [];
 
   for (let i = 0; i < records.length; i++) {
     const fresh = buildRecord(records[i], now, i);
@@ -135,13 +135,13 @@ async function persistClients(records) {
     ops.push(kv.zadd(PENDING_MATCH, { score, member: id }).catch(() => {}));
     await Promise.all(ops);
 
-    if (existingId) updated++; else imported++;
+    if (existingId) { updated++; updatedIds.push(id); } else { imported++; importedIds.push(id); }
     matchIds.push(id);
   }
 
   // Bust the list cache
   await kv.del(CLIENTS_CACHE).catch(() => {});
-  return { imported, updated, matchQueued: matchIds.length };
+  return { imported, updated, matchQueued: matchIds.length, ids: importedIds, updatedIds };
 }
 
 // ── Bulk defendant resolution ─────────────────────────────────────────────────
