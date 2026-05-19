@@ -97,10 +97,18 @@ function SourcesPanel({ stats, busy, onRun }) {
   return (
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>Ingest Sources</div>
-        <Btn small onClick={() => onRun("daily")} disabled={busy}>
-          {busy ? "Running…" : "Run daily"}
-        </Btn>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>Ingest Sources</div>
+          <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 2 }}>Pull TCPA/FDCPA/FCRA cases from CourtListener, TopClassActions, ClassAction.org, FCC</div>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Btn small variant="secondary" onClick={() => onRun("daily")} disabled={busy}>
+            {busy ? "Running…" : "Run Daily Update"}
+          </Btn>
+          <Btn small onClick={() => onRun("backfill")} disabled={busy}>
+            {busy ? "Running…" : "Run Full Backfill (2021–now)"}
+          </Btn>
+        </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
         {sources.map((s) => {
@@ -1042,9 +1050,17 @@ export default function TCPACases() {
             <div style={{ fontSize: 12, color: "var(--text-5)", textAlign: "center", padding: "32px 0" }}>Loading TCPA cases…</div>
           ) : filtered.length === 0 ? (
             <div style={{ textAlign: "center", padding: "40px 0" }}>
-              <div style={{ fontSize: 13, color: "var(--text-5)", marginBottom: 12 }}>
-                {total === 0 ? "No TCPA cases in database yet. Seed via POST /api/tcpa-cases or wait for the scanner to populate." : "No cases match these filters."}
-              </div>
+              {total === 0 ? (
+                <>
+                  <div style={{ fontSize: 13, color: "var(--text-4)", marginBottom: 8, fontWeight: 600 }}>No cases loaded yet</div>
+                  <div style={{ fontSize: 12, color: "var(--text-6)", marginBottom: 16 }}>Run a full backfill to pull TCPA / FDCPA / FCRA cases from CourtListener going back to 2021.</div>
+                  <Btn small onClick={() => runIngest("backfill")} disabled={ingesting}>
+                    {ingesting ? "Running backfill…" : "Run Full Backfill Now"}
+                  </Btn>
+                </>
+              ) : (
+                <div style={{ fontSize: 13, color: "var(--text-5)" }}>No cases match these filters.</div>
+              )}
             </div>
           ) : (
             <div style={{ maxHeight: 700, overflowY: "auto" }}>
