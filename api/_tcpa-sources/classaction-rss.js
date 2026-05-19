@@ -124,11 +124,15 @@ async function processFeed(feedUrl, sourceTag, cutoff) {
 
   for (const item of items) {
     try {
+      // Google News RSS has no article body — title + snippet is all we get.
+      // The title alone usually contains defendant name, settlement amount,
+      // and claim deadline (e.g. "Western Express $2.7M TCPA settlement: claim by Aug 1").
       const body = (item.contentSnippet || item.content || item.description || "").slice(0, 6000);
-      if (!body) continue;
+      const text = [item.title || "", body].filter(Boolean).join("\n");
+      if (!text.trim()) continue;
       const prompt = EXTRACTION_PROMPT
         .replace("{title}", item.title || "")
-        .replace("{body}", body);
+        .replace("{body}", text);
       const raw = await callHaiku(prompt);
       const extracted = tryParseJsonArray(raw);
       const articleDate = item.isoDate ? item.isoDate.slice(0, 10) : null;
