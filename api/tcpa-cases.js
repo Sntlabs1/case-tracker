@@ -84,11 +84,72 @@ export default async function handler(req, res) {
     return res.status(200).json({ deleted: id });
   }
 
-  // ── POST — bulk import ────────────────────────────────────────────────────
+  // ── POST — bulk import or Claude-powered extract-and-save ────────────────
   if (req.method === "POST") {
     const body = req.body || {};
+
+    // extract: free-text → Claude extracts structured case → save
+    if (body.extract) {
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) return res.status(500).json({ error: "ANTHROPIC_API_KEY not set" });
+      const prompt = `Extract a TCPA/FDCPA/FCRA case record from the following text. Return ONLY a JSON object with these fields (null if unknown):
+{
+  "caption": "case name",
+  "caseType": "TCPA"|"FDCPA"|"FCRA"|"TCPA+FDCPA",
+  "defendants": ["company name"],
+  "court": "e.g. S.D. Fla.",
+  "docket": "case number or null",
+  "filingDate": "YYYY-MM-DD or null",
+  "status": "active"|"settled"|"claim_open"|"claim_closed",
+  "settlementTotal": dollar amount as number or null,
+  "perClaimantRange": "e.g. $45-$120 or null",
+  "claimDeadline": "YYYY-MM-DD or null",
+  "claimPortalUrl": "URL or null",
+  "conductDescription": "one sentence what defendant did"
+}
+
+TEXT: ${body.extract.slice(0, 3000)}`;
+
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 800, messages: [{ role: "user", content: prompt }] }),
+      });
+      const d = await r.json();
+      const raw = d.content?.[0]?.text || "{}";
+      let extracted;
+      try {
+        const m = raw.match(/\{[\s\S]*\}/);
+        extracted = m ? JSON.parse(m[0]) : {};
+      } catch { return res.status(400).json({ error: "Could not parse case from text" }); }
+
+      const closes = extracted.claimDeadline;
+      const now = new Date().toISOString().slice(0, 10);
+      const input = {
+        caption: extracted.caption || body.extract.slice(0, 80),
+        caseType: extracted.caseType || "TCPA",
+        defendants: (extracted.defendants || []).map(d => ({ displayName: d })),
+        court: { name: extracted.court || "", jurisdiction: "federal", state: "", docket: extracted.docket || "" },
+        filingDate: extracted.filingDate || now,
+        status: closes ? (closes >= now ? "claim_open" : "claim_closed") : (extracted.status || "settled"),
+        settlement: {
+          totalFund: extracted.settlementTotal ? String(extracted.settlementTotal) : null,
+          perClaimantRange: extracted.perClaimantRange || null,
+          claimWindowCloses: closes || null,
+          claimPortalUrl: extracted.claimPortalUrl || null,
+        },
+        conductDescription: extracted.conductDescription || "",
+        source: "manual",
+        sourceUrl: "",
+      };
+      const result = await importCases([input]);
+      const savedId = result.ids?.created?.[0] || result.ids?.updated?.[0];
+      const saved = savedId ? await kv.get(`tcpa:case:${savedId}`).then(r => r ? (typeof r === "string" ? JSON.parse(r) : r) : null).catch(() => null) : null;
+      return res.status(200).json({ ok: true, case: saved || input });
+    }
+
     const incoming = body.cases || (body.case ? [body.case] : []);
-    if (!incoming.length) return res.status(400).json({ error: "cases array required" });
+    if (!incoming.length) return res.status(400).json({ error: "cases array or extract text required" });
 
     const result = await importCases(incoming);
     return res.status(200).json({

@@ -92,6 +92,61 @@ function fmtRelativeTime(iso) {
   return `${d}d ago`;
 }
 
+// Quick-add: paste a URL or describe a case → Claude extracts it → saved instantly
+function QuickAddCase({ onAdded }) {
+  const [text, setText] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  async function submit() {
+    if (!text.trim()) return;
+    setSaving(true); setMsg(null);
+    try {
+      const r = await fetch("/api/tcpa-cases", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ extract: text.trim() }),
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      setMsg(`Saved: ${d.case?.caption || "case added"}`);
+      setText("");
+      onAdded?.();
+    } catch (e) {
+      setMsg(`Error: ${e.message}`);
+    }
+    setSaving(false);
+  }
+
+  return (
+    <Card>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>Add a Known Case</div>
+      <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 10 }}>
+        Paste a case name, settlement URL, or description. Claude will extract the details and save it.
+      </div>
+      <textarea
+        value={text}
+        onChange={e => setText(e.target.value)}
+        placeholder={"e.g. \"Capital One TCPA settlement $210M, claim deadline June 30 2026, https://capitalonetcpa.com\"\nor paste any article text about an open TCPA settlement"}
+        style={{
+          width: "100%", minHeight: 72, background: "var(--bg-input)",
+          border: "1px solid var(--border)", borderRadius: 7, padding: "8px 12px",
+          color: "var(--text-1)", fontSize: 12, resize: "vertical", outline: "none",
+          boxSizing: "border-box", fontFamily: "inherit",
+        }}
+      />
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+        <Btn small onClick={submit} disabled={saving || !text.trim()}>
+          {saving ? "Extracting…" : "Add Case"}
+        </Btn>
+        {msg && (
+          <span style={{ fontSize: 11, color: msg.startsWith("Error") ? "#ef4444" : "#22c55e" }}>{msg}</span>
+        )}
+      </div>
+    </Card>
+  );
+}
+
 function SourcesPanel({ stats, busy, onRun, lastResult }) {
   const sources = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];
   return (
@@ -1028,6 +1083,7 @@ export default function TCPACases() {
         <StatPill label="Tracked Settlements ($M)" value={totalFundMillions ? Math.round(totalFundMillions) : "—"} color="#3b82f6" />
       </div>
 
+      <QuickAddCase onAdded={load} />
       <SourcesPanel stats={ingestStats} busy={ingesting} onRun={runIngest} lastResult={ingestResult} />
 
       <div style={{ display: "flex", gap: 8, borderBottom: "1px solid var(--border)" }}>

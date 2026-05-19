@@ -7,24 +7,35 @@ import { kv } from "@vercel/kv";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-// Google News RSS — plain queries work; site: restrictions return 0 results.
-// Multiple targeted queries to maximize coverage of open claim windows.
+// Feed list — mix of native RSS and Google News queries.
+// TopClassActions native feed works and has full article bodies.
+// Google News plain queries (no site: restriction) return titles only but
+// those titles contain enough data for Haiku extraction.
 const FEEDS = [
+  {
+    url: "https://topclassactions.com/feed/",
+    source: "TopClassActions",
+    filter: /tcpa|robocall|autodialer|fdcpa|debt.collect|text.message|unwanted.call|unsolicited/i,
+  },
   {
     url: "https://news.google.com/rss/search?q=TCPA+settlement+claim+deadline&hl=en-US&gl=US&ceid=US:en",
     source: "ClassAction.org",
+    filter: null,
   },
   {
     url: "https://news.google.com/rss/search?q=FDCPA+class+action+settlement+claim+form&hl=en-US&gl=US&ceid=US:en",
-    source: "TopClassActions",
+    source: "ClassAction.org",
+    filter: null,
   },
   {
     url: "https://news.google.com/rss/search?q=robocall+autodialer+settlement+file+claim&hl=en-US&gl=US&ceid=US:en",
     source: "ClassAction.org",
+    filter: null,
   },
   {
     url: "https://news.google.com/rss/search?q=TCPA+class+action+settlement+2025+OR+2026&hl=en-US&gl=US&ceid=US:en",
-    source: "TopClassActions",
+    source: "ClassAction.org",
+    filter: null,
   },
 ];
 
@@ -115,15 +126,21 @@ function toCaseInput(extracted, articleUrl, articleDate, sourceTag) {
   };
 }
 
-async function processFeed(feedUrl, sourceTag, cutoff) {
+async function processFeed(feedUrl, sourceTag, cutoff, filter) {
   const parser = new Parser({
     timeout: 15000,
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; LegalResearchBot/1.0)" },
+    headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" },
   });
   const feed = await parser.parseURL(feedUrl);
   const items = (feed.items || []).filter((it) => {
     const pub = it.isoDate || it.pubDate;
-    return pub ? new Date(pub).getTime() > cutoff : true;
+    if (pub && new Date(pub).getTime() <= cutoff) return false;
+    // Apply keyword filter if provided (used for broad feeds like TopClassActions main)
+    if (filter) {
+      const hay = `${it.title || ""} ${it.contentSnippet || it.description || ""}`;
+      if (!filter.test(hay)) return false;
+    }
+    return true;
   });
 
   const candidates = [];
@@ -171,7 +188,7 @@ export async function runClassActionRss({ mode = "daily", since: sinceOverride, 
 
   for (const feed of FEEDS) {
     try {
-      const { itemsConsidered, candidates, extractionErrors } = await processFeed(feed.url, feed.source, cutoff);
+      const { itemsConsidered, candidates, extractionErrors } = await processFeed(feed.url, feed.source, cutoff, feed.filter || null);
       totalConsidered += itemsConsidered;
       totalErrors += extractionErrors;
       allCandidates.push(...candidates);
