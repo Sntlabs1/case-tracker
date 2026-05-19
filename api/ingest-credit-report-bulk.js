@@ -397,36 +397,48 @@ export default async function handler(req, res) {
     let partner = req.headers["x-partner"] || "credit_com";
     let sourceInfo = "upload";
 
-    if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      partner = formData.get("partner") || partner;
-      const file = formData.get("file");
-      if (!file) return res.status(400).json({ ok: false, error: "No file provided" });
-      const text = new TextDecoder().decode(await file.arrayBuffer());
-      rawClients = await parseBody(file, file.type, text);
-      sourceInfo = file.name;
+    // Collect raw body — req.formData() and req.json() are Edge Runtime APIs
+    // not available in the Vercel Node.js serverless runtime.
+    const rawBody = await new Promise((resolve, reject) => {
+      const chunks = [];
+      req.on("data", c => chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c)));
+      req.on("end", () => resolve(Buffer.concat(chunks)));
+      req.on("error", reject);
+    });
 
-    } else if (contentType.includes("application/json")) {
-      const body = await req.json();
-      partner = body.partner || partner;
+    const body = JSON.parse(rawBody.toString("utf8"));
+    partner = body.partner || partner;
 
-      if (body.url) {
-        // URL-based ingestion for large files credit.com provides
-        sourceInfo = body.url;
-        const text = await fetchRemoteText(body.url);
-        const isJson = body.url.endsWith(".json");
-        const tempFile = { name: isJson ? "data.json" : "data.csv", type: isJson ? "application/json" : "text/csv" };
-        rawClients = await parseBody(tempFile, tempFile.type, text);
-
-      } else if (Array.isArray(body.clients)) {
-        rawClients = body.clients.map(c => normalize(c));
-      } else if (Array.isArray(body)) {
-        rawClients = body.map(c => normalize(c));
+    if (body.file) {
+      // base64 file sent from browser
+      const text = Buffer.from(body.file, "base64").toString("utf8");
+      const filename = (body.filename || "upload").toLowerCase();
+      const ct = body.contentType || "";
+      const isJson = filename.endsWith(".json") || ct.includes("json");
+      sourceInfo = body.filename || "upload";
+      if (isJson) {
+        const obj = JSON.parse(text);
+        rawClients = (Array.isArray(obj) ? obj : [obj]).map(c => normalize(c));
       } else {
-        return res.status(400).json({ ok: false, error: "Provide file, url, or clients array" });
+        rawClients = parseCreditReportCsv(text).map(reportToClient);
       }
+
+    } else if (body.url) {
+      sourceInfo = body.url;
+      const text = await fetchRemoteText(body.url);
+      const isJson = body.url.endsWith(".json");
+      if (isJson) {
+        const obj = JSON.parse(text);
+        rawClients = (Array.isArray(obj) ? obj : [obj]).map(c => normalize(c));
+      } else {
+        rawClients = parseCreditReportCsv(text).map(reportToClient);
+      }
+    } else if (Array.isArray(body.clients)) {
+      rawClients = body.clients.map(c => normalize(c));
+    } else if (Array.isArray(body)) {
+      rawClients = body.map(c => normalize(c));
     } else {
-      return res.status(400).json({ ok: false, error: "Unsupported Content-Type" });
+      return res.status(400).json({ ok: false, error: "Provide { file, filename } or { url } or { clients: [...] }" });
     }
 
     // Filter out completely empty rows

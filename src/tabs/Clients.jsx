@@ -695,12 +695,23 @@ function ImportWizard({ onImported }) {
     try {
       const p = partnerId && partnerId !== "manual" ? partnerId : "credit_com";
 
+      // Convert file to base64 — chunked to avoid call stack overflow on large files
+      const arrayBuffer = await crFile.arrayBuffer();
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = "";
+      const CHUNK = 8192;
+      for (let i = 0; i < bytes.length; i += CHUNK) {
+        binary += String.fromCharCode(...bytes.subarray(i, Math.min(i + CHUNK, bytes.length)));
+      }
+      const base64 = btoa(binary);
+
       if (isBulk) {
         // Bulk path — job-based, poll for progress
-        const fd = new FormData();
-        fd.append("file", crFile);
-        fd.append("partner", p);
-        const r = await fetch("/api/ingest-credit-report-bulk", { method: "POST", body: fd });
+        const r = await fetch("/api/ingest-credit-report-bulk", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file: base64, filename: crFile.name, contentType: crFile.type || "", partner: p }),
+        });
         const d = await r.json();
         if (!d.ok && !d.jobId) throw new Error(d.error || "Ingest failed to start");
         setCrJob({ jobId: d.jobId, total: d.total, processed: 0, pct: 0, status: "running",
@@ -709,10 +720,11 @@ function ImportWizard({ onImported }) {
         crPollRef.current = setInterval(() => pollJob(d.jobId), 2000);
       } else {
         // Single-report path — synchronous
-        const fd = new FormData();
-        fd.append("file", crFile);
-        fd.append("partner", p);
-        const r = await fetch("/api/ingest-credit-report", { method: "POST", body: fd });
+        const r = await fetch("/api/ingest-credit-report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file: base64, filename: crFile.name, contentType: crFile.type || "", partner: p }),
+        });
         const d = await r.json();
         if (!d.ok) throw new Error(d.error || "Ingest failed");
         setResult({

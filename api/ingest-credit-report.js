@@ -1,164 +1,265 @@
 // Single credit-report ingest endpoint.
 //
 // POST /api/ingest-credit-report
-//   Content-Type: multipart/form-data
-//   Fields:
-//     file      — required — PDF, JSON, or CSV
-//     partner   — optional — partner id (default: "credit_com")
-//     sourceNote — optional — free-text note stored on the client record
+//   Content-Type: application/json
+//   Body: {
+//     file:        base64-encoded string of the file
+//     filename:    "report.pdf" | "data.json" | "clients.csv"
+//     contentType: "application/pdf" | "application/json" | "text/csv"
+//     partner:     "credit_com" (optional)
+//   }
+//   OR:
+//   Body: { clients: [...] }   — pre-parsed client objects (API-to-API)
 //
 // Returns:
-//   { ok: true, clientId, name, accountsExtracted, matchQueued }
+//   { ok: true, imported, updated, accountsExtracted, matchQueued }
 //   or { ok: false, error }
+//
+// NOTE: We use raw body collection (getRawBody) instead of req.json() or
+// req.formData() — both are Edge Runtime APIs not available in the Vercel
+// Node.js serverless runtime.
 
-import { parseCreditReportPdfBlob } from "./_ingest-parsers/pdf-parser.js";
-import { parseCreditReportCsv }      from "./_ingest-parsers/csv-parser.js";
-import normalize                      from "./_partner-importers/credit-com-json.js";
-import { buildCreditReport }          from "../src/lib/creditReportSchema.js";
-import { creditReportToClient }       from "../src/lib/creditReportToClient.js";
+import { parseCreditReportPdfBase64 }  from "./_ingest-parsers/pdf-parser.js";
+import { parseCreditReportCsv }         from "./_ingest-parsers/csv-parser.js";
+import normalize                         from "./_partner-importers/credit-com-json.js";
+import { buildCreditReport }             from "../src/lib/creditReportSchema.js";
+import { creditReportToClient }          from "../src/lib/creditReportToClient.js";
+import { kv }                            from "@vercel/kv";
+import { createHash }                    from "node:crypto";
+import {
+  normalize as normalizeDefendant,
+  createDefendant,
+} from "../src/lib/defendantResolver.js";
 
-const KV_URL   = process.env.KV_REST_API_URL;
-const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+// ── Raw body helper (works in Node.js serverless) ─────────────────────────────
 
-async function kv(method, ...args) {
-  const r = await fetch(`${KV_URL}/${method}/${args.map(encodeURIComponent).join("/")}`, {
-    headers: { Authorization: `Bearer ${KV_TOKEN}` },
+function getRawBody(req) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on("data", chunk => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)));
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
   });
-  const d = await r.json();
-  return d.result;
 }
 
-async function kvSet(key, value) {
-  const r = await fetch(`${KV_URL}/set/${encodeURIComponent(key)}`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${KV_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify(value),
-  });
-  return (await r.json()).result;
+// ── KV helpers (direct — no internal HTTP hop) ────────────────────────────────
+
+const CLIENTS_ZSET   = "clients_by_date";
+const CLIENTS_CACHE  = "clients_cache_v1";
+const PENDING_MATCH  = "tcpa:clients_pending_match";
+const CLIENT_TTL     = 365 * 24 * 3600;
+
+function sha256(s) {
+  return createHash("sha256").update(String(s)).digest("hex");
 }
 
-function clientKey() {
-  return `c_${Date.now()}_0_${Math.random().toString(36).slice(2, 7)}`;
+function normPhone(raw) {
+  if (!raw) return "";
+  const d = String(raw).replace(/\D/g, "");
+  if (d.length === 10) return `+1${d}`;
+  if (d.length === 11 && d.startsWith("1")) return `+${d}`;
+  return d ? `+${d}` : "";
 }
 
-async function saveClient(clientData, partner) {
-  const r = await fetch(`${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/clients?partner=${encodeURIComponent(partner || "credit_com")}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ clients: [clientData] }),
-  });
-  if (!r.ok) throw new Error(`clients API ${r.status}`);
-  const d = await r.json();
-  return d;
+function buildRecord(c, now, idx) {
+  const phones = (Array.isArray(c.phoneNumbers) && c.phoneNumbers.length
+    ? c.phoneNumbers : (c.phone ? [c.phone] : []))
+    .map(normPhone).filter(Boolean);
+  const primaryPhone = phones[0] || "";
+  const email = String(c.email || "").trim().toLowerCase();
+  const id = c.id || `c_${now}_${idx}_${Math.random().toString(36).slice(2, 7)}`;
+  return {
+    id,
+    firstName: c.firstName || "",
+    lastName:  c.lastName  || "",
+    email,
+    phone:     primaryPhone,
+    phoneNumbers: phones,
+    state: (c.state || "").toUpperCase().slice(0, 2),
+    city:  c.city  || "",
+    dob:   c.dob   || null,
+    ssnLast4: c.ssnLast4 || null,
+    creditScore: c.creditScore || null,
+    sourceFirm:  c.sourceFirm || "Credit.com",
+    ingestSource: c.ingestSource || "credit.com",
+    partnerId: c.partnerId || "credit_com",
+    contactRights: c.contactRights || { creditor: true, source: "credit.com partnership" },
+    tcpaOptOut: c.tcpaOptOut === true,
+    importedAt: new Date(now).toISOString(),
+    phoneHash: primaryPhone ? sha256(primaryPhone) : "",
+    emailHash: email        ? sha256(email)        : "",
+    collectionsHistory: Array.isArray(c.collectionsHistory) ? c.collectionsHistory : [],
+    addressHistory:     Array.isArray(c.addressHistory)     ? c.addressHistory     : [],
+    creditAccounts:     Array.isArray(c.creditAccounts)     ? c.creditAccounts     : [],
+    bankruptcies:       Array.isArray(c.bankruptcies)       ? c.bankruptcies       : [],
+    civilJudgments:     Array.isArray(c.civilJudgments)     ? c.civilJudgments     : [],
+    taxLiens:           Array.isArray(c.taxLiens)           ? c.taxLiens           : [],
+    creditInquiries:    Array.isArray(c.creditInquiries)    ? c.creditInquiries    : [],
+    creditReportAlerts: Array.isArray(c.creditReportAlerts) ? c.creditReportAlerts : [],
+    employmentHistory:  Array.isArray(c.employmentHistory)  ? c.employmentHistory  : [],
+    creditReportSummary: c.creditReportSummary || null,
+    lastCreditReportAt:  c.lastCreditReportAt  || new Date(now).toISOString(),
+    existingCases: c.existingCases || "",
+    matchedLeads: [],
+  };
 }
 
-async function parseFile(file, filename, contentType) {
+async function persistClients(records) {
+  const now = Date.now();
+  let imported = 0, updated = 0;
+  const matchIds = [];
+
+  for (let i = 0; i < records.length; i++) {
+    const fresh = buildRecord(records[i], now, i);
+    if (!fresh.phoneHash && !fresh.emailHash) continue;
+
+    // Dedup check
+    let existingId = null;
+    for (const hash of [fresh.phoneHash, fresh.emailHash]) {
+      if (!hash) continue;
+      const field = fresh.phoneHash === hash ? "client_by_phonehash" : "client_by_emailhash";
+      const id = await kv.get(`${field}:${hash}`).catch(() => null);
+      if (id) { existingId = id; break; }
+    }
+
+    const id = existingId || fresh.id;
+    const score = now + i;
+
+    const ops = [
+      kv.set(`client:${id}`, JSON.stringify({ ...fresh, id }), { ex: CLIENT_TTL }),
+      kv.zadd(CLIENTS_ZSET, { score, member: id }),
+      kv.zadd(`clients_by_partner:${fresh.partnerId}`, { score, member: id }),
+    ];
+    if (fresh.phoneHash) ops.push(kv.set(`client_by_phonehash:${fresh.phoneHash}`, id, { ex: CLIENT_TTL }));
+    if (fresh.emailHash) ops.push(kv.set(`client_by_emailhash:${fresh.emailHash}`, id, { ex: CLIENT_TTL }));
+    ops.push(kv.zadd(PENDING_MATCH, { score, member: id }).catch(() => {}));
+    await Promise.all(ops);
+
+    if (existingId) updated++; else imported++;
+    matchIds.push(id);
+  }
+
+  // Bust the list cache
+  await kv.del(CLIENTS_CACHE).catch(() => {});
+  return { imported, updated, matchQueued: matchIds.length };
+}
+
+// ── Bulk defendant resolution ─────────────────────────────────────────────────
+
+async function resolveDefendants(records) {
+  const uniqueNames = new Map();
+  for (const r of records) {
+    for (const arr of [r.collectionsHistory || [], r.creditAccounts || []]) {
+      for (const e of arr) {
+        for (const name of [e.creditor, e.debtBuyer, e.originalCreditor].filter(Boolean)) {
+          const norm = normalizeDefendant(name);
+          if (norm && !uniqueNames.has(norm)) uniqueNames.set(norm, name);
+        }
+      }
+    }
+  }
+  const cache = new Map();
+  for (const [norm, display] of uniqueNames) {
+    const id = await kv.get(`tcpa:defendant_alias:${norm}`).catch(() => null);
+    if (id) { cache.set(norm, id); continue; }
+    try {
+      const created = await createDefendant({ displayName: display });
+      cache.set(norm, created.canonicalId);
+    } catch { /* skip */ }
+  }
+  // Back-fill
+  for (const r of records) {
+    for (const arr of [r.collectionsHistory || [], r.creditAccounts || []]) {
+      for (const e of arr) {
+        if (e.creditor && !e.creditorCanonicalId) {
+          const n = normalizeDefendant(e.creditor);
+          if (cache.has(n)) e.creditorCanonicalId = cache.get(n);
+        }
+      }
+    }
+  }
+}
+
+// ── File parsing ──────────────────────────────────────────────────────────────
+
+async function parseFile(base64, filename, contentType) {
   const ext = (filename || "").toLowerCase().split(".").pop();
 
-  if (ext === "pdf" || contentType?.includes("pdf")) {
-    const parsed = await parseCreditReportPdfBlob(file, filename);
-    // parsed is already buildCreditReport() input shape
+  if (ext === "pdf" || (contentType || "").includes("pdf")) {
+    const parsed = await parseCreditReportPdfBase64(base64, filename);
     const report = buildCreditReport(parsed);
     return [creditReportToClient(report, { partnerId: "credit_com", ingestSource: "credit.com" })];
   }
 
-  if (ext === "json" || contentType?.includes("json")) {
-    const text = new TextDecoder().decode(await file.arrayBuffer());
+  const text = Buffer.from(base64, "base64").toString("utf8");
+
+  if (ext === "json" || (contentType || "").includes("json")) {
     const obj = JSON.parse(text);
-    // Support both single object and array
-    const items = Array.isArray(obj) ? obj : [obj];
-    return items.map(item => normalize(item));
+    return (Array.isArray(obj) ? obj : [obj]).map(item => normalize(item));
   }
 
-  if (ext === "csv" || ext === "tsv" || ext === "txt" || contentType?.includes("csv") || contentType?.includes("text")) {
-    const text = new TextDecoder().decode(await file.arrayBuffer());
-    const reports = parseCreditReportCsv(text);
-    return reports.map(r => {
-      try {
-        const report = buildCreditReport(r);
-        return creditReportToClient(report, { partnerId: "credit_com", ingestSource: "credit.com" });
-      } catch {
-        // Minimal fallback — still save basic identity
-        return normalize(r.consumer ? {
-          ...r.consumer,
-          collections: r.accounts?.filter(a => a.isCollection) || [],
-        } : r);
-      }
-    });
-  }
-
-  throw new Error(`Unsupported file type: ${ext || contentType}`);
+  // CSV / TSV / plain text
+  const reports = parseCreditReportCsv(text);
+  return reports.map(r => {
+    try {
+      const report = buildCreditReport(r);
+      return creditReportToClient(report, { partnerId: "credit_com", ingestSource: "credit.com" });
+    } catch {
+      return normalize(r.consumer ? { ...r.consumer, collections: (r.accounts || []).filter(a => a.isCollection) } : r);
+    }
+  });
 }
 
+// ── Handler ───────────────────────────────────────────────────────────────────
+
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner");
+  if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
   try {
-    const contentType = req.headers["content-type"] || "";
+    const rawBody = await getRawBody(req);
+    const body = JSON.parse(rawBody.toString("utf8"));
 
     let clients = [];
 
-    if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      const file     = formData.get("file");
-      const partner  = formData.get("partner") || "credit_com";
-
-      if (!file) return res.status(400).json({ ok: false, error: "No file provided" });
-
-      const filename = file.name || "upload";
-      const fileType = file.type || "";
-
-      clients = await parseFile(file, filename, fileType);
-    } else if (contentType.includes("application/json")) {
-      // Direct JSON body (API-to-API use)
-      const body = await req.json();
-      const items = Array.isArray(body) ? body : [body];
-      clients = items.map(item => normalize(item));
+    if (body.file) {
+      // base64 file upload (single report)
+      clients = await parseFile(body.file, body.filename || "upload", body.contentType || "");
+    } else if (Array.isArray(body.clients)) {
+      clients = body.clients.map(item => normalize(item));
+    } else if (body.firstName || body.consumer) {
+      clients = [normalize(body)];
     } else {
-      return res.status(400).json({ ok: false, error: "Send multipart/form-data with a file, or application/json" });
+      return res.status(400).json({ ok: false, error: "Provide { file, filename, contentType } or { clients: [...] }" });
     }
 
-    if (!clients.length) {
-      return res.status(400).json({ ok: false, error: "No client records could be extracted" });
+    const validClients = clients.filter(c => c && (c.firstName || c.lastName || c.phone || c.email));
+    if (!validClients.length) {
+      return res.status(400).json({ ok: false, error: "No client records could be extracted from the file" });
     }
 
-    // Save via the main clients API to get dedup, hashing, and match queueing.
-    const partner = req.headers["x-partner"] || "credit_com";
-    const saveResult = await saveClient(clients.length === 1 ? clients[0] : null, partner);
+    await resolveDefendants(validClients);
+    const result = await persistClients(validClients);
 
-    if (clients.length === 1) {
-      const c = clients[0];
-      return res.status(200).json({
-        ok: true,
-        clientId: saveResult.clientId || saveResult.ids?.[0],
-        name: `${c.firstName || ""} ${c.lastName || ""}`.trim(),
-        accountsExtracted: (c.creditAccounts || c.collectionsHistory || []).length,
-        matchQueued: saveResult.queuedForMatch || 0,
-      });
-    }
-
-    // Multi-record CSV/JSON — batch save
-    const batchResult = await fetch(
-      `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/api/clients?partner=${encodeURIComponent(partner)}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clients }),
-      }
-    ).then(r => r.json());
-
+    const c = validClients[0];
     return res.status(200).json({
       ok: true,
-      count: clients.length,
-      imported: batchResult.imported || 0,
-      updated: batchResult.updated || 0,
-      matchQueued: batchResult.queuedForMatch || 0,
+      imported:        result.imported,
+      updated:         result.updated,
+      name:            validClients.length === 1 ? `${c.firstName || ""} ${c.lastName || ""}`.trim() : null,
+      count:           validClients.length,
+      accountsExtracted: (c.creditAccounts?.length || 0) + (c.collectionsHistory?.length || 0),
+      matchQueued:     result.matchQueued,
     });
 
   } catch (e) {
-    console.error("ingest-credit-report error:", e.message);
+    console.error("ingest-credit-report:", e.message);
     return res.status(500).json({ ok: false, error: e.message });
   }
 }
 
+// bodyParser must be disabled so we can collect the raw body stream
 export const config = { api: { bodyParser: false } };
