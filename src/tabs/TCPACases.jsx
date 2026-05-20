@@ -17,16 +17,16 @@ const STATUS_LABELS = {
 };
 
 const POSTURE_LABELS = {
-  new_filing:         { label: "New Filing",            color: "#3b82f6", hint: "Filed < 6 months ago" },
-  discovery:          { label: "Discovery",             color: "#8b5cf6", hint: "Active discovery / depositions" },
-  class_cert_pending: { label: "Class Cert Pending",    color: "#f59e0b", hint: "Motion for class certification briefed" },
-  pre_trial:          { label: "Pre-Trial",             color: "#f97316", hint: "Class certified, approaching trial" },
-  trial:              { label: "At Trial",              color: "#ef4444", hint: "Actively at trial" },
-  post_trial:         { label: "Post-Trial",            color: "#ec4899", hint: "Verdict in, post-trial motions pending" },
-  settlement_pending: { label: "Settlement Pending",    color: "#22c55e", hint: "Settlement reached, awaiting court approval" },
-  mdl_pending:        { label: "MDL / Transfer",        color: "#06b6d4", hint: "JPML transfer order pending or entered" },
-  appeal:             { label: "On Appeal",             color: "#a78bfa", hint: "Circuit court or SCOTUS appeal" },
-  unknown:            { label: "Unknown",               color: "#6b7280", hint: "" },
+  new_filing:         { label: "New Filing (< 6 mo)",      color: "#3b82f6", hint: "Filed within the last 6 months — complaint stage" },
+  discovery:          { label: "Discovery (6–18 mo)",      color: "#8b5cf6", hint: "Filed 6–18 months ago — typically in discovery" },
+  class_cert_pending: { label: "Class Cert (18–36 mo)",    color: "#f59e0b", hint: "Filed 18–36 months ago — class certification stage" },
+  pre_trial:          { label: "Pre-Trial (3+ yrs)",       color: "#f97316", hint: "Filed 3+ years ago — approaching trial or settlement" },
+  trial:              { label: "At Trial",                 color: "#ef4444", hint: "Actively at trial" },
+  post_trial:         { label: "Post-Trial",               color: "#ec4899", hint: "Verdict in, post-trial motions pending" },
+  settlement_pending: { label: "Settled / Claim Open",     color: "#22c55e", hint: "Settlement reached — status = settled or claim_open" },
+  mdl_pending:        { label: "MDL / Transfer",           color: "#06b6d4", hint: "JPML transfer order pending or entered" },
+  appeal:             { label: "On Appeal",                color: "#a78bfa", hint: "Circuit court or SCOTUS appeal" },
+  unknown:            { label: "Unknown",                  color: "#6b7280", hint: "" },
 };
 
 function PostureBadge({ posture }) {
@@ -1277,6 +1277,7 @@ export default function TCPACases() {
   const [cases, setCases] = useState([]);        // full detail records for selected case
   const [index, setIndex] = useState([]);         // lightweight summaries for all 7k+ cases
   const [indexMeta, setIndexMeta] = useState(null);
+  const [indexLoading, setIndexLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
   const [postureFilter, setPostureFilter] = useState("");
@@ -1351,22 +1352,38 @@ export default function TCPACases() {
   // Load the compact search index (all 7k+ cases as lightweight summaries).
   // Pages fetched in parallel. Once loaded, ALL filters run client-side.
   async function loadIndex() {
+    setIndexLoading(true);
     try {
-      // Fetch meta first to know how many pages exist
       const metaRes = await fetch("/api/tcpa-cases?searchIndex=1&page=0");
       const metaData = await metaRes.json();
       setIndexMeta(metaData);
-      if (metaData.building || metaData.pages === 0) return; // index not ready yet
+
+      if (metaData.building || metaData.pages === 0) {
+        // Index not built yet — trigger rebuild and wait a bit
+        await fetch("/api/tcpa-cases?rebuildIndex=1");
+        setIndexLoading(false);
+        return;
+      }
+
       const page0 = metaData.data || [];
-      if (metaData.pages <= 1) { setIndex(page0); return; }
-      // Fetch remaining pages in parallel
-      const rest = await Promise.all(
+      if (metaData.pages <= 1) { setIndex(page0); setIndexLoading(false); return; }
+
+      // Fetch remaining pages — use allSettled so one failure doesn't kill all
+      const results = await Promise.allSettled(
         Array.from({ length: metaData.pages - 1 }, (_, i) =>
-          fetch(`/api/tcpa-cases?searchIndex=1&page=${i + 1}`).then(r => r.json()).then(d => d.data || [])
+          fetch(`/api/tcpa-cases?searchIndex=1&page=${i + 1}`)
+            .then(r => r.json())
+            .then(d => d.data || [])
         )
       );
+      const rest = results
+        .filter(r => r.status === "fulfilled")
+        .map(r => r.value);
       setIndex([...page0, ...rest.flat()]);
-    } catch { /* index unavailable — filters will use cases[] instead */ }
+    } catch {
+      // If index completely unavailable, fall back to cases[] for filtering
+    }
+    setIndexLoading(false);
   }
 
   async function runDefendantSearch() {
@@ -1503,7 +1520,10 @@ export default function TCPACases() {
           </div>
 
           <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 10 }}>
-            Showing {filtered.length} of {total} cases
+            {indexLoading
+              ? <span style={{ color: "var(--text-6)" }}>Loading all {total} cases for filtering…</span>
+              : <>Showing {filtered.length} of {total} cases</>
+            }
           </div>
 
           {loading ? (
