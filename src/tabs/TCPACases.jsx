@@ -1388,6 +1388,7 @@ export default function TCPACases() {
 
           <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 10 }}>
             Showing {filtered.length} of {total} cases
+            {" "}· index:{index.length} cases:{cases.length} sf:"{statusFilter}" pf:"{postureFilter}" st:"{stateFilter}"
           </div>
 
           {loading ? (
