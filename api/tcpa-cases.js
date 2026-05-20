@@ -21,7 +21,7 @@ import {
 import {
   resolveOrSuggest,
 } from "../src/lib/defendantResolver.js";
-import { importCases, unindexCase } from "../src/lib/tcpaCaseStore.js";
+import { importCases, unindexCase, rebuildSearchIndex } from "../src/lib/tcpaCaseStore.js";
 
 const CACHE_TTL = 300;
 
@@ -31,6 +31,25 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("Cache-Control", "no-store");
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  // ── Search index — compact summaries for all cases, paginated ────────────
+  if (req.method === "GET" && req.query?.searchIndex) {
+    const meta = await kv.get(KEYS.searchMeta()).catch(() => null);
+    if (!meta) {
+      rebuildSearchIndex().catch(() => {});
+      return res.status(200).json({ pages: 0, total: 0, builtAt: null, building: true });
+    }
+    const m = typeof meta === "string" ? JSON.parse(meta) : meta;
+    const page = parseInt(req.query.page || "0");
+    const raw = await kv.get(KEYS.searchPage(page)).catch(() => null);
+    const data = raw ? (typeof raw === "string" ? JSON.parse(raw) : raw) : [];
+    return res.status(200).json({ ...m, page, data });
+  }
+
+  if (req.method === "GET" && req.query?.rebuildIndex) {
+    rebuildSearchIndex().catch(() => {});
+    return res.status(200).json({ ok: true, message: "Index rebuild started in background" });
+  }
 
   // ── PATCH — partial update ────────────────────────────────────────────────
   if (req.method === "PATCH") {

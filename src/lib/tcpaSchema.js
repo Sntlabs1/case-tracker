@@ -209,9 +209,30 @@ export const KEYS = {
   byState:            (st) => `tcpa:cases_by_state:${st}`,
   byDefendant:        (cId) => `tcpa:cases_by_defendant:${cId}`,
   byPlaintiff:        (norm) => `tcpa:cases_by_plaintiff:${norm}`,
-  plaintiffIndex:     () => "tcpa:plaintiffs_index", // sorted set, score = case count
+  plaintiffIndex:     () => "tcpa:plaintiffs_index",
   cacheFull:          () => "tcpa:cache:full",
+  searchPage:         (n)  => `tcpa:search_index:page:${n}`,
+  searchMeta:         ()   => "tcpa:search_index:meta",
 };
+
+// Compact summary for the client-side search index (~150 bytes/case).
+// Short keys keep total payload under KV 1MB/page limit for 7k+ cases.
+export function caseSummary(c) {
+  return {
+    i:  c.id,
+    ca: c.caption,
+    s:  c.status,
+    t:  c.caseType,
+    p:  c.casePosture  || null,
+    f:  c.filingDate,
+    d:  (c.defendants || []).map(d => d.displayName).filter(Boolean),
+    st: c.court?.state || null,
+    cw: c.settlement?.claimWindowCloses || null,
+    pc: c.settlement?.perClaimantRange  || null,
+    tf: c.settlement?.totalFund         || null,
+    sr: c.source || null,
+  };
+}
 
 export function epochOrZero(dateStr) {
   if (!dateStr) return 0;

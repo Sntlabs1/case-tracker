@@ -1127,7 +1127,9 @@ function CaseDetail({ tcase, onClose }) {
 }
 
 export default function TCPACases() {
-  const [cases, setCases] = useState([]);
+  const [cases, setCases] = useState([]);        // full detail records for selected case
+  const [index, setIndex] = useState([]);         // lightweight summaries for all 7k+ cases
+  const [indexMeta, setIndexMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
   const [postureFilter, setPostureFilter] = useState("");
@@ -1197,66 +1199,77 @@ export default function TCPACases() {
       }
     }, 4000);
   }
-  useEffect(() => { load(); loadStats(); loadRollup(); }, []);
+  useEffect(() => { load(); loadIndex(); loadStats(); loadRollup(); }, []);
 
-  // Fetch cases with server-side filters applied.
-  // We have 7k+ cases in KV — client-side filtering on a partial 1000-case
-  // list misses cases in the tail. Status and state use KV inverted indexes.
-  async function loadFiltered(status, state, defendant) {
-    setLoading(true);
+  // Load the compact search index (all 7k+ cases as lightweight summaries).
+  // Pages fetched in parallel. Once loaded, ALL filters run client-side.
+  async function loadIndex() {
     try {
-      const params = new URLSearchParams({ limit: "2000" });
-      if (status)    params.set("status",    status);
-      if (state)     params.set("state",     state);
-      if (defendant) params.set("defendant", defendant);
-      const r = await fetch(`/api/tcpa-cases?${params}`);
-      const d = await r.json();
-      setCases(Array.isArray(d.cases) ? d.cases : []);
-    } catch {
-      setCases([]);
-    }
-    setLoading(false);
+      // Fetch meta first to know how many pages exist
+      const metaRes = await fetch("/api/tcpa-cases?searchIndex=1&page=0");
+      const metaData = await metaRes.json();
+      setIndexMeta(metaData);
+      if (metaData.building || metaData.pages === 0) return; // index not ready yet
+      const page0 = metaData.data || [];
+      if (metaData.pages <= 1) { setIndex(page0); return; }
+      // Fetch remaining pages in parallel
+      const rest = await Promise.all(
+        Array.from({ length: metaData.pages - 1 }, (_, i) =>
+          fetch(`/api/tcpa-cases?searchIndex=1&page=${i + 1}`).then(r => r.json()).then(d => d.data || [])
+        )
+      );
+      setIndex([...page0, ...rest.flat()]);
+    } catch { /* index unavailable — filters will use cases[] instead */ }
   }
 
   async function runDefendantSearch() {
     if (!defendantQ.trim()) return;
-    loadFiltered("", "", defendantQ.trim());
+    setLoading(true);
+    try {
+      const r = await fetch(`/api/tcpa-cases?defendant=${encodeURIComponent(defendantQ.trim())}`);
+      const d = await r.json();
+      setCases(Array.isArray(d.cases) ? d.cases : []);
+    } catch { setCases([]); }
+    setLoading(false);
   }
 
-  function onStatusChange(val) {
-    setStatusFilter(val);
-    if (val || stateFilter) loadFiltered(val, stateFilter, "");
-    else load();
-  }
-
-  function onStateChange(val) {
-    setStateFilter(val);
-    if (statusFilter || val) loadFiltered(statusFilter, val, "");
-    else load();
-  }
-
-  // Posture + text search + closing-soon remain client-side on whatever
-  // the server returned.
+  // ALL filters run client-side on the search index (lightweight summaries).
+  // Falls back to cases[] if index hasn't loaded yet.
   const filtered = useMemo(() => {
-    return cases.filter(c => {
-      if (postureFilter && c.casePosture !== postureFilter) return false;
+    const src = index.length > 0 ? index : cases;
+    return src.filter(c => {
+      // Index uses short keys; cases[] uses full keys — handle both
+      const status   = c.status || c.s;
+      const posture  = c.casePosture || c.p;
+      const state    = c.court?.state || c.st;
+      const caption  = c.caption || c.ca || "";
+      const defs     = c.defendants ? c.defendants.map(d => d.displayName) : (c.d || []);
+      const claimEnd = c.settlement?.claimWindowCloses || c.cw;
+
+      if (statusFilter  && status  !== statusFilter)  return false;
+      if (postureFilter && posture !== postureFilter)  return false;
+      if (stateFilter) {
+        const st = stateFilter.toUpperCase();
+        const eligible = c.eligibleStates || [];
+        if (state !== st && !eligible.includes(st)) return false;
+      }
       if (searchQ) {
         const ql = searchQ.toLowerCase();
-        const hay = `${c.caption || ""} ${(c.defendants || []).map(d => d.displayName).join(" ")} ${c.conductDescription || ""}`.toLowerCase();
+        const hay = `${caption} ${defs.join(" ")} ${c.conductDescription || ""}`.toLowerCase();
         if (!hay.includes(ql)) return false;
       }
       if (view === "closing") {
-        const days = daysUntil(c.settlement?.claimWindowCloses);
+        const days = daysUntil(claimEnd);
         if (days === null || days < 0 || days > 30) return false;
       }
       return true;
     });
-  }, [cases, postureFilter, searchQ, view]);
+  }, [index, cases, statusFilter, postureFilter, stateFilter, searchQ, view]);
 
   // Stats — prefer the freshness-agent rollup (server-side, fast). Fall back
   // to client-computed values when the rollup hasn't been built yet.
   const tcpaCounts = rollup?.counts?.tcpaCases;
-  const total = tcpaCounts?.total ?? cases.length;
+  const total = index.length || tcpaCounts?.total || cases.length;
   const claimOpen = tcpaCounts?.byStatus?.claim_open ?? cases.filter(c => c.status === "claim_open").length;
   const closingSoon = rollup?.watchlist?.closingSoon?.length ?? cases.filter(c => {
     const d = daysUntil(c.settlement?.claimWindowCloses);
@@ -1312,7 +1325,7 @@ export default function TCPACases() {
           <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
             <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search caption, conduct, defendants…"
               style={{ flex: 1, minWidth: 180, background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 12px", color: "var(--text-1)", fontSize: 12, outline: "none" }} />
-            <select value={statusFilter} onChange={e => onStatusChange(e.target.value)}
+            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
               <option value="">All Statuses</option>
               {Object.keys(STATUS_LABELS).map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
@@ -1322,7 +1335,7 @@ export default function TCPACases() {
               <option value="">All Postures</option>
               {Object.entries(POSTURE_LABELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
-            <select value={stateFilter} onChange={e => onStateChange(e.target.value)}
+            <select value={stateFilter} onChange={e => setStateFilter(e.target.value)}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
               <option value="">All States</option>
               {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}

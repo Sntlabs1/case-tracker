@@ -9,7 +9,7 @@
 // window updates existing records instead of duplicating them.
 
 import { kv } from "@vercel/kv";
-import { buildCase, KEYS, CASE_STATUSES, epochOrZero } from "./tcpaSchema.js";
+import { buildCase, KEYS, CASE_STATUSES, epochOrZero, caseSummary } from "./tcpaSchema.js";
 import { resolveOrSuggest, createDefendant } from "./defendantResolver.js";
 import { normalizePlaintiff } from "./tcpaIngestNormalize.js";
 
@@ -148,6 +148,10 @@ export async function importCases(rawArray) {
 
   await kv.del(KEYS.cacheFull()).catch(() => {});
 
+  // Rebuild search index after any write — fire-and-forget so it doesn't
+  // block the import response. The index is used for full client-side search.
+  rebuildSearchIndex().catch(() => {});
+
   return {
     created: created.length,
     updated: updated.length,
@@ -155,4 +159,40 @@ export async function importCases(rawArray) {
     errors,
     ids: { created, updated, unchanged },
   };
+}
+
+// Build (or rebuild) the compact search index stored as paginated KV keys.
+// Each page holds 1,000 case summaries (~150KB). Pages are fetched in parallel
+// by the UI so all 7k+ cases are searchable client-side.
+export async function rebuildSearchIndex() {
+  const PAGE_SIZE = 1000;
+  const TTL = 24 * 3600;
+
+  // Fetch all case IDs from the filing-date index
+  const allIds = await kv.zrange(KEYS.byFilingDate(), 0, -1, { rev: true }).catch(() => []);
+  if (!allIds.length) return;
+
+  // Fetch all records in batches of 100
+  const FETCH_BATCH = 100;
+  const summaries = [];
+  for (let i = 0; i < allIds.length; i += FETCH_BATCH) {
+    const batch = await Promise.all(
+      allIds.slice(i, i + FETCH_BATCH).map(id => kv.get(KEYS.case(id)).catch(() => null))
+    );
+    for (const raw of batch) {
+      if (!raw) continue;
+      const c = typeof raw === "string" ? JSON.parse(raw) : raw;
+      summaries.push(caseSummary(c));
+    }
+  }
+
+  // Write pages
+  const pages = Math.ceil(summaries.length / PAGE_SIZE);
+  const writes = [];
+  for (let p = 0; p < pages; p++) {
+    const chunk = summaries.slice(p * PAGE_SIZE, (p + 1) * PAGE_SIZE);
+    writes.push(kv.set(KEYS.searchPage(p), JSON.stringify(chunk), { ex: TTL }));
+  }
+  writes.push(kv.set(KEYS.searchMeta(), JSON.stringify({ pages, total: summaries.length, builtAt: new Date().toISOString() }), { ex: TTL }));
+  await Promise.all(writes);
 }
