@@ -42,6 +42,21 @@ export const CASE_STATUSES = [
   "dismissed",
 ];
 
+// Posture applies to active cases only — how far along in litigation.
+// Inferred from filing date + last docket activity where explicit data absent.
+export const CASE_POSTURES = [
+  "new_filing",        // filed < 6 months ago, no significant docket activity
+  "discovery",         // active discovery, motions to compel, depositions
+  "class_cert_pending",// motion for class certification pending or briefed
+  "pre_trial",         // class certified or summary judgment briefing
+  "trial",             // actively at trial
+  "post_trial",        // verdict in, appeals/post-trial motions pending
+  "settlement_pending",// settlement agreement reached, awaiting court approval
+  "mdl_pending",       // JPML transfer order pending or entered
+  "appeal",            // on appeal (circuit court or SCOTUS)
+  "unknown",
+];
+
 export const JURISDICTIONS = ["federal", "state"];
 
 export const NOS_CODES = {
@@ -66,6 +81,22 @@ export const SOURCES = [
 // indexed at tcpa:cases_by_plaintiff:${normalizedName}. This lets the UI
 // surface "repeat-player plaintiffs" — names that appear across multiple
 // filings, often class-action serial named plaintiffs.
+
+// Infer case posture from filing date + last docket date when not explicitly set.
+function inferPosture(input) {
+  const status = input.status || "";
+  if (status === "claim_open" || status === "claim_closed") return "settlement_pending";
+  if (status === "settled") return "settlement_pending";
+  if (status === "dismissed") return "unknown";
+  // Active case — estimate from age
+  const filed = input.filingDate ? new Date(input.filingDate) : null;
+  if (!filed || isNaN(filed)) return "unknown";
+  const ageMonths = (Date.now() - filed.getTime()) / (1000 * 60 * 60 * 24 * 30);
+  if (ageMonths < 6)  return "new_filing";
+  if (ageMonths < 18) return "discovery";
+  if (ageMonths < 36) return "class_cert_pending";
+  return "pre_trial";
+}
 
 // Build a fresh, validated record from a partial input. Throws on missing required fields.
 export function buildCase(input) {
@@ -115,6 +146,7 @@ export function buildCase(input) {
       if (opens  && opens  <= now2) return "claim_open";
       return input.status;
     })(),
+    casePosture:       CASE_POSTURES.includes(input.casePosture) ? input.casePosture : inferPosture(input),
     settlement: {
       totalFund:           input.settlement?.totalFund || null,
       perClaimantRange:    input.settlement?.perClaimantRange || null,
@@ -124,6 +156,11 @@ export function buildCase(input) {
       classNoticeUrl:      input.settlement?.classNoticeUrl || null,
       finalApprovalDate:   normalizeDate(input.settlement?.finalApprovalDate),
       fairnessHearingDate: normalizeDate(input.settlement?.fairnessHearingDate),
+      claimRequirements:   input.settlement?.claimRequirements || "",
+      adminName:           input.settlement?.adminName || "",
+      adminPhone:          input.settlement?.adminPhone || "",
+      adminEmail:          input.settlement?.adminEmail || "",
+      adminWebsite:        input.settlement?.adminWebsite || "",
     },
     classDefinition:   input.classDefinition || "",
     conductDescription:input.conductDescription || "",

@@ -16,6 +16,41 @@ const STATUS_LABELS = {
   dismissed:    "Dismissed",
 };
 
+const POSTURE_LABELS = {
+  new_filing:         { label: "New Filing",            color: "#3b82f6", hint: "Filed < 6 months ago" },
+  discovery:          { label: "Discovery",             color: "#8b5cf6", hint: "Active discovery / depositions" },
+  class_cert_pending: { label: "Class Cert Pending",    color: "#f59e0b", hint: "Motion for class certification briefed" },
+  pre_trial:          { label: "Pre-Trial",             color: "#f97316", hint: "Class certified, approaching trial" },
+  trial:              { label: "At Trial",              color: "#ef4444", hint: "Actively at trial" },
+  post_trial:         { label: "Post-Trial",            color: "#ec4899", hint: "Verdict in, post-trial motions pending" },
+  settlement_pending: { label: "Settlement Pending",    color: "#22c55e", hint: "Settlement reached, awaiting court approval" },
+  mdl_pending:        { label: "MDL / Transfer",        color: "#06b6d4", hint: "JPML transfer order pending or entered" },
+  appeal:             { label: "On Appeal",             color: "#a78bfa", hint: "Circuit court or SCOTUS appeal" },
+  unknown:            { label: "Unknown",               color: "#6b7280", hint: "" },
+};
+
+function PostureBadge({ posture }) {
+  const meta = POSTURE_LABELS[posture] || POSTURE_LABELS.unknown;
+  return (
+    <span title={meta.hint} style={{
+      fontSize: 10, padding: "1px 7px", borderRadius: 4,
+      background: `${meta.color}20`, color: meta.color,
+      border: `1px solid ${meta.color}40`, fontWeight: 600, cursor: "default",
+    }}>
+      {meta.label}
+    </span>
+  );
+}
+
+function caseAgeLabel(filingDate) {
+  if (!filingDate) return null;
+  const months = Math.round((Date.now() - Date.parse(filingDate)) / (1000 * 60 * 60 * 24 * 30));
+  if (months < 1)  return "< 1 month old";
+  if (months < 12) return `${months} months old`;
+  const years = (months / 12).toFixed(1);
+  return `${years} years old`;
+}
+
 const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 
 function daysUntil(dateStr) {
@@ -254,16 +289,18 @@ function CaseRow({ tcase, onSelect, selected }) {
             {tcase.caption}
           </span>
           <StatusBadge status={tcase.status} />
+          {tcase.status === "active" && tcase.casePosture && tcase.casePosture !== "unknown" && <PostureBadge posture={tcase.casePosture} />}
           <ClaimCountdown closes={tcase.settlement?.claimWindowCloses} />
           <span style={{ fontSize: 10, color: "var(--text-7)" }}>{tcase.caseType}</span>
           {tcase.source && <SourceBadge source={tcase.source} />}
         </div>
         <div style={{ fontSize: 11, color: "var(--text-5)" }}>
-          Defendants: {defendants}
+          {defendants}
         </div>
         <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 2 }}>
-          {tcase.court?.name || "—"} · Filed {fmtDate(tcase.filingDate)}
-          {tcase.settlement?.totalFund ? ` · Fund ${tcase.settlement.totalFund}` : ""}
+          {tcase.court?.name || "—"} · Filed {fmtDate(tcase.filingDate)} · {caseAgeLabel(tcase.filingDate)}
+          {tcase.settlement?.perClaimantRange ? ` · ${tcase.settlement.perClaimantRange}/claimant` : ""}
+          {tcase.settlement?.totalFund ? ` · $${Number(tcase.settlement.totalFund).toLocaleString()} fund` : ""}
         </div>
       </div>
     </div>
@@ -762,6 +799,7 @@ function QuickFileSearch({ tcase, existingClientIds, onFile, filing }) {
 }
 
 function CaseDetail({ tcase, onClose }) {
+  const [detailTab, setDetailTab] = useState("overview");
   const [matches, setMatches] = useState(null);
   const [matchLoading, setMatchLoading] = useState(false);
   const [matchError, setMatchError] = useState(null);
@@ -828,69 +866,216 @@ function CaseDetail({ tcase, onClose }) {
         <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-5)", cursor: "pointer", fontSize: 14 }}>✕</button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+      {/* Detail tabs */}
+      <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border)", marginBottom: 14 }}>
         {[
-          ["Filed", fmtDate(tcase.filingDate)],
-          ["Class period", `${fmtDate(tcase.classPeriod?.start)} → ${fmtDate(tcase.classPeriod?.end)}`],
-          ["Settlement fund", tcase.settlement?.totalFund || "—"],
-          ["Per-claimant", tcase.settlement?.perClaimantRange || "—"],
-          ["Claim opens", fmtDate(tcase.settlement?.claimWindowOpens)],
-          ["Claim closes", fmtDate(closes)],
-          ["Geographic scope", tcase.geographicScope || "—"],
-          ["NOS", tcase.natureOfSuit || "—"],
-        ].map(([l, v]) => (
-          <div key={l}>
-            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
-            <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
-          </div>
+          { id: "overview",   label: "Overview" },
+          { id: "settlement", label: tcase.status === "claim_open" ? "Settlement ✓" : "Settlement" },
+          { id: "posture",    label: "Case Posture" },
+        ].map(t => (
+          <button key={t.id} onClick={() => setDetailTab(t.id)} style={{
+            padding: "7px 14px", border: "none", background: "transparent", fontSize: 12,
+            borderBottom: detailTab === t.id ? "2px solid var(--accent)" : "2px solid transparent",
+            color: detailTab === t.id ? "var(--text-1)" : "var(--text-5)",
+            fontWeight: detailTab === t.id ? 700 : 400, cursor: "pointer", marginBottom: -1,
+          }}>{t.label}</button>
         ))}
       </div>
 
-      {tcase.defendants?.length > 0 && (
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Defendants</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {tcase.defendants.map((d, i) => (
-              <span key={i} style={{ fontSize: 11, padding: "3px 8px", background: "var(--bg-surface2)", borderRadius: 5, color: "var(--text-2)", border: "1px solid var(--border)" }}>
-                {d.displayName} {d.role && d.role !== "primary" && <span style={{ color: "var(--text-7)", marginLeft: 4 }}>{d.role}</span>}
-              </span>
+      {/* OVERVIEW TAB */}
+      {detailTab === "overview" && (<>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+          {[
+            ["Filed",         fmtDate(tcase.filingDate)],
+            ["Case age",      caseAgeLabel(tcase.filingDate)],
+            ["Court",         tcase.court?.name || "—"],
+            ["Docket",        tcase.court?.docket || "—"],
+            ["Class period",  tcase.classPeriod?.start ? `${fmtDate(tcase.classPeriod.start)} → ${fmtDate(tcase.classPeriod.end)}` : "—"],
+            ["Geographic scope", tcase.geographicScope || "nationwide"],
+          ].filter(([, v]) => v && v !== "—").map(([l, v]) => (
+            <div key={l}>
+              <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
+              <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
+            </div>
+          ))}
+        </div>
+
+        {tcase.defendants?.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Defendants</div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+              {tcase.defendants.map((d, i) => (
+                <span key={i} style={{ fontSize: 11, padding: "3px 8px", background: "var(--bg-surface2)", borderRadius: 5, color: "var(--text-2)", border: "1px solid var(--border)" }}>
+                  {d.displayName}{d.role && d.role !== "defendant" ? <span style={{ color: "var(--text-7)", marginLeft: 4 }}>({d.role})</span> : null}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tcase.conductDescription && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>What defendant did</div>
+            <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.6, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{tcase.conductDescription}</div>
+          </div>
+        )}
+
+        {tcase.classDefinition && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Class definition</div>
+            <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.6, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{tcase.classDefinition}</div>
+          </div>
+        )}
+
+        {tcase.eligibleStates?.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Eligible states</div>
+            <div style={{ fontSize: 11, color: "var(--text-3)" }}>{tcase.eligibleStates.join(", ")}</div>
+          </div>
+        )}
+        <CaseBrief tcase={tcase} />
+        <TrackingHistory caseId={tcase.id} />
+      </>)}
+
+      {/* SETTLEMENT TAB — all 7 items */}
+      {detailTab === "settlement" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* (a) Is the claim window open? */}
+          <div style={{ padding: "12px 14px", borderRadius: 8, background: tcase.status === "claim_open" ? "rgba(34,197,94,0.06)" : "var(--bg-surface2)", border: `1px solid ${tcase.status === "claim_open" ? "#22c55e40" : "var(--border)"}` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 6 }}>Claim window status</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <StatusBadge status={tcase.status} />
+              {tcase.status === "claim_open" && closingDays !== null && (
+                <span style={{ fontSize: 12, fontWeight: 700, color: closingDays <= 14 ? "#ef4444" : "#22c55e" }}>
+                  {closingDays <= 0 ? "Closes today" : `${closingDays} days remaining`}
+                </span>
+              )}
+              {tcase.status === "settled" && <span style={{ fontSize: 11, color: "var(--text-5)" }}>Settlement reached — claim window not yet open</span>}
+              {tcase.status === "active" && <span style={{ fontSize: 11, color: "var(--text-5)" }}>Case still in litigation — no settlement yet</span>}
+              {tcase.status === "claim_closed" && <span style={{ fontSize: 11, color: "var(--text-5)" }}>Claim window has closed</span>}
+            </div>
+          </div>
+
+          {/* (b) Settlement amount + (e) per claimant */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              ["(b) Total settlement fund", tcase.settlement?.totalFund ? `$${Number(tcase.settlement.totalFund).toLocaleString()}` : null],
+              ["(e) Per claimant payment",  tcase.settlement?.perClaimantRange],
+              ["(c) Claim deadline",        tcase.settlement?.claimWindowCloses ? fmtDate(tcase.settlement.claimWindowCloses) : null],
+              ["Claim window opens",        tcase.settlement?.claimWindowOpens  ? fmtDate(tcase.settlement.claimWindowOpens)  : null],
+              ["Final approval date",       tcase.settlement?.finalApprovalDate ? fmtDate(tcase.settlement.finalApprovalDate) : null],
+              ["Fairness hearing",          tcase.settlement?.fairnessHearingDate ? fmtDate(tcase.settlement.fairnessHearingDate) : null],
+            ].filter(([, v]) => v).map(([l, v]) => (
+              <div key={l} style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+                <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>{l}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{v}</div>
+              </div>
             ))}
           </div>
-        </div>
-      )}
 
-      {tcase.classDefinition && (
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Class definition</div>
-          <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>
-            {tcase.classDefinition}
+          {/* (d) Requirements to apply */}
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 6 }}>(d) Requirements to apply</div>
+            {tcase.settlement?.claimRequirements ? (
+              <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6, padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+                {tcase.settlement.claimRequirements}
+              </div>
+            ) : tcase.classDefinition ? (
+              <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.6, padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+                {tcase.classDefinition}
+              </div>
+            ) : (
+              <div style={{ fontSize: 11, color: "var(--text-6)", fontStyle: "italic" }}>Not yet extracted — check the settlement website or use Quick-Add to paste in requirements.</div>
+            )}
           </div>
-        </div>
-      )}
 
-      {tcase.conductDescription && (
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Conduct</div>
-          <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5 }}>
-            {tcase.conductDescription}
+          {/* (f) Settlement website + (g) Administrator */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <div style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+              <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>(f) Settlement / claim website</div>
+              {tcase.settlement?.claimPortalUrl ? (
+                <a href={tcase.settlement.claimPortalUrl} target="_blank" rel="noopener noreferrer"
+                   style={{ fontSize: 12, color: "var(--accent)", wordBreak: "break-all", textDecoration: "none", fontWeight: 600 }}>
+                  {tcase.settlement.claimPortalUrl} ↗
+                </a>
+              ) : <span style={{ fontSize: 11, color: "var(--text-6)" }}>Not available</span>}
+            </div>
+            <div style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+              <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>(g) Settlement administrator</div>
+              {tcase.settlement?.adminName ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)" }}>{tcase.settlement.adminName}</div>
+                  {tcase.settlement.adminPhone && <div style={{ fontSize: 11, color: "var(--text-3)" }}>{tcase.settlement.adminPhone}</div>}
+                  {tcase.settlement.adminEmail && <div style={{ fontSize: 11, color: "var(--text-3)" }}>{tcase.settlement.adminEmail}</div>}
+                  {tcase.settlement.adminWebsite && (
+                    <a href={tcase.settlement.adminWebsite} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "var(--accent)", textDecoration: "none" }}>
+                      {tcase.settlement.adminWebsite} ↗
+                    </a>
+                  )}
+                </div>
+              ) : <span style={{ fontSize: 11, color: "var(--text-6)" }}>Not available — check settlement website</span>}
+            </div>
           </div>
+
+          <ClaimFilingPanel tcase={tcase} />
         </div>
       )}
 
-      {tcase.eligibleStates?.length > 0 && (
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Eligible states</div>
-          <div style={{ fontSize: 11, color: "var(--text-3)" }}>{tcase.eligibleStates.join(", ")}</div>
+      {/* CASE POSTURE TAB */}
+      {detailTab === "posture" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ padding: "14px 16px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 8 }}>Current posture</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <PostureBadge posture={tcase.casePosture || "unknown"} />
+              <span style={{ fontSize: 12, color: "var(--text-3)" }}>
+                {POSTURE_LABELS[tcase.casePosture]?.hint || ""}
+              </span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
+              {[
+                ["Filed",           fmtDate(tcase.filingDate)],
+                ["Case age",        caseAgeLabel(tcase.filingDate)],
+                ["Last docket activity", fmtDate(tcase.lastDocketDate)],
+                ["Court",           tcase.court?.name],
+                ["Docket number",   tcase.court?.docket],
+                ["Jurisdiction",    tcase.court?.jurisdiction],
+              ].filter(([, v]) => v).map(([l, v]) => (
+                <div key={l}>
+                  <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Timeline interpretation */}
+          <div style={{ padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 8 }}>What this means for plaintiff intake</div>
+            <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.7 }}>
+              {tcase.casePosture === "new_filing" && "Case was recently filed. Early stage — good time to identify and contact potential class members. No settlement offer yet. Defendant likely to move to dismiss."}
+              {tcase.casePosture === "discovery" && "Active discovery. Defendant's call logs and consent records are being subpoenaed now. Named plaintiff and class rep are the most valuable roles — contact strong claimants immediately."}
+              {tcase.casePosture === "class_cert_pending" && "Class certification is the key hurdle. If granted, the class size and settlement value will be established. Plaintiff intake is actively valuable — strong class members strengthen the motion."}
+              {tcase.casePosture === "pre_trial" && "Class certified or approaching trial. Settlement discussions are likely underway. Intake is still open but the class definition is locked — only clients who fit the class period can join."}
+              {tcase.casePosture === "settlement_pending" && "Settlement terms have been reached and submitted to the court. Awaiting preliminary or final approval. Claim window will open after final approval — prepare your clients now."}
+              {tcase.casePosture === "trial" && "Case is at trial. Settlement is possible but intake of new clients is unlikely to affect the outcome now. Monitor for verdict."}
+              {tcase.casePosture === "post_trial" && "Trial is complete. If plaintiff won, class members can recover. If settlement follows a verdict, the claim window opens next."}
+              {tcase.casePosture === "mdl_pending" && "Multiple related cases are being consolidated. MDL transfer increases settlement likelihood and scale. Good time to identify clients — consolidated cases typically settle larger."}
+              {tcase.casePosture === "appeal" && "Under appeal. Recovery is uncertain until the appellate court rules. Monitor but hold off on aggressive intake."}
+              {(!tcase.casePosture || tcase.casePosture === "unknown") && "Case posture unknown. Check the docket link above for current status."}
+            </div>
+          </div>
+
+          {tcase.sourceUrl && (
+            <a href={tcase.sourceUrl} target="_blank" rel="noopener noreferrer"
+               style={{ fontSize: 12, color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+              View full docket on {tcase.source} ↗
+            </a>
+          )}
         </div>
       )}
 
-      {/* AI-generated brief — Summary / Who qualifies / Damages / Trajectory / Intake / Red flags */}
-      <CaseBrief tcase={tcase} />
-
-      <TrackingHistory caseId={tcase.id} />
-
-      <ClaimFilingPanel tcase={tcase} />
-
+      {/* Eligible clients — always visible below tabs */}
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>Eligible Clients</div>
@@ -945,6 +1130,7 @@ export default function TCPACases() {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
+  const [postureFilter, setPostureFilter] = useState("");
   const [stateFilter, setStateFilter] = useState("");
   const [searchQ, setSearchQ] = useState("");
   const [defendantQ, setDefendantQ] = useState("");
@@ -1029,6 +1215,7 @@ export default function TCPACases() {
   const filtered = useMemo(() => {
     return cases.filter(c => {
       if (statusFilter && c.status !== statusFilter) return false;
+      if (postureFilter && c.casePosture !== postureFilter) return false;
       if (stateFilter) {
         const st = stateFilter.toUpperCase();
         const courtMatch = c.court?.state === st;
@@ -1046,7 +1233,7 @@ export default function TCPACases() {
       }
       return true;
     });
-  }, [cases, statusFilter, stateFilter, searchQ, view]);
+  }, [cases, statusFilter, postureFilter, stateFilter, searchQ, view]);
 
   // Stats — prefer the freshness-agent rollup (server-side, fast). Fall back
   // to client-computed values when the rollup hasn't been built yet.
@@ -1107,10 +1294,15 @@ export default function TCPACases() {
           <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
             <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search caption, conduct, defendants…"
               style={{ flex: 1, minWidth: 180, background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 12px", color: "var(--text-1)", fontSize: 12, outline: "none" }} />
-            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+            <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPostureFilter(""); }}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
               <option value="">All Statuses</option>
               {Object.keys(STATUS_LABELS).map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
+            </select>
+            <select value={postureFilter} onChange={e => { setPostureFilter(e.target.value); setStatusFilter(""); }}
+              style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
+              <option value="">All Postures</option>
+              {Object.entries(POSTURE_LABELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
             <select value={stateFilter} onChange={e => setStateFilter(e.target.value)}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
