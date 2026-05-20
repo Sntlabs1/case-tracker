@@ -235,6 +235,105 @@ function quickRecovery(m) {
   return { floor: perV.floor, ceiling: perV.ceiling, source: "statutory" };
 }
 
+function BankruptcyPanel({ client }) {
+  const [result, setResult] = useState(client.bankruptcyLookup || null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(null);
+
+  const creditBkr = client.bankruptcies || [];
+  const pacerFilings = result?.pacerFilings || [];
+  const stayViolations = result?.stayViolations || [];
+  const hasAny = creditBkr.length > 0 || pacerFilings.length > 0;
+
+  async function runLookup() {
+    setLoading(true); setErr(null);
+    try {
+      const r = await fetch(`/api/bankruptcy-lookup?clientId=${client.id}`);
+      const d = await r.json();
+      if (d.error && !d.pacerFilings) { setErr(d.error); }
+      else setResult(d);
+    } catch (e) { setErr(e.message); }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+          Bankruptcy Filings
+          {hasAny && <span style={{ marginLeft: 6, background: "#8b5cf620", color: "#8b5cf6", borderRadius: 4, padding: "1px 6px", fontSize: 10 }}>{pacerFilings.length || creditBkr.length}</span>}
+        </div>
+        <button onClick={runLookup} disabled={loading} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-3)", cursor: loading ? "default" : "pointer" }}>
+          {loading ? "Searching PACER…" : result ? "Re-check PACER" : "Check Federal Courts (PACER)"}
+        </button>
+      </div>
+
+      {err && (
+        <div style={{ fontSize: 11, color: "#f59e0b", padding: "6px 10px", background: "#f59e0b10", borderRadius: 6, marginBottom: 8 }}>
+          {err.includes("PACER_USERNAME") ? "PACER credentials not configured — add PACER_USERNAME and PACER_PASSWORD to Vercel env vars (free account at pacer.uscourts.gov)" : err}
+        </div>
+      )}
+
+      {creditBkr.length > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 6 }}>From credit report</div>
+          {creditBkr.map((b, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, fontSize: 11, padding: "6px 0", borderBottom: "1px solid var(--border)" }}>
+              <span style={{ fontWeight: 700, color: "#8b5cf6" }}>Ch. {b.type?.replace("bankruptcy_ch", "") || "?"}</span>
+              <span style={{ color: "var(--text-4)" }}>Filed {b.dateFiled || "unknown"}</span>
+              {b.dateDischarged && <span style={{ color: "#22c55e" }}>Discharged {b.dateDischarged}</span>}
+              {b.disposition && <span style={{ color: "var(--text-6)" }}>{b.disposition}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {pacerFilings.length > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 6 }}>From PACER federal court records</div>
+          {pacerFilings.map((f, i) => (
+            <div key={i} style={{ display: "flex", gap: 10, fontSize: 11, padding: "6px 0", borderBottom: "1px solid var(--border)", flexWrap: "wrap" }}>
+              <span style={{ fontWeight: 700, color: "#8b5cf6" }}>Ch. {f.chapter || "?"}</span>
+              <span style={{ color: "var(--text-3)", fontFamily: "monospace", fontSize: 10 }}>{f.caseNumber}</span>
+              <span style={{ color: "var(--text-4)" }}>{f.court}</span>
+              <span style={{ color: "var(--text-5)" }}>Filed {f.filingDate || "?"}</span>
+              {f.dischargeDate && <span style={{ color: "#22c55e" }}>Discharged {f.dischargeDate}</span>}
+              {f.sourceUrl && <a href={f.sourceUrl} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "var(--accent)" }}>View docket</a>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {stayViolations.length > 0 && (
+        <div style={{ marginTop: 8, padding: "10px 12px", background: "#ef444415", border: "1px solid #ef444440", borderRadius: 7 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#ef4444", marginBottom: 8 }}>
+            {stayViolations.length} Automatic Stay Violation{stayViolations.length > 1 ? "s" : ""} Detected
+          </div>
+          {stayViolations.map((v, i) => (
+            <div key={i} style={{ fontSize: 11, marginBottom: 6 }}>
+              <span style={{ fontWeight: 600, color: "var(--text-2)" }}>{v.creditor}</span>
+              <span style={{ color: "var(--text-5)", marginLeft: 8 }}>contacted client after filing</span>
+              <span style={{ marginLeft: 8, fontSize: 10, color: "#ef4444", fontWeight: 600 }}>{v.estimatedValue}</span>
+            </div>
+          ))}
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 6 }}>11 U.S.C. § 362 — each violation carries actual damages + punitive</div>
+        </div>
+      )}
+
+      {!hasAny && !result && !loading && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", textAlign: "center", padding: "8px 0" }}>
+          No bankruptcy filings on credit report. Click above to search PACER federal court records.
+        </div>
+      )}
+      {result && !hasAny && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", textAlign: "center", padding: "8px 0" }}>
+          No federal bankruptcy filings found for this client.
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MatchedCasesPanel({ client, onMatchDone }) {
   const [state, setState] = useState("idle"); // idle | loading | done | error
   const [matches, setMatches] = useState(null);
@@ -2008,6 +2107,8 @@ export default function Clients() {
                       {selectedClient.medicationsUsed && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Medications</div><div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.medicationsUsed}</div></div>}
                       {selectedClient.productsUsed && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Products / Devices</div><div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>{selectedClient.productsUsed}</div></div>}
                       {selectedClient.caseNotes && <div><div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Case Notes</div><div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6 }}>{selectedClient.caseNotes}</div></div>}
+
+                      <BankruptcyPanel client={selectedClient} />
                     </div>
                   )}
 

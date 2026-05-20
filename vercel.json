@@ -1,22 +1,73 @@
 {
   "crons": [
-    { "path": "/api/scan?mode=fetch", "schedule": "0 8 * * *" },
-    { "path": "/api/scan?mode=fetch", "schedule": "0 14 * * *" },
-    { "path": "/api/scan?mode=fetch", "schedule": "0 20 * * *" },
-    { "path": "/api/scan?mode=analyze", "schedule": "15 * * * *" },
-    { "path": "/api/tcpa-ingest?source=classaction,topclassactions&mode=daily", "schedule": "0 9 * * *" },
-    { "path": "/api/tcpa-ingest?source=courtlistener&mode=daily", "schedule": "0 10 * * *" },
-    { "path": "/api/agents?run=freshness", "schedule": "0 6 * * *" },
-    { "path": "/api/agents?run=source-monitor", "schedule": "0 7 * * *" },
-    { "path": "/api/agents?run=tcpa-backfill", "schedule": "0 8 * * *" },
-    { "path": "/api/agents?run=match-recompute", "schedule": "30 9 * * *" },
-    { "path": "/api/agents?run=case-tracker", "schedule": "30 6 * * *" },
-    { "path": "/api/agents?run=settlement-enrichment", "schedule": "10 5 * * *" },
-    { "path": "/api/agents?run=class-definition-extractor", "schedule": "20 5 * * *" },
-    { "path": "/api/agents?run=claim-deadline-alert", "schedule": "0 8 * * *" },
-    { "path": "/api/tcpa-ingest?source=fcc_enforcement&mode=daily", "schedule": "0 6 * * *" },
-    { "path": "/api/tcpa-ingest?source=state_ag&mode=daily", "schedule": "30 6 * * *" },
-    { "path": "/api/tcpa-ingest?source=topclassactions&mode=daily", "schedule": "0 7 * * *" }
+    {
+      "path": "/api/scan?mode=fetch",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/scan?mode=fetch",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/scan?mode=fetch",
+      "schedule": "0 20 * * *"
+    },
+    {
+      "path": "/api/scan?mode=analyze",
+      "schedule": "15 * * * *"
+    },
+    {
+      "path": "/api/tcpa-ingest?source=classaction,topclassactions&mode=daily",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/tcpa-ingest?source=courtlistener&mode=daily",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/agents?run=freshness",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/agents?run=source-monitor",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/agents?run=tcpa-backfill",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/agents?run=match-recompute",
+      "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/agents?run=case-tracker",
+      "schedule": "30 6 * * *"
+    },
+    {
+      "path": "/api/agents?run=settlement-enrichment",
+      "schedule": "10 5 * * *"
+    },
+    {
+      "path": "/api/agents?run=class-definition-extractor",
+      "schedule": "20 5 * * *"
+    },
+    {
+      "path": "/api/agents?run=claim-deadline-alert",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/tcpa-ingest?source=fcc_enforcement&mode=daily",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/tcpa-ingest?source=state_ag&mode=daily",
+      "schedule": "30 6 * * *"
+    },
+    {
+      "path": "/api/tcpa-ingest?source=topclassactions&mode=daily",
+      "schedule": "0 7 * * *"
+    }
   ],
   "functions": {
     "api/scan.js": {
@@ -93,20 +144,38 @@
     },
     "api/ingest-job.js": {
       "maxDuration": 60
+    },
+    "api/bankruptcy-lookup.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
     {
       "source": "/",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/index.html",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }
