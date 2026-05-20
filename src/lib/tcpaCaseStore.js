@@ -147,10 +147,8 @@ export async function importCases(rawArray) {
   }
 
   await kv.del(KEYS.cacheFull()).catch(() => {});
-
-  // Rebuild search index after any write — fire-and-forget so it doesn't
-  // block the import response. The index is used for full client-side search.
-  rebuildSearchIndex().catch(() => {});
+  // Search index is rebuilt via ?rebuildIndex=1 after bulk imports.
+  // Not done here because serverless functions terminate on response.
 
   return {
     created: created.length,

@@ -47,8 +47,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "GET" && req.query?.rebuildIndex) {
-    rebuildSearchIndex().catch(() => {});
-    return res.status(200).json({ ok: true, message: "Index rebuild started in background" });
+    try {
+      await rebuildSearchIndex();
+      const meta = await kv.get(KEYS.searchMeta()).catch(() => null);
+      const m = meta ? (typeof meta === "string" ? JSON.parse(meta) : meta) : {};
+      return res.status(200).json({ ok: true, ...m });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
   }
 
   // ── PATCH — partial update ────────────────────────────────────────────────

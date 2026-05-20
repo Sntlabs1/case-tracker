@@ -147,6 +147,9 @@
     },
     "api/bankruptcy-lookup.js": {
       "maxDuration": 60
+    },
+    "api/tcpa-cases.js": {
+      "maxDuration": 120
     }
   },
   "headers": [
