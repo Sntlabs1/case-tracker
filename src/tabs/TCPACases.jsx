@@ -878,6 +878,108 @@ function detectPostureFromEntries(entries) {
   return null;
 }
 
+function SettlementEditPanel({ tcase }) {
+  const s = tcase.settlement || {};
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [msg, setMsg] = useState(null);
+  const [form, setForm] = useState({
+    perClaimantRange:  s.perClaimantRange  || "",
+    totalFund:         s.totalFund         || "",
+    claimPortalUrl:    s.claimPortalUrl    || "",
+    claimWindowCloses: s.claimWindowCloses || "",
+    claimRequirements: s.claimRequirements || "",
+    adminName:         s.adminName         || "",
+    adminPhone:        s.adminPhone        || "",
+    adminEmail:        s.adminEmail        || "",
+    adminWebsite:      s.adminWebsite      || "",
+  });
+
+  function field(label, key, textarea) {
+    return (
+      <div key={key}>
+        <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>{label}</div>
+        {textarea ? (
+          <textarea value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+            rows={3} style={{ width: "100%", background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 6, padding: "6px 10px", color: "var(--text-1)", fontSize: 11, resize: "vertical", outline: "none", boxSizing: "border-box", fontFamily: "inherit" }} />
+        ) : (
+          <input value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+            style={{ width: "100%", background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 6, padding: "6px 10px", color: "var(--text-1)", fontSize: 11, outline: "none", boxSizing: "border-box" }} />
+        )}
+      </div>
+    );
+  }
+
+  async function save() {
+    setSaving(true); setMsg(null);
+    try {
+      const r = await fetch("/api/tcpa-cases", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: tcase.id, settlement: form }),
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      setMsg("Saved.");
+      setOpen(false);
+    } catch (e) { setMsg(`Error: ${e.message}`); }
+    setSaving(false);
+  }
+
+  async function autoEnrich() {
+    setEnriching(true); setMsg(null);
+    try {
+      const r = await fetch("/api/enrich-settlement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ caseId: tcase.id, caption: tcase.caption, defendants: (tcase.defendants || []).map(d => d.displayName), claimPortalUrl: s.claimPortalUrl }),
+      });
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      if (d.settlement) {
+        setForm(f => ({ ...f, ...Object.fromEntries(Object.entries(d.settlement).filter(([, v]) => v)) }));
+        setMsg("Auto-filled from web. Review and save.");
+        setOpen(true);
+      }
+    } catch (e) { setMsg(`Error: ${e.message}`); }
+    setEnriching(false);
+  }
+
+  return (
+    <div style={{ marginTop: 8, borderTop: "1px solid var(--border)", paddingTop: 12 }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <button onClick={() => setOpen(o => !o)} style={{ fontSize: 11, padding: "4px 12px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-3)", cursor: "pointer" }}>
+          {open ? "Cancel" : "Edit Settlement Details"}
+        </button>
+        <button onClick={autoEnrich} disabled={enriching} style={{ fontSize: 11, padding: "4px 12px", borderRadius: 6, border: "1px solid var(--accent)", background: "transparent", color: "var(--accent)", cursor: enriching ? "default" : "pointer", fontWeight: 600 }}>
+          {enriching ? "Searching…" : "Auto-fill from Web"}
+        </button>
+        {msg && <span style={{ fontSize: 11, color: msg.startsWith("Error") ? "#ef4444" : "#22c55e" }}>{msg}</span>}
+      </div>
+
+      {open && (
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {field("(e) Per-claimant payment",   "perClaimantRange")}
+            {field("Total settlement fund",       "totalFund")}
+            {field("(f) Claim portal URL",        "claimPortalUrl")}
+            {field("(c) Claim deadline (YYYY-MM-DD)", "claimWindowCloses")}
+            {field("(g) Administrator name",      "adminName")}
+            {field("Administrator phone",         "adminPhone")}
+            {field("Administrator email",         "adminEmail")}
+            {field("Administrator website",       "adminWebsite")}
+          </div>
+          {field("(d) Requirements to apply (class definition / eligibility)", "claimRequirements", true)}
+          <div>
+            <Btn small onClick={save} disabled={saving}>{saving ? "Saving…" : "Save"}</Btn>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DocketPosturePanel({ tcase }) {
   const [entries, setEntries] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -1223,6 +1325,9 @@ function CaseDetail({ tcase, onClose }) {
           </div>
 
           <ClaimFilingPanel tcase={tcase} />
+
+          {/* Edit settlement details inline */}
+          <SettlementEditPanel tcase={tcase} />
         </div>
       )}
 

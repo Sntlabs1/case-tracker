@@ -153,6 +153,9 @@
     },
     "api/docket-entries.js": {
       "maxDuration": 20
+    },
+    "api/enrich-settlement.js": {
+      "maxDuration": 30
     }
   },
   "headers": [
