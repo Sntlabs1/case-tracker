@@ -252,6 +252,22 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
 // Expand a compact index summary back to a display-ready shape.
 // Index uses short keys to stay under KV size limits; the rest of the UI
 // expects full key names. Full records pass through unchanged.
+// Infer posture from filing date + status when the stored field is absent.
+// Mirrors inferPosture() in tcpaSchema.js — kept in sync manually.
+function inferPosture(c) {
+  const status = c.status || c.s;
+  if (status === "claim_open" || status === "claim_closed") return "settlement_pending";
+  if (status === "settled")   return "settlement_pending";
+  if (status === "dismissed") return "unknown";
+  const filed = c.filingDate || c.f;
+  if (!filed) return "unknown";
+  const ageMonths = (Date.now() - new Date(filed).getTime()) / (1000 * 60 * 60 * 24 * 30);
+  if (ageMonths < 6)  return "new_filing";
+  if (ageMonths < 18) return "discovery";
+  if (ageMonths < 36) return "class_cert_pending";
+  return "pre_trial";
+}
+
 function expandCase(c) {
   if (!c) return c;
   if (c.caption) return c; // already full format
@@ -260,7 +276,7 @@ function expandCase(c) {
     caption:     c.ca,
     status:      c.s,
     caseType:    c.t,
-    casePosture: c.p,
+    casePosture: c.p || inferPosture(c),
     filingDate:  c.f,
     defendants:  (c.d || []).map(name => ({ displayName: name })),
     court:       { state: c.st, name: "", jurisdiction: "federal", docket: "", district: "" },
@@ -1272,7 +1288,7 @@ export default function TCPACases() {
     return src
       .filter(c => {
         const status   = c.status  || c.s;
-        const posture  = c.casePosture || c.p;
+        const posture  = c.casePosture || c.p || inferPosture(c);
         const state    = c.court?.state || c.st;
         const caption  = c.caption || c.ca || "";
         const defs     = c.defendants ? c.defendants.map(d => d.displayName) : (c.d || []);
@@ -1388,7 +1404,6 @@ export default function TCPACases() {
 
           <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 10 }}>
             Showing {filtered.length} of {total} cases
-            {" "}· index:{index.length} cases:{cases.length} sf:"{statusFilter}" pf:"{postureFilter}" st:"{stateFilter}"
           </div>
 
           {loading ? (
