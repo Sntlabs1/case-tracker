@@ -845,6 +845,157 @@ function QuickFileSearch({ tcase, existingClientIds, onFile, filing }) {
   );
 }
 
+// Posture keywords → canonical posture label
+const POSTURE_SIGNALS = [
+  { pattern: /final approval|claim (window|deadline)|settlement fund/i,            posture: "settlement_pending", label: "Settlement approved / claim window" },
+  { pattern: /preliminary approval|motion for (preliminary )?settlement approval/i, posture: "settlement_pending", label: "Preliminary settlement approval filed" },
+  { pattern: /notice of settlement|settlement agreement|agreement to settle/i,      posture: "settlement_pending", label: "Settlement agreement reached" },
+  { pattern: /notice of appeal|appealed|circuit court/i,                           posture: "appeal",             label: "Appeal filed" },
+  { pattern: /order granting class cert|class certified|order certifying class/i,   posture: "pre_trial",          label: "Class certified" },
+  { pattern: /class certification|motion for class cert/i,                          posture: "class_cert_pending", label: "Class certification briefed" },
+  { pattern: /transfer order|MDL|multidistrict/i,                                   posture: "mdl_pending",        label: "MDL transfer pending" },
+  { pattern: /judgment|verdict|trial|jury/i,                                        posture: "post_trial",         label: "Trial / judgment" },
+  { pattern: /summary judgment|pretrial|pre-trial|pretrial conference/i,            posture: "pre_trial",          label: "Pre-trial motion / conference" },
+  { pattern: /discovery|deposition|interrogator|subpoena|scheduling order/i,        posture: "discovery",          label: "Discovery ongoing" },
+  { pattern: /motion to dismiss|answer/i,                                            posture: "discovery",          label: "Early motion / answer filed" },
+  { pattern: /complaint|removal/i,                                                   posture: "new_filing",         label: "Complaint filed" },
+];
+
+function detectPostureFromEntries(entries) {
+  for (const entry of entries) {
+    const text = (entry.description || entry.shortDescription || "").toLowerCase();
+    for (const sig of POSTURE_SIGNALS) {
+      if (sig.pattern.test(text)) return { posture: sig.posture, evidence: sig.label, entry };
+    }
+  }
+  return null;
+}
+
+function DocketPosturePanel({ tcase }) {
+  const [entries, setEntries] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]   = useState(null);
+
+  // Extract CourtListener docket ID from case id (format: cl_NNNNNNN)
+  const docketId = tcase.id?.startsWith("cl_") ? tcase.id.replace("cl_", "") : null;
+
+  async function fetchDocket() {
+    if (!docketId) { setError("No CourtListener docket ID — only CL-sourced cases have live docket data."); return; }
+    setLoading(true); setError(null);
+    try {
+      const r = await fetch(`/api/docket-entries?docketId=${docketId}`);
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      setEntries(d.entries || []);
+    } catch (e) { setError(e.message); }
+    setLoading(false);
+  }
+
+  useEffect(() => { fetchDocket(); }, [tcase.id]);
+
+  const detected = entries ? detectPostureFromEntries(entries) : null;
+  const posture   = detected?.posture || tcase.casePosture || inferPosture(tcase);
+  const postureLabel = POSTURE_LABELS[posture];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+
+      {/* Posture determination */}
+      <div style={{ padding: "14px 16px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 10 }}>Case Posture</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <PostureBadge posture={posture} />
+          {loading && <span style={{ fontSize: 11, color: "var(--text-5)" }}>Fetching live docket…</span>}
+        </div>
+        {detected && (
+          <div style={{ fontSize: 11, color: "#22c55e", marginBottom: 6 }}>
+            Determined from docket entry: "{detected.entry.description?.slice(0, 120)}"
+          </div>
+        )}
+        {!detected && !loading && entries !== null && (
+          <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 6 }}>
+            No decisive docket entry found — posture estimated from case age ({caseAgeLabel(tcase.filingDate)}).
+          </div>
+        )}
+        <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.6, marginTop: 8 }}>
+          {posture === "new_filing"         && "Recently filed. Good time to identify class members — no settlement yet, defendant likely to move to dismiss."}
+          {posture === "discovery"          && "Active discovery. Defendant's call logs and consent records are being subpoenaed. Named plaintiff roles most valuable now."}
+          {posture === "class_cert_pending" && "Class certification pending — the key threshold. Strong class members strengthen the motion. Intake actively valuable."}
+          {posture === "pre_trial"          && "Class certified or approaching trial. Settlement talks likely underway. Class definition is locked."}
+          {posture === "settlement_pending" && "Settlement reached — awaiting court approval. Prepare clients to file claims when the window opens."}
+          {posture === "trial"              && "At trial. Monitor for verdict. New plaintiff intake unlikely to affect outcome."}
+          {posture === "post_trial"         && "Trial complete. If plaintiff won, class members can recover. Watch for final approval."}
+          {posture === "mdl_pending"        && "MDL consolidation pending. Cases typically settle larger once consolidated."}
+          {posture === "appeal"             && "On appeal. Recovery uncertain until ruling. Hold off on aggressive intake."}
+          {posture === "unknown"            && "Posture unknown. Review the docket entries below or check CourtListener directly."}
+        </div>
+      </div>
+
+      {/* Case facts */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {[
+          ["Filed",            fmtDate(tcase.filingDate)],
+          ["Case age",         caseAgeLabel(tcase.filingDate)],
+          ["Last activity",    fmtDate(tcase.lastDocketDate)],
+          ["Court",            tcase.court?.name],
+          ["Docket",           tcase.court?.docket],
+        ].filter(([,v]) => v).map(([l, v]) => (
+          <div key={l} style={{ padding: "8px 10px", background: "var(--bg-surface2)", borderRadius: 6, border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
+            <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Live docket entries */}
+      {error && (
+        <div style={{ fontSize: 11, color: "#f59e0b", padding: "8px 12px", background: "#f59e0b10", borderRadius: 6 }}>{error}</div>
+      )}
+
+      {entries && entries.length > 0 && (
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 8 }}>
+            Recent Docket Entries (live from CourtListener)
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {entries.map((e, i) => {
+              const isDecisive = detected?.entry === e;
+              return (
+                <div key={i} style={{
+                  padding: "8px 12px", borderRadius: 7,
+                  background: isDecisive ? "rgba(34,197,94,0.08)" : "var(--bg-surface2)",
+                  border: `1px solid ${isDecisive ? "#22c55e40" : "var(--border)"}`,
+                }}>
+                  <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 10, color: "var(--text-6)", whiteSpace: "nowrap", marginTop: 1 }}>{e.date_filed || e.dateFiled || "—"}</span>
+                    <span style={{ fontSize: 11, color: isDecisive ? "var(--text-1)" : "var(--text-3)", lineHeight: 1.5, fontWeight: isDecisive ? 600 : 400 }}>
+                      {e.description || e.shortDescription || "No description"}
+                    </span>
+                  </div>
+                  {isDecisive && (
+                    <div style={{ fontSize: 10, color: "#22c55e", marginTop: 4, fontWeight: 600 }}>← Posture determined from this entry</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {entries && entries.length === 0 && !loading && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", textAlign: "center", padding: "12px 0" }}>No docket entries found in CourtListener RECAP archive.</div>
+      )}
+
+      {tcase.sourceUrl && (
+        <a href={tcase.sourceUrl} target="_blank" rel="noopener noreferrer"
+           style={{ fontSize: 12, color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
+          View full docket on CourtListener ↗
+        </a>
+      )}
+    </div>
+  );
+}
+
 function CaseDetail({ tcase, onClose }) {
   const [detailTab, setDetailTab] = useState("overview");
   const [matches, setMatches] = useState(null);
@@ -1069,58 +1220,7 @@ function CaseDetail({ tcase, onClose }) {
       )}
 
       {/* CASE POSTURE TAB */}
-      {detailTab === "posture" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ padding: "14px 16px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 8 }}>Current posture</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-              <PostureBadge posture={tcase.casePosture || "unknown"} />
-              <span style={{ fontSize: 12, color: "var(--text-3)" }}>
-                {POSTURE_LABELS[tcase.casePosture]?.hint || ""}
-              </span>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
-              {[
-                ["Filed",           fmtDate(tcase.filingDate)],
-                ["Case age",        caseAgeLabel(tcase.filingDate)],
-                ["Last docket activity", fmtDate(tcase.lastDocketDate)],
-                ["Court",           tcase.court?.name],
-                ["Docket number",   tcase.court?.docket],
-                ["Jurisdiction",    tcase.court?.jurisdiction],
-              ].filter(([, v]) => v).map(([l, v]) => (
-                <div key={l}>
-                  <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 2 }}>{l}</div>
-                  <div style={{ fontSize: 12, color: "var(--text-2)" }}>{v}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Timeline interpretation */}
-          <div style={{ padding: "12px 14px", background: "var(--bg-surface2)", borderRadius: 8, border: "1px solid var(--border)" }}>
-            <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "var(--text-6)", marginBottom: 8 }}>What this means for plaintiff intake</div>
-            <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.7 }}>
-              {tcase.casePosture === "new_filing" && "Case was recently filed. Early stage — good time to identify and contact potential class members. No settlement offer yet. Defendant likely to move to dismiss."}
-              {tcase.casePosture === "discovery" && "Active discovery. Defendant's call logs and consent records are being subpoenaed now. Named plaintiff and class rep are the most valuable roles — contact strong claimants immediately."}
-              {tcase.casePosture === "class_cert_pending" && "Class certification is the key hurdle. If granted, the class size and settlement value will be established. Plaintiff intake is actively valuable — strong class members strengthen the motion."}
-              {tcase.casePosture === "pre_trial" && "Class certified or approaching trial. Settlement discussions are likely underway. Intake is still open but the class definition is locked — only clients who fit the class period can join."}
-              {tcase.casePosture === "settlement_pending" && "Settlement terms have been reached and submitted to the court. Awaiting preliminary or final approval. Claim window will open after final approval — prepare your clients now."}
-              {tcase.casePosture === "trial" && "Case is at trial. Settlement is possible but intake of new clients is unlikely to affect the outcome now. Monitor for verdict."}
-              {tcase.casePosture === "post_trial" && "Trial is complete. If plaintiff won, class members can recover. If settlement follows a verdict, the claim window opens next."}
-              {tcase.casePosture === "mdl_pending" && "Multiple related cases are being consolidated. MDL transfer increases settlement likelihood and scale. Good time to identify clients — consolidated cases typically settle larger."}
-              {tcase.casePosture === "appeal" && "Under appeal. Recovery is uncertain until the appellate court rules. Monitor but hold off on aggressive intake."}
-              {(!tcase.casePosture || tcase.casePosture === "unknown") && "Case posture unknown. Check the docket link above for current status."}
-            </div>
-          </div>
-
-          {tcase.sourceUrl && (
-            <a href={tcase.sourceUrl} target="_blank" rel="noopener noreferrer"
-               style={{ fontSize: 12, color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}>
-              View full docket on {tcase.source} ↗
-            </a>
-          )}
-        </div>
-      )}
+      {detailTab === "posture" && <DocketPosturePanel tcase={tcase} />}
 
       {/* Eligible clients — always visible below tabs */}
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>

@@ -150,6 +150,9 @@
     },
     "api/tcpa-cases.js": {
       "maxDuration": 120
+    },
+    "api/docket-entries.js": {
+      "maxDuration": 20
     }
   },
   "headers": [
