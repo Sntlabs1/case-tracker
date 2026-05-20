@@ -85,9 +85,10 @@ export const SOURCES = [
 // Infer case posture from filing date + last docket date when not explicitly set.
 function inferPosture(input) {
   const status = input.status || "";
-  if (status === "claim_open" || status === "claim_closed") return "settlement_pending";
-  if (status === "settled") return "settlement_pending";
-  if (status === "dismissed") return "unknown";
+  if (status === "claim_open")   return "claim_open";
+  if (status === "claim_closed") return "claim_closed";
+  if (status === "settled")      return "settled";
+  if (status === "dismissed")    return "dismissed";
   // Active case — estimate from age
   const filed = input.filingDate ? new Date(input.filingDate) : null;
   if (!filed || isNaN(filed)) return "unknown";

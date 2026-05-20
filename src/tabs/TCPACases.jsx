@@ -17,16 +17,20 @@ const STATUS_LABELS = {
 };
 
 const POSTURE_LABELS = {
-  new_filing:         { label: "New Filing (< 6 mo)",      color: "#3b82f6", hint: "Filed within the last 6 months — complaint stage" },
-  discovery:          { label: "Discovery (6–18 mo)",      color: "#8b5cf6", hint: "Filed 6–18 months ago — typically in discovery" },
-  class_cert_pending: { label: "Class Cert (18–36 mo)",    color: "#f59e0b", hint: "Filed 18–36 months ago — class certification stage" },
-  pre_trial:          { label: "Pre-Trial (3+ yrs)",       color: "#f97316", hint: "Filed 3+ years ago — approaching trial or settlement" },
-  trial:              { label: "At Trial",                 color: "#ef4444", hint: "Actively at trial" },
-  post_trial:         { label: "Post-Trial",               color: "#ec4899", hint: "Verdict in, post-trial motions pending" },
-  settlement_pending: { label: "Settled / Claim Open",     color: "#22c55e", hint: "Settlement reached — status = settled or claim_open" },
-  mdl_pending:        { label: "MDL / Transfer",           color: "#06b6d4", hint: "JPML transfer order pending or entered" },
-  appeal:             { label: "On Appeal",                color: "#a78bfa", hint: "Circuit court or SCOTUS appeal" },
-  unknown:            { label: "Unknown",                  color: "#6b7280", hint: "" },
+  new_filing:         { label: "New Filing (< 6 mo)",         color: "#3b82f6", hint: "Filed within the last 6 months — complaint stage" },
+  discovery:          { label: "Discovery (6–18 mo)",         color: "#8b5cf6", hint: "Filed 6–18 months ago — typically in discovery" },
+  class_cert_pending: { label: "Class Cert (18–36 mo)",       color: "#f59e0b", hint: "Filed 18–36 months ago — class certification stage" },
+  pre_trial:          { label: "Pre-Trial (3+ yrs)",          color: "#f97316", hint: "Filed 3+ years ago — approaching trial or settlement talks" },
+  trial:              { label: "At Trial",                    color: "#ef4444", hint: "Actively at trial" },
+  post_trial:         { label: "Post-Trial",                  color: "#ec4899", hint: "Verdict in, post-trial motions pending" },
+  settlement_pending: { label: "Settlement — Awaiting Approval", color: "#eab308", hint: "Agreement filed with court, final approval not yet granted" },
+  settled:            { label: "Settlement Reached",          color: "#a3e635", hint: "Final approval granted — claim window status unknown" },
+  claim_open:         { label: "Claim Window Open",           color: "#22c55e", hint: "Settlement approved, accepting claim submissions right now" },
+  claim_closed:       { label: "Claim Window Closed",         color: "#6b7280", hint: "Settlement approved but filing deadline has passed" },
+  mdl_pending:        { label: "MDL / Transfer",              color: "#06b6d4", hint: "JPML transfer order pending or entered" },
+  appeal:             { label: "On Appeal",                   color: "#a78bfa", hint: "Circuit court or SCOTUS appeal" },
+  dismissed:          { label: "Dismissed",                   color: "#ef4444", hint: "Case dismissed — no recovery" },
+  unknown:            { label: "Unknown",                     color: "#6b7280", hint: "" },
 };
 
 function PostureBadge({ posture }) {
@@ -256,9 +260,12 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
 // Mirrors inferPosture() in tcpaSchema.js — kept in sync manually.
 function inferPosture(c) {
   const status = c.status || c.s;
-  if (status === "claim_open" || status === "claim_closed") return "settlement_pending";
-  if (status === "settled")   return "settlement_pending";
-  if (status === "dismissed") return "unknown";
+  // These map directly from the stored status — no guessing needed
+  if (status === "claim_open")   return "claim_open";
+  if (status === "claim_closed") return "claim_closed";
+  if (status === "settled")      return "settled";
+  if (status === "dismissed")    return "dismissed";
+  // Active cases — estimate stage from filing date
   const filed = c.filingDate || c.f;
   if (!filed) return "unknown";
   const ageMonths = (Date.now() - new Date(filed).getTime()) / (1000 * 60 * 60 * 24 * 30);
