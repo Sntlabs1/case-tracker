@@ -1199,11 +1199,18 @@ export default function TCPACases() {
   }
   useEffect(() => { load(); loadStats(); loadRollup(); }, []);
 
-  async function runDefendantSearch() {
-    if (!defendantQ.trim()) return;
+  // Server-side fetch for status / state / defendant filters.
+  // Client-side text search + posture + closing-soon run on top of whatever
+  // the server returned. This is necessary because we have 7k+ cases and only
+  // load 1000 at a time — client-side filtering on a partial list misses cases.
+  async function fetchWithFilters({ status = "", state = "", defendant = "" } = {}) {
     setLoading(true);
     try {
-      const r = await fetch(`/api/tcpa-cases?defendant=${encodeURIComponent(defendantQ.trim())}`);
+      const params = new URLSearchParams({ limit: "2000" });
+      if (status)   params.set("status",   status);
+      if (state)    params.set("state",    state);
+      if (defendant) params.set("defendant", defendant);
+      const r = await fetch(`/api/tcpa-cases?${params}`);
       const d = await r.json();
       setCases(Array.isArray(d.cases) ? d.cases : []);
     } catch {
@@ -1212,16 +1219,24 @@ export default function TCPACases() {
     setLoading(false);
   }
 
+  async function runDefendantSearch() {
+    if (!defendantQ.trim()) return;
+    fetchWithFilters({ defendant: defendantQ.trim() });
+  }
+
+  // When status or state filter changes → re-fetch from server
+  useEffect(() => {
+    if (statusFilter || stateFilter) {
+      fetchWithFilters({ status: statusFilter, state: stateFilter });
+    } else {
+      load(); // back to default 1000 most-recent
+    }
+  }, [statusFilter, stateFilter]);
+
+  // Posture + text search + closing-soon view remain client-side
   const filtered = useMemo(() => {
     return cases.filter(c => {
-      if (statusFilter && c.status !== statusFilter) return false;
       if (postureFilter && c.casePosture !== postureFilter) return false;
-      if (stateFilter) {
-        const st = stateFilter.toUpperCase();
-        const courtMatch = c.court?.state === st;
-        const eligibleMatch = (c.eligibleStates || []).includes(st);
-        if (!courtMatch && !eligibleMatch) return false;
-      }
       if (searchQ) {
         const ql = searchQ.toLowerCase();
         const hay = `${c.caption || ""} ${(c.defendants || []).map(d => d.displayName).join(" ")} ${c.conductDescription || ""}`.toLowerCase();
@@ -1233,7 +1248,7 @@ export default function TCPACases() {
       }
       return true;
     });
-  }, [cases, statusFilter, postureFilter, stateFilter, searchQ, view]);
+  }, [cases, postureFilter, searchQ, view]);
 
   // Stats — prefer the freshness-agent rollup (server-side, fast). Fall back
   // to client-computed values when the rollup hasn't been built yet.
@@ -1294,12 +1309,12 @@ export default function TCPACases() {
           <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
             <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search caption, conduct, defendants…"
               style={{ flex: 1, minWidth: 180, background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 12px", color: "var(--text-1)", fontSize: 12, outline: "none" }} />
-            <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPostureFilter(""); }}
+            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
               <option value="">All Statuses</option>
               {Object.keys(STATUS_LABELS).map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
             </select>
-            <select value={postureFilter} onChange={e => { setPostureFilter(e.target.value); setStatusFilter(""); }}
+            <select value={postureFilter} onChange={e => setPostureFilter(e.target.value)}
               style={{ background: "var(--bg-input)", border: "1px solid var(--border)", borderRadius: 7, padding: "7px 10px", color: "var(--text-1)", fontSize: 12, outline: "none" }}>
               <option value="">All Postures</option>
               {Object.entries(POSTURE_LABELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
