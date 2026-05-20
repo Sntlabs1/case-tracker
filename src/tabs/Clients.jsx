@@ -241,9 +241,9 @@ function BankruptcyPanel({ client }) {
   const [err, setErr] = useState(null);
 
   const creditBkr = client.bankruptcies || [];
-  const pacerFilings = result?.pacerFilings || [];
+  const clFilings = result?.courtListenerFilings || result?.pacerFilings || [];
   const stayViolations = result?.stayViolations || [];
-  const hasAny = creditBkr.length > 0 || pacerFilings.length > 0;
+  const hasAny = creditBkr.length > 0 || clFilings.length > 0;
 
   async function runLookup() {
     setLoading(true); setErr(null);
@@ -264,13 +264,13 @@ function BankruptcyPanel({ client }) {
           {hasAny && <span style={{ marginLeft: 6, background: "#8b5cf620", color: "#8b5cf6", borderRadius: 4, padding: "1px 6px", fontSize: 10 }}>{pacerFilings.length || creditBkr.length}</span>}
         </div>
         <button onClick={runLookup} disabled={loading} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-3)", cursor: loading ? "default" : "pointer" }}>
-          {loading ? "Searching PACER…" : result ? "Re-check PACER" : "Check Federal Courts (PACER)"}
+          {loading ? "Searching…" : result ? "Re-check CourtListener" : "Check Federal Courts (Free)"}
         </button>
       </div>
 
       {err && (
         <div style={{ fontSize: 11, color: "#f59e0b", padding: "6px 10px", background: "#f59e0b10", borderRadius: 6, marginBottom: 8 }}>
-          {err.includes("PACER_USERNAME") ? "PACER credentials not configured — add PACER_USERNAME and PACER_PASSWORD to Vercel env vars (free account at pacer.uscourts.gov)" : err}
+          {err}
         </div>
       )}
 
@@ -288,10 +288,10 @@ function BankruptcyPanel({ client }) {
         </div>
       )}
 
-      {pacerFilings.length > 0 && (
+      {clFilings.length > 0 && (
         <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 6 }}>From PACER federal court records</div>
-          {pacerFilings.map((f, i) => (
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 6 }}>From CourtListener federal court records</div>
+          {clFilings.map((f, i) => (
             <div key={i} style={{ display: "flex", gap: 10, fontSize: 11, padding: "6px 0", borderBottom: "1px solid var(--border)", flexWrap: "wrap" }}>
               <span style={{ fontWeight: 700, color: "#8b5cf6" }}>Ch. {f.chapter || "?"}</span>
               <span style={{ color: "var(--text-3)", fontFamily: "monospace", fontSize: 10 }}>{f.caseNumber}</span>

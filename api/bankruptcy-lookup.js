@@ -1,121 +1,148 @@
-// Federal bankruptcy docket lookup via PACER Case Locator (PCL).
+// Federal bankruptcy docket lookup via CourtListener (free, no per-doc charge).
 //
 // GET  /api/bankruptcy-lookup?clientId=xxx
-//      Searches all 94 federal bankruptcy courts for filings matching
-//      the client's name (+ optional SSN last 4).
+//      Searches all federal bankruptcy courts for filings matching the
+//      client's name. Uses CourtListener's free RECAP API — same data as
+//      PACER but zero cost for searches.
 //
 // POST /api/bankruptcy-lookup  { clientIds: ["c_...", ...] }
-//      Batch: runs all clients, writes results back to each KV record.
+//      Batch: runs up to 50 clients, writes results back to KV.
 //
-// PACER credentials required (free account at pacer.uscourts.gov):
-//   PACER_USERNAME
-//   PACER_PASSWORD
-//
-// The PCL search is free — PACER only charges for document retrieval.
-// Auth: OAuth 2.0 password grant → bearer token cached 55 min in KV.
+// No additional API keys needed — uses COURTLISTENER_API_TOKEN already in env.
 //
 // For each client we surface:
 //   - All bankruptcy cases (chapter, filing date, district, disposition)
 //   - Automatic stay violations: creditors who contacted client AFTER filing
-//   - Discharge violations: creditors who continued collecting after discharge
+//   - Discharge violations: creditors who collected after discharge
 //
-// These are independent legal claims worth $1k–$50k+ each.
+// These are independent claims worth $1,000–$50,000+ each (11 U.S.C. § 362).
 
 import { kv } from "@vercel/kv";
 
-const PCL_AUTH   = "https://pacer.login.uscourts.gov/cas/oauth2.0/accessToken";
-const PCL_SEARCH = "https://pcl.uscourts.gov/pcl/search/cases/results";
-const TOKEN_KEY  = "pacer:token:cache";
+const CL_BASE    = "https://www.courtlistener.com/api/rest/v4";
 const CLIENT_TTL = 365 * 24 * 3600;
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
-
-async function getPacerToken() {
-  const cached = await kv.get(TOKEN_KEY).catch(() => null);
-  if (cached) return cached;
-
-  const user = process.env.PACER_USERNAME;
-  const pass = process.env.PACER_PASSWORD;
-  if (!user || !pass) throw new Error("PACER_USERNAME / PACER_PASSWORD not set in env");
-
-  const body = new URLSearchParams({
-    grant_type: "password",
-    username:   user,
-    password:   pass,
-    client_id:  "pcl-basic-v1",
-  });
-  const r = await fetch(PCL_AUTH, {
-    method:  "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body:    body.toString(),
-    signal:  AbortSignal.timeout(15000),
-  });
-  if (!r.ok) {
-    const t = await r.text().catch(() => "");
-    throw new Error(`PACER auth failed ${r.status}: ${t.slice(0, 200)}`);
-  }
-  const data = await r.json();
-  const token = data.access_token;
-  if (!token) throw new Error("PACER auth returned no access_token");
-  // Cache for 55 min (tokens expire after 60 min)
-  await kv.set(TOKEN_KEY, token, { ex: 55 * 60 }).catch(() => {});
-  return token;
+function clHeaders() {
+  const token = process.env.COURTLISTENER_API_TOKEN;
+  return token
+    ? { Authorization: `Token ${token}`, Accept: "application/json" }
+    : { Accept: "application/json" };
 }
 
-// ── PCL search ────────────────────────────────────────────────────────────────
+// ── CourtListener search ──────────────────────────────────────────────────────
+// Strategy: search the docket index filtering to bankruptcy court types.
+// CourtListener bankruptcy court IDs all contain "b" after the district code
+// (e.g. "alnb" = N.D. Ala. Bankr., "caeb" = E.D. Cal. Bankr.).
+// We query by debtor name using full-text Solr search on the docket index.
 
-async function searchPCL(firstName, lastName, ssnLast4 = null) {
-  const token = await getPacerToken();
+async function searchCourtListener(firstName, lastName) {
+  const name = `"${firstName} ${lastName}"`.trim();
   const params = new URLSearchParams({
-    lastName,
-    firstName,
-    court_type: "bk",   // bankruptcy courts only
-    page_size:  "50",
+    type:      "r",             // RECAP docket search
+    q:         name,
+    order_by:  "dateFiled desc",
+    page_size: "20",
+    // Restrict to bankruptcy courts: CourtListener court IDs ending in "b"
+    // We pass court as a filter — CL supports court= for exact court IDs
+    // but there are 94 bankruptcy courts so we filter client-side below.
   });
-  if (ssnLast4) params.set("ssnLast4", ssnLast4);
 
-  const r = await fetch(`${PCL_SEARCH}?${params}`, {
-    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  const url = `${CL_BASE}/search/?${params}`;
+  const r = await fetch(url, {
+    headers: clHeaders(),
     signal:  AbortSignal.timeout(20000),
   });
-  if (!r.ok) {
-    const t = await r.text().catch(() => "");
-    throw new Error(`PACER PCL ${r.status}: ${t.slice(0, 200)}`);
-  }
+
+  if (r.status === 429) throw new Error("CourtListener rate limit hit — try again in a few minutes");
+  if (!r.ok) throw new Error(`CourtListener ${r.status}`);
+
   const data = await r.json();
-  // PCL returns { results: [...], total: N }
-  return Array.isArray(data.results) ? data.results : (Array.isArray(data) ? data : []);
+  const results = data.results || [];
+
+  // Keep only bankruptcy courts (court ID ends in "b" or contains "bankr")
+  return results.filter(d => {
+    const court = (d.court || d.court_id || "").toLowerCase();
+    return court.endsWith("b") || court.includes("bankr") || court.includes("bk");
+  });
+}
+
+// Also search the parties endpoint for exact name match
+async function searchByParty(firstName, lastName) {
+  const params = new URLSearchParams({
+    name:      `${firstName} ${lastName}`,
+    page_size: "20",
+  });
+  const r = await fetch(`${CL_BASE}/parties/?${params}`, {
+    headers: clHeaders(),
+    signal:  AbortSignal.timeout(15000),
+  });
+  if (!r.ok) return [];
+  const data = await r.json();
+  return (data.results || []).filter(p => {
+    const court = (p.docket_court || "").toLowerCase();
+    return court.endsWith("b") || court.includes("bankr");
+  });
+}
+
+// ── Normalizer ────────────────────────────────────────────────────────────────
+
+function normalizeResult(d) {
+  // Extract chapter from case name or nature_of_suit
+  const caption  = d.caseName || d.case_name || d.caseNameFull || "";
+  const nos      = String(d.nature_of_suit || d.natureOfSuit || "");
+  const chapter  = extractChapter(caption, nos, d.chapter);
+  const courtId  = d.court || d.court_id || "";
+  const docketNo = d.docketNumber || d.docket_number || "";
+
+  return {
+    caseNumber:   docketNo,
+    chapter,
+    filingDate:   d.dateFiled      || d.date_filed      || null,
+    disposition:  d.caseStatus     || d.status          || null,
+    dischargeDate:d.dateDischarge  || d.date_discharge  || null,
+    dismissDate:  d.dateDismissed  || d.date_dismissed  || null,
+    court:        d.courtName      || d.court_name      || courtId,
+    courtId,
+    debtor:       caption,
+    sourceUrl:    d.absolute_url
+      ? `https://www.courtlistener.com${d.absolute_url}`
+      : `https://www.courtlistener.com/?q=${encodeURIComponent(caption)}&type=r`,
+  };
+}
+
+function extractChapter(caption, nos, explicit) {
+  if (explicit) return String(explicit);
+  // Nature of suit codes: 70=Ch7, 71=Ch11, 72=Ch12, 73=Ch13
+  if (nos === "70") return "7";
+  if (nos === "71") return "11";
+  if (nos === "72") return "12";
+  if (nos === "73") return "13";
+  const m = caption.match(/chapter\s*(\d+)/i) || caption.match(/ch\.?\s*(\d+)/i);
+  return m ? m[1] : null;
 }
 
 // ── Stay-violation detector ───────────────────────────────────────────────────
-// Returns creditors from the client's collections/accounts who contacted the
-// client on or after the bankruptcy filing date → automatic stay violation.
 
-function detectStayViolations(client, bankruptcyFilingDate) {
-  if (!bankruptcyFilingDate) return [];
-  const filedMs = new Date(bankruptcyFilingDate).getTime();
+function detectStayViolations(client, filingDate) {
+  if (!filingDate) return [];
+  const filedMs = new Date(filingDate).getTime();
+  if (isNaN(filedMs)) return [];
   const violations = [];
 
-  const allEntries = [
-    ...(client.collectionsHistory || []),
-    ...(client.creditAccounts    || []),
-  ];
-
-  for (const e of allEntries) {
-    const contactDates = (e.contactDates || []).filter(d => {
+  for (const e of [...(client.collectionsHistory || []), ...(client.creditAccounts || [])]) {
+    const contactsAfter = (e.contactDates || []).filter(d => {
       try { return new Date(d).getTime() >= filedMs; } catch { return false; }
     });
     const lastActivity = e.dateLastActivity || e.dateRange?.end || null;
     const activityAfter = lastActivity && new Date(lastActivity).getTime() >= filedMs;
 
-    if (contactDates.length > 0 || activityAfter) {
+    if (contactsAfter.length > 0 || activityAfter) {
       violations.push({
-        creditor:    e.creditor || e.originalCreditor || "Unknown",
-        contactDates,
-        lastActivity: activityAfter ? lastActivity : null,
-        accountType: e.accountType || e.type || null,
-        claimType:   "Automatic Stay Violation",
-        statute:     "11 U.S.C. § 362",
+        creditor:       e.creditor || e.originalCreditor || "Unknown",
+        contactDates:   contactsAfter,
+        lastActivity:   activityAfter ? lastActivity : null,
+        claimType:      "Automatic Stay Violation",
+        statute:        "11 U.S.C. § 362",
         estimatedValue: "$1,000–$50,000 per violation",
       });
     }
@@ -133,66 +160,65 @@ async function lookupClient(clientId) {
   if (!client.firstName && !client.lastName)
     return { error: "Client has no name to search", clientId };
 
-  let pacerResults = [];
-  let pacerError   = null;
+  let filings     = [];
+  let lookupError = null;
 
   try {
-    pacerResults = await searchPCL(
-      client.firstName || "",
-      client.lastName  || "",
-      client.ssnLast4  || null,
-    );
-  } catch (e) {
-    pacerError = e.message;
-  }
+    const [dockets, parties] = await Promise.allSettled([
+      searchCourtListener(client.firstName || "", client.lastName || ""),
+      searchByParty(client.firstName || "", client.lastName || ""),
+    ]);
 
-  // Normalize PCL results into a standard shape
-  const filings = pacerResults.map(r => ({
-    caseNumber:   r.caseNumber    || r.case_number    || r.caseNo    || "",
-    chapter:      r.chapter       || r.chapterNumber  || null,
-    filingDate:   r.dateFiled     || r.date_filed     || null,
-    disposition:  r.disposition   || r.caseStatus     || null,
-    dischargeDate:r.dateDischarge || r.date_discharge || null,
-    dismissDate:  r.dateDismissed || r.date_dismissed || null,
-    court:        r.court         || r.courtName      || r.district  || null,
-    courtId:      r.courtId       || r.court_id       || null,
-    debtor:       r.debtor        || `${client.firstName} ${client.lastName}`.trim(),
-    sourceUrl:    r.courtId
-      ? `https://www.courtlistener.com/?q=${encodeURIComponent(client.lastName)}&type=r&court=${r.courtId}`
-      : null,
-  }));
+    const docketResults  = dockets.status  === "fulfilled" ? dockets.value  : [];
+    const partyResults   = parties.status  === "fulfilled" ? parties.value  : [];
+
+    // Merge — dedupe by docket number
+    const seen = new Set();
+    for (const d of [...docketResults, ...partyResults]) {
+      const norm = normalizeResult(d);
+      const key  = norm.caseNumber || norm.sourceUrl;
+      if (!seen.has(key)) { seen.add(key); filings.push(norm); }
+    }
+
+    if (dockets.status === "rejected" && parties.status === "rejected") {
+      lookupError = dockets.reason?.message || "CourtListener search failed";
+    }
+  } catch (e) {
+    lookupError = e.message;
+  }
 
   // Merge with credit-report bankruptcies already on the client record
   const creditReportBkr = (client.bankruptcies || []).map(b => ({
     chapter:      b.type?.replace("bankruptcy_ch", "") || null,
-    filingDate:   b.dateFiled     || null,
-    dischargeDate:b.dateDischarged|| null,
-    disposition:  b.disposition   || null,
+    filingDate:   b.dateFiled      || null,
+    dischargeDate:b.dateDischarged || null,
+    disposition:  b.disposition    || null,
     source:       "credit_report",
   }));
 
-  // Detect stay violations from the most recent filing
-  const latestFiling  = filings.find(f => f.filingDate) || null;
-  const stayViolations = detectStayViolations(client, latestFiling?.filingDate);
+  // Detect stay violations from earliest filing date found
+  const allDates  = [...filings.map(f => f.filingDate), ...creditReportBkr.map(b => b.filingDate)]
+    .filter(Boolean).sort();
+  const earliest  = allDates[0] || null;
+  const stayViolations = detectStayViolations(client, earliest);
 
   const result = {
     clientId,
-    name: `${client.firstName || ""} ${client.lastName || ""}`.trim(),
-    pacerFilings:    filings,
+    name:            `${client.firstName || ""} ${client.lastName || ""}`.trim(),
+    courtListenerFilings: filings,
     creditReportBkr,
     stayViolations,
     hasFilings:      filings.length > 0 || creditReportBkr.length > 0,
-    pacerError,
+    lookupError,
     checkedAt:       new Date().toISOString(),
   };
 
-  // Patch client record with bankruptcy lookup results
-  const updated = {
-    ...client,
-    bankruptcyLookup: result,
-    lastBankruptcyCheckAt: result.checkedAt,
-  };
-  await kv.set(`client:${clientId}`, JSON.stringify(updated), { ex: CLIENT_TTL }).catch(() => {});
+  // Patch client KV record
+  await kv.set(
+    `client:${clientId}`,
+    JSON.stringify({ ...client, bankruptcyLookup: result, lastBankruptcyCheckAt: result.checkedAt }),
+    { ex: CLIENT_TTL }
+  ).catch(() => {});
 
   return result;
 }
@@ -205,15 +231,6 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  // Check env vars first — fail fast with a clear message
-  if (!process.env.PACER_USERNAME || !process.env.PACER_PASSWORD) {
-    return res.status(503).json({
-      error: "PACER credentials not configured",
-      setup: "Add PACER_USERNAME and PACER_PASSWORD to your Vercel environment variables. Free account at pacer.uscourts.gov",
-    });
-  }
-
-  // Single client GET
   if (req.method === "GET") {
     const { clientId } = req.query;
     if (!clientId) return res.status(400).json({ error: "clientId required" });
@@ -225,27 +242,25 @@ export default async function handler(req, res) {
     }
   }
 
-  // Batch POST
   if (req.method === "POST") {
     const { clientIds } = req.body || {};
     if (!Array.isArray(clientIds) || !clientIds.length)
       return res.status(400).json({ error: "clientIds array required" });
 
-    const results = [];
     let withFilings = 0, errors = 0;
+    const results = [];
 
-    for (const id of clientIds.slice(0, 100)) { // cap at 100 per call
+    for (const id of clientIds.slice(0, 50)) {
       try {
         const r = await lookupClient(id);
         results.push(r);
         if (r.hasFilings) withFilings++;
-        if (r.pacerError) errors++;
+        if (r.lookupError) errors++;
       } catch (e) {
         results.push({ clientId: id, error: e.message });
         errors++;
       }
-      // Small delay to avoid PACER rate limiting
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 500)); // avoid rate limiting
     }
 
     return res.status(200).json({ total: results.length, withFilings, errors, results });
