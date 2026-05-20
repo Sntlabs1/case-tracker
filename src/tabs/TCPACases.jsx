@@ -249,6 +249,37 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
   );
 }
 
+// Expand a compact index summary back to a display-ready shape.
+// Index uses short keys to stay under KV size limits; the rest of the UI
+// expects full key names. Full records pass through unchanged.
+function expandCase(c) {
+  if (!c) return c;
+  if (c.caption) return c; // already full format
+  return {
+    id:          c.i,
+    caption:     c.ca,
+    status:      c.s,
+    caseType:    c.t,
+    casePosture: c.p,
+    filingDate:  c.f,
+    defendants:  (c.d || []).map(name => ({ displayName: name })),
+    court:       { state: c.st, name: "", jurisdiction: "federal", docket: "", district: "" },
+    settlement: {
+      claimWindowCloses: c.cw,
+      perClaimantRange:  c.pc,
+      totalFund:         c.tf,
+    },
+    source:      c.sr,
+    // Fields not in the compact index — empty defaults so CaseRow doesn't crash
+    conductDescription: "",
+    classDefinition:    "",
+    geographicScope:    "nationwide",
+    eligibleStates:     [],
+    classPeriod:        { start: null, end: null },
+    _isCompact:         true, // flag so CaseDetail knows to fetch the full record
+  };
+}
+
 function ClaimCountdown({ closes }) {
   const days = daysUntil(closes);
   if (days === null) return null;
@@ -1235,35 +1266,36 @@ export default function TCPACases() {
 
   // ALL filters run client-side on the search index (lightweight summaries).
   // Falls back to cases[] if index hasn't loaded yet.
+  // Results are expanded to display-ready format so CaseRow renders correctly.
   const filtered = useMemo(() => {
     const src = index.length > 0 ? index : cases;
-    return src.filter(c => {
-      // Index uses short keys; cases[] uses full keys — handle both
-      const status   = c.status || c.s;
-      const posture  = c.casePosture || c.p;
-      const state    = c.court?.state || c.st;
-      const caption  = c.caption || c.ca || "";
-      const defs     = c.defendants ? c.defendants.map(d => d.displayName) : (c.d || []);
-      const claimEnd = c.settlement?.claimWindowCloses || c.cw;
+    return src
+      .filter(c => {
+        const status   = c.status  || c.s;
+        const posture  = c.casePosture || c.p;
+        const state    = c.court?.state || c.st;
+        const caption  = c.caption || c.ca || "";
+        const defs     = c.defendants ? c.defendants.map(d => d.displayName) : (c.d || []);
+        const claimEnd = c.settlement?.claimWindowCloses || c.cw;
 
-      if (statusFilter  && status  !== statusFilter)  return false;
-      if (postureFilter && posture !== postureFilter)  return false;
-      if (stateFilter) {
-        const st = stateFilter.toUpperCase();
-        const eligible = c.eligibleStates || [];
-        if (state !== st && !eligible.includes(st)) return false;
-      }
-      if (searchQ) {
-        const ql = searchQ.toLowerCase();
-        const hay = `${caption} ${defs.join(" ")} ${c.conductDescription || ""}`.toLowerCase();
-        if (!hay.includes(ql)) return false;
-      }
-      if (view === "closing") {
-        const days = daysUntil(claimEnd);
-        if (days === null || days < 0 || days > 30) return false;
-      }
-      return true;
-    });
+        if (statusFilter  && status  !== statusFilter)  return false;
+        if (postureFilter && posture !== postureFilter)  return false;
+        if (stateFilter) {
+          const st = stateFilter.toUpperCase();
+          if (state !== st && !(c.eligibleStates || []).includes(st)) return false;
+        }
+        if (searchQ) {
+          const ql  = searchQ.toLowerCase();
+          const hay = `${caption} ${defs.join(" ")}`.toLowerCase();
+          if (!hay.includes(ql)) return false;
+        }
+        if (view === "closing") {
+          const days = daysUntil(claimEnd);
+          if (days === null || days < 0 || days > 30) return false;
+        }
+        return true;
+      })
+      .map(expandCase);
   }, [index, cases, statusFilter, postureFilter, stateFilter, searchQ, view]);
 
   // Stats — prefer the freshness-agent rollup (server-side, fast). Fall back
@@ -1381,7 +1413,19 @@ export default function TCPACases() {
                   key={c.id}
                   tcase={c}
                   selected={selectedCase?.id === c.id}
-                  onSelect={() => setSelectedCase(c)}
+                  onSelect={async () => {
+                    if (c._isCompact) {
+                      // Compact summary — fetch full record for detail panel
+                      setSelectedCase(c); // show immediately with partial data
+                      try {
+                        const r = await fetch(`/api/tcpa-cases?id=${encodeURIComponent(c.id)}`);
+                        const d = await r.json();
+                        if (d.case) setSelectedCase(d.case);
+                      } catch { /* keep partial */ }
+                    } else {
+                      setSelectedCase(c);
+                    }
+                  }}
                 />
               ))}
             </div>
