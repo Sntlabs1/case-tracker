@@ -226,7 +226,7 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
             {busy ? "Running…" : "Run Full Backfill"}
           </Btn>
           <Btn small onClick={runEnrichAll} disabled={enriching || busy} style={{ background: "#8b5cf6", borderColor: "#8b5cf6" }}>
-            {enriching ? "Enriching…" : "Enrich All Cases (d–g)"}
+            {enriching ? "Enriching…" : "Fill Settlement Details for All Cases"}
           </Btn>
         </div>
       </div>
