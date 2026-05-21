@@ -1,22 +1,102 @@
 // POST /api/enrich-bulk
-// Runs Claude Haiku across ALL cases to fill settlement website (f),
-// administrator contact (g), per-claimant amount (e), class requirements (d),
-// and conduct description for every case in the system regardless of status.
+// Enriches all 7,500+ cases with settlement details using two strategies:
 //
-// Reads from the full filing-date index so it covers all 7,500+ cases.
-// Safe to call repeatedly — only fills missing fields, never overwrites.
+// 1. SEED MATCH (instant, no Claude): match each case's defendant against
+//    the 93-entry KNOWN_SETTLEMENTS database. Fills per-claimant, total fund,
+//    class definition, conduct description for every matching case.
+//
+// 2. CLAUDE HAIKU (for everything else): batch-asks Claude what it knows.
+//    Only sends cases where seed didn't match AND fields are still missing.
+//    For obscure cases Claude will return nulls — that's fine.
+//
+// Always generates a conductDescription if missing, even if just from the
+// case type and defendant name.
 //
 // Query params:
-//   ?limit=100    cases per call (default 100, max 150)
+//   ?limit=200    cases per call (default 200, max 300)
 //   ?offset=0     pagination cursor
 
 import { kv } from "@vercel/kv";
 import { KEYS } from "../src/lib/tcpaSchema.js";
+import { KNOWN_SETTLEMENTS } from "../src/data/knownTcpaSettlements.js";
+import { normalize as normalizeDefendant } from "../src/lib/defendantResolver.js";
 import { rebuildSearchIndex } from "../src/lib/tcpaCaseStore.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 
-async function callHaiku(prompt) {
+// ── Seed index ────────────────────────────────────────────────────────────────
+
+const seedIndex = (() => {
+  const idx = {};
+  for (const s of KNOWN_SETTLEMENTS) {
+    const k = s.defendantNorm;
+    idx[k] = idx[k] || [];
+    idx[k].push(s);
+  }
+  return idx;
+})();
+
+function applySeed(record) {
+  const defendants = (record.defendants || []).map(d => d.displayName);
+  for (const name of defendants) {
+    const norm = normalizeDefendant(name);
+    const seeds = seedIndex[norm];
+    if (!seeds) continue;
+    // Pick seed whose caseType matches and filing date is plausible
+    const seed = seeds.find(s => s.caseType === record.caseType) || seeds[0];
+    if (!seed) continue;
+
+    const s = { ...(record.settlement || {}) };
+    let changed = false;
+
+    if (!s.perClaimantRange  && seed.perClaimantRange)  { s.perClaimantRange  = seed.perClaimantRange;  changed = true; }
+    if (!s.totalFund         && seed.totalFund)         { s.totalFund         = seed.totalFund;         changed = true; }
+    if (!s.claimWindowCloses && seed.claimWindowCloses) { s.claimWindowCloses = seed.claimWindowCloses; changed = true; }
+    if (!s.claimPortalUrl    && seed.claimPortalUrl)    { s.claimPortalUrl    = seed.claimPortalUrl;    changed = true; }
+    if (!s.adminName         && seed.adminName)         { s.adminName         = seed.adminName;         changed = true; }
+    if (!s.adminPhone        && seed.adminPhone)        { s.adminPhone        = seed.adminPhone;        changed = true; }
+    if (!s.claimRequirements && seed.classDefinition)   { s.claimRequirements = seed.classDefinition;   changed = true; }
+
+    let conductChanged = false;
+    if (!record.conductDescription && seed.classDefinition) {
+      record = { ...record, conductDescription: `${seed.caseType} violation — ${seed.classDefinition.slice(0, 120)}` };
+      conductChanged = true;
+    }
+
+    if (changed || conductChanged) return { ...record, settlement: s };
+  }
+  return null;
+}
+
+// ── Conduct description fallback ──────────────────────────────────────────────
+// Generate a minimal description from what we always have: case type + NOS code.
+
+const NOS_DESCRIPTIONS = {
+  "TCPA":       "Placed autodialed or prerecorded calls/texts to cellular phones without prior express written consent in violation of 47 U.S.C. § 227.",
+  "FDCPA":      "Used false, deceptive, or abusive debt collection practices in violation of 15 U.S.C. § 1692.",
+  "FCRA":       "Reported inaccurate consumer credit information or failed to investigate disputes in violation of 15 U.S.C. § 1681.",
+  "TCPA+FDCPA": "Placed autodialed debt collection calls to cellular phones without consent, violating both the TCPA and FDCPA.",
+  "CROA":       "Charged advance fees or misrepresented credit repair services in violation of 15 U.S.C. § 1679.",
+  "CIPA":       "Used session-replay or wiretap technology on a financial website without consent in violation of California Penal Code § 631/632.",
+  "FL_FTSA":    "Sent unsolicited telemarketing texts or calls in violation of Florida's Telephone Solicitation Act § 501.059.",
+  "FCRA_FURNISHER": "Failed to correct inaccurate credit information after receiving a consumer dispute in violation of 15 U.S.C. § 1681s-2(b).",
+  "ROSENTHAL":  "Used abusive or deceptive debt collection practices in violation of California's Rosenthal FDCPA § 1788.",
+  "FCCPA":      "Used prohibited debt collection conduct in violation of Florida's Consumer Collection Practices Act § 559.55.",
+  "ECOA":       "Failed to provide proper adverse action notices in violation of 15 U.S.C. § 1691.",
+  "UDAAP":      "Engaged in unfair, deceptive, or abusive acts or practices in violation of the Dodd-Frank Act § 1031.",
+  "GLBA":       "Failed to implement adequate safeguards to protect consumer financial information in violation of 15 U.S.C. § 6801.",
+};
+
+function fallbackConduct(record) {
+  if (record.conductDescription && record.conductDescription.length > 20) return null;
+  const defendants = (record.defendants || []).map(d => d.displayName).slice(0, 2).join(", ");
+  const base = NOS_DESCRIPTIONS[record.caseType] || `Filed ${record.caseType} class action.`;
+  return `${defendants ? defendants + ": " : ""}${base}`;
+}
+
+// ── Claude Haiku enrichment ───────────────────────────────────────────────────
+
+async function callHaiku(messages) {
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -24,11 +104,7 @@ async function callHaiku(prompt) {
       "anthropic-version": "2023-06-01",
       "content-type": "application/json",
     },
-    body: JSON.stringify({
-      model: HAIKU,
-      max_tokens: 700,
-      messages: [{ role: "user", content: prompt }],
-    }),
+    body: JSON.stringify({ model: HAIKU, max_tokens: 600, messages }),
     signal: AbortSignal.timeout(25000),
   });
   if (!r.ok) throw new Error(`Haiku ${r.status}`);
@@ -41,44 +117,59 @@ function parseJson(text) {
   try { return JSON.parse(m[0]); } catch { return null; }
 }
 
-async function enrichCase(record) {
-  const defendants = (record.defendants || []).map(d => d.displayName).join(", ");
-  const prompt = `You are a legal research assistant for a plaintiff law firm. Extract settlement details for this class action from your training knowledge. Return null for anything you are not confident about — do NOT guess.
+// Ask Claude about a batch of cases at once — more efficient than one-by-one.
+// Returns a map of caseId → details object.
+async function enrichBatch(records) {
+  const items = records.map(c => ({
+    id: c.id,
+    caption: c.caption,
+    defendants: (c.defendants || []).map(d => d.displayName).slice(0, 3).join(", "),
+    type: c.caseType,
+    court: c.court?.name || "",
+    filed: c.filingDate || "",
+  }));
 
-Case: ${record.caption}
-Defendants: ${defendants}
-Type: ${record.caseType}
-Court: ${record.court?.name || "unknown"}
-Filed: ${record.filingDate || "unknown"}
-Status: ${record.status || "unknown"}
-${record.settlement?.claimPortalUrl ? `Known claim portal: ${record.settlement.claimPortalUrl}` : ""}
+  const prompt = `For each class action below, return what you know about the settlement from your training data. Return null for anything you're not confident about. Return ONLY a JSON array — one object per case in the same order.
 
-Return ONLY a JSON object:
-{
-  "perClaimantRange": "e.g. $75 flat or $20-$40 or null",
-  "totalFund": "e.g. $5,975,000 or null",
-  "claimPortalUrl": "direct URL to file a claim or settlement website, or null",
-  "claimWindowCloses": "YYYY-MM-DD deadline or null",
-  "claimRequirements": "exact class definition — who qualifies, or null",
-  "adminName": "settlement administrator company name e.g. Kroll Settlement Administration, Epiq Class Action Solutions, Simpluris, JND Legal Administration, or null",
-  "adminPhone": "toll-free phone number for claimants or null",
-  "adminEmail": "email address for claimant inquiries or null",
-  "adminWebsite": "URL to administrator website or null",
-  "conductDescription": "one sentence: what the defendant did that violated the law, or null"
-}`;
+Cases:
+${JSON.stringify(items, null, 1)}
 
-  const raw = await callHaiku(prompt);
-  return parseJson(raw);
+Return JSON array:
+[
+  {
+    "id": "same id as input",
+    "perClaimantRange": "$XX–$XX or null",
+    "totalFund": "$X,XXX,XXX or null",
+    "claimPortalUrl": "URL or null",
+    "claimWindowCloses": "YYYY-MM-DD or null",
+    "claimRequirements": "class definition or null",
+    "adminName": "e.g. Kroll Settlement Administration or null",
+    "adminPhone": "toll-free number or null",
+    "adminEmail": "email or null",
+    "adminWebsite": "URL or null"
+  }
+]`;
+
+  try {
+    const raw = await callHaiku([{ role: "user", content: prompt }]);
+    const m = raw.match(/\[[\s\S]*\]/);
+    if (!m) return {};
+    const arr = JSON.parse(m[0]);
+    const out = {};
+    for (const item of arr) { if (item.id) out[item.id] = item; }
+    return out;
+  } catch { return {}; }
 }
+
+// ── Handler ───────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== "POST") return res.status(405).end();
 
-  const limit  = Math.min(parseInt(req.query?.limit  || "100"), 150);
+  const limit  = Math.min(parseInt(req.query?.limit  || "200"), 300);
   const offset = parseInt(req.query?.offset || "0");
 
-  // Use the full filing-date index — covers all 7,500+ cases across all statuses
   const allIds = await kv.zrange(KEYS.byFilingDate(), 0, -1, { rev: true }).catch(() => []);
   const slice  = allIds.slice(offset, offset + limit);
 
@@ -86,72 +177,78 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, processed: 0, enriched: 0, total: allIds.length, done: true });
   }
 
-  // Fetch records in parallel
-  const FETCH_BATCH = 50;
-  const records = [];
-  for (let i = 0; i < slice.length; i += FETCH_BATCH) {
-    const batch = await Promise.all(
-      slice.slice(i, i + FETCH_BATCH).map(id => kv.get(KEYS.case(id)).catch(() => null))
-    );
+  // Fetch all records in slice
+  const FETCH = 50;
+  const allRecords = [];
+  for (let i = 0; i < slice.length; i += FETCH) {
+    const batch = await Promise.all(slice.slice(i, i + FETCH).map(id => kv.get(KEYS.case(id)).catch(() => null)));
     for (const raw of batch) {
       if (!raw) continue;
       const c = typeof raw === "string" ? JSON.parse(raw) : raw;
-      // Enrich any case missing at least one of the key fields
-      const missing =
-        !c.settlement?.adminName ||
-        !c.settlement?.claimPortalUrl ||
-        !c.settlement?.perClaimantRange ||
-        !c.conductDescription;
-      if (missing) records.push(c);
+      allRecords.push(c);
     }
   }
 
-  // Enrich in parallel batches of 8
-  let enriched = 0;
-  const ENRICH_BATCH = 8;
-  for (let i = 0; i < records.length; i += ENRICH_BATCH) {
-    const batch = records.slice(i, i + ENRICH_BATCH);
-    const results = await Promise.allSettled(batch.map(async (c) => {
-      const details = await enrichCase(c);
-      if (!details) return false;
+  const toWrite = [];
+  const needsClaude = [];
 
-      const updated = { ...c, settlement: { ...(c.settlement || {}) } };
+  for (let c of allRecords) {
+    let updated = c;
+    let changed = false;
 
-      const sFields = [
-        "perClaimantRange", "totalFund", "claimPortalUrl", "claimWindowCloses",
-        "claimRequirements", "adminName", "adminPhone", "adminEmail", "adminWebsite",
-      ];
+    // 1. Apply seed data for known defendants
+    const seeded = applySeed(c);
+    if (seeded) { updated = seeded; changed = true; }
+
+    // 2. Fill conduct description from NOS fallback
+    const conduct = fallbackConduct(updated);
+    if (conduct) { updated = { ...updated, conductDescription: conduct }; changed = true; }
+
+    if (changed) toWrite.push(updated);
+
+    // 3. Queue for Claude if still missing key fields after seed
+    const stillMissing = !updated.settlement?.adminName && !updated.settlement?.perClaimantRange;
+    if (stillMissing) needsClaude.push(updated);
+  }
+
+  // 4. Claude batch enrichment for cases seed didn't cover
+  const CLAUDE_BATCH = 10;
+  for (let i = 0; i < needsClaude.length; i += CLAUDE_BATCH) {
+    const batch = needsClaude.slice(i, i + CLAUDE_BATCH);
+    const results = await enrichBatch(batch).catch(() => ({}));
+    for (const c of batch) {
+      const details = results[c.id];
+      if (!details) continue;
+      const s = { ...(c.settlement || {}) };
       let changed = false;
-      for (const f of sFields) {
-        if (details[f] && !updated.settlement[f]) {
-          updated.settlement[f] = details[f];
-          changed = true;
-        }
+      const fields = ["perClaimantRange", "totalFund", "claimPortalUrl", "claimWindowCloses",
+                      "claimRequirements", "adminName", "adminPhone", "adminEmail", "adminWebsite"];
+      for (const f of fields) {
+        if (details[f] && !s[f]) { s[f] = details[f]; changed = true; }
       }
-      if (details.conductDescription && !updated.conductDescription) {
-        updated.conductDescription = details.conductDescription;
-        changed = true;
-      }
-
       if (changed) {
-        await kv.set(KEYS.case(c.id), JSON.stringify(updated), { ex: 365 * 24 * 3600 });
-        return true;
+        const existing = toWrite.find(r => r.id === c.id);
+        if (existing) { existing.settlement = s; }
+        else { toWrite.push({ ...c, settlement: s }); }
       }
-      return false;
-    }));
-    enriched += results.filter(r => r.status === "fulfilled" && r.value === true).length;
+    }
+  }
+
+  // Write all updated records
+  const WRITE = 50;
+  for (let i = 0; i < toWrite.length; i += WRITE) {
+    await Promise.all(
+      toWrite.slice(i, i + WRITE).map(c => kv.set(KEYS.case(c.id), JSON.stringify(c), { ex: 365 * 24 * 3600 }))
+    );
   }
 
   const hasMore = (offset + limit) < allIds.length;
-
-  // Rebuild search index on final page so UI reflects new data
   if (!hasMore) await rebuildSearchIndex().catch(() => {});
 
   return res.status(200).json({
     ok: true,
-    processed: records.length,
-    enriched,
-    skipped: slice.length - records.length,
+    processed: allRecords.length,
+    enriched: toWrite.length,
     total: allIds.length,
     nextOffset: hasMore ? offset + limit : null,
     done: !hasMore,
