@@ -41,7 +41,7 @@ const FEEDS = [
 
 // Strict JSON-array extraction — same skeleton as tcpaworld.js but tuned for
 // settlement language (claim windows, total funds, fairness hearings).
-const EXTRACTION_PROMPT = `Extract every TCPA, FDCPA, or FCRA case mentioned in this article. For each, return:
+const EXTRACTION_PROMPT = `Extract every TCPA, FDCPA, or FCRA case mentioned in this article. For each, return ALL fields you can find:
 - caption: case name
 - caseType: "TCPA" | "FDCPA" | "FCRA" | "TCPA+FDCPA"
 - defendants: array of defendant company names
@@ -50,9 +50,15 @@ const EXTRACTION_PROMPT = `Extract every TCPA, FDCPA, or FCRA case mentioned in 
 - filingDate: YYYY-MM-DD if mentioned
 - status: "active" | "settled" | "claim_open" | "claim_closed" | "dismissed"
 - settlementTotal: dollar amount of settlement fund if disclosed (number, no commas)
+- perClaimantRange: per-claimant payment amount if mentioned (e.g. "$75 flat" or "$20-$40")
 - claimDeadline: YYYY-MM-DD claim window close date if disclosed
-- claimPortalUrl: URL to claim form if disclosed
-- summary: one-sentence summary
+- claimPortalUrl: full URL to the claim form or settlement website if mentioned
+- adminName: settlement administrator company name if mentioned (e.g. "Kroll", "Epiq", "Simpluris")
+- adminPhone: toll-free phone number for the settlement administrator if mentioned
+- adminEmail: email address for the settlement administrator if mentioned
+- adminWebsite: URL to the administrator website if mentioned
+- classDefinition: exact text describing who qualifies to file a claim, if mentioned
+- summary: one-sentence summary of what defendant did
 
 Return ONLY a JSON array. No prose. If no qualifying cases, return [].
 
@@ -116,9 +122,15 @@ function toCaseInput(extracted, articleUrl, articleDate, sourceTag) {
       return extracted.status || "settled";
     })(),
     settlement: {
-      totalFund: extracted.settlementTotal || null,
-      claimWindowCloses: extracted.claimDeadline || null,
-      claimPortalUrl: extracted.claimPortalUrl || null,
+      totalFund:         extracted.settlementTotal  || null,
+      perClaimantRange:  extracted.perClaimantRange  || null,
+      claimWindowCloses: extracted.claimDeadline     || null,
+      claimPortalUrl:    extracted.claimPortalUrl    || null,
+      claimRequirements: extracted.classDefinition   || null,
+      adminName:         extracted.adminName         || null,
+      adminPhone:        extracted.adminPhone        || null,
+      adminEmail:        extracted.adminEmail        || null,
+      adminWebsite:      extracted.adminWebsite      || null,
     },
     conductDescription: extracted.summary || "",
     source: sourceTag,

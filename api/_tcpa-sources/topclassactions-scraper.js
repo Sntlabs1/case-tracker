@@ -75,10 +75,14 @@ Extract every TCPA, FDCPA, or FCRA case or settlement listed in the page text. F
 - settlementTotal: total settlement fund in dollars (number only, null if not stated)
 - perClaimantRange: per-claimant payment description (string, e.g. "$45-$120" or "up to $500")
 - claimDeadline: YYYY-MM-DD deadline to submit a claim (null if not stated)
-- claimPortalUrl: direct URL to the claim form (null if not stated)
+- claimPortalUrl: direct URL to the claim form or settlement website (null if not stated)
 - classDefinition: who qualifies — copy the exact class definition text if available
 - conductDescription: what the defendant did (one sentence)
 - filingDate: YYYY-MM-DD case was filed (null if not stated)
+- adminName: settlement administrator company name (e.g. "Kroll", "Epiq", "Simpluris", null if not stated)
+- adminPhone: toll-free phone number for the settlement administrator (null if not stated)
+- adminEmail: email address for claimant inquiries (null if not stated)
+- adminWebsite: URL to the administrator website (null if not stated)
 
 Only include TCPA, FDCPA, FCRA cases. Skip personal injury, securities, employment.
 Return ONLY a JSON array. Empty array [] if no qualifying cases.
@@ -109,12 +113,17 @@ function itemToCase(item, source, pageUrl) {
     filingDate: item.filingDate || null,
     status: item.status || (item.claimDeadline ? "claim_open" : "settled"),
     settlement: {
-      totalFund:          item.settlementTotal ? String(item.settlementTotal) : null,
-      perClaimantRange:   item.perClaimantRange || null,
-      claimWindowOpens:   null,
-      claimWindowCloses:  item.claimDeadline || null,
-      claimPortalUrl:     item.claimPortalUrl || null,
-      finalApprovalDate:  null,
+      totalFund:         item.settlementTotal ? String(item.settlementTotal) : null,
+      perClaimantRange:  item.perClaimantRange  || null,
+      claimWindowOpens:  null,
+      claimWindowCloses: item.claimDeadline     || null,
+      claimPortalUrl:    item.claimPortalUrl    || null,
+      claimRequirements: item.classDefinition   || null,
+      adminName:         item.adminName         || null,
+      adminPhone:        item.adminPhone        || null,
+      adminEmail:        item.adminEmail        || null,
+      adminWebsite:      item.adminWebsite      || null,
+      finalApprovalDate: null,
     },
     classDefinition:     item.classDefinition || null,
     conductDescription:  item.conductDescription || null,
