@@ -192,18 +192,21 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
   const [enrichMsg, setEnrichMsg] = useState(null);
 
   async function runEnrichAll() {
-    setEnriching(true); setEnrichMsg("Starting enrichment across all settled cases…");
-    let offset = 0, totalEnriched = 0;
+    setEnriching(true); setEnrichMsg("Starting enrichment across all 7,500+ cases…");
+    let offset = 0, totalEnriched = 0, totalProcessed = 0, grandTotal = 0;
     try {
       while (true) {
-        const r = await fetch(`/api/enrich-bulk?status=settled&limit=100&offset=${offset}`, { method: "POST" });
+        const r = await fetch(`/api/enrich-bulk?limit=100&offset=${offset}`, { method: "POST" });
         const d = await r.json();
-        totalEnriched += d.enriched || 0;
-        setEnrichMsg(`Enriched ${totalEnriched} cases so far (${offset + 100} / ${d.total})…`);
+        totalEnriched  += d.enriched   || 0;
+        totalProcessed += d.processed  || 0;
+        grandTotal      = d.total      || grandTotal;
+        const pct = grandTotal ? Math.round((offset + 100) / grandTotal * 100) : 0;
+        setEnrichMsg(`${pct}% complete — enriched ${totalEnriched} of ${totalProcessed} processed (${offset + 100} / ${grandTotal} total)…`);
         if (d.done || !d.nextOffset) break;
         offset = d.nextOffset;
       }
-      setEnrichMsg(`Done — enriched ${totalEnriched} settled cases with settlement details.`);
+      setEnrichMsg(`Done — enriched ${totalEnriched} cases across all ${grandTotal} in the database with settlement website, administrator, per-claimant amount, and class requirements.`);
     } catch (e) { setEnrichMsg(`Error: ${e.message}`); }
     setEnriching(false);
   }

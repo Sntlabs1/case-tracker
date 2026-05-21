@@ -1,12 +1,14 @@
 // POST /api/enrich-bulk
-// Runs Claude Haiku across all cases missing settlement details (d)-(g).
-// Processes in batches of 20 so it fits in 300s. Call repeatedly until done.
+// Runs Claude Haiku across ALL cases to fill settlement website (f),
+// administrator contact (g), per-claimant amount (e), class requirements (d),
+// and conduct description for every case in the system regardless of status.
+//
+// Reads from the full filing-date index so it covers all 7,500+ cases.
+// Safe to call repeatedly — only fills missing fields, never overwrites.
 //
 // Query params:
-//   ?status=settled   (default — most likely to have settlement info)
-//   ?status=active    (for active cases to fill conduct descriptions)
-//   ?limit=100        (cases per run, default 100)
-//   ?offset=0         (pagination cursor)
+//   ?limit=100    cases per call (default 100, max 150)
+//   ?offset=0     pagination cursor
 
 import { kv } from "@vercel/kv";
 import { KEYS } from "../src/lib/tcpaSchema.js";
@@ -24,14 +26,13 @@ async function callHaiku(prompt) {
     },
     body: JSON.stringify({
       model: HAIKU,
-      max_tokens: 600,
+      max_tokens: 700,
       messages: [{ role: "user", content: prompt }],
     }),
     signal: AbortSignal.timeout(25000),
   });
   if (!r.ok) throw new Error(`Haiku ${r.status}`);
-  const d = await r.json();
-  return d.content?.[0]?.text || "";
+  return (await r.json()).content?.[0]?.text || "";
 }
 
 function parseJson(text) {
@@ -40,29 +41,30 @@ function parseJson(text) {
   try { return JSON.parse(m[0]); } catch { return null; }
 }
 
-// Ask Claude what it knows about a specific case's settlement details
 async function enrichCase(record) {
   const defendants = (record.defendants || []).map(d => d.displayName).join(", ");
-  const prompt = `You are a legal research assistant. Extract settlement details for this class action from your training knowledge. Return ONLY a JSON object — null values for anything you don't know with confidence.
+  const prompt = `You are a legal research assistant for a plaintiff law firm. Extract settlement details for this class action from your training knowledge. Return null for anything you are not confident about — do NOT guess.
 
 Case: ${record.caption}
 Defendants: ${defendants}
 Type: ${record.caseType}
 Court: ${record.court?.name || "unknown"}
 Filed: ${record.filingDate || "unknown"}
-${record.settlement?.claimPortalUrl ? `Known portal: ${record.settlement.claimPortalUrl}` : ""}
+Status: ${record.status || "unknown"}
+${record.settlement?.claimPortalUrl ? `Known claim portal: ${record.settlement.claimPortalUrl}` : ""}
 
+Return ONLY a JSON object:
 {
-  "perClaimantRange": "$XX–$XX or null",
-  "totalFund": "$X,XXX,XXX or null",
-  "claimPortalUrl": "URL or null",
-  "claimWindowCloses": "YYYY-MM-DD or null",
-  "claimRequirements": "exact class definition or null",
-  "adminName": "settlement administrator company or null",
-  "adminPhone": "toll-free number or null",
-  "adminEmail": "email or null",
-  "adminWebsite": "URL or null",
-  "conductDescription": "one sentence what defendant did or null"
+  "perClaimantRange": "e.g. $75 flat or $20-$40 or null",
+  "totalFund": "e.g. $5,975,000 or null",
+  "claimPortalUrl": "direct URL to file a claim or settlement website, or null",
+  "claimWindowCloses": "YYYY-MM-DD deadline or null",
+  "claimRequirements": "exact class definition — who qualifies, or null",
+  "adminName": "settlement administrator company name e.g. Kroll Settlement Administration, Epiq Class Action Solutions, Simpluris, JND Legal Administration, or null",
+  "adminPhone": "toll-free phone number for claimants or null",
+  "adminEmail": "email address for claimant inquiries or null",
+  "adminWebsite": "URL to administrator website or null",
+  "conductDescription": "one sentence: what the defendant did that violated the law, or null"
 }`;
 
   const raw = await callHaiku(prompt);
@@ -73,71 +75,83 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   if (req.method !== "POST") return res.status(405).end();
 
-  const status = req.query?.status || "settled";
-  const limit  = Math.min(parseInt(req.query?.limit || "100"), 200);
+  const limit  = Math.min(parseInt(req.query?.limit  || "100"), 150);
   const offset = parseInt(req.query?.offset || "0");
 
-  // Get candidate IDs from status index
-  const allIds = await kv.zrange(KEYS.byStatus(status), 0, -1, { rev: true }).catch(() => []);
+  // Use the full filing-date index — covers all 7,500+ cases across all statuses
+  const allIds = await kv.zrange(KEYS.byFilingDate(), 0, -1, { rev: true }).catch(() => []);
   const slice  = allIds.slice(offset, offset + limit);
 
   if (!slice.length) {
     return res.status(200).json({ ok: true, processed: 0, enriched: 0, total: allIds.length, done: true });
   }
 
-  // Fetch records
-  const BATCH = 50;
+  // Fetch records in parallel
+  const FETCH_BATCH = 50;
   const records = [];
-  for (let i = 0; i < slice.length; i += BATCH) {
+  for (let i = 0; i < slice.length; i += FETCH_BATCH) {
     const batch = await Promise.all(
-      slice.slice(i, i + BATCH).map(id => kv.get(KEYS.case(id)).catch(() => null))
+      slice.slice(i, i + FETCH_BATCH).map(id => kv.get(KEYS.case(id)).catch(() => null))
     );
     for (const raw of batch) {
       if (!raw) continue;
       const c = typeof raw === "string" ? JSON.parse(raw) : raw;
-      // Only enrich cases missing key settlement fields
-      const needsEnrich = !c.settlement?.perClaimantRange || !c.settlement?.adminName || !c.conductDescription;
-      if (needsEnrich) records.push(c);
+      // Enrich any case missing at least one of the key fields
+      const missing =
+        !c.settlement?.adminName ||
+        !c.settlement?.claimPortalUrl ||
+        !c.settlement?.perClaimantRange ||
+        !c.conductDescription;
+      if (missing) records.push(c);
     }
   }
 
-  // Enrich in parallel batches of 5 (Haiku is fast)
+  // Enrich in parallel batches of 8
   let enriched = 0;
-  const ENRICH_BATCH = 5;
+  const ENRICH_BATCH = 8;
   for (let i = 0; i < records.length; i += ENRICH_BATCH) {
     const batch = records.slice(i, i + ENRICH_BATCH);
     const results = await Promise.allSettled(batch.map(async (c) => {
       const details = await enrichCase(c);
-      if (!details) return;
+      if (!details) return false;
 
-      const updated = { ...c };
-      updated.settlement = { ...c.settlement };
-      // Only fill missing fields — don't overwrite existing good data
-      const sFields = ["perClaimantRange", "totalFund", "claimPortalUrl", "claimWindowCloses",
-                       "claimRequirements", "adminName", "adminPhone", "adminEmail", "adminWebsite"];
+      const updated = { ...c, settlement: { ...(c.settlement || {}) } };
+
+      const sFields = [
+        "perClaimantRange", "totalFund", "claimPortalUrl", "claimWindowCloses",
+        "claimRequirements", "adminName", "adminPhone", "adminEmail", "adminWebsite",
+      ];
+      let changed = false;
       for (const f of sFields) {
-        if (details[f] && !updated.settlement[f]) updated.settlement[f] = details[f];
+        if (details[f] && !updated.settlement[f]) {
+          updated.settlement[f] = details[f];
+          changed = true;
+        }
       }
       if (details.conductDescription && !updated.conductDescription) {
         updated.conductDescription = details.conductDescription;
+        changed = true;
       }
 
-      await kv.set(KEYS.case(c.id), JSON.stringify(updated), { ex: 365 * 24 * 3600 });
-      enriched++;
+      if (changed) {
+        await kv.set(KEYS.case(c.id), JSON.stringify(updated), { ex: 365 * 24 * 3600 });
+        return true;
+      }
+      return false;
     }));
-    // Count successes
-    enriched = results.filter(r => r.status === "fulfilled").length + enriched;
+    enriched += results.filter(r => r.status === "fulfilled" && r.value === true).length;
   }
 
   const hasMore = (offset + limit) < allIds.length;
 
-  // Rebuild search index so new data is searchable
+  // Rebuild search index on final page so UI reflects new data
   if (!hasMore) await rebuildSearchIndex().catch(() => {});
 
   return res.status(200).json({
     ok: true,
     processed: records.length,
     enriched,
+    skipped: slice.length - records.length,
     total: allIds.length,
     nextOffset: hasMore ? offset + limit : null,
     done: !hasMore,
