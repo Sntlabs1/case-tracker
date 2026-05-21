@@ -188,6 +188,26 @@ function QuickAddCase({ onAdded }) {
 
 function SourcesPanel({ stats, busy, onRun, lastResult }) {
   const sources = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];
+  const [enriching, setEnriching] = useState(false);
+  const [enrichMsg, setEnrichMsg] = useState(null);
+
+  async function runEnrichAll() {
+    setEnriching(true); setEnrichMsg("Starting enrichment across all settled cases…");
+    let offset = 0, totalEnriched = 0;
+    try {
+      while (true) {
+        const r = await fetch(`/api/enrich-bulk?status=settled&limit=100&offset=${offset}`, { method: "POST" });
+        const d = await r.json();
+        totalEnriched += d.enriched || 0;
+        setEnrichMsg(`Enriched ${totalEnriched} cases so far (${offset + 100} / ${d.total})…`);
+        if (d.done || !d.nextOffset) break;
+        offset = d.nextOffset;
+      }
+      setEnrichMsg(`Done — enriched ${totalEnriched} settled cases with settlement details.`);
+    } catch (e) { setEnrichMsg(`Error: ${e.message}`); }
+    setEnriching(false);
+  }
+
   return (
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
@@ -195,15 +215,25 @@ function SourcesPanel({ stats, busy, onRun, lastResult }) {
           <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>Ingest Sources</div>
           <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 2 }}>Pull TCPA/FDCPA/FCRA cases from CourtListener, TopClassActions, ClassAction.org, FCC</div>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <Btn small variant="secondary" onClick={() => onRun("daily")} disabled={busy}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          <Btn small variant="secondary" onClick={() => onRun("daily")} disabled={busy || enriching}>
             {busy ? "Running…" : "Run Daily Update"}
           </Btn>
-          <Btn small onClick={() => onRun("backfill")} disabled={busy}>
-            {busy ? "Running…" : "Run Full Backfill (2021–now)"}
+          <Btn small onClick={() => onRun("backfill")} disabled={busy || enriching}>
+            {busy ? "Running…" : "Run Full Backfill"}
+          </Btn>
+          <Btn small onClick={runEnrichAll} disabled={enriching || busy} style={{ background: "#8b5cf6", borderColor: "#8b5cf6" }}>
+            {enriching ? "Enriching…" : "Enrich All Cases (d–g)"}
           </Btn>
         </div>
       </div>
+      {enrichMsg && (
+        <div style={{ fontSize: 11, marginBottom: 10, padding: "6px 10px", borderRadius: 6,
+          background: enrichMsg.startsWith("Error") ? "#ef444420" : "#8b5cf620",
+          color: enrichMsg.startsWith("Error") ? "#ef4444" : "#a78bfa" }}>
+          {enrichMsg}
+        </div>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
         {sources.map((s) => {
           const st = stats?.[s];
