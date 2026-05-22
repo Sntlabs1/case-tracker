@@ -374,24 +374,6 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   // Browse matched cases
-  // Debug: show court IDs and test URL
-  if (req.method === "GET" && req.query?.debug) {
-    const courtIds = await getBKCourtIds();
-    const testUrl = `${CL_SEARCH}?type=r&filed_after=2019-01-01&filed_before=2019-01-03&order_by=dateFiled+desc&page_size=3&court=${courtIds.slice(0, 5).join(",")}`;
-    let testResult = null;
-    try {
-      const r = await fetch(testUrl, { headers: clHeaders(), signal: AbortSignal.timeout(15_000) });
-      testResult = await r.json();
-    } catch (e) { testResult = { error: e.message }; }
-    return res.status(200).json({
-      courtCount: courtIds.length,
-      courtSample: courtIds.slice(0, 10),
-      testUrl,
-      testCount: testResult?.count,
-      testSample: testResult?.results?.[0]?.caseName || testResult?.detail || "none",
-    });
-  }
-
   if (req.method === "GET" && req.query?.browse) {
     const page    = Math.max(0, parseInt(req.query?.page || "0"));
     const chapter = req.query?.chapter || null;

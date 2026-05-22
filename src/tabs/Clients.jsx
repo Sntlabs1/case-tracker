@@ -2059,90 +2059,70 @@ function MatchedCasesTable({ clients, onNavigateToClient }) {
 // matches debtor names against the client roster. Only case metadata is
 // retrieved — no documents or docket sheets are downloaded.
 function PacerSyncPanel({ clients = [], onNavigateToClient }) {
-  const [stats,  setStats]  = useState(null);
-  const [running,  setRunning]  = useState(false);
-  const [msg, setMsg] = useState(null);
   const [backfillActive, setBackfillActive] = useState(false);
-  const [backfillMonth,  setBackfillMonth]  = useState(null);
+  const [backfillClient, setBackfillClient] = useState(null);
   const [backfillDone,   setBackfillDone]   = useState(false);
+  const [progress, setProgress] = useState({ done: 0, total: 0, withFilings: 0 });
+  const [msg, setMsg] = useState(null);
 
-  async function loadStats() {
-    const d = await fetch("/api/pacer-sync?stats=1").then(r => r.json()).catch(() => ({}));
-    setStats(d);
-  }
-  useEffect(() => { loadStats(); }, []);
-
-  async function runDaily() {
-    setRunning(true); setMsg(null);
-    try {
-      const r = await fetch("/api/pacer-sync", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "daily" }),
-      });
-      const d = await r.json();
-      setMsg(d.error ? `Error: ${d.error}` : `Done — scanned ${d.processed} filings, matched ${d.matched} clients (${dateRange(d)})`);
-      await loadStats();
-    } catch (e) { setMsg(`Error: ${e.message}`); }
-    setRunning(false);
-  }
-
-  function dateRange(d) { return d.dateFrom && d.dateTo ? `${d.dateFrom} → ${d.dateTo}` : ""; }
-
+  // Per-client backfill: calls bankruptcy-lookup for every client that doesn't
+  // already have a lookup result. CourtListener searches by name across all
+  // federal BK courts — no rate-limit problem, complete historical coverage.
   async function startBackfill() {
-    setBackfillActive(true); setBackfillDone(false); setMsg(null);
-    const synced = new Set(stats?.monthsSynced || []);
-
-    const start = new Date("2019-01-01");
-    const end   = new Date();
-    const months = [];
-    const cur = new Date(start);
-    while (cur <= end) {
-      const label = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}`;
-      if (!synced.has(label)) months.push(label);
-      cur.setMonth(cur.getMonth() + 1);
+    const unchecked = clients.filter(c => !c.bankruptcyLookup && (c.firstName || c.lastName));
+    if (!unchecked.length) {
+      setMsg("All clients already checked.");
+      return;
     }
+    setBackfillActive(true); setBackfillDone(false); setMsg(null);
+    setProgress({ done: 0, total: unchecked.length, withFilings: 0 });
 
-    let totalProcessed = 0, totalMatched = 0;
-    for (const month of months) {
-      setBackfillMonth(month);
+    let withFilings = 0;
+    // /api/bankruptcy-lookup POST accepts up to 50 clientIds at once
+    const BATCH = 10;
+    for (let i = 0; i < unchecked.length; i += BATCH) {
+      const batch = unchecked.slice(i, i + BATCH);
+      setBackfillClient(`${batch[0].firstName || ""} ${batch[0].lastName || ""}`.trim());
       try {
-        const r = await fetch("/api/pacer-sync", {
+        const r = await fetch("/api/bankruptcy-lookup", {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mode: "month", month }),
+          body: JSON.stringify({ clientIds: batch.map(c => c.id) }),
         });
         const d = await r.json();
-        if (!d.ok && d.error) { setMsg(`Stopped at ${month}: ${d.error}`); break; }
-        totalProcessed += d.processed || 0;
-        totalMatched   += d.matched   || 0;
-        setMsg(`${month} done — ${totalProcessed.toLocaleString()} filings scanned, ${totalMatched} client matches so far`);
-      } catch (e) { setMsg(`Error on ${month}: ${e.message}`); break; }
+        if (d.error) { setMsg(`Error: ${d.error}`); break; }
+        withFilings += d.withFilings || 0;
+        const done = Math.min(i + BATCH, unchecked.length);
+        setProgress({ done, total: unchecked.length, withFilings });
+        setMsg(`Checked ${done} / ${unchecked.length} clients — ${withFilings} with filings`);
+      } catch (e) { setMsg(`Error: ${e.message}`); break; }
     }
-    await loadStats();
+
     setBackfillActive(false);
-    setBackfillMonth(null);
+    setBackfillClient(null);
     setBackfillDone(true);
-    setMsg(prev => prev?.startsWith("Stopped") ? prev : `Backfill complete — ${totalProcessed.toLocaleString()} filings scanned, ${totalMatched} clients matched`);
   }
 
-  const lastRun = stats?.stats;
+  const uncheckedCount = clients.filter(c => !c.bankruptcyLookup && (c.firstName || c.lastName)).length;
+  const checkedCount   = clients.filter(c => !!c.bankruptcyLookup).length;
+  const withFilings    = clients.filter(c => c.bankruptcyLookup?.hasFilings).length;
 
   return (
     <Card>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-        <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>Bankruptcy Filing Sync</div>
-          <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 3 }}>
-            Pulls federal bankruptcy case metadata from CourtListener (free, no documents). Matches debtor names against the client roster.
-            {stats?.hasApiToken === false && <span style={{ color: "#f59e0b", marginLeft: 6 }}>Add COURTLISTENER_API_TOKEN to raise rate limits.</span>}
-          </div>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 4 }}>
+          Bankruptcy Lookup
+        </div>
+        <div style={{ fontSize: 11, color: "var(--text-5)" }}>
+          Searches CourtListener for each client's name across all 95 federal bankruptcy courts.
+          Free, no documents downloaded, covers all available history.
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 14 }}>
         {[
-          ["Months synced", (stats?.monthsSynced?.length ?? 0) + " / " + monthsSince2019()],
-          ["Last run processed", lastRun?.processed?.toLocaleString() ?? "—"],
-          ["Last run matched", lastRun?.matched?.toLocaleString() ?? "—"],
+          ["Clients checked",   `${checkedCount} / ${clients.length}`],
+          ["With BK filings",   String(withFilings)],
+          ["Not yet checked",   String(uncheckedCount)],
         ].map(([l, v]) => (
           <div key={l} style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
             <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>{l}</div>
@@ -2151,42 +2131,43 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
         ))}
       </div>
 
-      {lastRun?.ranAt && (
-        <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 12 }}>
-          Last run {new Date(lastRun.ranAt).toLocaleString()} · {dateRange(lastRun)} · {lastRun.pages} pages · {lastRun.durationMs ? Math.round(lastRun.durationMs / 1000) + "s" : ""}
-          {lastRun.errorCount > 0 && <span style={{ color: "#f59e0b", marginLeft: 8 }}>{lastRun.errorCount} errors</span>}
+      {backfillActive && (
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 6 }}>
+            Checking {backfillClient || "…"} — {progress.done} / {progress.total} clients
+          </div>
+          <div style={{ height: 4, background: "var(--bg-surface2)", borderRadius: 2, overflow: "hidden" }}>
+            <div style={{ height: "100%", background: "var(--accent)", borderRadius: 2, width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%`, transition: "width 0.3s" }} />
+          </div>
         </div>
       )}
 
       {msg && (
         <div style={{
           fontSize: 11, padding: "8px 12px", borderRadius: 6, marginBottom: 12,
-          background: msg.startsWith("Error") || msg.startsWith("Stopped") ? "rgba(239,68,68,0.08)" : "rgba(34,197,94,0.06)",
-          color:      msg.startsWith("Error") || msg.startsWith("Stopped") ? "#ef4444" : "#22c55e",
-          border: `1px solid ${msg.startsWith("Error") || msg.startsWith("Stopped") ? "rgba(239,68,68,0.25)" : "rgba(34,197,94,0.2)"}`,
+          background: msg.startsWith("Error") ? "rgba(239,68,68,0.08)" : "rgba(34,197,94,0.06)",
+          color:      msg.startsWith("Error") ? "#ef4444" : "#22c55e",
+          border:     `1px solid ${msg.startsWith("Error") ? "rgba(239,68,68,0.25)" : "rgba(34,197,94,0.2)"}`,
         }}>
-          {backfillActive && backfillMonth && <span style={{ marginRight: 8, color: "var(--text-5)" }}>Syncing {backfillMonth}…</span>}
           {msg}
         </div>
       )}
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <Btn small onClick={runDaily} disabled={running || backfillActive}>
-          {running ? "Running…" : "Sync Last 3 Days"}
-        </Btn>
-        <Btn small onClick={startBackfill} disabled={running || backfillActive}
+        <Btn small onClick={startBackfill} disabled={backfillActive || uncheckedCount === 0}
           style={!backfillActive ? { background: "#8b5cf6", borderColor: "#8b5cf6" } : {}}>
-          {backfillActive ? `Backfilling ${backfillMonth || "…"}` : backfillDone ? "Re-run Backfill" : "Run Backfill (Jan 2019 → Today)"}
+          {backfillActive ? `Checking clients…` : backfillDone ? "Re-run Lookup" : `Check ${uncheckedCount} Clients`}
         </Btn>
-        <button onClick={loadStats}
-          style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-5)", cursor: "pointer" }}>
-          Refresh
-        </button>
+        {backfillDone && uncheckedCount === 0 && (
+          <Btn small onClick={() => { setBackfillDone(false); clients.forEach(c => { if (c.bankruptcyLookup) delete c.bankruptcyLookup; }); }}>
+            Re-check All
+          </Btn>
+        )}
       </div>
 
       <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 10 }}>
-        Backfill runs one calendar month at a time. Already-synced months are skipped.
-        The daily cron (6am) keeps it current automatically.
+        Runs in batches of 10. Already-checked clients are skipped unless you re-check all.
+        Results appear on each client's bankruptcy panel automatically.
       </div>
 
       <MatchedCasesTable clients={clients} onNavigateToClient={onNavigateToClient} />
@@ -2194,11 +2175,7 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
   );
 }
 
-function monthsSince2019() {
-  const start = new Date("2019-01-01");
-  const end   = new Date();
-  return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth() + 1;
-}
+
 
 // ── Main Clients tab ───────────────────────────────────────────────────────────
 export default function Clients() {
