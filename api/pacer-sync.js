@@ -206,7 +206,7 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
   const clientUpdates = new Map();
   const caseIndex     = new Map();
 
-  let url = `${CL_BASE}/dockets/?court__jurisdiction=B`
+  let url = `${CL_BASE}/dockets/?court__jurisdiction=FB`
     + `&date_filed__gte=${dateFrom}&date_filed__lte=${dateTo}`
     + `&order_by=-date_filed&page_size=${PAGE_SIZE}`;
 
