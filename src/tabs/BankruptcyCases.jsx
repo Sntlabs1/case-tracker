@@ -57,7 +57,7 @@ export default function BankruptcyCases() {
   async function loadStats() {
     const d = await fetch("/api/pacer-sync?stats=1").then(r => r.json()).catch(() => ({}));
     setBilling(d.billing || null);
-    setAuthOk(!d.credsMissing);
+    setAuthOk(true); // CourtListener is free — no credentials required
   }
 
   async function runSync() {
@@ -113,36 +113,20 @@ export default function BankruptcyCases() {
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
               <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>
-                PACER Bankruptcy Cases
+                Bankruptcy Cases
               </div>
               {total > 0 && (
                 <span style={{ fontSize: 11, color: "var(--text-5)", background: "var(--bg-surface2)", padding: "2px 8px", borderRadius: 4, border: "1px solid var(--border)" }}>
                   {total} matched cases
                 </span>
               )}
-              {authOk !== null && (
-                <span style={{
-                  fontSize: 10, padding: "2px 8px", borderRadius: 4, fontWeight: 700,
-                  background: authOk ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
-                  color: authOk ? "#22c55e" : "#ef4444",
-                  border: `1px solid ${authOk ? "#22c55e40" : "#ef444440"}`,
-                }}>
-                  {authOk ? "PACER connected" : "Credentials missing"}
-                </span>
-              )}
             </div>
             <div style={{ fontSize: 11, color: "var(--text-5)" }}>
-              All federal bankruptcy filings matched against the client roster via PACER Case Locator.
-              Case metadata only — no documents downloaded.
-              {billing?.totalCost > 0 && (
-                <span style={{ marginLeft: 8, color: "var(--text-6)" }}>
-                  Cumulative PACER cost: ${Number(billing.totalCost).toFixed(2)}
-                </span>
-              )}
+              Federal bankruptcy case metadata from CourtListener (free). Matched against your client roster.
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            <Btn small onClick={runSync} disabled={syncing || !authOk}>
+            <Btn small onClick={runSync} disabled={syncing}>
               {syncing ? "Syncing…" : "Sync Last 3 Days"}
             </Btn>
             <button
@@ -165,10 +149,9 @@ export default function BankruptcyCases() {
           </div>
         )}
 
-        {!authOk && authOk !== null && (
-          <div style={{ marginTop: 10, fontSize: 11, color: "#f59e0b", padding: "8px 12px", background: "#f59e0b10", borderRadius: 6 }}>
-            Add <strong>PACER_USERNAME</strong> and <strong>PACER_PASSWORD</strong> to your Vercel environment variables to enable syncing.
-            Visit <strong>Clients → Bankruptcy Sync</strong> for the full backfill controls.
+        {total === 0 && (
+          <div style={{ marginTop: 10, fontSize: 11, color: "var(--text-5)" }}>
+            No cases yet. Go to <strong>Clients → Bankruptcy Sync</strong> to run the backfill.
           </div>
         )}
       </Card>

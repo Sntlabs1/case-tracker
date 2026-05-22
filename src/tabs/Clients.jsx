@@ -2060,7 +2060,6 @@ function MatchedCasesTable({ clients, onNavigateToClient }) {
 // retrieved — no documents or docket sheets are downloaded.
 function PacerSyncPanel({ clients = [], onNavigateToClient }) {
   const [stats,  setStats]  = useState(null);
-  const [status, setStatus] = useState(null);
   const [running,  setRunning]  = useState(false);
   const [msg, setMsg] = useState(null);
   const [backfillActive, setBackfillActive] = useState(false);
@@ -2071,11 +2070,7 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
     const d = await fetch("/api/pacer-sync?stats=1").then(r => r.json()).catch(() => ({}));
     setStats(d);
   }
-  async function checkAuth() {
-    const d = await fetch("/api/pacer-sync?status=1").then(r => r.json()).catch(() => ({ ok: false, reason: "Network error" }));
-    setStatus(d);
-  }
-  useEffect(() => { loadStats(); checkAuth(); }, []);
+  useEffect(() => { loadStats(); }, []);
 
   async function runDaily() {
     setRunning(true); setMsg(null);
@@ -2093,7 +2088,6 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
 
   function dateRange(d) { return d.dateFrom && d.dateTo ? `${d.dateFrom} → ${d.dateTo}` : ""; }
 
-  // Backfill: Jan 2020 → today, one month at a time
   async function startBackfill() {
     setBackfillActive(true); setBackfillDone(false); setMsg(null);
     const synced = new Set(stats?.monthsSynced || []);
@@ -2131,47 +2125,24 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
   }
 
   const lastRun = stats?.stats;
-  const hasCreds = status?.ok === true;
-  const credsUnknown = status === null;
 
   return (
     <Card>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>PACER Bankruptcy Sync</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>Bankruptcy Filing Sync</div>
           <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 3 }}>
-            Pulls ALL bankruptcy filings from PACER (complete national coverage). Retrieves case metadata only — no documents downloaded.
-            $0.10/page of 54 results; charges under $30/quarter waived automatically.
+            Pulls federal bankruptcy case metadata from CourtListener (free, no documents). Matches debtor names against the client roster.
+            {stats?.hasApiToken === false && <span style={{ color: "#f59e0b", marginLeft: 6 }}>Add COURTLISTENER_API_TOKEN to raise rate limits.</span>}
           </div>
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          {!credsUnknown && (
-            <span style={{
-              fontSize: 10, padding: "2px 8px", borderRadius: 4, fontWeight: 700,
-              background: hasCreds ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
-              color: hasCreds ? "#22c55e" : "#ef4444",
-              border: `1px solid ${hasCreds ? "#22c55e40" : "#ef444440"}`,
-            }}>
-              {hasCreds ? "PACER connected" : "Credentials missing"}
-            </span>
-          )}
         </div>
       </div>
 
-      {!hasCreds && !credsUnknown && (
-        <div style={{ fontSize: 11, color: "#f59e0b", padding: "8px 12px", background: "#f59e0b10", borderRadius: 6, marginBottom: 12 }}>
-          Add <strong>PACER_USERNAME</strong> and <strong>PACER_PASSWORD</strong> to your Vercel environment variables.
-          {status?.reason && <span style={{ marginLeft: 6, color: "#fbbf24" }}>({status.reason})</span>}
-        </div>
-      )}
-
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 14 }}>
         {[
           ["Months synced", (stats?.monthsSynced?.length ?? 0) + " / " + monthsSince2020()],
           ["Last run processed", lastRun?.processed?.toLocaleString() ?? "—"],
           ["Last run matched", lastRun?.matched?.toLocaleString() ?? "—"],
-          ["Total PACER cost", stats?.billing?.totalCost != null ? `$${Number(stats.billing.totalCost).toFixed(2)}` : "—"],
         ].map(([l, v]) => (
           <div key={l} style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
             <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>{l}</div>
@@ -2200,14 +2171,14 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
       )}
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <Btn small onClick={runDaily} disabled={running || backfillActive || !hasCreds}>
+        <Btn small onClick={runDaily} disabled={running || backfillActive}>
           {running ? "Running…" : "Sync Last 3 Days"}
         </Btn>
-        <Btn small onClick={startBackfill} disabled={running || backfillActive || !hasCreds}
+        <Btn small onClick={startBackfill} disabled={running || backfillActive}
           style={!backfillActive ? { background: "#8b5cf6", borderColor: "#8b5cf6" } : {}}>
           {backfillActive ? `Backfilling ${backfillMonth || "…"}` : backfillDone ? "Re-run Backfill" : "Run 5-Year Backfill (Jan 2020 → Today)"}
         </Btn>
-        <button onClick={() => { loadStats(); checkAuth(); }}
+        <button onClick={loadStats}
           style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-5)", cursor: "pointer" }}>
           Refresh
         </button>
@@ -2216,7 +2187,6 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
       <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 10 }}>
         Backfill runs one calendar month at a time. Already-synced months are skipped.
         The daily cron (6am) keeps it current automatically.
-        Matched filings appear on each client's bankruptcy panel below.
       </div>
 
       <MatchedCasesTable clients={clients} onNavigateToClient={onNavigateToClient} />
