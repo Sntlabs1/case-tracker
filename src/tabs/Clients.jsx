@@ -2092,7 +2092,7 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
     setBackfillActive(true); setBackfillDone(false); setMsg(null);
     const synced = new Set(stats?.monthsSynced || []);
 
-    const start = new Date("2020-01-01");
+    const start = new Date("2019-01-01");
     const end   = new Date();
     const months = [];
     const cur = new Date(start);
@@ -2140,7 +2140,7 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 14 }}>
         {[
-          ["Months synced", (stats?.monthsSynced?.length ?? 0) + " / " + monthsSince2020()],
+          ["Months synced", (stats?.monthsSynced?.length ?? 0) + " / " + monthsSince2019()],
           ["Last run processed", lastRun?.processed?.toLocaleString() ?? "—"],
           ["Last run matched", lastRun?.matched?.toLocaleString() ?? "—"],
         ].map(([l, v]) => (
@@ -2176,7 +2176,7 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
         </Btn>
         <Btn small onClick={startBackfill} disabled={running || backfillActive}
           style={!backfillActive ? { background: "#8b5cf6", borderColor: "#8b5cf6" } : {}}>
-          {backfillActive ? `Backfilling ${backfillMonth || "…"}` : backfillDone ? "Re-run Backfill" : "Run 5-Year Backfill (Jan 2020 → Today)"}
+          {backfillActive ? `Backfilling ${backfillMonth || "…"}` : backfillDone ? "Re-run Backfill" : "Run Backfill (Jan 2019 → Today)"}
         </Btn>
         <button onClick={loadStats}
           style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-5)", cursor: "pointer" }}>
@@ -2194,8 +2194,8 @@ function PacerSyncPanel({ clients = [], onNavigateToClient }) {
   );
 }
 
-function monthsSince2020() {
-  const start = new Date("2020-01-01");
+function monthsSince2019() {
+  const start = new Date("2019-01-01");
   const end   = new Date();
   return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth() + 1;
 }
