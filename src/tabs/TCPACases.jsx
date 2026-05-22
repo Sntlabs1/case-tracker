@@ -71,6 +71,30 @@ function fmtDate(dateStr) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+// Parse totalFund from any stored format: "$75,455,098", "75000000", "75M", etc.
+function parseFundDisplay(raw) {
+  if (!raw) return null;
+  const s = String(raw);
+  // Strip $ and commas, try plain number first
+  const plain = parseFloat(s.replace(/[$,]/g, ""));
+  if (!isNaN(plain) && plain > 0) {
+    if (plain >= 1_000_000_000) return `$${(plain / 1_000_000_000).toFixed(1)}B`;
+    if (plain >= 1_000_000)     return `$${(plain / 1_000_000).toFixed(1)}M`;
+    if (plain >= 1_000)         return `$${(plain / 1_000).toFixed(0)}K`;
+    return `$${Math.round(plain).toLocaleString()}`;
+  }
+  // Try suffix format: "75M", "1.5B"
+  const mMatch = s.match(/([\d.]+)\s*([mMbBkK])/);
+  if (mMatch) {
+    const n = parseFloat(mMatch[1]);
+    const sfx = mMatch[2].toLowerCase();
+    if (sfx === "b") return `$${n}B`;
+    if (sfx === "m") return `$${n}M`;
+    if (sfx === "k") return `$${n}K`;
+  }
+  return s; // pass through as-is
+}
+
 function StatPill({ label, value, color = "var(--accent)" }) {
   return (
     <div style={{ padding: "14px 20px", borderRadius: 10, background: "var(--bg-card)", border: "1px solid var(--border)", textAlign: "center" }}>
@@ -387,7 +411,7 @@ function CaseRow({ tcase, onSelect, selected }) {
         <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 2 }}>
           {tcase.court?.name || "—"} · Filed {fmtDate(tcase.filingDate)} · {caseAgeLabel(tcase.filingDate)}
           {tcase.settlement?.perClaimantRange ? ` · ${tcase.settlement.perClaimantRange}/claimant` : ""}
-          {tcase.settlement?.totalFund ? ` · $${Number(tcase.settlement.totalFund).toLocaleString()} fund` : ""}
+          {tcase.settlement?.totalFund ? ` · ${parseFundDisplay(tcase.settlement.totalFund)} fund` : ""}
         </div>
       </div>
     </div>
@@ -1299,7 +1323,7 @@ function CaseDetail({ tcase, onClose }) {
           {/* (b) Settlement amount + (e) per claimant */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {[
-              ["(b) Total settlement fund", tcase.settlement?.totalFund ? `$${Number(tcase.settlement.totalFund).toLocaleString()}` : null],
+              ["(b) Total settlement fund", tcase.settlement?.totalFund ? parseFundDisplay(tcase.settlement.totalFund) : null],
               ["(e) Per claimant payment",  tcase.settlement?.perClaimantRange],
               ["(c) Claim deadline",        tcase.settlement?.claimWindowCloses ? fmtDate(tcase.settlement.claimWindowCloses) : null],
               ["Claim window opens",        tcase.settlement?.claimWindowOpens  ? fmtDate(tcase.settlement.claimWindowOpens)  : null],
@@ -1496,21 +1520,22 @@ export default function TCPACases() {
 
   // Load the compact search index (all 7k+ cases as lightweight summaries).
   // Pages fetched in parallel. Once loaded, ALL filters run client-side.
-  async function loadIndex() {
+  async function loadIndex(skipRebuild = false) {
     setIndexLoading(true);
     try {
       const metaRes = await fetch("/api/tcpa-cases?searchIndex=1&page=0");
       const metaData = await metaRes.json();
       setIndexMeta(metaData);
 
-      if (metaData.building || metaData.pages === 0) {
-        // Index not built yet — trigger rebuild and wait a bit
+      if (!skipRebuild && (metaData.building || metaData.pages === 0)) {
+        // Index not built yet — trigger a synchronous rebuild, then reload
         await fetch("/api/tcpa-cases?rebuildIndex=1");
-        setIndexLoading(false);
+        await loadIndex(true); // re-enter with skipRebuild to avoid infinite loop
         return;
       }
 
       const page0 = metaData.data || [];
+      if (!page0.length && metaData.pages === 0) { setIndexLoading(false); return; }
       if (metaData.pages <= 1) { setIndex(page0); setIndexLoading(false); return; }
 
       // Fetch remaining pages — use allSettled so one failure doesn't kill all

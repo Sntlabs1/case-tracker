@@ -51,6 +51,36 @@ function ClaimCountdown({ closes }) {
   );
 }
 
+// ── Bankruptcy status helpers ─────────────────────────────────────────────────
+
+const STATUS_META = {
+  active:     { label: "Active",     color: "#f59e0b" },
+  discharged: { label: "Discharged", color: "#22c55e" },
+  dismissed:  { label: "Dismissed",  color: "#6b7280" },
+  converted:  { label: "Converted",  color: "#3b82f6" },
+};
+
+function StatusBadge({ status }) {
+  const meta = STATUS_META[status] || STATUS_META.active;
+  return (
+    <span style={{
+      fontSize: 10, padding: "2px 7px", borderRadius: 4, fontWeight: 700,
+      background: `${meta.color}18`, color: meta.color, border: `1px solid ${meta.color}40`,
+    }}>
+      {meta.label}
+    </span>
+  );
+}
+
+function inferStatus(f) {
+  if (f.status) return f.status;
+  const d = (f.disposition || "").toLowerCase();
+  if (d.includes("discharg")) return "discharged";
+  if (d.includes("dismiss"))  return "dismissed";
+  if (d.includes("convert"))  return "converted";
+  return "active";
+}
+
 // ── Inline lead match — run match-cases for this client vs a selected lead ─────
 function InlineLeadMatch({ client }) {
   const [open, setOpen] = useState(false);
@@ -240,10 +270,11 @@ function BankruptcyPanel({ client }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
 
-  const creditBkr = client.bankruptcies || [];
-  const clFilings = result?.courtListenerFilings || result?.pacerFilings || [];
+  const creditBkr    = client.bankruptcies || [];
+  const clFilings    = result?.courtListenerFilings || result?.pacerFilings || [];
+  const pacerFilings = client.pacerBankruptcies || []; // from pacer-sync bulk ingest
   const stayViolations = result?.stayViolations || [];
-  const hasAny = creditBkr.length > 0 || clFilings.length > 0;
+  const hasAny = creditBkr.length > 0 || clFilings.length > 0 || pacerFilings.length > 0;
 
   async function runLookup() {
     setLoading(true); setErr(null);
@@ -261,7 +292,7 @@ function BankruptcyPanel({ client }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
           Bankruptcy Filings
-          {hasAny && <span style={{ marginLeft: 6, background: "#8b5cf620", color: "#8b5cf6", borderRadius: 4, padding: "1px 6px", fontSize: 10 }}>{pacerFilings.length || creditBkr.length}</span>}
+          {hasAny && <span style={{ marginLeft: 6, background: "#8b5cf620", color: "#8b5cf6", borderRadius: 4, padding: "1px 6px", fontSize: 10 }}>{pacerFilings.length || clFilings.length || creditBkr.length}</span>}
         </div>
         <button onClick={runLookup} disabled={loading} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-3)", cursor: loading ? "default" : "pointer" }}>
           {loading ? "Searching…" : result ? "Re-check CourtListener" : "Check Federal Courts (Free)"}
@@ -285,6 +316,70 @@ function BankruptcyPanel({ client }) {
               {b.disposition && <span style={{ color: "var(--text-6)" }}>{b.disposition}</span>}
             </div>
           ))}
+        </div>
+      )}
+
+      {pacerFilings.length > 0 && (
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 8 }}>From PACER bulk sync</div>
+          {pacerFilings.map((f, i) => {
+            const parties = f.parties?.length
+              ? f.parties
+              : f.debtorName ? [{ role: "debtor", name: f.debtorName }] : [];
+            const status = inferStatus(f);
+            return (
+              <div key={f.id || i} style={{
+                padding: "10px 12px", marginBottom: 8, borderRadius: 8,
+                border: "1px solid var(--border)", background: "var(--bg-surface2)",
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)" }}>
+                    {parties[0]?.name || "Unknown Debtor"}
+                    {parties.length > 1 && (
+                      <span style={{ fontSize: 10, color: "var(--text-5)", fontWeight: 400, marginLeft: 6 }}>
+                        +{parties.length - 1} co-debtor{parties.length > 2 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0, marginLeft: 8 }}>
+                    {f.chapter && <span style={{ fontSize: 11, fontWeight: 700, color: "#8b5cf6" }}>Ch. {f.chapter}</span>}
+                    <StatusBadge status={status} />
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 4 }}>
+                  {f.caseNumber && <span style={{ fontFamily: "monospace", fontSize: 10, marginRight: 8 }}>{f.caseNumber}</span>}
+                  {f.court && <span>{f.court}</span>}
+                </div>
+                <div style={{ display: "flex", gap: 14, fontSize: 11, color: "var(--text-5)", marginBottom: parties.length > 0 ? 4 : 0 }}>
+                  <span>Filed {fmtDate(f.dateFiled)}</span>
+                  {f.dispositionDate && <span>Closed {fmtDate(f.dispositionDate)}</span>}
+                </div>
+                {parties.length > 0 && (
+                  <div style={{ fontSize: 10, color: "var(--text-6)", marginBottom: 4 }}>
+                    Parties: {parties.map((p, pi) => (
+                      <span key={pi}>
+                        {pi > 0 && " · "}
+                        {p.name}
+                        {p.role && <span style={{ fontStyle: "italic", color: "var(--text-7)" }}> ({p.role})</span>}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                  {f.matchConfidence === "low" && (
+                    <span style={{ fontSize: 9, color: "#f59e0b", background: "#f59e0b15", padding: "1px 5px", borderRadius: 3, fontWeight: 700 }}>
+                      Review match
+                    </span>
+                  )}
+                  {f.sourceUrl && (
+                    <a href={f.sourceUrl} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "var(--accent)" }}>
+                      View on PACER →
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -1791,9 +1886,353 @@ function PartnerStats() {
   );
 }
 
+// ── PACER Bankruptcy Sync Panel ───────────────────────────────────────────────
+// ── MatchedCasesTable — browseable global view of all PACER-matched cases ────
+
+function MatchedCasesTable({ clients, onNavigateToClient }) {
+  const [open,    setOpen]    = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [cases,   setCases]   = useState([]);
+  const [total,   setTotal]   = useState(0);
+  const [page,    setPage]    = useState(0);
+  const [chapter, setChapter] = useState("");
+  const [status,  setStatus]  = useState("");
+  const [search,  setSearch]  = useState("");
+
+  async function load(p = 0) {
+    setLoading(true);
+    const params = new URLSearchParams({ browse: "1", page: p });
+    if (chapter) params.set("chapter", chapter);
+    if (status)  params.set("status",  status);
+    const d = await fetch(`/api/pacer-sync?${params}`).then(r => r.json()).catch(() => ({}));
+    setCases(d.cases || []);
+    setTotal(d.total || 0);
+    setPage(p);
+    setLoading(false);
+  }
+
+  useEffect(() => { if (open) load(0); }, [open, chapter, status]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const filtered = search
+    ? cases.filter(c => {
+        const hay = [c.debtorName, c.caseNumber, ...(c.parties || []).map(p => p.name)]
+          .filter(Boolean).join(" ").toLowerCase();
+        return hay.includes(search.toLowerCase());
+      })
+    : cases;
+
+  const chipStyle = (active) => ({
+    fontSize: 11, padding: "3px 10px", borderRadius: 99, cursor: "pointer",
+    border: `1px solid ${active ? "var(--accent)" : "var(--border)"}`,
+    background: active ? "rgba(99,102,241,0.12)" : "var(--bg-input)",
+    color: active ? "var(--accent)" : "var(--text-4)",
+    fontWeight: active ? 700 : 400,
+  });
+
+  const thStyle = {
+    textAlign: "left", padding: "6px 8px", fontSize: 9, color: "var(--text-6)",
+    fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", whiteSpace: "nowrap",
+  };
+
+  return (
+    <div style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 14 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ background: "none", border: "none", cursor: "pointer", padding: 0,
+          fontSize: 13, fontWeight: 700, color: "var(--text-2)",
+          display: "flex", alignItems: "center", gap: 6 }}
+      >
+        <span style={{ fontSize: 10 }}>{open ? "▼" : "▶"}</span>
+        Matched Cases
+        {total > 0 && <span style={{ fontSize: 11, fontWeight: 400, color: "var(--text-5)" }}>({total} indexed)</span>}
+      </button>
+
+      {open && (
+        <div style={{ marginTop: 12 }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap", alignItems: "center" }}>
+            {["", "7", "11", "12", "13"].map(ch => (
+              <button key={ch} onClick={() => setChapter(ch)} style={chipStyle(chapter === ch)}>
+                {ch ? `Ch. ${ch}` : "All chapters"}
+              </button>
+            ))}
+            <select
+              value={status} onChange={e => setStatus(e.target.value)}
+              style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6,
+                border: "1px solid var(--border)", background: "var(--bg-input)",
+                color: "var(--text-3)", outline: "none" }}
+            >
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="discharged">Discharged</option>
+              <option value="dismissed">Dismissed</option>
+              <option value="converted">Converted</option>
+            </select>
+            <input
+              value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Filter by name or case #…"
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6,
+                border: "1px solid var(--border)", background: "var(--bg-input)",
+                color: "var(--text-1)", outline: "none", minWidth: 180 }}
+            />
+          </div>
+
+          {loading ? (
+            <div style={{ fontSize: 12, color: "var(--text-5)", padding: "20px 0", textAlign: "center" }}>Loading…</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ fontSize: 12, color: "var(--text-6)", padding: "20px 0", textAlign: "center" }}>
+              {cases.length === 0 ? "No matched cases yet — run a sync to populate." : "No cases match current filters."}
+            </div>
+          ) : (
+            <>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                  <thead>
+                    <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                      {["Debtor Name", "Case #", "Ch.", "Court", "Filed", "Status", "Client", "Conf."].map(h => (
+                        <th key={h} style={thStyle}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((c, i) => {
+                      const primaryName = c.parties?.[0]?.name || c.debtorName || "—";
+                      const extraParties = (c.parties?.length || 0) > 1 ? ` +${c.parties.length - 1}` : "";
+                      const clientNames = (c.clientIds || [])
+                        .map(id => { const cl = clients.find(x => x.id === id); return cl ? `${cl.firstName || ""} ${cl.lastName || ""}`.trim() : null; })
+                        .filter(Boolean).join(", ");
+                      const firstClientId = c.clientIds?.[0];
+                      return (
+                        <tr
+                          key={c.id || i}
+                          onClick={() => firstClientId && onNavigateToClient?.(firstClientId)}
+                          style={{
+                            borderBottom: "1px solid var(--border)",
+                            cursor: firstClientId ? "pointer" : "default",
+                            background: i % 2 === 0 ? "transparent" : "var(--bg-surface2)",
+                          }}
+                        >
+                          <td style={{ padding: "7px 8px", fontWeight: 600, color: "var(--text-2)" }}>
+                            {primaryName}
+                            {extraParties && <span style={{ fontSize: 9, color: "var(--text-6)", marginLeft: 4 }}>{extraParties}</span>}
+                          </td>
+                          <td style={{ padding: "7px 8px", fontFamily: "monospace", fontSize: 10, color: "var(--text-4)" }}>{c.caseNumber || "—"}</td>
+                          <td style={{ padding: "7px 8px", color: "#8b5cf6", fontWeight: 700 }}>{c.chapter || "—"}</td>
+                          <td style={{ padding: "7px 8px", color: "var(--text-5)" }}>{c.court || "—"}</td>
+                          <td style={{ padding: "7px 8px", color: "var(--text-5)", whiteSpace: "nowrap" }}>{fmtDate(c.dateFiled)}</td>
+                          <td style={{ padding: "7px 8px" }}><StatusBadge status={c.status || "active"} /></td>
+                          <td style={{ padding: "7px 8px", color: "var(--text-3)", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{clientNames || "—"}</td>
+                          <td style={{ padding: "7px 8px" }}>
+                            <span style={{ fontSize: 9, fontWeight: 700, color: c.matchConfidence === "high" ? "#22c55e" : "#f59e0b" }}>
+                              {c.matchConfidence === "high" ? "High" : "Low"}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 10, justifyContent: "flex-end" }}>
+                <span style={{ fontSize: 11, color: "var(--text-5)" }}>Page {page + 1} · {total} total</span>
+                <button onClick={() => load(page - 1)} disabled={page === 0}
+                  style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                    background: "var(--bg-input)", color: page === 0 ? "var(--text-7)" : "var(--text-3)",
+                    cursor: page === 0 ? "default" : "pointer" }}>
+                  ← Prev
+                </button>
+                <button onClick={() => load(page + 1)} disabled={cases.length < 50}
+                  style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                    background: "var(--bg-input)", color: cases.length < 50 ? "var(--text-7)" : "var(--text-3)",
+                    cursor: cases.length < 50 ? "default" : "pointer" }}>
+                  Next →
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Pulls ALL bankruptcy filings from PACER (complete national coverage),
+// matches debtor names against the client roster. Only case metadata is
+// retrieved — no documents or docket sheets are downloaded.
+function PacerSyncPanel({ clients = [], onNavigateToClient }) {
+  const [stats,  setStats]  = useState(null);
+  const [status, setStatus] = useState(null);
+  const [running,  setRunning]  = useState(false);
+  const [msg, setMsg] = useState(null);
+  const [backfillActive, setBackfillActive] = useState(false);
+  const [backfillMonth,  setBackfillMonth]  = useState(null);
+  const [backfillDone,   setBackfillDone]   = useState(false);
+
+  async function loadStats() {
+    const d = await fetch("/api/pacer-sync?stats=1").then(r => r.json()).catch(() => ({}));
+    setStats(d);
+  }
+  async function checkAuth() {
+    const d = await fetch("/api/pacer-sync?status=1").then(r => r.json()).catch(() => ({ ok: false, reason: "Network error" }));
+    setStatus(d);
+  }
+  useEffect(() => { loadStats(); checkAuth(); }, []);
+
+  async function runDaily() {
+    setRunning(true); setMsg(null);
+    try {
+      const r = await fetch("/api/pacer-sync", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "daily" }),
+      });
+      const d = await r.json();
+      setMsg(d.error ? `Error: ${d.error}` : `Done — scanned ${d.processed} filings, matched ${d.matched} clients (${dateRange(d)})`);
+      await loadStats();
+    } catch (e) { setMsg(`Error: ${e.message}`); }
+    setRunning(false);
+  }
+
+  function dateRange(d) { return d.dateFrom && d.dateTo ? `${d.dateFrom} → ${d.dateTo}` : ""; }
+
+  // Backfill: Jan 2020 → today, one month at a time
+  async function startBackfill() {
+    setBackfillActive(true); setBackfillDone(false); setMsg(null);
+    const synced = new Set(stats?.monthsSynced || []);
+
+    const start = new Date("2020-01-01");
+    const end   = new Date();
+    const months = [];
+    const cur = new Date(start);
+    while (cur <= end) {
+      const label = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, "0")}`;
+      if (!synced.has(label)) months.push(label);
+      cur.setMonth(cur.getMonth() + 1);
+    }
+
+    let totalProcessed = 0, totalMatched = 0;
+    for (const month of months) {
+      setBackfillMonth(month);
+      try {
+        const r = await fetch("/api/pacer-sync", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode: "month", month }),
+        });
+        const d = await r.json();
+        if (!d.ok && d.error) { setMsg(`Stopped at ${month}: ${d.error}`); break; }
+        totalProcessed += d.processed || 0;
+        totalMatched   += d.matched   || 0;
+        setMsg(`${month} done — ${totalProcessed.toLocaleString()} filings scanned, ${totalMatched} client matches so far`);
+      } catch (e) { setMsg(`Error on ${month}: ${e.message}`); break; }
+    }
+    await loadStats();
+    setBackfillActive(false);
+    setBackfillMonth(null);
+    setBackfillDone(true);
+    setMsg(prev => prev?.startsWith("Stopped") ? prev : `Backfill complete — ${totalProcessed.toLocaleString()} filings scanned, ${totalMatched} clients matched`);
+  }
+
+  const lastRun = stats?.stats;
+  const hasCreds = status?.ok === true;
+  const credsUnknown = status === null;
+
+  return (
+    <Card>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>PACER Bankruptcy Sync</div>
+          <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 3 }}>
+            Pulls ALL bankruptcy filings from PACER (complete national coverage). Retrieves case metadata only — no documents downloaded.
+            $0.10/page of 54 results; charges under $30/quarter waived automatically.
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {!credsUnknown && (
+            <span style={{
+              fontSize: 10, padding: "2px 8px", borderRadius: 4, fontWeight: 700,
+              background: hasCreds ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
+              color: hasCreds ? "#22c55e" : "#ef4444",
+              border: `1px solid ${hasCreds ? "#22c55e40" : "#ef444440"}`,
+            }}>
+              {hasCreds ? "PACER connected" : "Credentials missing"}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {!hasCreds && !credsUnknown && (
+        <div style={{ fontSize: 11, color: "#f59e0b", padding: "8px 12px", background: "#f59e0b10", borderRadius: 6, marginBottom: 12 }}>
+          Add <strong>PACER_USERNAME</strong> and <strong>PACER_PASSWORD</strong> to your Vercel environment variables.
+          {status?.reason && <span style={{ marginLeft: 6, color: "#fbbf24" }}>({status.reason})</span>}
+        </div>
+      )}
+
+      {/* Stats */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 14 }}>
+        {[
+          ["Months synced", (stats?.monthsSynced?.length ?? 0) + " / " + monthsSince2020()],
+          ["Last run processed", lastRun?.processed?.toLocaleString() ?? "—"],
+          ["Last run matched", lastRun?.matched?.toLocaleString() ?? "—"],
+          ["Total PACER cost", stats?.billing?.totalCost != null ? `$${Number(stats.billing.totalCost).toFixed(2)}` : "—"],
+        ].map(([l, v]) => (
+          <div key={l} style={{ padding: "10px 12px", background: "var(--bg-surface2)", borderRadius: 7, border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 9, color: "var(--text-7)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 3 }}>{l}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>{v}</div>
+          </div>
+        ))}
+      </div>
+
+      {lastRun?.ranAt && (
+        <div style={{ fontSize: 11, color: "var(--text-6)", marginBottom: 12 }}>
+          Last run {new Date(lastRun.ranAt).toLocaleString()} · {dateRange(lastRun)} · {lastRun.pages} pages · {lastRun.durationMs ? Math.round(lastRun.durationMs / 1000) + "s" : ""}
+          {lastRun.errorCount > 0 && <span style={{ color: "#f59e0b", marginLeft: 8 }}>{lastRun.errorCount} errors</span>}
+        </div>
+      )}
+
+      {msg && (
+        <div style={{
+          fontSize: 11, padding: "8px 12px", borderRadius: 6, marginBottom: 12,
+          background: msg.startsWith("Error") || msg.startsWith("Stopped") ? "rgba(239,68,68,0.08)" : "rgba(34,197,94,0.06)",
+          color:      msg.startsWith("Error") || msg.startsWith("Stopped") ? "#ef4444" : "#22c55e",
+          border: `1px solid ${msg.startsWith("Error") || msg.startsWith("Stopped") ? "rgba(239,68,68,0.25)" : "rgba(34,197,94,0.2)"}`,
+        }}>
+          {backfillActive && backfillMonth && <span style={{ marginRight: 8, color: "var(--text-5)" }}>Syncing {backfillMonth}…</span>}
+          {msg}
+        </div>
+      )}
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <Btn small onClick={runDaily} disabled={running || backfillActive || !hasCreds}>
+          {running ? "Running…" : "Sync Last 3 Days"}
+        </Btn>
+        <Btn small onClick={startBackfill} disabled={running || backfillActive || !hasCreds}
+          style={!backfillActive ? { background: "#8b5cf6", borderColor: "#8b5cf6" } : {}}>
+          {backfillActive ? `Backfilling ${backfillMonth || "…"}` : backfillDone ? "Re-run Backfill" : "Run 5-Year Backfill (Jan 2020 → Today)"}
+        </Btn>
+        <button onClick={() => { loadStats(); checkAuth(); }}
+          style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-input)", color: "var(--text-5)", cursor: "pointer" }}>
+          Refresh
+        </button>
+      </div>
+
+      <div style={{ fontSize: 10, color: "var(--text-7)", marginTop: 10 }}>
+        Backfill runs one calendar month at a time. Already-synced months are skipped.
+        The daily cron (6am) keeps it current automatically.
+        Matched filings appear on each client's bankruptcy panel below.
+      </div>
+
+      <MatchedCasesTable clients={clients} onNavigateToClient={onNavigateToClient} />
+    </Card>
+  );
+}
+
+function monthsSince2020() {
+  const start = new Date("2020-01-01");
+  const end   = new Date();
+  return (end.getFullYear() - start.getFullYear()) * 12 + end.getMonth() - start.getMonth() + 1;
+}
+
 // ── Main Clients tab ───────────────────────────────────────────────────────────
 export default function Clients() {
-  const [view, setView] = useState("database"); // database | import | match
+  const [view, setView] = useState("database"); // database | import | match | bankruptcy
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [firms, setFirms] = useState([]);
@@ -1922,9 +2361,10 @@ export default function Clients() {
       {/* ── View selector ── */}
       <div style={{ display: "flex", gap: 8, borderBottom: "1px solid var(--border)", paddingBottom: 0 }}>
         {[
-          { id: "database", label: `Client Database (${clients.length})` },
-          { id: "import",   label: "Import Clients" },
-          { id: "match",    label: "Match to Cases" },
+          { id: "database",    label: `Client Database (${clients.length})` },
+          { id: "import",      label: "Import Clients" },
+          { id: "match",       label: "Match to Cases" },
+          { id: "bankruptcy",  label: "Bankruptcy Sync" },
         ].map(v => (
           <button key={v.id} onClick={() => setView(v.id)} style={{
             padding: "9px 18px", border: "none", background: "transparent",
@@ -2560,6 +3000,17 @@ export default function Clients() {
             )}
           </Card>
         </div>
+      )}
+
+      {/* ── BANKRUPTCY SYNC VIEW ── */}
+      {view === "bankruptcy" && (
+        <PacerSyncPanel
+          clients={clients}
+          onNavigateToClient={(clientId) => {
+            const found = clients.find(c => c.id === clientId);
+            if (found) { setSelectedClient(found); setView("database"); }
+          }}
+        />
       )}
     </div>
   );

@@ -129,20 +129,26 @@ export async function importCase(raw) {
 }
 
 // Bulk import with per-record error isolation. Always invalidates the full-list cache.
+// Runs in parallel batches of 15 to balance throughput vs KV rate limits.
 export async function importCases(rawArray) {
   const created = [];
   const updated = [];
   const unchanged = [];
   const errors = [];
 
-  for (const raw of rawArray) {
-    try {
-      const result = await importCase(raw);
-      if (result.action === "created") created.push(result.id);
-      else if (result.action === "updated") updated.push(result.id);
-      else unchanged.push(result.id);
-    } catch (e) {
-      errors.push({ input: raw, error: e.message });
+  const BATCH = 15;
+  for (let i = 0; i < rawArray.length; i += BATCH) {
+    const slice = rawArray.slice(i, i + BATCH);
+    const results = await Promise.allSettled(slice.map(raw => importCase(raw)));
+    for (let j = 0; j < results.length; j++) {
+      const r = results[j];
+      if (r.status === "fulfilled") {
+        if (r.value.action === "created") created.push(r.value.id);
+        else if (r.value.action === "updated") updated.push(r.value.id);
+        else unchanged.push(r.value.id);
+      } else {
+        errors.push({ input: slice[j], error: r.reason?.message || String(r.reason) });
+      }
     }
   }
 

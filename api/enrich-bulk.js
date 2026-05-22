@@ -155,8 +155,9 @@ Return JSON array:
     const m = raw.match(/\[[\s\S]*\]/);
     if (!m) return {};
     const arr = JSON.parse(m[0]);
+    if (!Array.isArray(arr)) return {};
     const out = {};
-    for (const item of arr) { if (item.id) out[item.id] = item; }
+    for (const item of arr) { if (item && item.id) out[item.id] = item; }
     return out;
   } catch { return {}; }
 }

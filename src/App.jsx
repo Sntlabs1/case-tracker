@@ -19,6 +19,7 @@ import Defendants from "./tabs/Defendants.jsx";
 import PendingOutreach from "./tabs/PendingOutreach.jsx";
 import Portfolio from "./tabs/Portfolio.jsx";
 import Agents from "./tabs/Agents.jsx";
+import BankruptcyCases from "./tabs/BankruptcyCases.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const TABS = [
@@ -26,6 +27,7 @@ const TABS = [
   { id: "leads",        label: "Leads Inbox" },
   { id: "clients",      label: "Clients" },
   { id: "tcpa",         label: "TCPA Cases" },
+  { id: "bankruptcy",   label: "Bankruptcy Cases" },
   { id: "defendants",   label: "Defendants" },
   { id: "outreach",     label: "Pending Outreach" },
   { id: "portfolio",    label: "Portfolio" },
@@ -49,6 +51,10 @@ const PAGE_META = {
   leads:        {
     title: "Leads Inbox",
     desc:  "AI-scored leads pulled hourly from 50+ sources — FDA, NHTSA, CFPB, SEC, CourtListener, Reddit, PubMed, Google News, and more. Click any lead to expand a full litigation intelligence report. Use the filters to narrow by score, urgency, case type, or stage.",
+  },
+  bankruptcy:   {
+    title: "Bankruptcy Cases",
+    desc:  "All federal bankruptcy filings matched against the client roster via PACER. Filter by chapter (7, 11, 12, 13), status, or debtor name. Case metadata only — no documents downloaded.",
   },
   tcpa:         {
     title: "TCPA Cases",
@@ -317,6 +323,7 @@ export default function App() {
             {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
             {tab === "clients"      && <Clients />}
             {tab === "tcpa"         && <TCPACases />}
+            {tab === "bankruptcy"   && <BankruptcyCases />}
             {tab === "defendants"   && <Defendants />}
             {tab === "outreach"     && <PendingOutreach />}
             {tab === "portfolio"    && <Portfolio />}

@@ -36,7 +36,6 @@ export default async function handler(req, res) {
   if (req.method === "GET" && req.query?.searchIndex) {
     const meta = await kv.get(KEYS.searchMeta()).catch(() => null);
     if (!meta) {
-      rebuildSearchIndex().catch(() => {});
       return res.status(200).json({ pages: 0, total: 0, builtAt: null, building: true });
     }
     const m = typeof meta === "string" ? JSON.parse(meta) : meta;

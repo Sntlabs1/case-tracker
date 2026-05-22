@@ -67,6 +67,10 @@
     {
       "path": "/api/tcpa-ingest?source=topclassactions&mode=daily",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/pacer-sync?cron=daily",
+      "schedule": "0 6 * * *"
     }
   ],
   "functions": {
@@ -158,6 +162,9 @@
       "maxDuration": 30
     },
     "api/enrich-bulk.js": {
+      "maxDuration": 300
+    },
+    "api/pacer-sync.js": {
       "maxDuration": 300
     }
   },
