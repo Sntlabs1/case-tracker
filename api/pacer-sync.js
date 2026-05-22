@@ -246,16 +246,11 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
   }
 
   // Use Solr search endpoint — raw /dockets/ times out on any large date-range query.
-  // Filter by all 95 federal bankruptcy court IDs.
-  const params = new URLSearchParams({
-    type:         "r",
-    court:        courtIds.join(","),
-    filed_after:  dateFrom,
-    filed_before: dateTo,
-    order_by:     "dateFiled desc",
-    page_size:    String(PAGE_SIZE),
-  });
-  let url = `${CL_SEARCH}?${params}`;
+  // Build URL manually: URLSearchParams encodes commas as %2C but CourtListener
+  // requires literal commas in the court= parameter for comma-separated values.
+  const baseParams = `type=r&filed_after=${dateFrom}&filed_before=${dateTo}&order_by=dateFiled+desc&page_size=${PAGE_SIZE}`;
+  const courtParam = `court=${courtIds.join(",")}`;
+  let url = `${CL_SEARCH}?${baseParams}&${courtParam}`;
 
   while (url && pages < MAX_PAGES) {
     let data;
