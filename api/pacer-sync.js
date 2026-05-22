@@ -27,9 +27,11 @@
 
 import { kv } from "@vercel/kv";
 
-const CL_BASE      = "https://www.courtlistener.com/api/rest/v4";
+// Use the Solr-backed SEARCH endpoint — the raw /dockets/ endpoint times out
+// on any large date-range query (same issue the TCPA ingest source hit).
+const CL_SEARCH    = "https://www.courtlistener.com/api/rest/v4/search/";
 const PAGE_SIZE    = 100;
-const MAX_PAGES    = 200; // ~80s at 400ms/req; stays within 300s Vercel limit
+const MAX_PAGES    = 200;
 
 const KV_CURSOR    = "pacer:cursor";
 const KV_STATS     = "pacer:stats";
@@ -158,43 +160,52 @@ function matchDebtor(debtor, nameIndex) {
 // ── Docket normalizer ─────────────────────────────────────────────────────────
 
 function normalizeDocket(d, debtors) {
-  const rawCaseNum = d.docket_number || null;
+  // Search endpoint uses camelCase; raw dockets endpoint uses snake_case.
+  const rawCaseNum = d.docketNumber || d.docket_number || null;
+  const courtId    = d.court_id || d.court || null;
   const stableId   = rawCaseNum
-    ? `bkr_${rawCaseNum.replace(/[^a-zA-Z0-9]/g, "_")}_${d.court_id || "xx"}`
+    ? `bkr_${rawCaseNum.replace(/[^a-zA-Z0-9]/g, "_")}_${courtId || "xx"}`
     : `bkr_cl_${d.id || Date.now()}`;
 
-  // Map CourtListener NOS codes to chapter numbers
   const nosMap = { 70: "7", 71: "11", 72: "12", 73: "13" };
-  const chapter = d.chapter || nosMap[d.nature_of_suit] || null;
+  const nosRaw = d.nature_of_suit || d.natureOfSuit;
+  const chapter = d.chapter || nosMap[Number(nosRaw)] || null;
 
-  // Determine status — check specific discharge/dismiss dates first
+  const dateFiled  = d.dateFiled  || d.date_filed  || null;
+  const caseStatus = d.caseStatus || d.case_status || null;
+  const dateDischarge = d.dateDischarge || d.date_discharge || null;
+  const dateDismissed = d.dateDismissed || d.date_dismissed || null;
+
   let status = "active";
-  if (d.date_discharge) status = "discharged";
-  else if (d.date_dismissed) status = "dismissed";
-  else if (d.case_status) status = normalizeStatus(d.case_status);
+  if (dateDischarge)      status = "discharged";
+  else if (dateDismissed) status = "dismissed";
+  else if (caseStatus)    status = normalizeStatus(caseStatus);
 
+  const caseName = d.caseName || d.case_name || "";
   const primaryDebtor = debtors[0] || {};
   const debtorName = primaryDebtor.lastName
     ? `${primaryDebtor.lastName}, ${primaryDebtor.firstName || ""}`.trim().replace(/,\s*$/, "")
-    : (d.case_name || "").replace(/^in\s+re\s*/i, "").trim();
+    : caseName.replace(/^in\s+re\s*/i, "").trim();
+
+  const absUrl = d.absolute_url || d.absoluteUrl || null;
 
   return {
     id:              stableId,
     caseNumber:      rawCaseNum,
     chapter,
-    court:           d.court_id || null,
-    dateFiled:       d.date_filed || null,
-    disposition:     d.case_status || null,
+    court:           courtId,
+    dateFiled,
+    disposition:     caseStatus,
     status,
-    dispositionDate: d.date_discharge || d.date_dismissed || null,
+    dispositionDate: dateDischarge || dateDismissed || null,
     parties: debtors.map(deb => ({
       role: "debtor",
       name: `${deb.lastName || ""}, ${deb.firstName || ""}`.trim().replace(/,\s*$/, ""),
     })),
-    debtorName, // backward compat
-    sourceUrl:   d.absolute_url ? `https://www.courtlistener.com${d.absolute_url}` : null,
-    source:      "courtlistener",
-    ingestedAt:  new Date().toISOString(),
+    debtorName,
+    sourceUrl:  absUrl ? `https://www.courtlistener.com${absUrl}` : null,
+    source:     "courtlistener",
+    ingestedAt: new Date().toISOString(),
   };
 }
 
@@ -206,9 +217,17 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
   const clientUpdates = new Map();
   const caseIndex     = new Map();
 
-  let url = `${CL_BASE}/dockets/?court__jurisdiction=FB`
-    + `&date_filed__gte=${dateFrom}&date_filed__lte=${dateTo}`
-    + `&order_by=-date_filed&page_size=${PAGE_SIZE}`;
+  // Bankruptcy NOS codes: 70=Ch7, 71=Ch11, 72=Ch12, 73=Ch13
+  // Use the Solr search endpoint — raw /dockets/ times out on date-range queries.
+  const params = new URLSearchParams({
+    type:         "r",
+    q:            "nature_of_suit:(70 71 72 73)",
+    filed_after:  dateFrom,
+    filed_before: dateTo,
+    order_by:     "dateFiled desc",
+    page_size:    String(PAGE_SIZE),
+  });
+  let url = `${CL_SEARCH}?${params}`;
 
   while (url && pages < MAX_PAGES) {
     let data;
@@ -218,8 +237,9 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
         signal: AbortSignal.timeout(30_000),
       });
       if (r.status === 429) {
-        errors.push({ page: pages, error: "Rate limited — try again later or add COURTLISTENER_API_TOKEN" });
-        break;
+        const retryAfter = parseInt(r.headers.get("retry-after") || "10", 10);
+        await new Promise(res => setTimeout(res, (retryAfter + 1) * 1000));
+        continue; // retry same url
       }
       if (!r.ok) {
         const txt = await r.text().catch(() => "");
