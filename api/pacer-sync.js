@@ -49,6 +49,27 @@ function clHeaders() {
     : { Accept: "application/json" };
 }
 
+// Fetch all federal bankruptcy court IDs from CourtListener, cached in KV for 30 days.
+async function getBKCourtIds() {
+  const cacheKey = "bkr:court_ids";
+  const cached = await kv.get(cacheKey).catch(() => null);
+  if (cached) return Array.isArray(cached) ? cached : JSON.parse(cached);
+
+  const ids = [];
+  let url = "https://www.courtlistener.com/api/rest/v4/courts/?jurisdiction=FB&page_size=100";
+  while (url) {
+    const r = await fetch(url, { headers: clHeaders(), signal: AbortSignal.timeout(15_000) });
+    if (!r.ok) break;
+    const d = await r.json();
+    for (const c of d.results || []) ids.push(c.id);
+    url = d.next || null;
+  }
+  if (ids.length > 0) {
+    await kv.set(cacheKey, JSON.stringify(ids), { ex: 30 * 24 * 3600 }).catch(() => {});
+  }
+  return ids;
+}
+
 // ── Debtor name extraction ────────────────────────────────────────────────────
 // Bankruptcy captions: "In re Smith, John A." / "In re Smith, John and Doe, Jane"
 // Returns array of { lastName, firstName } objects (handles joint filers).
@@ -217,11 +238,18 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
   const clientUpdates = new Map();
   const caseIndex     = new Map();
 
-  // Bankruptcy NOS codes: 70=Ch7, 71=Ch11, 72=Ch12, 73=Ch13
-  // Use the Solr search endpoint — raw /dockets/ times out on date-range queries.
+  // Get all bankruptcy court IDs (cached in KV, fetched from CL courts API once)
+  const courtIds = await getBKCourtIds();
+  if (!courtIds.length) {
+    errors.push({ error: "Could not load bankruptcy court IDs from CourtListener" });
+    return { processed, matched, pages, errors };
+  }
+
+  // Use Solr search endpoint — raw /dockets/ times out on any large date-range query.
+  // Filter by all 95 federal bankruptcy court IDs.
   const params = new URLSearchParams({
     type:         "r",
-    q:            "nature_of_suit:(70 71 72 73)",
+    court:        courtIds.join(","),
     filed_after:  dateFrom,
     filed_before: dateTo,
     order_by:     "dateFiled desc",
