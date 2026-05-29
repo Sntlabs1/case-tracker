@@ -179,6 +179,10 @@ export async function recomputeClient(clientId, { threshold, topN, useCandidateS
   if (!raw) return { error: "client not found" };
   const client = typeof raw === "string" ? JSON.parse(raw) : raw;
 
+  // Snapshot the currently-indexed case members BEFORE recomputing so we can
+  // diff and remove stale entries from each dropped case's case_matches index.
+  const oldCaseIds = await kv.zrange(`tcpa:client_matches:${clientId}`, 0, -1).catch(() => []);
+
   // Coverage decision: until the scoring rubric is finalized, score every
   // client × every case so we don't lose visibility into edge cases. Once the
   // formula stabilizes, set useCandidateSet=true to drop to <500 candidates
@@ -202,6 +206,20 @@ export async function recomputeClient(clientId, { threshold, topN, useCandidateS
   if (scored.length) {
     await kv.zadd(key, ...scored.map((s) => ({ score: s.score, member: s.caseId })));
   }
+
+  // Remove this client from any case_matches index that is no longer in the
+  // new scored set (stale cross-index cleanup). Batch via Promise.all to avoid
+  // N sequential round-trips.
+  const newCaseIdSet = new Set(scored.map((s) => s.caseId));
+  const droppedCaseIds = oldCaseIds.filter((id) => !newCaseIdSet.has(id));
+  if (droppedCaseIds.length) {
+    await Promise.all(
+      droppedCaseIds.map((caseId) =>
+        kv.zrem(`tcpa:case_matches:${caseId}`, clientId).catch(() => {})
+      )
+    );
+  }
+
   // Fan out into the case-side index.
   await Promise.all(scored.map((s) =>
     kv.zadd(`tcpa:case_matches:${s.caseId}`, { score: s.score, member: clientId })
@@ -258,6 +276,11 @@ export async function recomputeCase(caseId, { threshold }) {
   const raw = await kv.get(TCPA_KEYS.case(caseId));
   if (!raw) return { error: "case not found" };
   const caseRecord = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+  // Snapshot the currently-indexed client members BEFORE recomputing so we can
+  // diff and remove stale entries from each dropped client's client_matches index.
+  const oldClientIds = await kv.zrange(`tcpa:case_matches:${caseId}`, 0, -1).catch(() => []);
+
   const clients = await loadAllClients();
   const scored = clients
     .map((c) => ({ clientId: c.id, ...scoreTcpaPair(c, caseRecord) }))
@@ -269,6 +292,20 @@ export async function recomputeCase(caseId, { threshold }) {
   if (scored.length) {
     await kv.zadd(key, ...scored.map((s) => ({ score: s.score, member: s.clientId })));
   }
+
+  // Remove this case from any client_matches index that is no longer in the
+  // new scored set (stale cross-index cleanup). Batch via Promise.all to avoid
+  // N sequential round-trips.
+  const newClientIdSet = new Set(scored.map((s) => s.clientId));
+  const droppedClientIds = oldClientIds.filter((id) => !newClientIdSet.has(id));
+  if (droppedClientIds.length) {
+    await Promise.all(
+      droppedClientIds.map((clientId) =>
+        kv.zrem(`tcpa:client_matches:${clientId}`, caseId).catch(() => {})
+      )
+    );
+  }
+
   // Fan out into the client-side index — additive (don't overwrite the client's
   // top-N from other cases, but make sure this case is reflected).
   await Promise.all(scored.map((s) =>
@@ -321,6 +358,31 @@ async function recomputeAll({ threshold, topN, useCandidateSet = false }) {
   for (const c of clients) {
     results.push(await recomputeClient(c.id, { threshold, topN, useCandidateSet }));
   }
+
+  // ── Issue 16: prune unbounded sorted sets ───────────────────────────────────
+  // Keep outreach:pending bounded to the top 10,000 highest-scoring pairs.
+  // zremrangebyrank with 0..-10001 removes everything BELOW the top 10,000.
+  await kv.zremrangebyrank(OUTREACH_PENDING, 0, -10001).catch(() => {});
+
+  // Prune outreach:dismissed of entries whose client no longer exists.
+  // Only run when the set is large enough to be worth the scan cost.
+  const dismissedCount = await kv.zcard(OUTREACH_DISMISSED).catch(() => 0);
+  if (dismissedCount > 5000) {
+    const dismissed = await kv.zrange(OUTREACH_DISMISSED, 0, -1).catch(() => []);
+    // Process in batches of 500 to avoid holding too many promises in flight.
+    const PRUNE_BATCH = 500;
+    for (let i = 0; i < dismissed.length; i += PRUNE_BATCH) {
+      const toCheck = dismissed.slice(i, i + PRUNE_BATCH);
+      const exists = await Promise.all(
+        toCheck.map((pair) => kv.exists(`client:${pair.split("|")[0]}`).catch(() => 1))
+      );
+      const stale = toCheck.filter((_, j) => !exists[j]);
+      if (stale.length > 0) {
+        await kv.zrem(OUTREACH_DISMISSED, ...stale).catch(() => {});
+      }
+    }
+  }
+
   return { clients: clients.length, totalPersisted: results.reduce((acc, r) => acc + (r.persisted || 0), 0) };
 }
 
@@ -331,9 +393,14 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).end();
 
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const { mode, id, max } = req.query;
-  const threshold = parseInt(req.body?.threshold ?? DEFAULT_THRESHOLD);
-  const topN = parseInt(req.body?.topN ?? DEFAULT_TOP_N);
+  const threshold = parseInt(req.body?.threshold ?? DEFAULT_THRESHOLD, 10);
+  const topN = parseInt(req.body?.topN ?? DEFAULT_TOP_N, 10);
   // ?candidates=1 opts into the candidate-set fast path; default is full scan
   // so we don't filter any cases out while the scoring rubric is still being
   // tuned. Flip via query string when scaling becomes the priority.
@@ -351,11 +418,11 @@ export default async function handler(req, res) {
       return res.status(out.error ? 404 : 200).json(out);
     }
     if (mode === "pending" || mode === "cases_pending") {
-      const out = await drainPendingCases({ threshold, max: parseInt(max || "50") });
+      const out = await drainPendingCases({ threshold, max: parseInt(max || "50", 10) });
       return res.status(200).json(out);
     }
     if (mode === "clients_pending") {
-      const out = await drainPendingClients({ threshold, topN, max: parseInt(max || "20"), useCandidateSet });
+      const out = await drainPendingClients({ threshold, topN, max: parseInt(max || "20", 10), useCandidateSet });
       return res.status(200).json(out);
     }
     if (mode === "all") {

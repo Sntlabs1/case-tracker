@@ -2418,9 +2418,10 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
     if (onAddCase) onAddCase();
   };
 
+  // `leads` useMemo already applies all filters including filterUrgency and filterCaseStage;
+  // only sort here — no redundant re-filtering.
   const visibleLeads = leads
-    .filter(l => !filterUrgency || l.analysis?.timeline?.urgencyLevel === filterUrgency)
-    .filter(l => !filterCaseStage || l.analysis?.caseStage === filterCaseStage)
+    .slice()
     .sort((a, b) => (b.analysis?.score || 0) - (a.analysis?.score || 0));
 
   // Build a lookup map for OpportunityCard to resolve source + URL from supporting signal titles
@@ -2563,12 +2564,19 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
             <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
               <div style={{ fontSize: 13 }}>Loading leads...</div>
             </div>
-          ) : visibleLeads.length === 0 ? (
+          ) : allLeads.length === 0 ? (
             <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
               <div style={{ fontSize: 40, marginBottom: 12 }}>📥</div>
               <div style={{ marginBottom: 8 }}>No leads yet.</div>
               <div style={{ fontSize: 12, color: "#444" }}>
                 {error ? "Check Vercel deployment and KV configuration." : "Click \"Run Scan Now\" to monitor 50+ sources: FDA, CPSC, NHTSA, SEC, DOJ, EEOC, courts, Reddit, news, social media, PubMed, CFPB."}
+              </div>
+            </div>
+          ) : visibleLeads.length === 0 ? (
+            <div style={{ textAlign: "center", color: "#555", padding: 60 }}>
+              <div style={{ marginBottom: 8 }}>No leads match the current filters.</div>
+              <div style={{ fontSize: 12, color: "#444" }}>
+                Try adjusting your filters or lowering the minimum score.
               </div>
             </div>
           ) : (

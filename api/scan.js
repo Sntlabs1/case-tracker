@@ -1053,14 +1053,16 @@ async function fetchClaudeWebSearch(query) {
 // Skip only: Reddit (post text already in item.description), raw binary storage blobs
 const SKIP_FULLTEXT = ["reddit.com", "storage.googleapis.com", "storage.courtlistener.com"];
 
-// Guard against SSRF — only allow public HTTPS URLs (Issue 5)
+// Guard against SSRF — only allow public HTTPS URLs (Issue 5 / Issue 10)
 function isSafeUrl(url) {
   try {
     const u = new URL(url);
     if (u.protocol !== 'https:') return false;
     const host = u.hostname;
-    // Block RFC-1918 and loopback
-    if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|::1|localhost)/i.test(host)) return false;
+    // Block RFC-1918, loopback, and all-interfaces addresses
+    if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.0\.0\.0|::1|localhost)/i.test(host)) return false;
+    // Block IPv6 unspecified, link-local, and ULA (RFC 4193) addresses
+    if (/^(\[::|\[fe80|\[fd)/i.test(host)) return false;
     return true;
   } catch { return false; }
 }
@@ -1578,7 +1580,8 @@ export default async function handler(req, res) {
 
   // Admin-secret check for destructive operations — must come before any purge/reset/reseed branch.
   if (req.query.purge === "1" || req.query.reset === "1" || req.query.reseed === "1") {
-    if (req.headers['x-admin-secret'] !== process.env.ADMIN_SECRET) {
+    const adminSecret = process.env.ADMIN_SECRET;
+    if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
       return res.status(401).json({ error: "Unauthorized" });
     }
   }
@@ -1718,6 +1721,9 @@ export default async function handler(req, res) {
 
     // Bust paginated leads cache so new leads appear in the inbox immediately.
     await kv.del(LEADS_CACHE_KEY).catch(() => {});
+
+    // Keep at most 5000 leads in the sorted set (prune lowest-scored) — Issue 11
+    await kv.zremrangebyrank("leads_by_score", 0, -(5001)).catch(() => {});
 
     return res.status(200).json({
       mode, runId, processed: analyzedCount, highPriority: highCount,

@@ -174,7 +174,6 @@ export default async function handler(req, res) {
 
     let opportunities;
     try { opportunities = JSON.parse(match[0]); } catch { opportunities = []; }
-    console.log(`Opportunities synthesis: ${opportunities.length} opportunities from ${leads.length} leads`);
 
     const result = {
       opportunities,

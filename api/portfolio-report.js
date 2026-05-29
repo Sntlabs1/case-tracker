@@ -388,6 +388,11 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "GET") return res.status(405).end();
 
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const { partner, format = "html", fresh, topN, meta } = req.query || {};
   const partnerId = partner ? String(partner).toLowerCase() : null;
 

@@ -336,6 +336,23 @@ export default async function handler(req, res) {
     }
     await Promise.all(ops);
     await kv.del(CLIENTS_CACHE_KEY).catch(() => {});
+
+    // Clean up match indexes for the deleted client.
+    // Note: removing the client from every tcpa:case_matches:${caseId} set would
+    // require scanning every case index (expensive). Skipped intentionally —
+    // outreach-pending.js already lazily drops null client refs at read time.
+    await Promise.allSettled([
+      kv.del(`tcpa:client_matches:${id}`),
+      kv.zrem(CLIENTS_PENDING_MATCH, id),
+      // Remove all outreach:pending entries for this client.
+      // Members are "clientId|caseId" strings; filter and bulk-remove.
+      (async () => {
+        const pairs = await kv.zrange("outreach:pending", 0, -1).catch(() => []);
+        const toRemove = pairs.filter((p) => p.startsWith(`${id}|`));
+        if (toRemove.length > 0) await kv.zrem("outreach:pending", ...toRemove);
+      })(),
+    ]);
+
     return res.status(200).json({ deleted: id });
   }
 

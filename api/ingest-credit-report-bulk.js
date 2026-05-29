@@ -325,6 +325,20 @@ async function parseBody(file, contentType, text) {
   return reports.map(reportToClient);
 }
 
+// Guard against SSRF — only allow public HTTPS URLs
+function isSafeUrl(url) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:') return false;
+    const host = u.hostname;
+    // Block RFC-1918, loopback, and all-interfaces addresses
+    if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.0\.0\.0|::1|localhost)/i.test(host)) return false;
+    // Block IPv6 unspecified, link-local, and ULA (RFC 4193) addresses
+    if (/^(\[::|\[fe80|\[fd)/i.test(host)) return false;
+    return true;
+  } catch { return false; }
+}
+
 // Stream a remote URL and return its text.
 async function fetchRemoteText(url) {
   const r = await fetch(url, { headers: { "Accept-Encoding": "gzip" } });
@@ -377,6 +391,15 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner");
   if (req.method === "OPTIONS") return res.status(200).end();
 
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+    return res.status(503).json({ ok: false, error: 'KV not configured' });
+  }
+
   // ── GET — poll job status ────────────────────────────────────────────────
   if (req.method === "GET") {
     const { jobId } = req.query || {};
@@ -424,6 +447,9 @@ export default async function handler(req, res) {
       }
 
     } else if (body.url) {
+      if (!isSafeUrl(body.url)) {
+        return res.status(400).json({ error: 'Invalid or unsafe URL' });
+      }
       sourceInfo = body.url;
       const text = await fetchRemoteText(body.url);
       const isJson = body.url.endsWith(".json");

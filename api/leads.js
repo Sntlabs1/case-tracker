@@ -63,9 +63,9 @@ export default async function handler(req, res) {
     limit = "2000",
   } = req.query;
 
-  const min = parseInt(minScore);
-  const max = parseInt(maxScore);
-  const lim = Math.min(parseInt(limit), 5000);
+  const min = parseInt(minScore, 10);
+  const max = parseInt(maxScore, 10);
+  const lim = Math.min(parseInt(limit, 10), 5000);
 
   // For the default unfiltered full-fetch, serve from a 5-minute KV cache.
   // This turns a ~990 KV-read pipeline into a single GET — ~99% reduction.

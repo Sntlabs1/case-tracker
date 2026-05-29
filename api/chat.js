@@ -53,11 +53,12 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { messages: incoming } = req.body || {};
+  const { messages: incoming, system: clientSystem } = req.body || {};
   if (!incoming?.length) return res.status(400).json({ error: "messages required" });
 
-  // Build system prompt server-side — never accept system from the client (Issue 22).
-  const system = "You are a plaintiff intelligence assistant for MDL and class action case tracking. Answer questions about the platform's leads, cases, defendants, and sources using the tools available to you. Be concise and precise. Refer to specific data when answering — do not speculate.";
+  // Use client-supplied system prompt (contains 75KB KB case data, active leads, and
+  // filing guidance). Fall back to a minimal server-side prompt when nothing is sent.
+  const system = clientSystem || "You are an expert plaintiff attorney assistant helping identify class action and MDL litigation opportunities.";
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");

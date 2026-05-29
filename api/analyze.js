@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   if (!prompt) return res.status(400).json({ error: "prompt required" });
 
   // Cap maxTokens to prevent runaway usage.
-  const safeMaxTokens = Math.min(parseInt(maxTokens) || 2048, 4096);
+  const safeMaxTokens = Math.min(parseInt(maxTokens, 10) || 2048, 4096);
 
   // Filter requested tools against the server-side whitelist.
   // Arbitrary tool injection from unauthenticated callers is blocked.
@@ -61,6 +61,9 @@ export default async function handler(req, res) {
       .map(b => b.text || "")
       .filter(Boolean)
       .join("\n");
+    if (!text) {
+      return res.status(502).json({ error: 'Model returned no text content', stop_reason: data.stop_reason });
+    }
     return res.status(200).json({ text });
   } catch (e) {
     return res.status(500).json({ error: e.message });

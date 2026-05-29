@@ -1152,12 +1152,16 @@ function PendingOutreachPanel() {
                 </div>
                 <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
                   <button
-                    onClick={() => alert("Letter drafting flow lands here — wires into bulk-outreach with this exact client+case pair.")}
+                    disabled
+                    title="To draft a letter for this client, use the New Campaign wizard: select the matching lead, pick this client, and generate."
+                    onClick={() => {
+                      console.warn("[PendingOutreach] Letter drafting stub — use the New Campaign wizard to generate letters for this client+case pair.", { client: item.client, case: item.case });
+                    }}
                     style={{
                       padding: "6px 12px", borderRadius: 999,
-                      background: "var(--accent)", color: "var(--accent-text)",
-                      border: "none", cursor: "pointer",
-                      fontSize: 11, fontWeight: 700,
+                      background: "var(--bg-surface)", color: "var(--text-5)",
+                      border: "1px solid var(--border)", cursor: "not-allowed",
+                      fontSize: 11, fontWeight: 600, opacity: 0.65,
                     }}
                   >
                     Review & draft
