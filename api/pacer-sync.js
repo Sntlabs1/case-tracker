@@ -378,6 +378,7 @@ export default async function handler(req, res) {
     const page    = Math.max(0, parseInt(req.query?.page || "0"));
     const chapter = req.query?.chapter || null;
     const status  = req.query?.status  || null;
+    const search  = req.query?.search  ? String(req.query.search).toLowerCase().trim() : null;
     const total   = await kv.zcard(KV_CASES_ZSET).catch(() => 0);
     const ids     = await kv.zrange(KV_CASES_ZSET, page * 50, page * 50 + 49, { rev: true }).catch(() => []);
 
@@ -389,6 +390,10 @@ export default async function handler(req, res) {
 
     if (chapter) cases = cases.filter(c => String(c.chapter) === chapter);
     if (status)  cases = cases.filter(c => c.status === status);
+    if (search)  cases = cases.filter(c =>
+      (c.debtorName  || "").toLowerCase().includes(search) ||
+      (c.caseNumber  || "").toLowerCase().includes(search)
+    );
 
     return res.status(200).json({ cases, total, page, pageSize: 50 });
   }

@@ -477,6 +477,17 @@ function CaseBrief({ tcase }) {
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState(null);
+  const [briefError, setBriefError] = useState(null);
+
+  // Guard: if the case has no valid ID we cannot fetch a brief.
+  if (!tcase?.id) {
+    return (
+      <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>Case Brief</div>
+        <div style={{ fontSize: 11, color: "var(--text-5)" }}>Case ID unavailable — cannot load brief.</div>
+      </div>
+    );
+  }
 
   // Try the KV cache on mount. If a brief was already generated for this case,
   // show it instantly. Otherwise show the "Generate" CTA.
@@ -484,6 +495,7 @@ function CaseBrief({ tcase }) {
     setBrief(null);
     setGeneratedAt(null);
     setError(null);
+    setBriefError(null);
     setChecking(true);
     fetch(`/api/tcpa-brief?id=${encodeURIComponent(tcase.id)}`)
       .then((r) => r.json())
@@ -493,7 +505,7 @@ function CaseBrief({ tcase }) {
           setGeneratedAt(d.generatedAt || null);
         }
       })
-      .catch(() => {})
+      .catch((err) => { setBriefError("Failed to load brief"); console.error(err); })
       .finally(() => setChecking(false));
   }, [tcase.id]);
 
@@ -521,6 +533,15 @@ function CaseBrief({ tcase }) {
       <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>Case Brief</div>
         <div style={{ fontSize: 11, color: "var(--text-6)" }}>Loading…</div>
+      </div>
+    );
+  }
+
+  if (briefError) {
+    return (
+      <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", marginBottom: 6 }}>Case Brief</div>
+        <div style={{ fontSize: 12, color: "#f87171" }}>{briefError}</div>
       </div>
     );
   }

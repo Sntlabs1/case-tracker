@@ -1249,40 +1249,17 @@ Return ONLY valid JSON (no markdown) with this structure:
 }`;
 
     try {
-      const res = await fetch("/api/chat", {
+      const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{ role: "user", content: prompt }],
-          system: "You are a precise legal research analyst. Return only the JSON requested with no extra text.",
-          stream: false,
+          prompt,
+          maxTokens: 1500,
         }),
       });
 
-      // /api/chat returns Anthropic SSE — stream and accumulate text deltas
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let jsonText = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop();
-        for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
-          const raw = line.slice(6).trim();
-          if (raw === "[DONE]") continue;
-          try {
-            const ev = JSON.parse(raw);
-            // Anthropic SSE: content_block_delta with delta.type = text_delta
-            if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta") {
-              jsonText += ev.delta.text || "";
-            }
-          } catch {}
-        }
-      }
+      const resData = await res.json();
+      const jsonText = resData.content?.[0]?.text ?? resData.text ?? "";
       const cleaned = jsonText.replace(/```json\n?|\n?```/g, "").trim();
       // Find the JSON object
       const start = cleaned.indexOf("{");

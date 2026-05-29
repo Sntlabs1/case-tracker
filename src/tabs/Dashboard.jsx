@@ -84,6 +84,7 @@ function HeroPill({ label, tone = "default" }) {
 function ScanHealthBanner({ scanHealth }) {
   const [running, setRunning] = useState(false);
   const [triggered, setTriggered] = useState(null); // null | "fetch" | "analyze"
+  const [triggerError, setTriggerError] = useState(null);
 
   if (!scanHealth) return null;
   // Only show when there's a problem OR there's queue depth worth surfacing.
@@ -99,13 +100,14 @@ function ScanHealthBanner({ scanHealth }) {
 
   async function trigger(mode) {
     if (running) return;
+    setTriggerError(null);
     setRunning(true);
     try {
-      // Fire-and-forget. Fetch takes ~120s; analyze takes ~60-90s. Both
-      // exceed normal browser request lifetime — the freshness agent's next
-      // tick will show success.
-      fetch(`/api/scan?mode=${mode}`).catch(() => {});
+      const r = await fetch(`/api/scan?mode=${mode}`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
       setTriggered(mode);
+    } catch (err) {
+      setTriggerError(`Scan trigger failed: ${err.message}`);
     } finally {
       setTimeout(() => setRunning(false), 10_000);
     }
@@ -138,6 +140,9 @@ function ScanHealthBanner({ scanHealth }) {
             {headline}
           </div>
           <div style={{ fontSize: 11, color: palette.text }}>{subline}</div>
+          {triggerError && (
+            <div style={{ fontSize: 11, color: "#ef4444", marginTop: 4 }}>{triggerError}</div>
+          )}
         </div>
       </div>
       <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
@@ -1094,8 +1099,10 @@ function BriefingModal({ onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetch("/api/briefing?generate=1")
+  function doFetch(forceRegenerate = false) {
+    setLoading(true);
+    setError(null);
+    fetch(forceRegenerate ? "/api/briefing?generate=1" : "/api/briefing")
       .then(r => r.json())
       .then(d => {
         if (d.error) throw new Error(d.error);
@@ -1103,7 +1110,9 @@ function BriefingModal({ onClose }) {
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }
+
+  useEffect(() => { doFetch(false); }, []);
 
   return (
     <>
@@ -1149,25 +1158,39 @@ function BriefingModal({ onClose }) {
               </div>
             )}
           </div>
-          <button
-            onClick={onClose}
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: 6, padding: "6px 10px",
-              color: "#888", cursor: "pointer", fontSize: 14,
-            }}
-          >
-            ✕
-          </button>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              onClick={() => doFetch(true)}
+              disabled={loading}
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 6, padding: "5px 10px",
+                color: "#888", cursor: loading ? "wait" : "pointer", fontSize: 12,
+              }}
+            >
+              {loading ? "Loading…" : "Refresh"}
+            </button>
+            <button
+              onClick={onClose}
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 6, padding: "6px 10px",
+                color: "#888", cursor: "pointer", fontSize: 14,
+              }}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Modal body */}
         <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
           {loading && (
             <div style={{ textAlign: "center", padding: "48px 0" }}>
-              <div style={{ fontSize: 13, color: "var(--text-5)", marginBottom: 6 }}>Generating briefing…</div>
-              <div style={{ fontSize: 11, color: "var(--text-7)" }}>Fetching leads, opportunities, and SOL alerts — this takes 10–20 seconds</div>
+              <div style={{ fontSize: 13, color: "var(--text-5)", marginBottom: 6 }}>Loading briefing…</div>
+              <div style={{ fontSize: 11, color: "var(--text-7)" }}>Fetching from cache or generating fresh — this may take 10–20 seconds</div>
             </div>
           )}
           {error && (
@@ -1291,7 +1314,7 @@ export default function Dashboard({ cases, setTab, setSelectedCase, setCaseFilte
   const topCases = [...cases].sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 5);
 
   // ── SOL alert computation ──────────────────────────────────────────────────
-  const TODAY = new Date("2026-03-19");
+  const TODAY = new Date();
   const solAlertCases = useMemo(() => {
     return cases
       .filter(c => {

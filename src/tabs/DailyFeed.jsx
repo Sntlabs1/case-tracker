@@ -286,6 +286,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
 
   // ── Fetch leads + stats from backend KV ──────────────────────────────────
   const fetchLeads = useCallback(async () => {
+    setLoading(true);
     try {
       const [leadsRes, statsRes] = await Promise.all([
         fetch("/api/leads?minScore=0"),
@@ -301,8 +302,9 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
       if (statsData.lastScan?.timestamp) setLastScanTime(statsData.lastScan.timestamp);
     } catch (e) {
       console.error("DailyFeed fetch failed:", e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);

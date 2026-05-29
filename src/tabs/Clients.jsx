@@ -92,7 +92,7 @@ function InlineLeadMatch({ client }) {
 
   useEffect(() => {
     if (!open || leads) return;
-    fetch("/api/leads?limit=200")
+    fetch("/api/leads?limit=2000")
       .then(r => r.json())
       .then(d => setLeads(d.leads || d.items || []))
       .catch(() => setLeads([]));

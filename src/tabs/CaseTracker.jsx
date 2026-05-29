@@ -36,7 +36,7 @@ function gradeColor(grade) {
 
 // ─── SOL HELPERS ───────────────────────────────────────────────────────────────
 
-const TODAY_SOL = new Date("2026-03-19");
+const TODAY_SOL = new Date();
 
 function solDaysRemaining(solDate) {
   if (!solDate) return null;
@@ -601,6 +601,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
   const [filterPriority, setFilterPriority] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [searchQ, setSearchQ] = useState("");
+  const [filterStage, setFilterStage] = useState("");
   const [showAddCase, setShowAddCase] = useState(false);
   const [viewMode, setViewMode] = useState("list"); // "list" | "sol"
   const [newCase, setNewCase] = useState({ title: "", source: "", caseType: "", priority: "Medium", status: "New Lead", affectedPop: "", company: "", description: "", notes: "", score: 50, jurisdiction: "" });
@@ -615,6 +616,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
     if (filterType && c.caseType !== filterType) return false;
     if (filterPriority && c.priority !== filterPriority) return false;
     if (filterStatus && c.status !== filterStatus) return false;
+    if (filterStage && c.caseStage !== filterStage) return false;
     if (searchQ && !JSON.stringify(c).toLowerCase().includes(searchQ.toLowerCase())) return false;
     return true;
   });
@@ -633,7 +635,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
   const topDefendants = Object.entries(defendantCounts).sort((a,b) => b[1]-a[1]).slice(0, 6);
 
   const addCase = () => {
-    setCases(p => [...p, { ...newCase, id: Date.now(), dateAdded: new Date().toISOString().split("T")[0] }]);
+    setCases(p => [...p, { ...newCase, id: crypto.randomUUID(), dateAdded: new Date().toISOString().split("T")[0] }]);
     setNewCase({ title: "", source: "", caseType: "", priority: "Medium", status: "New Lead", affectedPop: "", company: "", description: "", notes: "", score: 50, jurisdiction: "" });
     setShowAddCase(false);
   };
@@ -714,9 +716,9 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
                 <div style={{ fontSize: 24, fontWeight: 800, color: "#22c55e", lineHeight: 1 }}>{cases.filter(c => c.caseStage === "Settlement Discussions").length}</div>
                 <div style={{ fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em" }}>Settlement</div>
               </div>
-              {(filterType || filterPriority || filterStatus || searchQ) && (
+              {(filterType || filterPriority || filterStatus || filterStage || searchQ) && (
                 <div style={{ display: "flex", alignItems: "center", marginLeft: "auto" }}>
-                  <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setSearchQ(""); }}
+                  <button onClick={() => { setFilterType(""); setFilterPriority(""); setFilterStatus(""); setFilterStage(""); setSearchQ(""); }}
                     style={{ fontSize: 11, color: "var(--accent)", background: "none", border: "1px solid rgba(94,234,212,0.3)", borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>
                     Clear filters · {filtered.length} shown
                   </button>
@@ -745,11 +747,11 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
               <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>By Stage</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {Object.entries(stageCounts).sort((a,b) => b[1]-a[1]).map(([stage, count]) => (
-                  <button key={stage} onClick={() => setSearchQ(searchQ === stage ? "" : stage)}
+                  <button key={stage} onClick={() => setFilterStage(filterStage === stage ? "" : stage)}
                     style={{ fontSize: 11, padding: "3px 10px", borderRadius: 20, cursor: "pointer", border: "1px solid",
-                      background: searchQ === stage ? `${stageColor(stage)}22` : "rgba(255,255,255,0.04)",
-                      borderColor: searchQ === stage ? `${stageColor(stage)}55` : "rgba(255,255,255,0.08)",
-                      color: searchQ === stage ? stageColor(stage) : "#888" }}>
+                      background: filterStage === stage ? `${stageColor(stage)}22` : "rgba(255,255,255,0.04)",
+                      borderColor: filterStage === stage ? `${stageColor(stage)}55` : "rgba(255,255,255,0.08)",
+                      color: filterStage === stage ? stageColor(stage) : "#888" }}>
                     {stage} <span style={{ opacity: 0.6 }}>{count}</span>
                   </button>
                 ))}

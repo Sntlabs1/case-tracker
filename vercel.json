@@ -90,7 +90,7 @@
       "maxDuration": 120
     },
     "api/brief.js": {
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "api/judge.js": {
       "maxDuration": 60
@@ -126,7 +126,7 @@
       "maxDuration": 60
     },
     "api/briefing.js": {
-      "maxDuration": 60
+      "maxDuration": 120
     },
     "api/bulk-outreach.js": {
       "maxDuration": 60

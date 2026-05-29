@@ -47,7 +47,7 @@ function Spinner({ size = 14 }) {
 }
 
 // ── Campaign list card ────────────────────────────────────────────────────────
-function CampaignCard({ campaign, onOpen, onDelete }) {
+function CampaignCard({ campaign, onOpen, onDelete, onCancelDelete, isPendingDelete }) {
   const [hov, setHov] = useState(false);
   const total    = campaign.clientCount    || 0;
   const sent     = campaign.sentCount      || 0;
@@ -61,11 +61,11 @@ function CampaignCard({ campaign, onOpen, onDelete }) {
       onMouseLeave={() => setHov(false)}
       style={{
         padding: "16px 20px", borderRadius: 10, cursor: "pointer",
-        background: hov ? "var(--bg-card-hov)" : "var(--bg-card)",
-        border: `1px solid ${hov ? "var(--border-hov)" : "var(--border)"}`,
+        background: isPendingDelete ? "rgba(239,68,68,0.07)" : hov ? "var(--bg-card-hov)" : "var(--bg-card)",
+        border: `1px solid ${isPendingDelete ? "rgba(239,68,68,0.4)" : hov ? "var(--border-hov)" : "var(--border)"}`,
         transition: "all 0.13s",
       }}
-      onClick={onOpen}
+      onClick={isPendingDelete ? undefined : onOpen}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -90,7 +90,23 @@ function CampaignCard({ campaign, onOpen, onDelete }) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
           <div style={{ fontSize: 10, color: "var(--text-6)" }}>{new Date(campaign.createdAt).toLocaleDateString()}</div>
-          {hov && (
+          {isPendingDelete ? (
+            <div style={{ display: "flex", gap: 6 }} onClick={e => e.stopPropagation()}>
+              <span style={{ fontSize: 11, color: "#ef4444", fontWeight: 600, alignSelf: "center" }}>Confirm delete?</span>
+              <button
+                onClick={() => onDelete(campaign.id)}
+                style={{ background: "rgba(239,68,68,0.2)", border: "1px solid rgba(239,68,68,0.5)", borderRadius: 6, padding: "3px 8px", fontSize: 11, color: "#ef4444", cursor: "pointer", fontWeight: 700 }}
+              >
+                Yes, delete
+              </button>
+              <button
+                onClick={onCancelDelete}
+                style={{ background: "var(--bg-surface)", border: "1px solid var(--border-md)", borderRadius: 6, padding: "3px 8px", fontSize: 11, color: "var(--text-4)", cursor: "pointer" }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : hov && (
             <button
               onClick={e => { e.stopPropagation(); onDelete(campaign.id); }}
               style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 6, padding: "3px 8px", fontSize: 11, color: "#ef4444", cursor: "pointer" }}
@@ -113,12 +129,18 @@ function LetterCard({ letter, campaignId, onStatusChange }) {
   async function updateStatus(newStatus) {
     setSaving(true);
     try {
-      await fetch("/api/campaigns", {
+      const res = await fetch(`/api/campaigns?id=${campaignId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ campaignId, clientId: letter.clientId, letterStatus: newStatus }),
+        body: JSON.stringify({ letterId: letter.clientId, status: newStatus }),
       });
-      onStatusChange(letter.clientId, newStatus);
+      if (!res.ok) {
+        // Revert the select to its previous value by not calling onStatusChange
+        setSaving(false);
+        return;
+      }
+      const data = await res.json();
+      onStatusChange(letter.clientId, newStatus, data);
     } catch {}
     setSaving(false);
   }
@@ -188,6 +210,7 @@ export default function Campaigns() {
   const [view, setView]           = useState("list");
   const [campaigns, setCampaigns] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   // Detail view
   const [activeCampaign, setActiveCampaign]   = useState(null);
@@ -251,21 +274,37 @@ export default function Campaigns() {
   }
 
   async function deleteCampaign(id) {
-    if (!confirm("Delete this campaign? This cannot be undone.")) return;
+    if (pendingDeleteId !== id) {
+      setPendingDeleteId(id);
+      return;
+    }
+    setPendingDeleteId(null);
     await fetch(`/api/campaigns?id=${id}`, { method: "DELETE" });
     setCampaigns(cs => cs.filter(c => c.id !== id));
   }
 
-  function handleLetterStatusChange(clientId, newStatus) {
-    setCampaignLetters(ls => ls.map(l => l.clientId === clientId ? { ...l, status: newStatus } : l));
+  function handleLetterStatusChange(clientId, newStatus, serverData) {
+    // Compute the updated letters first so both setters use the same derived array.
+    const updatedLetters = campaignLetters.map(l =>
+      l.clientId === clientId ? { ...l, status: newStatus } : l
+    );
+    setCampaignLetters(updatedLetters);
     setActiveCampaign(prev => {
       if (!prev) return prev;
-      const updated = campaignLetters.map(l => l.clientId === clientId ? { ...l, status: newStatus } : l);
+      // Prefer server-authoritative counts when available; fall back to client-side derivation.
+      if (serverData?.sentCount != null || serverData?.respondedCount != null || serverData?.retainedCount != null) {
+        return {
+          ...prev,
+          sentCount:      serverData.sentCount      ?? prev.sentCount,
+          respondedCount: serverData.respondedCount ?? prev.respondedCount,
+          retainedCount:  serverData.retainedCount  ?? prev.retainedCount,
+        };
+      }
       return {
         ...prev,
-        sentCount:      updated.filter(l => ["sent","responded","retained"].includes(l.status)).length,
-        respondedCount: updated.filter(l => ["responded","retained"].includes(l.status)).length,
-        retainedCount:  updated.filter(l => l.status === "retained").length,
+        sentCount:      updatedLetters.filter(l => ["sent","responded","retained"].includes(l.status)).length,
+        respondedCount: updatedLetters.filter(l => ["responded","retained"].includes(l.status)).length,
+        retainedCount:  updatedLetters.filter(l => l.status === "retained").length,
       };
     });
   }
@@ -291,7 +330,7 @@ export default function Campaigns() {
   // ── Wizard: fetch leads ───────────────────────────────────────────────────────
   async function fetchLeads() {
     try {
-      const r = await fetch("/api/leads?limit=100&sort=score");
+      const r = await fetch("/api/leads?limit=100");
       const d = await r.json();
       setRecentLeads(d.leads || []);
     } catch {}
@@ -526,7 +565,14 @@ export default function Campaigns() {
         ) : (
           <div style={{ display: "grid", gap: 8 }}>
             {campaigns.map(c => (
-              <CampaignCard key={c.id} campaign={c} onOpen={() => openCampaign(c.id)} onDelete={() => deleteCampaign(c.id)} />
+              <CampaignCard
+                key={c.id}
+                campaign={c}
+                onOpen={() => openCampaign(c.id)}
+                onDelete={() => deleteCampaign(c.id)}
+                onCancelDelete={() => setPendingDeleteId(null)}
+                isPendingDelete={pendingDeleteId === c.id}
+              />
             ))}
           </div>
         )}
@@ -1029,6 +1075,7 @@ function PendingOutreachPanel() {
 
   if (!items) return null;
 
+  // Stats derived directly from reactive `items` state — update immediately on dismiss.
   const count = items.length;
   const high  = items.filter((i) => i.score >= 90).length;
 

@@ -453,6 +453,13 @@ function CollectorIntelligence({ defendants }) {
         <strong style={{ color: "var(--text-1)" }}>How to use this:</strong> A credit report shows the original creditor (e.g. "Chase"). The TCPA lawsuit defendant is who called the consumer — usually the debt buyer who purchased the account (e.g. "Midland Funding"). This panel maps every known collector to their source creditors, so you can identify which collectors to name as defendants based on what appears in a client's credit report.
       </div>
 
+      {/* Live DB annotation — cross-references reference profiles against live defendants */}
+      <div style={{ fontSize: 11, color: "var(--text-5)", marginBottom: 16, padding: "8px 14px", borderRadius: 6, background: "var(--bg-surface)", border: "1px solid var(--border)" }}>
+        {defendants.length > 0
+          ? `Showing reference profiles. ${totalWithCases} of these defendants are active in your database.`
+          : "Live database unavailable — showing all reference profiles."}
+      </div>
+
       {/* Family filter tabs */}
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
         {[["all", "All Collectors"], ...families.map(f => [f, FAMILY_LABELS[f] || f])].map(([key, label]) => (

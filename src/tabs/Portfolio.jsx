@@ -86,6 +86,12 @@ export default function Portfolio() {
             ))}
           </select>
 
+          {partnerId === "" && (
+            <Btn small onClick={() => loadReport()} disabled={loading}>
+              {loading ? "Loading…" : "Load Report"}
+            </Btn>
+          )}
+
           <div style={{ flex: 1 }} />
 
           <a href={htmlUrl} target="_blank" rel="noopener noreferrer"
