@@ -365,7 +365,7 @@ function Markdown({ text }) {
 
 function loadMessages()   { try { return JSON.parse(localStorage.getItem(CHAT_KEY)          || "[]"); } catch { return []; } }
 function saveMessages(m)  { try { localStorage.setItem(CHAT_KEY, JSON.stringify(m.slice(-MAX_MSGS))); } catch {} }
-function loadFeedLeads()  { try { return JSON.parse(localStorage.getItem("mdl-feed-leads")  || "[]"); } catch { return []; } }
+function loadFeedLeads()  { try { const raw = JSON.parse(localStorage.getItem("mdl-feed-leads") || "[]"); return Array.isArray(raw) ? raw.filter(l => l && typeof l.title === "string").slice(0, 50) : []; } catch { return []; } }
 
 // ─── SUGGESTED QUESTIONS ─────────────────────────────────────────────────────
 
@@ -483,7 +483,7 @@ export default function Chat({ cases }) {
             <span>·</span>
             <span>{leads.length} feed leads</span>
             <span>·</span>
-            <span style={{ color: "#444" }}>claude-sonnet-4-6 · streaming</span>
+            <span style={{ color: "#444" }}>claude-sonnet-4-20250514 · streaming</span>
           </div>
         </div>
         {messages.length > 0 && (

@@ -138,6 +138,7 @@ TEXT: ${body.extract.slice(0, 3000)}`;
         method: "POST",
         headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
         body: JSON.stringify({ model: "claude-haiku-4-5-20251001", max_tokens: 800, messages: [{ role: "user", content: prompt }] }),
+        signal: AbortSignal.timeout(25_000),
       });
       const d = await r.json();
       const raw = d.content?.[0]?.text || "{}";

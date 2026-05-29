@@ -346,7 +346,15 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
     scanStartRef.current = Date.now();
 
     // Fire the scan (takes 2-3 min; we poll independently for resilience)
-    fetch("/api/scan").then(r => r.json()).catch(() => {});
+    fetch("/api/scan")
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .catch(err => {
+        setScanStatus(`Scan trigger failed: ${err.message}`);
+        setIsScanning(false);
+      });
 
     // Poll stats every 8 seconds; when lastScan.timestamp is newer than our
     // start time, the scan completed.

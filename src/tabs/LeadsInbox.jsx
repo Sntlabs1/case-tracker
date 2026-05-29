@@ -1078,8 +1078,6 @@ Answer specifically for a plaintiff law firm evaluating this case for client acq
         body: JSON.stringify({
           messages: history.map(m => ({ role: m.role, content: m.content })),
           system: systemPrompt,
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 600,
           stream: true,
         }),
       });

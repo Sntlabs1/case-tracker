@@ -6,6 +6,9 @@ import { kv } from "@vercel/kv";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  if (req.headers['x-admin-secret'] !== process.env.ADMIN_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   if (req.method !== "GET") return res.status(405).end();
   const { id } = req.query;
   if (!id) return res.status(400).json({ error: "id required" });

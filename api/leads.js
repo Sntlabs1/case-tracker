@@ -87,6 +87,7 @@ export default async function handler(req, res) {
   async function liveFetch() {
     const totalInKV = await kv.zcard("leads_by_score");
 
+    // Upstash ZRANGEBYSCORE with rev:true requires (max, min) argument order — correct here.
     const ids = await kv.zrange("leads_by_score", max, min, {
       byScore: true,
       rev: true,

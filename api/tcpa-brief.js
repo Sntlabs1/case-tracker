@@ -64,7 +64,7 @@ async function generateBrief(c) {
   const text = data.content?.[0]?.text || "";
   const m = text.match(/\{[\s\S]*\}/);
   if (!m) throw new Error("Brief returned no JSON object");
-  return JSON.parse(m[0]);
+  try { return JSON.parse(m[0]); } catch { return null; }
 }
 
 const briefKey = (id) => `tcpa:brief:${id}`;
@@ -91,6 +91,7 @@ export default async function handler(req, res) {
 
     try {
       const brief = await generateBrief(c);
+      if (brief === null) return res.status(500).json({ error: "Brief generation returned unparseable JSON" });
       const generatedAt = new Date().toISOString();
       await kv.set(briefKey(id), JSON.stringify({ brief, generatedAt }), { ex: BRIEF_TTL });
       return res.status(200).json({ brief, generatedAt, cached: false });

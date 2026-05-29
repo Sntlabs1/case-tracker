@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card, Btn } from "../components/UI.jsx";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -225,9 +225,7 @@ export default function Campaigns() {
   const [saving, setSaving]             = useState(false);
 
   // ── Fetch campaign list ───────────────────────────────────────────────────────
-  useEffect(() => { if (view === "list") fetchCampaigns(); }, [view]);
-
-  async function fetchCampaigns() {
+  const fetchCampaigns = useCallback(async () => {
     setLoadingList(true);
     try {
       const r = await fetch("/api/campaigns");
@@ -235,7 +233,9 @@ export default function Campaigns() {
       setCampaigns(d.campaigns || []);
     } catch {}
     setLoadingList(false);
-  }
+  }, []);
+
+  useEffect(() => { if (view === "list") fetchCampaigns(); }, [view, fetchCampaigns]);
 
   // ── Open campaign detail ──────────────────────────────────────────────────────
   async function openCampaign(id) {

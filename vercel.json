@@ -34,7 +34,7 @@
     },
     {
       "path": "/api/agents?run=tcpa-backfill",
-      "schedule": "0 8 * * *"
+      "schedule": "15 8 * * *"
     },
     {
       "path": "/api/agents?run=match-recompute",
@@ -54,11 +54,11 @@
     },
     {
       "path": "/api/agents?run=claim-deadline-alert",
-      "schedule": "0 8 * * *"
+      "schedule": "30 8 * * *"
     },
     {
       "path": "/api/tcpa-ingest?source=fcc_enforcement&mode=daily",
-      "schedule": "0 6 * * *"
+      "schedule": "15 6 * * *"
     },
     {
       "path": "/api/tcpa-ingest?source=state_ag&mode=daily",
@@ -70,7 +70,7 @@
     },
     {
       "path": "/api/pacer-sync?cron=daily",
-      "schedule": "0 6 * * *"
+      "schedule": "25 6 * * *"
     }
   ],
   "functions": {

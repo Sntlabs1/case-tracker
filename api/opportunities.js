@@ -159,6 +159,7 @@ export default async function handler(req, res) {
           content: `Synthesize these ${leads.length} leads into ranked case opportunities:\n\n${leadSummaries}`,
         }],
       }),
+      signal: AbortSignal.timeout(100_000),
     });
 
     const synthData = await synthRes.json();
@@ -171,7 +172,8 @@ export default async function handler(req, res) {
       throw new Error("Synthesis did not return a JSON array");
     }
 
-    const opportunities = JSON.parse(match[0]);
+    let opportunities;
+    try { opportunities = JSON.parse(match[0]); } catch { opportunities = []; }
     console.log(`Opportunities synthesis: ${opportunities.length} opportunities from ${leads.length} leads`);
 
     const result = {

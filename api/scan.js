@@ -427,6 +427,7 @@ async function fetchReddit(subreddit) {
   const url = `https://www.reddit.com/r/${subreddit}/new.json?limit=50`;
   try {
     const res = await fetchWithTimeout(url, { headers: { "User-Agent": "ClassActionIntelBot/1.0" } });
+    if (!res.ok) throw new Error(`Reddit ${subreddit} HTTP ${res.status}`);
     const data = await res.json();
     const posts = data?.data?.children || [];
     return posts
@@ -516,7 +517,8 @@ async function detectComplaintClusters(posts, subredditName) {
     const text = data.content?.map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return [];
-    const clusters = JSON.parse(match[0]);
+    let clusters;
+    try { clusters = JSON.parse(match[0]); } catch { return []; }
     return clusters
       .filter(c => c.subject && c.summary && c.severity !== "low")
       .map(c => ({
@@ -551,6 +553,8 @@ async function fetchRedditComplaintClusters() {
             fetchWithTimeout(`https://www.reddit.com/r/${sub}/new.json?limit=30`, { headers: { "User-Agent": "ClassActionIntelBot/1.0" } }),
             fetchWithTimeout(`https://www.reddit.com/r/${sub}/hot.json?limit=20`, { headers: { "User-Agent": "ClassActionIntelBot/1.0" } }),
           ]);
+          if (!newRes.ok) throw new Error(`Reddit r/${sub}/new HTTP ${newRes.status}`);
+          if (!hotRes.ok) throw new Error(`Reddit r/${sub}/hot HTTP ${hotRes.status}`);
           const newData = await newRes.json();
           const hotData = await hotRes.json();
           const newPosts = (newData?.data?.children || []).map(p => p.data);
@@ -610,7 +614,9 @@ async function fetchComplaintWebSearches() {
       const text = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
       const match = text.match(/\[[\s\S]*?\]/);
       if (!match) return [];
-      return JSON.parse(match[0]).map(item => ({
+      let parsed;
+      try { parsed = JSON.parse(match[0]); } catch { return []; }
+      return parsed.map(item => ({
         id: hash(item.url || item.title || ""),
         title: item.title || "",
         url: item.url || "",
@@ -801,7 +807,6 @@ async function fetchMDLProgressions() {
 
 // NHTSA — recent vehicle safety complaints and investigations via API
 async function fetchNHTSA() {
-  const url = `https://api.nhtsa.gov/complaints/complaintsByVehicle?make=all&model=all&modelYear=all`;
   // NHTSA doesn't have a general "all recent complaints" endpoint without vehicle params
   // Use their investigations endpoint instead
   const invUrl = `https://api.nhtsa.gov/products/vehicle/recalls?issueDate=${yesterday()}..${new Date().toISOString().slice(0, 10)}&results=20`;
@@ -1023,7 +1028,8 @@ async function fetchClaudeWebSearch(query) {
     const text = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
     const match = text.match(/\[[\s\S]*?\]/);
     if (!match) return [];
-    const items = JSON.parse(match[0]);
+    let items;
+    try { items = JSON.parse(match[0]); } catch { return []; }
     return items.map(item => ({
       id: hash(item.url || item.title || ""),
       title: item.title || "",
@@ -1046,6 +1052,18 @@ async function fetchClaudeWebSearch(query) {
 
 // Skip only: Reddit (post text already in item.description), raw binary storage blobs
 const SKIP_FULLTEXT = ["reddit.com", "storage.googleapis.com", "storage.courtlistener.com"];
+
+// Guard against SSRF — only allow public HTTPS URLs (Issue 5)
+function isSafeUrl(url) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:') return false;
+    const host = u.hostname;
+    // Block RFC-1918 and loopback
+    if (/^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|::1|localhost)/i.test(host)) return false;
+    return true;
+  } catch { return false; }
+}
 
 // Sanitize LLM JSON output — fixes unescaped double quotes inside string values
 function sanitizeJsonFromLLM(text) {
@@ -1101,6 +1119,7 @@ function sanitizeJsonFromLLM(text) {
 
 async function fetchArticleText(url) {
   if (!url || SKIP_FULLTEXT.some(s => url.includes(s))) return "";
+  if (!isSafeUrl(url)) return "";
   try {
     const res = await fetchWithTimeout(`https://r.jina.ai/${url}`, {
       headers: { Accept: "text/plain", "X-Return-Format": "text", "X-No-Cache": "true" },
@@ -1133,7 +1152,7 @@ async function triageWithClaude(item) {
     const text = data.content?.map(b => b.text || "").join("") || "{}";
     const match = text.match(/\{[\s\S]*?\}/);
     if (!match) return null;
-    return JSON.parse(match[0]);
+    try { return JSON.parse(match[0]); } catch { return null; }
   } catch (e) {
     console.error("Triage failed:", e.message);
     return null;
@@ -1169,7 +1188,7 @@ Score <50: No causation, individual issues dominate, no class, bankruptcy risk, 
     const text = data.content?.map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return items.map(() => null);
-    return JSON.parse(match[0]);
+    try { return JSON.parse(match[0]); } catch { return items.map(() => null); }
   } catch (e) {
     console.error("Batch triage failed:", e.message);
     return items.map(() => null);
@@ -1551,8 +1570,18 @@ async function detectConvergence(items) {
 
 // ─── MAIN HANDLER ─────────────────────────────────────────────────────────────
 
+// must match LEADS_CACHE_KEY in leads.js
+const LEADS_CACHE_KEY = "leads_cache_v1";
+
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+
+  // Admin-secret check for destructive operations — must come before any purge/reset/reseed branch.
+  if (req.query.purge === "1" || req.query.reset === "1" || req.query.reseed === "1") {
+    if (req.headers['x-admin-secret'] !== process.env.ADMIN_SECRET) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+  }
 
   // ?reset=1 — clear the seen_ids/seen_zset so all items are re-processed on the next scan
   if (req.query.reset === "1") {
@@ -1609,7 +1638,7 @@ export default async function handler(req, res) {
 
   // ── ANALYZE-ONLY MODE: drain the queue, deep-analyze 8 items, return early ──
   if (mode === "analyze") {
-    const ANALYZE_BATCH = parseInt(req.query.batch || "8", 10);
+    const ANALYZE_BATCH = Math.min(parseInt(req.query.batch || '8', 10), 20);
     const runId = `scan_analyze_${Date.now()}`;
     console.log(`[${runId}] mode=analyze, draining up to ${ANALYZE_BATCH} items from queue`);
 
@@ -1688,7 +1717,7 @@ export default async function handler(req, res) {
     await kv.ltrim("scan_history", 0, 89);
 
     // Bust paginated leads cache so new leads appear in the inbox immediately.
-    await kv.del("leads_cache_v1").catch(() => {});
+    await kv.del(LEADS_CACHE_KEY).catch(() => {});
 
     return res.status(200).json({
       mode, runId, processed: analyzedCount, highPriority: highCount,
@@ -1816,9 +1845,9 @@ export default async function handler(req, res) {
   // Mark all seen — use a sorted set with timestamp as score so old entries can be pruned
   // Score = unix epoch seconds; prune anything older than 30 days on each scan
   const nowSec = Math.floor(Date.now() / 1000);
-  const cutoffSec = nowSec - 30 * 24 * 3600;
+  const cutoffSec = nowSec - 34 * 24 * 3600; // 34 days — 1 day inside the 35-day key TTL so no items escape dedup
   await kv.zadd(seenKey, ...newItems.map(i => ({ score: nowSec, member: i.id })));
-  await kv.zremrangebyscore(seenKey, "-inf", cutoffSec); // prune items older than 30 days
+  await kv.zremrangebyscore(seenKey, "-inf", cutoffSec); // prune items older than 34 days
   await kv.expire(seenKey, 35 * 24 * 3600); // safety TTL on the whole key
 
   // ── 3. TRIAGE — fast Haiku pass to filter low-signal items ───────────────
@@ -1972,7 +2001,7 @@ export default async function handler(req, res) {
 
   // ── 5. STORE SCAN METADATA + HISTORICAL TREND DATA ───────────────────────
 
-  const sortedLeads = leads.sort((a, b) => b.analysis.score - a.analysis.score);
+  const sortedLeads = leads.sort((a, b) => (b.analysis?.score ?? 0) - (a.analysis?.score ?? 0));
   const today = new Date().toISOString().slice(0, 10);
   const TTL_90 = 90 * 24 * 3600;
 
@@ -2058,7 +2087,7 @@ export default async function handler(req, res) {
   try {
     await Promise.all([
       kv.del("opportunities:latest"),
-      kv.del("leads_cache_v1"),
+      kv.del(LEADS_CACHE_KEY),
     ]);
     console.log(`[${runId}] Caches cleared — opportunities + leads will regenerate on next request`);
   } catch {}
@@ -2112,6 +2141,7 @@ export default async function handler(req, res) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ blocks }),
+        signal: AbortSignal.timeout(5_000),
       });
       console.log(`[${runId}] Slack alert sent for ${alertLeads.length} high-priority leads`);
     } catch (e) {

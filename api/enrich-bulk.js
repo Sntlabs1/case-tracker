@@ -154,7 +154,8 @@ Return JSON array:
     const raw = await callHaiku([{ role: "user", content: prompt }]);
     const m = raw.match(/\[[\s\S]*\]/);
     if (!m) return {};
-    const arr = JSON.parse(m[0]);
+    let arr;
+    try { arr = JSON.parse(m[0]); } catch { return []; }
     if (!Array.isArray(arr)) return {};
     const out = {};
     for (const item of arr) { if (item && item.id) out[item.id] = item; }

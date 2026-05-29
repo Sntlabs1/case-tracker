@@ -333,7 +333,7 @@ function CourtListenerImport({ cases, setCases }) {
                 <div style={{ flex: 1, marginRight: 12 }}>
                   <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{r.caseName}</div>
                   <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>{r.court} · {r.dateFiled} · {r.docketNumber}</div>
-                  {r.snippet && <div style={{ fontSize: 12, color: "#a0a0b8", lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: r.snippet.replace(/<[^>]*>/g, "") }} />}
+                  {r.snippet && <div style={{ fontSize: 12, color: "#a0a0b8", lineHeight: 1.6 }}><span>{r.snippet.replace(/<[^>]*>/g, "")}</span></div>}
                 </div>
                 <div style={{ minWidth: 120, textAlign: "right" }}>
                   {importedIds.has(r.id) ? (

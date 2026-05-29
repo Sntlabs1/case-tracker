@@ -217,7 +217,7 @@ footer{background:#060b18;border-top:1px solid rgba(255,255,255,.05);padding:32p
 <body>
 
 <nav>
-  <div class="nav-firm">Your Law Firm</div>
+  <div class="nav-firm">${esc(process.env.FIRM_NAME || 'Law Firm Name Required')}</div>
   <div class="nav-phone">(555) 000-0000</div>
   <a href="#contact-form" class="nav-btn">Free Case Review</a>
 </nav>
@@ -337,17 +337,31 @@ footer{background:#060b18;border-top:1px solid rgba(255,255,255,.05);padding:32p
 </div>
 
 <footer>
-  <div class="footer-firm">Your Law Firm</div>
-  <div class="footer-disc">Attorney advertising. The information on this page is for general informational purposes and does not constitute legal advice. Submitting information does not create an attorney-client relationship. Prior results do not guarantee a similar outcome. State Bar No.: [XXXX].</div>
+  <div class="footer-firm">${esc(process.env.FIRM_NAME || 'Law Firm Name Required')}</div>
+  <div class="footer-disc">Attorney advertising. The information on this page is for general informational purposes and does not constitute legal advice. Submitting information does not create an attorney-client relationship. Prior results do not guarantee a similar outcome. State Bar No.: ${esc(process.env.STATE_BAR_NUMBER || 'Bar No. Required')}.</div>
 </footer>
 
 <script>
 document.getElementById('intake-form').addEventListener('submit',function(e){
   e.preventDefault();
-  var n=this.full_name.value.trim(),em=this.email.value.trim(),ph=this.phone.value.trim(),ds=this.description.value.trim();
+  var form=this;
+  var n=form.full_name.value.trim(),em=form.email.value.trim(),ph=form.phone.value.trim(),ds=form.description.value.trim();
   if(!n||!em||!ph||!ds){alert('Please fill in all required fields.');return;}
-  document.getElementById('form-wrap').querySelector('form').style.display='none';
-  document.getElementById('form-success').style.display='block';
+  var btn=form.querySelector('.form-submit');
+  btn.disabled=true;btn.textContent='Submitting…';
+  var formData={};
+  var els=form.elements;
+  for(var i=0;i<els.length;i++){var el=els[i];if(el.name&&el.type!=='file'){if(el.type==='checkbox'){formData[el.name]=el.checked;}else{formData[el.name]=el.value;}}}
+  fetch('/api/intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(formData)})
+    .then(function(r){
+      if(!r.ok)throw new Error('Server error '+r.status);
+      form.style.display='none';
+      document.getElementById('form-success').style.display='block';
+    })
+    .catch(function(err){
+      btn.disabled=false;btn.textContent='Submit My Information for a Free Review';
+      alert('There was an error submitting your information. Please try again or call us directly.');
+    });
 });
 var fd=document.getElementById('fee-date');
 if(fd){fd.textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}

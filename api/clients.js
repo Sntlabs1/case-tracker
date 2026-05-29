@@ -10,7 +10,7 @@
 // so the match-recompute agent picks them up on its next tick.
 
 import { kv } from "@vercel/kv";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   normalize as normalizeDefendant,
   createDefendant,
@@ -179,7 +179,7 @@ function normalizeCreditCom(c) {
 }
 
 function buildClientRecord(c, idx, now) {
-  const id = c.id || `c_${now}_${idx}_${Math.random().toString(36).slice(2, 7)}`;
+  const id = c.id || ('c_' + randomUUID().replace(/-/g, '').slice(0, 16));
   const phoneNumbers = Array.isArray(c.phoneNumbers) && c.phoneNumbers.length
     ? c.phoneNumbers.map(normalizePhone).filter(Boolean)
     : (c.phone ? [normalizePhone(c.phone)].filter(Boolean) : []);

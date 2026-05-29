@@ -18,7 +18,7 @@ import { TOOL_SCHEMAS, executeTool } from "./_chat-tools.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const MAX_TOOL_TURNS = 6;
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "claude-sonnet-4-20250514";
 
 function emitSse(res, event, data) {
   if (event) res.write(`event: ${event}\n`);
@@ -41,6 +41,7 @@ async function callAnthropic({ system, messages, stream }) {
       tools: TOOL_SCHEMAS,
       messages,
     }),
+    signal: AbortSignal.timeout(90_000),
   });
   return res;
 }
@@ -52,8 +53,11 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { messages: incoming, system } = req.body || {};
+  const { messages: incoming } = req.body || {};
   if (!incoming?.length) return res.status(400).json({ error: "messages required" });
+
+  // Build system prompt server-side — never accept system from the client (Issue 22).
+  const system = "You are a plaintiff intelligence assistant for MDL and class action case tracking. Answer questions about the platform's leads, cases, defendants, and sources using the tools available to you. Be concise and precise. Refer to specific data when answering — do not speculate.";
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");

@@ -12,17 +12,19 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { prompt, system, maxTokens = 1500, tools } = req.body;
+  const { prompt, system, maxTokens } = req.body;
   if (!prompt) return res.status(400).json({ error: "prompt required" });
+
+  // Cap maxTokens to prevent runaway usage; tools from the client are never forwarded.
+  const safeMaxTokens = Math.min(parseInt(maxTokens) || 2048, 4096);
 
   try {
     const body = {
       model: "claude-sonnet-4-20250514",
-      max_tokens: maxTokens,
+      max_tokens: safeMaxTokens,
       messages: [{ role: "user", content: prompt }],
     };
     if (system) body.system = system;
-    if (tools) body.tools = tools;
 
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
