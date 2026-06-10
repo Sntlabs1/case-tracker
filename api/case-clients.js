@@ -46,6 +46,29 @@ async function topByScore(maxScan) {
   return merged.map(m => m[0]);
 }
 
+// True total for a defendant = sum of its sharded per-case indexes.
+async function casepeopleTotal(token) {
+  const cards = await Promise.all(
+    Array.from({ length: N_SHARDS }, (_, s) => kv.zcard(`casepeople:${token}:${s}`).catch(() => 0))
+  );
+  return cards.reduce((a, b) => a + b, 0);
+}
+
+// Top `need` people for a defendant, merged across shards in score order.
+async function casepeopleTop(token, need) {
+  const slices = await Promise.all(
+    Array.from({ length: N_SHARDS }, (_, s) =>
+      kv.zrange(`casepeople:${token}:${s}`, 0, need - 1, { rev: true, withScores: true }).catch(() => [])
+    )
+  );
+  const merged = [];
+  for (const slice of slices) {
+    for (let i = 0; i < slice.length; i += 2) merged.push([slice[i], Number(slice[i + 1])]);
+  }
+  merged.sort((a, b) => b[1] - a[1]);
+  return merged.map(m => m[0]);
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
@@ -68,20 +91,22 @@ export default async function handler(req, res) {
   };
 
   try {
-    // ── Fast path: complete per-case inverted index ─────────────────────
+    // ── Fast path: complete (sharded) per-case inverted index ───────────
     if (token) {
-      const indexKey = `casepeople:${token}`;
-      const total = await kv.zcard(indexKey).catch(() => 0);
+      const total = await casepeopleTotal(token);
       if (total > 0) {
+        // Pull the top (offset+limit*overfetch) merged across shards, then page.
+        const overfetch = caseType ? 5 : 1;
+        const need = offset + limit * overfetch;
+        const ids = await casepeopleTop(token, need);
+        const page = ids.slice(offset);
+
         const found = [];
-        const pageSize = 500;
-        let scanned = 0;
-        for (let pos = offset; pos < total && found.length < limit; pos += pageSize) {
-          const ids = await kv.zrange(indexKey, pos, pos + pageSize - 1, { rev: true });
-          if (!ids || ids.length === 0) break;
-          const raw = await Promise.all(ids.map(id => kv.get(`client:${id}`)));
+        const batchSize = 500;
+        for (let i = 0; i < page.length && found.length < limit; i += batchSize) {
+          const slice = page.slice(i, i + batchSize);
+          const raw = await Promise.all(slice.map(id => kv.get(`client:${id}`)));
           for (const r of raw) {
-            scanned++;
             if (!r) continue;
             const c = typeof r === "string" ? JSON.parse(r) : r;
             if (caseType && !(c.cases || []).some(sigMatches)) continue;
@@ -94,7 +119,7 @@ export default async function handler(req, res) {
           defendant: defendant || null,
           token,
           source: "index",
-          total,                       // total people indexed for this defendant
+          total,                       // COMPLETE people count for this defendant
           offset,
           count: found.length,
           clients: found,

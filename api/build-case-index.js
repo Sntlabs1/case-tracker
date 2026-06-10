@@ -5,11 +5,11 @@
 //
 // For each `client:*` record it inspects `cases[].defendant` and, for every
 // catalog defendant token that the signal names, adds the person to
-//   casepeople:<defendantToken>   (zset, score = priorityScore)
-// Each per-case zset is capped to the top CAP people by priority score, so a
-// very common furnisher (Capital One, Citibank…) can't exceed Upstash's 100MB
-// per-key limit. Every person is still evaluated against every case; we retain
-// the highest-priority matches per case (far more than any worklist needs).
+//   casepeople:<defendantToken>:<shard>   (zset, score = priorityScore)
+// Each per-case index is SHARDED across N_SHARDS sub-zsets (by a hash of the
+// person id), so even a very common furnisher (Capital One ~900K people) stays
+// far under Upstash's 100MB per-key limit while retaining the COMPLETE matched
+// population — no cap. Readers merge the shards.
 //
 // Catalog = the 41 PACER FDCPA/FCRA clusters (match:defendant_evidence) plus
 // the national TCPA marketer defendants (pacer:tcpa_marketers).
@@ -22,9 +22,16 @@ import { canonicalToken } from "./_lib/defendantToken.js";
 
 const TIME_BUDGET_MS = 230_000;   // stop well before the 300s function limit
 const SCAN_COUNT     = 1000;      // Upstash caps returned keys at ~1000/call
-const TRIM_EVERY     = 25;        // trim touched zsets every N batches, not each
 const REFRESH_MS     = 12 * 60 * 60 * 1000;
-const CAP            = 200_000;   // max people retained per case (zset size guard)
+const N_SHARDS       = 16;        // per-defendant index sharded -> no 200K cap, full lists
+
+// Spread a defendant's people across N_SHARDS sub-zsets so even the largest
+// defendant (Capital One ~900K) stays far under Upstash's 100MB per-key limit.
+function shardOf(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return h % N_SHARDS;
+}
 
 async function loadCatalogTokens() {
   const [evRaw, tcpaRaw] = await Promise.all([
@@ -72,19 +79,6 @@ export default async function handler(req, res) {
 
     const start = Date.now();
     let completed = false;
-    let batchCount = 0;
-    const touched = new Set();   // tokens needing a trim
-
-    // Trim touched zsets back to the top CAP. Done periodically (not every
-    // batch) — that per-batch trimming was the throughput bottleneck. Between
-    // trims a hot token overshoots CAP by at most ~TRIM_EVERY*1000 members
-    // (~tens of MB), still far under the 100MB key limit.
-    const flushTrim = async () => {
-      if (touched.size === 0) return;
-      const toks = [...touched];
-      touched.clear();
-      await Promise.all(toks.map(tok => kv.zremrangebyrank(`casepeople:${tok}`, 0, -(CAP + 1))));
-    };
 
     while (Date.now() - start < TIME_BUDGET_MS) {
       const [next, keys] = await kv.scan(cursor, { match: "client:*", count: SCAN_COUNT });
@@ -92,7 +86,7 @@ export default async function handler(req, res) {
 
       if (keys && keys.length) {
         const records = await kv.mget(...keys);
-        const byToken = new Map();   // token -> [{ score, member }]
+        const byBucket = new Map();   // "token:shard" -> [{ score, member }]
 
         for (const r of records) {
           if (!r) continue;
@@ -112,28 +106,25 @@ export default async function handler(req, res) {
             const tok = sig.defendantToken || canonicalToken(sig.defendant || "");
             if (tok && tokenSet.has(tok)) hit.add(tok);
           }
+          const shard = shardOf(id);
           for (const tok of hit) {
-            if (!byToken.has(tok)) byToken.set(tok, []);
-            byToken.get(tok).push({ score, member: id });
+            const bucket = `${tok}:${shard}`;
+            if (!byBucket.has(bucket)) byBucket.set(bucket, []);
+            byBucket.get(bucket).push({ score, member: id });
             indexed++;
           }
         }
 
-        // Add this batch's members; defer trimming.
+        // Add this batch's members to the sharded per-defendant indexes. No cap.
         const writes = [];
-        for (const [tok, members] of byToken) {
-          writes.push(kv.zadd(`casepeople:${tok}`, ...members));
-          touched.add(tok);
+        for (const [bucket, members] of byBucket) {
+          writes.push(kv.zadd(`casepeople:${bucket}`, ...members));
         }
         await Promise.all(writes);
-
-        if (++batchCount % TRIM_EVERY === 0) await flushTrim();
       }
 
       if (cursor === "0") { completed = true; break; }
     }
-
-    await flushTrim();   // settle zset sizes before returning
 
     const out = {
       startedAt,
