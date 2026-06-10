@@ -1097,7 +1097,7 @@ export default function CreditPortfolio() {
         <div>
           <h2 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Credit.com Portfolio</h2>
           <div style={{ color: "var(--text-5)", fontSize: 13, marginTop: 4 }}>
-            ~9.8M total people in dataset (1.4M CCOM + 8.4M LEX) &bull; {fmtN(sampleProcessed)} processed &bull; last run {stats?.ingestedAt ? new Date(stats.ingestedAt).toLocaleDateString() : "—"}
+~10.25M total people (1.4M CCOM + 8.85M LEX) &bull; {fmtN(processed)} processed &bull; {fmtN(matched)} matched &bull; generated {stats?.generatedAt || "—"}
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
