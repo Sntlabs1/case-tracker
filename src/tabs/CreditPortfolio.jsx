@@ -536,11 +536,19 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                 )}
               </div>
               <div style={{ fontSize: 11, color: "var(--text-5)" }}>
-                {profile.dataVintage?.newestReported && (
-                  <span>
-                    Credit file: {fmtYYYYMM(profile.dataVintage.oldestReported)} – {fmtYYYYMM(profile.dataVintage.newestReported)}
-                  </span>
-                )}
+                {profile.dataVintage?.newestReported && (() => {
+                  // Prefer the oldest account-opened date for the start of the
+                  // range; last-reported dates collapse to a single month on
+                  // actively-updated files (every account re-reports monthly).
+                  const opens = (profile.creditReport?.tl || []).map(t => t.od).filter(Boolean).sort();
+                  const start = opens[0] || profile.dataVintage.oldestReported;
+                  const end = profile.dataVintage.newestReported;
+                  return start && start < end ? (
+                    <span>Credit history: {fmtYYYYMM(start)} – {fmtYYYYMM(end)} (last reported)</span>
+                  ) : (
+                    <span>All accounts last reported {fmtYYYYMM(end)}</span>
+                  );
+                })()}
                 {profile.bankruptcyFiled && (
                   <span> · Bankruptcy filed {fmtYYYYMM(profile.bankruptcyFiled)}</span>
                 )}
