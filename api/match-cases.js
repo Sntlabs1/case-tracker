@@ -17,8 +17,8 @@
 // In client-to-cases mode, results from both pools are merged and ranked.
 
 import { kv } from "@vercel/kv";
-import { scoreTcpaPair } from "../src/lib/tcpaMatchRubric.js";
-import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
+import { scoreTcpaPair } from "../src/lib/matching/tcpaMatchRubric.js";
+import { KEYS as TCPA_KEYS } from "../src/lib/ingest/tcpaSchema.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 const BATCH = 20;

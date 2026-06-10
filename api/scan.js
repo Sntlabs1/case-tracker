@@ -5,9 +5,9 @@
 import Parser from "rss-parser";
 import { createHash } from "crypto";
 import { kv } from "@vercel/kv";
-import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT, buildDeepAnalysisPromptWithKB } from "../src/lib/kbRubric.js";
+import { QUICK_TRIAGE_PROMPT, DEEP_ANALYSIS_PROMPT, buildDeepAnalysisPromptWithKB } from "../src/lib/intelligence/kbRubric.js";
 import { KB_CASES } from "../src/data/knowledgeBase.js";
-import { getQueries } from "../src/lib/scannerQueries.js";
+import { getQueries } from "../src/lib/scanner/scannerQueries.js";
 
 // Build KB-enhanced analysis prompt once at startup (static — 165 cases injected)
 const DEEP_ANALYSIS_PROMPT_WITH_KB = buildDeepAnalysisPromptWithKB(KB_CASES);
@@ -19,7 +19,15 @@ const NEWS_API_KEY       = process.env.NEWS_API_KEY;       // optional — newsa
 const EVENT_REGISTRY_KEY = process.env.EVENT_REGISTRY_KEY; // optional — eventregistry.org
 
 const TIMEOUT_MS = 12000;
+const CLAUDE_TIMEOUT_MS = 30000; // longer timeout for Haiku triage / cluster / convergence calls
 const TRIAGE_THRESHOLD = 40; // only deep-analyze items that score >= this
+
+function clHeaders() {
+  const token = process.env.COURTLISTENER_API_TOKEN;
+  return token
+    ? { Authorization: `Token ${token}`, Accept: "application/json" }
+    : { Accept: "application/json" };
+}
 
 // ─── SOURCE DEFINITIONS ──────────────────────────────────────────────────────
 
@@ -33,18 +41,19 @@ const GOV_RSS_FEEDS = [
   { name: "FSIS Food Recalls",    url: "https://www.fsis.usda.gov/rss/recalls.xml",                                                            category: "Federal" },
   // SEC, FTC
   { name: "SEC Litigation",       url: "https://www.sec.gov/rss/litigation/litreleases.xml",                                                   category: "Federal" },
-  { name: "SEC Enforcement",      url: "https://www.sec.gov/rss/divisions/enforce/administrativeproceedings.xml",                              category: "Federal" },
-  { name: "FTC Actions",          url: "https://www.ftc.gov/rss.xml",                                                                          category: "Federal" },
+  // SEC administrative proceedings returns HTTP 403 HTML bot-block — removed; litreleases.xml covers overlapping territory
+  { name: "FTC Actions",          url: "https://www.ftc.gov/feeds/press-release-list.xml",                                                     category: "Federal" },
   // DOJ, EEOC, DOL, HHS
-  { name: "DOJ Press Releases",   url: "https://www.justice.gov/news/rss",                                                                     category: "Federal" },
+  { name: "DOJ Press Releases",   url: "https://www.justice.gov/feeds/opa/justice-news.xml",                                                   category: "Federal" },
   { name: "EEOC News",            url: "https://www.eeoc.gov/rss/newsroom",                                                                    category: "Federal" },
   { name: "DOL News",             url: "https://blog.dol.gov/rss.xml",                                                                         category: "Federal" },
   { name: "HHS News",             url: "https://www.hhs.gov/rss/news.xml",                                                                     category: "Federal" },
   // CFPB
   { name: "CFPB",                 url: "https://www.consumerfinance.gov/about-us/newsroom/feed/",                                              category: "Federal" },
-  // Courts
-  { name: "JPML MDL Orders",      url: "https://ecf.jpml.uscourts.gov/cgi-bin/rss_outside.pl",                                                category: "Judicial" },
-  { name: "Courthouse News",      url: "https://www.courthousenews.com/feed/",                                                                 category: "Judicial" },
+  // Courts — JPML RSS returns 200 but 0 bytes; replaced by fetchCourtListenerJPML() below
+  { name: "Courthouse News",      url: "https://www.courthousenews.com/category/national/feed/",                                               category: "Judicial" },
+  // NHTSA Recalls RSS (public feed — replaces broken private AWS API endpoint)
+  { name: "NHTSA Recalls",        url: "https://www.nhtsa.gov/rss/recalls.xml",                                                               category: "Federal" },
   // Plaintiff firm intelligence
   { name: "Miller & Zois Blog",         url: "https://www.millerandzois.com/blog/feed/atom/",                                       category: "Plaintiff Firm" },
   { name: "Mass Tort News",             url: "https://masstortnews.org/feed/",                                                      category: "Plaintiff Firm" },
@@ -405,9 +414,12 @@ async function fetchRSS(feed) {
 
 async function fetchGoogleNews(query) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
-  const parser = new Parser({ timeout: TIMEOUT_MS });
+  const parser = new Parser();
   try {
-    const parsed = await parser.parseURL(url);
+    const parsed = await Promise.race([
+      parser.parseURL(url),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Google News timeout")), TIMEOUT_MS)),
+    ]);
     return (parsed.items || []).slice(0, 12).map(item => ({
       id: hash(item.link || item.title || ""),
       title: item.title || "",
@@ -512,9 +524,9 @@ async function detectComplaintClusters(posts, subredditName) {
         system: CLUSTER_DETECT_PROMPT,
         messages: [{ role: "user", content: `Analyze these posts from r/${subredditName}:\n\n${postSummaries}` }],
       }),
-    });
+    }, CLAUDE_TIMEOUT_MS);
     const data = await res.json();
-    const text = data.content?.map(b => b.text || "").join("") || "[]";
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return [];
     let clusters;
@@ -611,7 +623,7 @@ async function fetchComplaintWebSearches() {
         }),
       });
       const data = await res.json();
-      const text = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
+      const text = data.content?.filter(b => b.type === "text").map(b => b.text || "").join("") || "[]";
       const match = text.match(/\[[\s\S]*?\]/);
       if (!match) return [];
       let parsed;
@@ -634,9 +646,13 @@ async function fetchComplaintWebSearches() {
 }
 
 async function fetchCourtListener() {
-  const url = `https://www.courtlistener.com/api/rest/v3/search/?type=o&q=%22class+certification%22+OR+%22class+action%22+OR+%22MDL%22+OR+%22mass+tort%22&order_by=dateFiled+desc&filed_after=${yesterday()}&stat_Precedential=on&stat_Published=on`;
+  const url = `https://www.courtlistener.com/api/rest/v4/search/?type=o&q=%22class+certification%22+OR+%22class+action%22+OR+%22MDL%22+OR+%22mass+tort%22&order_by=dateFiled+desc&filed_after=${yesterday()}&stat_Precedential=on&stat_Published=on`;
   try {
-    const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+    const res = await fetchWithTimeout(url, { headers: clHeaders() });
+    if (!res.ok) {
+      console.warn(`CourtListener HTTP ${res.status} on ${url}`);
+      return [];
+    }
     const data = await res.json();
     return (data.results || []).slice(0, 20).map(r => ({
       id: hash(r.id?.toString() || r.caseName || ""),
@@ -655,9 +671,13 @@ async function fetchCourtListener() {
 
 // PACER new class action filings via CourtListener docket search
 async function fetchCourtListenerDockets() {
-  const url = `https://www.courtlistener.com/api/rest/v3/dockets/?nature_of_suit=190&filed_after=${yesterday()}&order_by=-date_filed&format=json`;
+  const url = `https://www.courtlistener.com/api/rest/v4/dockets/?nature_of_suit=190,380,385,360,370,440,442,443,448,890,895&filed_after=${yesterday()}&order_by=-date_filed&format=json`;
   try {
-    const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+    const res = await fetchWithTimeout(url, { headers: clHeaders() });
+    if (!res.ok) {
+      console.warn(`CourtListener HTTP ${res.status} on ${url}`);
+      return [];
+    }
     const data = await res.json();
     return (data.results || []).slice(0, 15).map(r => ({
       id: hash(r.id?.toString() || r.case_name || ""),
@@ -676,16 +696,25 @@ async function fetchCourtListenerDockets() {
 
 // SEC EDGAR — recent 8-K filings mentioning lawsuits, recalls, or investigations
 async function fetchSecEdgar() {
-  const url = `https://efts.sec.gov/LATEST/search-index?q=%22class+action%22+OR+%22product+recall%22+OR+%22government+investigation%22+OR+%22FDA+warning%22&forms=8-K&dateRange=custom&startdt=${yesterday()}&enddt=${new Date().toISOString().slice(0, 10)}`;
+  const url = `https://efts.sec.gov/LATEST/search/?q=%22class+action%22+OR+%22product+recall%22+OR+%22government+investigation%22+OR+%22FDA+warning%22&forms=8-K&dateRange=custom&startdt=${yesterday()}&enddt=${new Date().toISOString().slice(0, 10)}`;
   try {
-    const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+    const res = await fetchWithTimeout(url, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "ClassActionIntelBot/1.0 (research@example.com)",
+      },
+    });
+    if (!res.ok) {
+      console.warn(`SEC EDGAR HTTP ${res.status}`);
+      return [];
+    }
     const data = await res.json();
     const hits = data.hits?.hits || [];
     return hits.slice(0, 15).map(h => ({
       id: hash(h._id || h._source?.file_date || ""),
       title: `SEC 8-K: ${h._source?.entity_name || "Public Company"} — ${h._source?.file_date || ""}`,
       url: `https://www.sec.gov${h._source?.file_path || ""}`,
-      description: `${h._source?.entity_name || ""} filed 8-K disclosing material event. Excerpts: ${(h._source?.period_of_report || "")}`,
+      description: h.highlight?.["file_contents"]?.[0] || `${h._source?.entity_name || "Public company"} filed ${h._source?.form_type || "8-K"} disclosing material event.`,
       pubDate: h._source?.file_date || new Date().toISOString(),
       source: "SEC EDGAR 8-K",
       category: "Federal",
@@ -711,7 +740,7 @@ async function fetchSecEdgarTargeted() {
   const results = [];
 
   for (const target of SEC_EDGAR_TARGETS) {
-    const url = `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent('"' + target.q + '"')}&forms=${target.forms}&dateRange=custom&startdt=${sevenDaysAgo}&enddt=${today}`;
+    const url = `https://efts.sec.gov/LATEST/search/?q=${encodeURIComponent('"' + target.q + '"')}&forms=${target.forms}&dateRange=custom&startdt=${sevenDaysAgo}&enddt=${today}`;
     try {
       const res = await fetchWithTimeout(url, {
         headers: { Accept: "application/json", "User-Agent": "ClassActionIntelBot/1.0 (research@example.com)" },
@@ -728,7 +757,7 @@ async function fetchSecEdgarTargeted() {
         results.push({
           id: hash(`secedgar_${h._id || s.entity_name + s.file_date + target.q}`),
           title: `SEC ${s.form_type || target.forms}: ${s.entity_name || "Public Company"} — ${target.label}`,
-          url: s.file_path ? `https://www.sec.gov${s.file_path}` : `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent('"' + target.q + '"')}&forms=${target.forms}`,
+          url: s.file_path ? `https://www.sec.gov${s.file_path}` : `https://efts.sec.gov/LATEST/search/?q=${encodeURIComponent('"' + target.q + '"')}&forms=${target.forms}`,
           description: `${s.entity_name || "Public company"} filed ${s.form_type || target.forms} on ${s.file_date || "recent date"} disclosing: "${target.q}". ${signalNote}.`,
           pubDate: s.file_date ? new Date(s.file_date).toISOString() : new Date().toISOString(),
           source: `SEC EDGAR: ${target.label}`,
@@ -748,9 +777,13 @@ async function fetchSecEdgarTargeted() {
 // CourtListener — False Claims Act, RICO, securities fraud new docket filings
 // Nature of suit codes: 375=False Claims, 376=Qui Tam, 470=RICO, 850=Securities
 async function fetchCourtListenerFraudDockets() {
-  const url = `https://www.courtlistener.com/api/rest/v3/dockets/?nature_of_suit=375,376,470,850&filed_after=${yesterday()}&order_by=-date_filed&format=json`;
+  const url = `https://www.courtlistener.com/api/rest/v4/dockets/?nature_of_suit=375,376,470,850&filed_after=${yesterday()}&order_by=-date_filed&format=json`;
   try {
-    const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+    const res = await fetchWithTimeout(url, { headers: clHeaders() });
+    if (!res.ok) {
+      console.warn(`CourtListener HTTP ${res.status} on ${url}`);
+      return [];
+    }
     const data = await res.json();
     const suitLabels = { "375": "False Claims Act", "376": "Qui Tam", "470": "RICO", "850": "Securities/Commodities" };
     return (data.results || []).slice(0, 15).map(r => ({
@@ -782,8 +815,12 @@ async function fetchMDLProgressions() {
   const results = [];
   for (const { q, label } of milestoneQueries) {
     try {
-      const url = `https://www.courtlistener.com/api/rest/v3/search/?type=o&q=${q}&order_by=dateFiled+desc&filed_after=${yesterday()}&stat_Precedential=on`;
-      const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
+      const url = `https://www.courtlistener.com/api/rest/v4/search/?type=o&q=${q}&order_by=dateFiled+desc&filed_after=${yesterday()}&stat_Precedential=on`;
+      const res = await fetchWithTimeout(url, { headers: clHeaders() });
+      if (!res.ok) {
+        console.warn(`CourtListener HTTP ${res.status} on MDL progression [${label}]`);
+        continue;
+      }
       const data = await res.json();
       for (const r of (data.results || []).slice(0, 5)) {
         results.push({
@@ -805,26 +842,32 @@ async function fetchMDLProgressions() {
   return results;
 }
 
-// NHTSA — recent vehicle safety complaints and investigations via API
-async function fetchNHTSA() {
-  // NHTSA doesn't have a general "all recent complaints" endpoint without vehicle params
-  // Use their investigations endpoint instead
-  const invUrl = `https://api.nhtsa.gov/products/vehicle/recalls?issueDate=${yesterday()}..${new Date().toISOString().slice(0, 10)}&results=20`;
+// NHTSA recalls are now fetched via the public RSS feed in GOV_RSS_FEEDS ("NHTSA Recalls").
+// The private AWS API Gateway endpoint (/products/vehicle/recalls?issueDate=...) requires
+// an undocumented key and returns HTTP 403. The RSS feed covers the same data.
+async function fetchNHTSA() { return []; }
+
+// JPML MDL transfer orders via CourtListener v4 (replaces JPML RSS which returns 0 bytes)
+async function fetchCourtListenerJPML() {
+  const url = `https://www.courtlistener.com/api/rest/v4/search/?type=r&court=jpml&order_by=-dateFiled&page_size=10`;
   try {
-    const res = await fetchWithTimeout(invUrl, { headers: { Accept: "application/json" } });
+    const res = await fetchWithTimeout(url, { headers: clHeaders() });
+    if (!res.ok) {
+      console.warn(`CourtListener JPML HTTP ${res.status}`);
+      return [];
+    }
     const data = await res.json();
-    const results = data.results || [];
-    return results.slice(0, 15).map(r => ({
-      id: hash(r.NHTSACampaignNumber || r.Component || ""),
-      title: `NHTSA Recall: ${r.Make || ""} ${r.Model || ""} ${r.ModelYear || ""} — ${r.Component || ""}`,
-      url: `https://www.nhtsa.gov/vehicle-safety/recalls#${r.NHTSACampaignNumber || ""}`,
-      description: `${r.Consequence || ""} ${r.Remedy || ""}`.slice(0, 400),
-      pubDate: r.ReportReceivedDate || new Date().toISOString(),
-      source: "NHTSA Recall Database",
-      category: "Federal",
+    return (data.results || []).map(r => ({
+      id: hash(`jpml_${r.id}`),
+      title: r.caseName || r.case_name || "JPML MDL Transfer Order",
+      url: `https://www.courtlistener.com${r.absolute_url || ""}`,
+      pubDate: r.dateFiled || new Date().toISOString().slice(0, 10),
+      description: `JPML docket: ${r.docketNumber || ""} — ${r.court_citation_string || "JPML"}`,
+      source: "CourtListener — JPML",
+      category: "MDL Formation",
     }));
   } catch (e) {
-    console.error("NHTSA API failed:", e.message);
+    console.error("JPML fetch failed:", e.message);
     return [];
   }
 }
@@ -835,12 +878,13 @@ async function fetchCFPBComplaints() {
   try {
     const res = await fetchWithTimeout(url, { headers: { Accept: "application/json" } });
     const data = await res.json();
-    const complaints = data.hits?.hits || [];
+    const complaints = Array.isArray(data) ? data : (data.hits?.hits || []);
 
     // Aggregate by company + product
     const clusters = {};
     for (const c of complaints) {
-      const s = c._source || {};
+      // API may return flat objects (top-level array) or Elasticsearch hits with _source
+      const s = c._source || c;
       const key = `${s.company}|${s.product}|${s.issue}`;
       if (!clusters[key]) clusters[key] = { company: s.company, product: s.product, issue: s.issue, count: 0, states: new Set() };
       clusters[key].count++;
@@ -1025,7 +1069,7 @@ async function fetchClaudeWebSearch(query) {
       })
     });
     const data = await res.json();
-    const text = data.content?.map(b => b.text || "").filter(Boolean).join("") || "[]";
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*?\]/);
     if (!match) return [];
     let items;
@@ -1178,6 +1222,7 @@ async function batchTriageWithClaude(items) {
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1200,
         system: `You are a class action attorney screening leads for viability. Score each lead 0-100.
+
 Return ONLY a JSON array, one entry per lead, same order as input:
 [{"score":<0-100>,"classification":"CREATE"|"INVESTIGATE"|"PASS","caseType":"<Medical Device|Pharmaceutical|Auto Defect|Environmental|Consumer Fraud|Data Breach|Securities|Food Safety|Financial Products|Employment|Antitrust|Government Liability|Other>"}]
 Score 75+: Government action + physical injury + large class + clear damages model
@@ -1185,9 +1230,9 @@ Score 50-74: Some signals present but missing key elements
 Score <50: No causation, individual issues dominate, no class, bankruptcy risk, or preemption`,
         messages: [{ role: "user", content: `Score these ${items.length} leads:\n\n${itemList}` }],
       }),
-    });
+    }, CLAUDE_TIMEOUT_MS);
     const data = await res.json();
-    const text = data.content?.map(b => b.text || "").join("") || "[]";
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return items.map(() => null);
     try { return JSON.parse(match[0]); } catch { return items.map(() => null); }
@@ -1283,9 +1328,10 @@ async function fetchFAERS() {
   const now = Date.now();
   const fmt = (ts) => new Date(ts).toISOString().slice(0, 10).replace(/-/g, "");
 
-  // Time windows for spike detection
-  const recent = { from: fmt(now - 30 * 86400000), to: fmt(now) };
-  const baseline = { from: fmt(now - 90 * 86400000), to: fmt(now - 31 * 86400000) };
+  // FDA has a 2-4 month submission lag — a 30-day window is always empty in 2026.
+  // Use 180 days for "recent" and 270 days for "baseline" to capture real data.
+  const recent = { from: fmt(now - 180 * 86400000), to: fmt(now) };
+  const baseline = { from: fmt(now - 450 * 86400000), to: fmt(now - 181 * 86400000) };
 
   try {
     // ── 1. Top 25 drugs by recent report count (last 30 days) ────────────────
@@ -1300,6 +1346,7 @@ async function fetchFAERS() {
     const baselineData = await baselineRes.json();
 
     const recentDrugs = recentData.results || [];   // [{ term: "OZEMPIC", count: 847 }, ...]
+    if (recentDrugs.length === 0) console.warn("FAERS: zero drugs returned for recent window — FDA lag may exceed 180 days or API is down");
     const baselineDrugs = baselineData.results || [];
 
     // Build baseline lookup (normalized to 30-day rate — baseline covers 59 days)
@@ -1515,9 +1562,9 @@ async function detectConvergence(items) {
         system: CONVERGENCE_EXTRACT_PROMPT,
         messages: [{ role: "user", content: titleList }],
       }),
-    });
+    }, CLAUDE_TIMEOUT_MS);
     const data = await res.json();
-    const text = data.content?.map(b => b.text || "").join("") || "[]";
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text || "").join("") || "[]";
     const match = text.match(/\[[\s\S]*\]/);
     if (!match) return [];
     extracted = JSON.parse(match[0]);
@@ -1746,11 +1793,12 @@ export default async function handler(req, res) {
   ]);
 
   // Batch 3: Specialized APIs (in parallel)
-  const [courtResults, courtDocketResults, courtFraudResults, mdlProgressionResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults, newsApiResults, eventRegistryResults] = await Promise.all([
+  const [courtResults, courtDocketResults, courtFraudResults, mdlProgressionResults, jpmlResults, secResults, secTargetedResults, nhtsaResults, cfpbResults, pubmedResults, ytResults, twitterResults, newsApiResults, eventRegistryResults] = await Promise.all([
     fetchCourtListener(),
     fetchCourtListenerDockets(),
     fetchCourtListenerFraudDockets(),
     fetchMDLProgressions(),
+    fetchCourtListenerJPML(),
     fetchSecEdgar(),
     fetchSecEdgarTargeted(),
     fetchNHTSA(),
@@ -1783,6 +1831,7 @@ export default async function handler(req, res) {
     ...courtDocketResults,
     ...courtFraudResults,
     ...mdlProgressionResults,
+    ...jpmlResults,
     ...secResults,
     ...secTargetedResults,
     ...nhtsaResults,

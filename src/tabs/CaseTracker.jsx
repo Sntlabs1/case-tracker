@@ -207,6 +207,112 @@ function CaseMemo({ caseData, updateCase }) {
   );
 }
 
+// ─── VERIFY STAGE COMPONENT ───────────────────────────────────────────────────
+
+function VerifyStage({ c, updateCase }) {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  const verify = async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/verify-stage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          caseName: c.title,
+          defendant: c.company,
+          mdlNumber: c.existingMDLNumber,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Verification failed");
+      setResult(data);
+    } catch (e) {
+      setError(e.message);
+    }
+    setLoading(false);
+  };
+
+  const apply = () => {
+    if (!result) return;
+    updateCase(c.id, {
+      caseStage: result.caseStage,
+      caseStageRationale: result.caseStageRationale + (result.docketUrl ? ` (${result.docketUrl})` : ""),
+      stageVerifiedAt: new Date().toISOString(),
+    });
+    setResult(null);
+  };
+
+  if (loading) {
+    return (
+      <div style={{ fontSize: 12, color: "#888", padding: "6px 0" }}>
+        Checking CourtListener...
+      </div>
+    );
+  }
+
+  if (result && result.notFound) {
+    return (
+      <div style={{ marginTop: 6, padding: "8px 12px", background: "rgba(245,158,11,0.08)", borderRadius: 6, border: "1px solid rgba(245,158,11,0.25)" }}>
+        <div style={{ fontSize: 12, color: "#fbbf24", marginBottom: 4 }}>No matching docket found on CourtListener</div>
+        <div style={{ fontSize: 11, color: "#888" }}>{result.message}</div>
+        <button onClick={() => setResult(null)} style={{ marginTop: 6, fontSize: 11, color: "#555", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Dismiss</button>
+      </div>
+    );
+  }
+
+  if (result) {
+    const confColor = result.confidence >= 80 ? "#22c55e" : result.confidence >= 60 ? "#f59e0b" : "#ef4444";
+    return (
+      <div style={{ marginTop: 6, padding: "10px 12px", background: "rgba(59,130,246,0.06)", borderRadius: 6, border: "1px solid rgba(59,130,246,0.25)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: stageColor(result.caseStage) + "22", color: stageColor(result.caseStage), border: `1px solid ${stageColor(result.caseStage)}44` }}>
+            {result.caseStage}
+          </span>
+          <span style={{ fontSize: 11, color: confColor }}>{result.confidence}% confidence</span>
+          <span style={{ fontSize: 10, color: "#555", marginLeft: "auto" }}>CourtListener · {result.entriesChecked ?? 0} entries checked</span>
+        </div>
+        <div style={{ fontSize: 12, color: "#a0a0b8", marginBottom: 6, lineHeight: 1.5 }}>{result.caseStageRationale}</div>
+        {result.docketUrl && (
+          <a href={result.docketUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa" }}>
+            {result.docketName || "View docket"} ↗
+          </a>
+        )}
+        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+          <button onClick={apply} style={{ fontSize: 11, color: "#22c55e", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 4, padding: "3px 10px", cursor: "pointer" }}>
+            Apply to case
+          </button>
+          <button onClick={() => setResult(null)} style={{ fontSize: 11, color: "#555", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            Dismiss
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ marginTop: 4 }}>
+        <div style={{ fontSize: 12, color: "#f87171" }}>Verification error: {error}</div>
+        <button onClick={() => setError(null)} style={{ fontSize: 11, color: "#555", background: "none", border: "none", cursor: "pointer", padding: 0 }}>Dismiss</button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={verify}
+      style={{ fontSize: 11, color: "#60a5fa", background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 4, padding: "2px 9px", cursor: "pointer", marginTop: 4 }}
+    >
+      Verify via CourtListener
+    </button>
+  );
+}
+
 // ─── EXPANDED DETAIL PANEL ────────────────────────────────────────────────────
 
 function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
@@ -273,7 +379,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {(c.caseStage || c.causesOfAction?.length > 0 || c.existingMDLNumber || c.activeFederalCases) && (
         <div style={{ marginBottom: 18 }}>
           <SLabel title="Case Details" color="#3b82f6" />
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6, alignItems: "center" }}>
             {c.caseStage && (
               <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 999, background: stageColor(c.caseStage) + "22", color: stageColor(c.caseStage), border: `1px solid ${stageColor(c.caseStage)}44` }}>
                 {c.caseStage}
@@ -284,12 +390,18 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
                 MDL {c.existingMDLNumber}
               </span>
             )}
+            {c.stageVerifiedAt && (
+              <span style={{ fontSize: 10, color: "#22c55e", opacity: 0.8 }}>
+                verified {new Date(c.stageVerifiedAt).toLocaleDateString()}
+              </span>
+            )}
           </div>
           {c.caseStageRationale && (
-            <div style={{ fontSize: 12, color: "#a0a0b8", marginBottom: 8, lineHeight: 1.5 }}>{c.caseStageRationale}</div>
+            <div style={{ fontSize: 12, color: "#a0a0b8", marginBottom: 6, lineHeight: 1.5 }}>{c.caseStageRationale}</div>
           )}
+          <VerifyStage c={c} updateCase={updateCase} />
           {c.causesOfAction?.length > 0 && (
-            <div style={{ marginBottom: 8 }}>
+            <div style={{ marginBottom: 8, marginTop: 10 }}>
               <div style={{ fontSize: 11, color: "#555", marginBottom: 5 }}>Causes of Action</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                 {c.causesOfAction.map((ca, i) => (

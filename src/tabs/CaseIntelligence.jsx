@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, Badge, Btn } from "../components/UI.jsx";
 import { CAUSES_OF_ACTION, CA_CATEGORIES } from "../data/causeOfActionLibrary.js";
-import { KB_RUBRIC } from "../lib/kbRubric.js";
+import { KB_RUBRIC } from "../lib/intelligence/kbRubric.js";
 
 // Condensed CA reference for prompts — names + element names + viability rating
 const CA_REFERENCE = CAUSES_OF_ACTION.map(ca =>

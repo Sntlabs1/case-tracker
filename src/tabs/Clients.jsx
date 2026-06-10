@@ -6,7 +6,7 @@ const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","
 
 const RETAINER_STATUSES = ["Uncontacted", "Contacted", "Consultation", "Retained", "Filed", "Declined"];
 const RETAINER_COLORS = {
-  Uncontacted:  "#6b7280",
+  Uncontacted:  "#5080d8",
   Contacted:    "#3b82f6",
   Consultation: "#f59e0b",
   Retained:     "#22c55e",
@@ -15,7 +15,7 @@ const RETAINER_COLORS = {
 };
 
 function retainerColor(status) {
-  return RETAINER_COLORS[status] || "#6b7280";
+  return RETAINER_COLORS[status] || "#5080d8";
 }
 
 function scoreColor(s) {
@@ -41,7 +41,7 @@ function ClaimCountdown({ closes }) {
   if (days === null) return null;
   let color = "#22c55e";
   let label = `${days}d to claim`;
-  if (days < 0) { color = "#6b7280"; label = "Window closed"; }
+  if (days < 0) { color = "#5080d8"; label = "Window closed"; }
   else if (days <= 7) { color = "#ef4444"; label = `${days}d left`; }
   else if (days <= 30) { color = "#f59e0b"; label = `${days}d left`; }
   return (
@@ -56,7 +56,7 @@ function ClaimCountdown({ closes }) {
 const STATUS_META = {
   active:     { label: "Active",     color: "#f59e0b" },
   discharged: { label: "Discharged", color: "#22c55e" },
-  dismissed:  { label: "Dismissed",  color: "#6b7280" },
+  dismissed:  { label: "Dismissed",  color: "#5080d8" },
   converted:  { label: "Converted",  color: "#3b82f6" },
 };
 
@@ -752,8 +752,8 @@ function ClientRow({ client, onSelect, onDelete, selected }) {
       style={{
         display: "flex", gap: 12, alignItems: "center", padding: "10px 14px",
         borderRadius: 8, cursor: "pointer", transition: "all 0.13s",
-        background: selected ? "rgba(94,234,212,0.08)" : hov ? "var(--bg-surface)" : "transparent",
-        border: `1px solid ${selected ? "rgba(94,234,212,0.3)" : hov ? "var(--border-hov)" : "var(--border)"}`,
+        background: selected ? "var(--accent-soft)" : hov ? "var(--bg-surface)" : "transparent",
+        border: `1px solid ${selected ? "var(--accent-dim)" : hov ? "var(--border-hov)" : "var(--border)"}`,
         marginBottom: 4,
       }}
     >
@@ -763,7 +763,7 @@ function ClientRow({ client, onSelect, onDelete, selected }) {
             {client.firstName} {client.lastName}
           </span>
           {client.state && (
-            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(100,120,220,0.12)", color: "#8090d0", border: "1px solid rgba(100,120,220,0.2)" }}>
+            <span style={{ fontSize: 10, padding: "1px 6px", borderRadius: 4, background: "rgba(29,78,216,0.10)", color: "#3b72e8", border: "1px solid rgba(29,78,216,0.22)" }}>
               {client.state}
             </span>
           )}
@@ -1316,7 +1316,7 @@ function ImportWizard({ onImported, onGoToClient }) {
     if (r.isCreditReport) {
       const c = r.client || {};
       const x = r.extraction || {};
-      const SCORE_COLOR = s => s >= 70 ? "#22c55e" : s >= 50 ? "#f59e0b" : "#6b7280";
+      const SCORE_COLOR = s => s >= 70 ? "#22c55e" : s >= 50 ? "#f59e0b" : "#5080d8";
       const qualifying = (crMatches || []).filter(m => m.qualifies);
       const nonQual    = (crMatches || []).filter(m => !m.qualifies && m.score >= 40);
 
@@ -1364,7 +1364,7 @@ function ImportWizard({ onImported, onGoToClient }) {
               [x.bankruptcies  || 0,  "Bankruptcies",     "#8b5cf6"],
               [x.taxLiens      || 0,  "Tax liens",        "#f59e0b"],
               [x.civilJudgments|| 0,  "Civil judgments",  "#f59e0b"],
-              [x.inquiries     || 0,  "Inquiries",        "#6b7280"],
+              [x.inquiries     || 0,  "Inquiries",        "#5080d8"],
             ].filter(([n]) => n > 0).map(([n, label, color]) => (
               <div key={label} style={{ padding: "10px 12px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${color}30`, textAlign: "center" }}>
                 <div style={{ fontSize: 22, fontWeight: 800, color, lineHeight: 1 }}>{n}</div>
@@ -2541,7 +2541,7 @@ export default function Clients() {
                           [(selectedClient.creditAccounts || []).filter(a => (a.latePayments?.d30||0)+(a.latePayments?.d60||0)+(a.latePayments?.d90||0)>0).length, "Late Accts", "#f59e0b"],
                           [selectedClient.bankruptcies?.length || 0, "Bankruptcies", "#8b5cf6"],
                           [selectedClient.taxLiens?.length || 0, "Tax Liens", "#f59e0b"],
-                          [selectedClient.creditInquiries?.length || 0, "Inquiries", "#6b7280"],
+                          [selectedClient.creditInquiries?.length || 0, "Inquiries", "#5080d8"],
                         ].filter(([n]) => n > 0).map(([n, label, color]) => (
                           <div key={label} style={{ padding: "8px 10px", borderRadius: 8, background: "var(--bg-surface2)", border: `1px solid ${color}28`, textAlign: "center" }}>
                             <div style={{ fontSize: 20, fontWeight: 800, color, lineHeight: 1 }}>{n}</div>
@@ -2593,7 +2593,7 @@ export default function Clients() {
                           { key: "revolving",    label: "Credit Cards",       color: "#3b82f6", accts: nonCol.filter(a => a.type === "revolving") },
                           { key: "installment",  label: "Installment Loans",  color: "#8b5cf6", accts: nonCol.filter(a => a.type === "installment") },
                           { key: "mortgage",     label: "Mortgages",          color: "#22c55e", accts: nonCol.filter(a => a.type === "mortgage") },
-                          { key: "other",        label: "Other Accounts",     color: "#6b7280", accts: nonCol.filter(a => !["revolving","installment","mortgage"].includes(a.type)) },
+                          { key: "other",        label: "Other Accounts",     color: "#5080d8", accts: nonCol.filter(a => !["revolving","installment","mortgage"].includes(a.type)) },
                         ].filter(g => g.accts.length > 0);
 
                         const fmt = n => n != null ? `$${Number(n).toLocaleString()}` : null;
@@ -2856,7 +2856,7 @@ export default function Clients() {
             </div>
 
             {matchLead ? (
-              <div style={{ marginBottom: 16, padding: "12px 14px", background: "rgba(94,234,212,0.08)", borderRadius: 8, border: "1px solid rgba(94,234,212,0.25)" }}>
+              <div style={{ marginBottom: 16, padding: "12px 14px", background: "var(--accent-soft)", borderRadius: 8, border: "1px solid var(--accent-dim)" }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 4 }}>Selected Lead</div>
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)", marginBottom: 3 }}>{matchLead.analysis?.headline || matchLead.title}</div>
                 <div style={{ fontSize: 11, color: "var(--text-5)" }}>

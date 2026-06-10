@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Card, Btn } from "../components/UI.jsx";
-import { BUYER_TO_CREDITORS, BUYER_ALIASES, CREDITOR_TO_BUYERS, getTypicalCreditors } from "../lib/debtCollectorMap.js";
+import { BUYER_TO_CREDITORS, BUYER_ALIASES, CREDITOR_TO_BUYERS, getTypicalCreditors } from "../lib/matching/debtCollectorMap.js";
 
 function StatPill({ label, value, color = "#C8442F" }) {
   return (

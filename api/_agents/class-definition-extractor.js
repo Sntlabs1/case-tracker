@@ -26,7 +26,7 @@
 // backlog in one shot (~7–10 minutes wall clock).
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../../src/lib/tcpaSchema.js";
+import { KEYS } from "../../src/lib/ingest/tcpaSchema.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 const DEFAULT_MAX = 300;

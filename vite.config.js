@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import vercelApi from './dev/vercel-api-plugin.js'
+import vercelApi from './tools/vercel-api-plugin.js'
 
 export default defineConfig({
   plugins: [react(), vercelApi()],

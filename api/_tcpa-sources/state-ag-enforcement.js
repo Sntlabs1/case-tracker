@@ -13,7 +13,7 @@
 
 import { kv } from "@vercel/kv";
 import Parser from "rss-parser";
-import { importCases } from "../../src/lib/tcpaCaseStore.js";
+import { importCases } from "../../src/lib/ingest/tcpaCaseStore.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 async function callHaiku(prompt) {

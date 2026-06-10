@@ -18,7 +18,7 @@
 
 import { kv } from "@vercel/kv";
 import { generateClientReport } from "./client-report.js";
-import { formatUSD } from "../src/lib/recoveryEstimate.js";
+import { formatUSD } from "../src/lib/intelligence/recoveryEstimate.js";
 
 const SNAPSHOT_KEY = (pid) => `tcpa:portfolio_report:${pid || "all"}`;
 const SNAPSHOT_TTL = 6 * 3600; // 6 hours

@@ -16,8 +16,8 @@
 // Dispatch is automatic based on shape detection. Failure falls back to the
 // legacy flat shape so older credit-com payloads keep ingesting.
 
-import { buildCreditReport } from "../../src/lib/creditReportSchema.js";
-import { creditReportToClient } from "../../src/lib/creditReportToClient.js";
+import { buildCreditReport } from "../../src/lib/ingest/creditReportSchema.js";
+import { creditReportToClient } from "../../src/lib/ingest/creditReportToClient.js";
 
 // ── Shape detection ────────────────────────────────────────────────────────
 

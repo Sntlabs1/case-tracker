@@ -10,92 +10,94 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      /* ── Dark mode (default) — Settlement Radar palette: deep navy + mint accent ── */
+      /* ── Default (light) — white content + cobalt blue sidebar ── */
       :root {
-        --bg-page:      #050b18;
-        /* Cards are gradients now — slightly lighter top, darker bottom — sitting
-           atop a glassy translucent surface so the body gradient bleeds through. */
-        --bg-card:      linear-gradient(180deg, rgba(18,32,55,0.72) 0%, rgba(10,18,32,0.72) 100%);
-        --bg-card-hov:  linear-gradient(180deg, rgba(24,40,68,0.78) 0%, rgba(14,24,42,0.78) 100%);
-        --bg-header:    rgba(5,11,24,0.85);
-        --bg-input:     rgba(5,11,24,0.6);
-        --bg-drawer:    linear-gradient(180deg, rgba(10,20,40,0.6) 0%, rgba(5,11,24,0.6) 100%);
-        --bg-drawer-hd: rgba(5,11,24,0.4);
-        --bg-surface:   rgba(94,234,212,0.05);
-        --bg-surface2:  rgba(94,234,212,0.025);
-        --border:       rgba(94,234,212,0.10);
-        --border-hov:   rgba(94,234,212,0.22);
-        --border-md:    rgba(94,234,212,0.14);
-        --text-1:       #eaf6f3;
-        --text-2:       #c5dcd6;
-        --text-3:       #9ec4bd;
-        --text-4:       #7ba39c;
-        --text-5:       #5e827b;
-        --text-6:       #4a6963;
-        --text-7:       #38524d;
+        --bg-page:      #f4f8ff;
+        --bg-card:      #ffffff;
+        --bg-card-hov:  #eef4ff;
+        --bg-header:    #ffffff;
+        --bg-input:     #eaf0ff;
+        --bg-drawer:    #1d4ed8;
+        --bg-drawer-hd: #1535b0;
+        --bg-surface:   rgba(29,78,216,0.08);
+        --bg-surface2:  rgba(29,78,216,0.04);
+        --border:       rgba(29,78,216,0.16);
+        --border-hov:   rgba(29,78,216,0.35);
+        --border-md:    rgba(29,78,216,0.22);
+        --text-1:       #08102a;
+        --text-2:       #0d2050;
+        --text-3:       #1a3878;
+        --text-4:       #2858b8;
+        --text-5:       #3b78d8;
+        --text-6:       #5a96ea;
+        --text-7:       #8ab8f8;
 
-        /* Accent — replaces previous Ticket Toro orange (#C8442F). */
-        --accent:        #5eead4;
-        --accent-strong: #2dd4bf;
-        --accent-soft:   rgba(94,234,212,0.12);
-        --accent-dim:    rgba(94,234,212,0.20);
-        --accent-text:   #051512; /* dark text on cyan button */
+        --accent:        #1d4ed8;
+        --accent-strong: #1535b0;
+        --accent-soft:   rgba(29,78,216,0.12);
+        --accent-dim:    rgba(29,78,216,0.22);
+        --accent-text:   #ffffff;
 
-        /* Card chrome */
-        --radius-card:   16px;
-        --radius-pill:   999px;
-        --shadow-card:   0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px rgba(0,0,0,0.35);
+        --nav-text:      rgba(255,255,255,0.72);
+        --nav-text-act:  #ffffff;
+        --nav-bg-act:    rgba(255,255,255,0.18);
+        --nav-border-act: rgba(255,255,255,0.95);
+
+        --radius-card:   4px;
+        --radius-pill:   4px;
+        --shadow-card:   0 1px 3px rgba(0,0,0,0.06), 0 2px 10px rgba(29,78,216,0.10);
       }
 
-      /* ── Light mode overrides ── */
-      body.light {
-        --bg-page:      #f3f7f8;
-        --bg-card:      linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,253,253,0.95) 100%);
-        --bg-card-hov:  linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(245,250,250,1) 100%);
-        --bg-header:    rgba(255,255,255,0.98);
-        --bg-input:     #f5fafa;
-        --bg-drawer:    linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,253,253,0.96) 100%);
-        --bg-drawer-hd: #f8fcfc;
-        --bg-surface:   rgba(0,40,40,0.04);
-        --bg-surface2:  rgba(0,40,40,0.02);
-        --border:       rgba(0,80,75,0.10);
-        --border-hov:   rgba(0,80,75,0.20);
-        --border-md:    rgba(0,80,75,0.14);
-        --text-1:       #051512;
-        --text-2:       #1a2a26;
-        --text-3:       #2e423d;
-        --text-4:       #3c5751;
-        --text-5:       #4a6963;
-        --text-6:       #587a73;
-        --text-7:       #678c84;
+      /* ── Dark mode — deep blue, no grey ── */
+      body.dark {
+        --bg-page:      #0c1640;
+        --bg-card:      #112056;
+        --bg-card-hov:  #162868;
+        --bg-header:    #0e1a4a;
+        --bg-input:     #0e1a4a;
+        --bg-drawer:    #091230;
+        --bg-drawer-hd: #060c1e;
+        --bg-surface:   rgba(255,255,255,0.10);
+        --bg-surface2:  rgba(255,255,255,0.06);
+        --border:       rgba(74,158,255,0.16);
+        --border-hov:   rgba(74,158,255,0.32);
+        --border-md:    rgba(74,158,255,0.20);
+        --text-1:       #eef6ff;
+        --text-2:       #c0d8fc;
+        --text-3:       #8ab8f8;
+        --text-4:       #5090e8;
+        --text-5:       #2a60c0;
+        --text-6:       #1840a0;
+        --text-7:       #0e2870;
 
-        --accent:        #14b8a6;
-        --accent-strong: #0d9488;
-        --accent-soft:   rgba(20,184,166,0.10);
-        --accent-dim:    rgba(20,184,166,0.18);
+        --accent:        #4a9eff;
+        --accent-strong: #70bcff;
+        --accent-soft:   rgba(74,158,255,0.16);
+        --accent-dim:    rgba(74,158,255,0.26);
         --accent-text:   #ffffff;
-        --shadow-card:   0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,40,40,0.06);
+        --shadow-card:   0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 14px rgba(0,0,0,0.50);
+
+        --nav-text:      rgba(180,210,255,0.75);
+        --nav-text-act:  #ffffff;
+        --nav-bg-act:    rgba(74,158,255,0.22);
+        --nav-border-act: #4a9eff;
       }
 
       body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background:
-          radial-gradient(ellipse 1200px 800px at 75% -10%, rgba(94,234,212,0.06) 0%, transparent 60%),
-          radial-gradient(ellipse 1000px 700px at 0% 110%, rgba(45,212,191,0.04) 0%, transparent 55%),
-          linear-gradient(180deg, #060e1d 0%, #050b18 50%, #03070f 100%);
+        background: #f4f8ff;
         background-attachment: fixed;
         min-height: 100vh;
       }
-      body.light {
-        background:
-          radial-gradient(ellipse 1200px 800px at 75% -10%, rgba(20,184,166,0.05) 0%, transparent 60%),
-          linear-gradient(180deg, #f5fafa 0%, #eef5f4 100%);
+      body.dark {
+        background: #0c1640;
         background-attachment: fixed;
       }
 
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: var(--border-hov); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.25); border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.45); }
     </style>
   </head>
   <body>

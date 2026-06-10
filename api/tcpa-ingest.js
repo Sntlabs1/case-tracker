@@ -20,7 +20,7 @@
 //   FCC_APP_TOKEN            (optional; raises Socrata rate limit)
 
 import { kv } from "@vercel/kv";
-import { importCases } from "../src/lib/tcpaCaseStore.js";
+import { importCases } from "../src/lib/ingest/tcpaCaseStore.js";
 import { runCourtListener }      from "./_tcpa-sources/courtlistener.js";
 import { runTcpaWorld }          from "./_tcpa-sources/tcpaworld.js";
 import { runClassActionRss }     from "./_tcpa-sources/classaction-rss.js";

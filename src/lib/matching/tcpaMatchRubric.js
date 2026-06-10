@@ -76,8 +76,7 @@ export function scoreTcpaPair(client, caseRecord) {
 
   if (caseRecord.status === "claim_closed") {
     disqualifyingFactors.push(DISQUALIFY.CLAIM_CLOSED);
-    // Don't short-circuit — caller may still want to see the score for an audit
-    // trail. We return qualifies=false but compute the raw score below.
+    return finalize({ score: 0, qualifies: false, matchType: "disqualified", matchingFactors, disqualifyingFactors, confidence: 100 });
   }
 
   // ── Defendant match (the load-bearing signal) ──────────────────────────────

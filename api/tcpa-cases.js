@@ -17,11 +17,11 @@ import {
   KEYS,
   CASE_STATUSES,
   epochOrZero,
-} from "../src/lib/tcpaSchema.js";
+} from "../src/lib/ingest/tcpaSchema.js";
 import {
   resolveOrSuggest,
-} from "../src/lib/defendantResolver.js";
-import { importCases, unindexCase, rebuildSearchIndex } from "../src/lib/tcpaCaseStore.js";
+} from "../src/lib/ingest/defendantResolver.js";
+import { importCases, unindexCase, rebuildSearchIndex } from "../src/lib/ingest/tcpaCaseStore.js";
 
 const CACHE_TTL = 300;
 

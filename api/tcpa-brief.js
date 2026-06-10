@@ -5,7 +5,7 @@
 // POST /api/tcpa-brief  body: { id }        → generate, store, return
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../src/lib/tcpaSchema.js";
+import { KEYS } from "../src/lib/ingest/tcpaSchema.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const BRIEF_TTL = 30 * 24 * 3600; // 30 days

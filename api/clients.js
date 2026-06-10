@@ -14,7 +14,7 @@ import { createHash, randomUUID } from "node:crypto";
 import {
   normalize as normalizeDefendant,
   createDefendant,
-} from "../src/lib/defendantResolver.js";
+} from "../src/lib/ingest/defendantResolver.js";
 
 const CLIENTS_PENDING_MATCH = "tcpa:clients_pending_match";
 
@@ -343,6 +343,7 @@ export default async function handler(req, res) {
     // outreach-pending.js already lazily drops null client refs at read time.
     await Promise.allSettled([
       kv.del(`tcpa:client_matches:${id}`),
+      kv.del(`masstort:client_matches:${id}`),
       kv.zrem(CLIENTS_PENDING_MATCH, id),
       // Remove all outreach:pending entries for this client.
       // Members are "clientId|caseId" strings; filter and bulk-remove.
@@ -353,7 +354,7 @@ export default async function handler(req, res) {
       })(),
     ]);
 
-    return res.status(200).json({ deleted: id });
+    return res.status(200).json({ ok: true, deleted: id });
   }
 
   // ── POST — bulk import ─────────────────────────────────────────────────────

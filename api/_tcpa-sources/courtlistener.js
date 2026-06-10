@@ -13,7 +13,7 @@
 //   daily    — pull cases filed since cursor (last successful run)
 
 import { kv } from "@vercel/kv";
-import { fromCourtListener } from "../../src/lib/tcpaIngestNormalize.js";
+import { fromCourtListener } from "../../src/lib/ingest/tcpaIngestNormalize.js";
 
 // CourtListener v4 SEARCH API (Solr-backed) — much faster than the raw
 // /dockets/ resource for filtered queries. /dockets/ with a date_filed range

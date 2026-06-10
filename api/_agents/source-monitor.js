@@ -6,7 +6,7 @@
 // Per-source history → `agent:source-monitor:history:${id}` (lpush, ltrim 30)
 
 import { kv } from "@vercel/kv";
-import { SOURCES } from "../../src/lib/sourceRegistry.js";
+import { SOURCES } from "../../src/lib/scanner/sourceRegistry.js";
 
 const ROLLUP_KEY = "agent:source-monitor:rollup";
 const PROBE_TIMEOUT_MS = 12_000;

@@ -19,7 +19,7 @@
 
 import { kv } from "@vercel/kv";
 import { fetchDockets } from "../_tcpa-sources/courtlistener.js";
-import { importCases } from "../../src/lib/tcpaCaseStore.js";
+import { importCases } from "../../src/lib/ingest/tcpaCaseStore.js";
 
 const PROGRESS_KEY = "agent:tcpa-backfill:progress";
 

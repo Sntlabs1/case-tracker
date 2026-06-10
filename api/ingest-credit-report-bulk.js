@@ -27,13 +27,13 @@
 
 import { parseCreditReportCsv }     from "./_ingest-parsers/csv-parser.js";
 import normalize                     from "./_partner-importers/credit-com-json.js";
-import { buildCreditReport }         from "../src/lib/creditReportSchema.js";
-import { creditReportToClient }      from "../src/lib/creditReportToClient.js";
+import { buildCreditReport }         from "../src/lib/ingest/creditReportSchema.js";
+import { creditReportToClient }      from "../src/lib/ingest/creditReportToClient.js";
 import { createHash }                from "node:crypto";
 import {
   normalize as normalizeDefendant,
   createDefendant,
-} from "../src/lib/defendantResolver.js";
+} from "../src/lib/ingest/defendantResolver.js";
 
 // ── Upstash REST pipeline ───────────────────────────────────────────────────
 
@@ -146,6 +146,7 @@ function buildRecord(c, idx, now) {
     lastCreditReportBureau: c.lastCreditReportBureau || null,
     matchedLeads: [],
     existingCases: c.existingCases || "",
+    massTortSignals: c.massTortSignals || null,
   };
 }
 
@@ -220,6 +221,7 @@ async function batchDedupLookup(records) {
   for (const r of records) {
     if (r.phoneHash) hashToKey.set(r.phoneHash, `client_by_phonehash:${r.phoneHash}`);
     if (r.emailHash) hashToKey.set(r.emailHash, `client_by_emailhash:${r.emailHash}`);
+    if (r._nameKey)  hashToKey.set(r._nameKey,  `client_by_namekey:${r._nameKey}`);
   }
   const hashes = [...hashToKey.keys()];
   const existingByHash = new Map();
@@ -235,7 +237,7 @@ async function batchDedupLookup(records) {
   // Resolve: per record, does it match an existing client?
   const matches = new Map(); // record index → existing clientId or null
   records.forEach((r, i) => {
-    const id = existingByHash.get(r.phoneHash) || existingByHash.get(r.emailHash) || null;
+    const id = existingByHash.get(r.phoneHash) || existingByHash.get(r.emailHash) || existingByHash.get(r._nameKey) || null;
     matches.set(i, id);
   });
   return matches;
@@ -259,8 +261,20 @@ async function executePipelines(commands) {
 // ── Chunk processor ─────────────────────────────────────────────────────────
 
 async function processChunk(rawRecords, partnerId, chunkStart, now) {
-  const records = rawRecords.map((c, i) => buildRecord(c, chunkStart + i, now));
-  const valid = records.filter(r => r.phoneHash || r.emailHash);
+  const records = rawRecords.map((c, i) => {
+    const r = buildRecord(c, chunkStart + i, now);
+    // Compute name+DOB fingerprint for records that lack phone and email.
+    // Allows dedup and persistence for clients with name-only contact data.
+    if (!r.phoneHash && !r.emailHash && r.firstName && r.lastName) {
+      r._nameKey = sha256(`${r.firstName.toLowerCase()}|${r.lastName.toLowerCase()}|${r.dob || ""}`);
+    }
+    return r;
+  });
+
+  const phoneOnly  = records.filter(r => r.phoneHash && !r.emailHash && !r._nameKey).length;
+  const emailOnly  = records.filter(r => !r.phoneHash && r.emailHash && !r._nameKey).length;
+  const nameOnly   = records.filter(r => !r.phoneHash && !r.emailHash && r._nameKey).length;
+  const valid = records.filter(r => r.phoneHash || r.emailHash || r._nameKey);
   const invalid = records.length - valid.length;
 
   // 1. Resolve defendant canonical IDs across entire chunk in one batch
@@ -286,6 +300,7 @@ async function processChunk(rawRecords, partnerId, chunkStart, now) {
     writeCommands.push(["ZADD", `clients_by_partner:${partnerId}`, String(score), id]);
     if (r.phoneHash) writeCommands.push(["SET", `client_by_phonehash:${r.phoneHash}`, id, "EX", String(CLIENT_TTL)]);
     if (r.emailHash) writeCommands.push(["SET", `client_by_emailhash:${r.emailHash}`, id, "EX", String(CLIENT_TTL)]);
+    if (r._nameKey)  writeCommands.push(["SET", `client_by_namekey:${r._nameKey}`,    id, "EX", String(CLIENT_TTL)]);
     writeCommands.push(["ZADD", CLIENTS_PENDING_MATCH, String(score), id]);
 
     if (existingId) updated++; else imported++;
@@ -295,7 +310,7 @@ async function processChunk(rawRecords, partnerId, chunkStart, now) {
   // 4. Execute all writes in parallel pipeline batches
   await executePipelines(writeCommands);
 
-  return { imported, updated, invalid, total: records.length };
+  return { imported, updated, invalid, total: records.length, phoneOnly, emailOnly, nameOnly };
 }
 
 // ── File parsers ─────────────────────────────────────────────────────────────
@@ -388,12 +403,12 @@ async function updateJob(jobId, delta) {
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner, X-Partner-Token");
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  const partnerToken = req.headers["x-partner-token"];
+  if (!partnerToken || partnerToken !== process.env.PARTNER_INGEST_TOKEN) {
+    return res.status(401).json({ error: "Unauthorized" });
   }
 
   if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
@@ -471,53 +486,71 @@ export default async function handler(req, res) {
     const clients = rawClients.filter(c => c && (c.firstName || c.lastName || c.phone || c.email));
     const skipped = rawClients.length - clients.length;
 
-    // Create job for tracking
-    const jobId = await createJob(clients.length, partner);
+    // Chunked continuation: if an offset was provided this is a continuation
+    // call for an existing job — resume from that offset, process one chunk,
+    // then return. If no offset, create the job and process the first chunk.
+    const offset = typeof body.offset === "number" ? body.offset : 0;
+    let jobId = body.jobId || null;
 
-    // Respond immediately with jobId — client can poll for progress
+    if (!jobId) {
+      // First call: create job record
+      jobId = await createJob(clients.length, partner);
+    }
+
+    // Process exactly ONE chunk per request — no Vercel timeout risk.
+    const now = Date.now();
+    const chunk = clients.slice(offset, offset + CHUNK_SIZE);
+    let chunkResult = null;
+
+    if (chunk.length > 0) {
+      try {
+        chunkResult = await processChunk(chunk, partner, offset, now);
+        const chunkErrors = [];
+        if (chunkResult.invalid > 0) {
+          chunkErrors.push(`chunk ${Math.floor(offset / CHUNK_SIZE)}: ${chunkResult.invalid} dropped (no phone/email/name); breakdown: phoneOnly=${chunkResult.phoneOnly}, emailOnly=${chunkResult.emailOnly}, nameOnly=${chunkResult.nameOnly}`);
+        }
+        await updateJob(jobId, {
+          processed: chunkResult.total,
+          imported:  chunkResult.imported,
+          updated:   chunkResult.updated,
+          failed:    chunkResult.invalid,
+          errors:    chunkErrors,
+        });
+      } catch (e) {
+        await updateJob(jobId, {
+          processed: chunk.length,
+          failed:    chunk.length,
+          errors:    [{ chunk: Math.floor(offset / CHUNK_SIZE), error: e.message }],
+        });
+      }
+    }
+
+    const nextOffset = offset + CHUNK_SIZE;
+    const done = nextOffset >= clients.length;
+
+    if (done) {
+      // Invalidate list cache so Clients tab picks up new records
+      await fetch(`${KV_URL}/del/${encodeURIComponent(CLIENTS_CACHE_KEY)}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${KV_TOKEN}` },
+      }).catch(() => {});
+      await updateJob(jobId, { status: "complete" });
+    }
+
     res.status(202).json({
       ok: true,
       jobId,
       total: clients.length,
       skipped,
       source: sourceInfo,
+      offset,
+      nextOffset: done ? null : nextOffset,
+      done,
       pollUrl: `/api/ingest-credit-report-bulk?jobId=${jobId}`,
-      message: `Processing ${clients.length.toLocaleString()} records. Poll pollUrl for progress.`,
+      message: done
+        ? `All ${clients.length.toLocaleString()} records submitted.`
+        : `Chunk processed (offset ${offset}–${offset + chunk.length - 1}). POST again with { jobId, offset: ${nextOffset} } to continue.`,
     });
-
-    // Process all chunks (runs after response is sent via Node.js keep-alive)
-    // On Vercel serverless, this continues until the function times out (300s).
-    // For truly massive datasets, credit.com should send in batches of ≤500K.
-    let chunkStart = 0;
-    const now = Date.now();
-
-    for (let i = 0; i < clients.length; i += CHUNK_SIZE) {
-      const chunk = clients.slice(i, i + CHUNK_SIZE);
-      try {
-        const result = await processChunk(chunk, partner, chunkStart, now);
-        await updateJob(jobId, {
-          processed: result.total,
-          imported:  result.imported,
-          updated:   result.updated,
-          failed:    result.invalid,
-        });
-        chunkStart += chunk.length;
-      } catch (e) {
-        await updateJob(jobId, {
-          processed: chunk.length,
-          failed:    chunk.length,
-          errors:    [{ chunk: i / CHUNK_SIZE, error: e.message }],
-        });
-      }
-    }
-
-    // Invalidate list cache so Clients tab picks up new records
-    await fetch(`${KV_URL}/del/${encodeURIComponent(CLIENTS_CACHE_KEY)}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${KV_TOKEN}` },
-    }).catch(() => {});
-
-    await updateJob(jobId, { status: "complete" });
 
   } catch (e) {
     console.error("ingest-credit-report-bulk:", e.message);

@@ -7,7 +7,6 @@ export const Card = ({ children, className = "", onClick, style = {} }) => (
       borderRadius: "var(--radius-card)",
       border: "1px solid var(--border)",
       boxShadow: "var(--shadow-card)",
-      backdropFilter: "blur(8px)",
       padding: 22,
       ...(onClick ? { cursor: "pointer" } : {}),
       ...style,
@@ -18,7 +17,7 @@ export const Card = ({ children, className = "", onClick, style = {} }) => (
 );
 
 export const Badge = ({ label, color }) => (
-  <span style={{ display: "inline-block", padding: "2px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600, background: color + "22", color, border: `1px solid ${color}44` }}>{label}</span>
+  <span style={{ display: "inline-block", padding: "2px 10px", borderRadius: 3, fontSize: 11, fontWeight: 600, background: color + "22", color, border: `1px solid ${color}44` }}>{label}</span>
 );
 
 export const Btn = ({ children, onClick, variant = "primary", small, style = {} }) => {
@@ -29,14 +28,14 @@ export const Btn = ({ children, onClick, variant = "primary", small, style = {} 
     cursor: "pointer",
     fontSize: small ? 12 : 13,
     padding: small ? "6px 14px" : "10px 22px",
-    transition: "all 0.18s",
-    letterSpacing: "0.01em",
+    transition: "all 0.15s",
+    letterSpacing: "0.02em",
   };
   const styles = {
-    primary:   { ...base, background: "var(--accent)", color: "var(--accent-text)", boxShadow: "0 4px 14px rgba(94,234,212,0.18)" },
+    primary:   { ...base, background: "var(--accent)", color: "var(--accent-text)" },
     secondary: { ...base, background: "var(--bg-surface)", color: "var(--text-2)", border: "1px solid var(--border-md)" },
-    danger:    { ...base, background: "#ef444420", color: "#ef4444", border: "1px solid #ef444440" },
-    success:   { ...base, background: "#22c55e20", color: "#4ade80", border: "1px solid #22c55e40" },
+    danger:    { ...base, background: "#ef444418", color: "#ef4444", border: "1px solid #ef444435" },
+    success:   { ...base, background: "#22c55e18", color: "#4ade80", border: "1px solid #22c55e35" },
   };
   return <button onClick={onClick} style={{ ...styles[variant], ...style }}>{children}</button>;
 };
@@ -44,14 +43,14 @@ export const Btn = ({ children, onClick, variant = "primary", small, style = {} 
 export const Input = ({ label, value, onChange, type = "text", placeholder, style = {} }) => (
   <div style={{ marginBottom: 12 }}>
     {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }} />
+    <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }} />
   </div>
 );
 
 export const Select = ({ label, value, onChange, options, style = {} }) => (
   <div style={{ marginBottom: 12 }}>
     {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <select value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }}>
+    <select value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", boxSizing: "border-box", ...style }}>
       <option value="">All</option>
       {options.map(o => <option key={o} value={o}>{o}</option>)}
     </select>
@@ -61,15 +60,15 @@ export const Select = ({ label, value, onChange, options, style = {} }) => (
 export const TextArea = ({ label, value, onChange, rows = 3, placeholder }) => (
   <div style={{ marginBottom: 12 }}>
     {label && <label style={{ display: "block", fontSize: 12, color: "var(--text-3)", marginBottom: 4, fontWeight: 500 }}>{label}</label>}
-    <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }} />
+    <textarea value={value} onChange={e => onChange(e.target.value)} rows={rows} placeholder={placeholder} style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid var(--border-md)", background: "var(--bg-input)", color: "var(--text-1)", fontSize: 13, outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: "inherit" }} />
   </div>
 );
 
 export const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }} onClick={onClose}>
-      <div onClick={e => e.stopPropagation()} style={{ background: "var(--bg-card)", borderRadius: 12, border: "1px solid var(--border)", padding: 28, maxWidth: 600, width: "100%", maxHeight: "85vh", overflow: "auto" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.72)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 20 }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "var(--bg-card)", borderRadius: 4, border: "1px solid var(--border-hov)", padding: 28, maxWidth: 600, width: "100%", maxHeight: "85vh", overflow: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h3 style={{ margin: 0, color: "var(--text-1)", fontSize: 18 }}>{title}</h3>
           <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", cursor: "pointer", fontSize: 20 }}>✕</button>
@@ -125,7 +124,7 @@ export const AIPanel = ({ caseData, onClose }) => {
   };
 
   return (
-    <div style={{ marginTop: 16, background: "rgba(99,102,241,0.08)", borderRadius: 12, border: "1px solid rgba(99,102,241,0.2)", padding: 20 }}>
+    <div style={{ marginTop: 16, background: "rgba(99,102,241,0.07)", borderRadius: 4, border: "1px solid rgba(99,102,241,0.18)", padding: 20 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
         <h4 style={{ margin: 0, color: "#a78bfa", fontSize: 14 }}>AI Case Analysis</h4>
         <button onClick={onClose} style={{ background: "none", border: "none", color: "var(--text-4)", cursor: "pointer" }}>✕</button>

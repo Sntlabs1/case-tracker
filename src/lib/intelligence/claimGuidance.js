@@ -21,8 +21,8 @@
 // attorney reviewing a match a fast triage checklist — "here's what you
 // need from the plaintiff before filing this claim."
 
-import { KNOWN_SETTLEMENTS } from "../data/knownTcpaSettlements.js";
-import { normalize as normalizeDefendant } from "./defendantResolver.js";
+import { KNOWN_SETTLEMENTS } from "../../data/knownTcpaSettlements.js";
+import { normalize as normalizeDefendant } from "../ingest/defendantResolver.js";
 
 // ── Statutory baselines (what each statute always requires) ─────────────────
 const STATUTORY_BASELINE = {

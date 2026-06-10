@@ -15,9 +15,103 @@
 //   client.creditReportAlerts[]
 //   client.creditReportSummary    — quick-glance stats for the UI
 //   client.lastCreditReportAt     — when the latest report was ingested
+//   client.massTortSignals        — mass-tort eligibility signals (geographic,
+//                                   medical, auto, pharmacy) for precomputed
+//                                   matching in match-batch.js
 //
 // The matcher (src/lib/tcpaMatchRubric.js) will be updated separately to
 // scan creditAccounts[] in addition to collectionsHistory[].
+
+const MEDICAL_NAME_RE = /hospital|medical|health|clinic|surgery|orthopedic|cardio|oncology|pharma/i;
+const AUTO_LOAN_TYPE_RE = /^(auto|vehicle|car|truck|motorcycle)/i;
+const PHARMACY_NAME_RE = /cvs|walgreens|rite\s*aid|express\s*scripts|optumrx|caremark|humana\s*pharm|cigna\s*pharm|prime\s*therapeutics/i;
+
+function extractMassTortSignals(accounts, addressHistory, currentAddress, inquiries, bankruptcies) {
+  const zipSet = new Set();
+  const stateSet = new Set();
+
+  if (currentAddress?.zip)   zipSet.add(currentAddress.zip.toString().slice(0, 5));
+  if (currentAddress?.state) stateSet.add((currentAddress.state || "").toUpperCase().slice(0, 2));
+
+  for (const a of (addressHistory || [])) {
+    if (a.zip)   zipSet.add(a.zip.toString().slice(0, 5));
+    if (a.state) stateSet.add((a.state || "").toUpperCase().slice(0, 2));
+  }
+
+  const medicalCreditors = [];
+  const autoCreditors = [];
+  const medicalDebtAccounts = [];
+
+  for (const acct of (accounts || [])) {
+    const name = (acct.creditor || acct.originalCreditor || "").trim();
+    if (!name) continue;
+
+    if (MEDICAL_NAME_RE.test(name)) {
+      medicalCreditors.push(name);
+      if (acct.isCollection) {
+        medicalDebtAccounts.push(name);
+      }
+    }
+
+    const loanType = (acct.loanType || acct.type || "").toLowerCase();
+    if (AUTO_LOAN_TYPE_RE.test(loanType)) {
+      const openYear  = acct.dateOpened  ? new Date(acct.dateOpened).getFullYear()  : null;
+      const closeYear = acct.dateClosed  ? new Date(acct.dateClosed).getFullYear()  : null;
+      autoCreditors.push({ creditor: name, openYear, closeYear });
+    }
+  }
+
+  const pharmacyInquiries = [];
+  for (const inq of (inquiries || [])) {
+    const name = (inq.creditor || inq.subscriberName || "").trim();
+    if (name && PHARMACY_NAME_RE.test(name)) {
+      pharmacyInquiries.push(name);
+    }
+  }
+
+  const bankruptcyMedicalDebt = (bankruptcies || []).some((b) => {
+    const desc = (b.description || b.remarks || "").toLowerCase();
+    return /medical|hospital|health|clinic/.test(desc);
+  });
+
+  // Estimate age range from oldest account open date.
+  // Oldest account gives earliest credit start; people typically get first
+  // credit at 18–25. Oldest open year - 25 → min birth year,
+  // oldest open year - 18 → max birth year.
+  let estimatedAgeRange = null;
+  const currentYear = new Date().getFullYear();
+  let oldestOpenYear = null;
+  for (const acct of (accounts || [])) {
+    if (!acct.dateOpened) continue;
+    const yr = new Date(acct.dateOpened).getFullYear();
+    if (!isNaN(yr) && (oldestOpenYear === null || yr < oldestOpenYear)) {
+      oldestOpenYear = yr;
+    }
+  }
+  if (oldestOpenYear) {
+    const minAge = currentYear - (oldestOpenYear + 25);
+    const maxAge = currentYear - (oldestOpenYear + 18);
+    const clampedMin = Math.max(0, minAge);
+    const clampedMax = Math.max(0, maxAge);
+    // Only set estimatedAgeRange when the computed values are meaningful.
+    // Both being 0 means the account open date is implausibly recent and would
+    // produce false age-overlap matches against every demographics string.
+    if (clampedMax > 0) {
+      estimatedAgeRange = { min: clampedMin, max: clampedMax };
+    }
+  }
+
+  return {
+    zipCodes:             [...zipSet].filter(Boolean),
+    states:               [...stateSet].filter(Boolean),
+    medicalCreditors:     [...new Set(medicalCreditors)],
+    autoCreditors,
+    pharmacyInquiries:    [...new Set(pharmacyInquiries)],
+    medicalDebtAccounts:  [...new Set(medicalDebtAccounts)],
+    bankruptcyMedicalDebt,
+    estimatedAgeRange,
+  };
+}
 
 // Convert a tradeline account into a collectionsHistory-shaped entry.
 // Kept compatible with the existing matcher so older code keeps working.
@@ -151,6 +245,15 @@ export function creditReportToClient(report, baseClient = {}) {
     lastCreditReportAt: report.ingestedAt || new Date().toISOString(),
     lastCreditReportNumber: report.reportNumber || null,
     lastCreditReportBureau: report.bureau || null,
+
+    // ── Mass-tort eligibility signals ─────────────────────────────────────
+    massTortSignals: extractMassTortSignals(
+      accounts,
+      addressHistory,
+      c.currentAddress || null,
+      report.inquiries || [],
+      bankruptcies
+    ),
   };
 
   return out;

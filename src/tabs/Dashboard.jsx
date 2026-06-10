@@ -64,17 +64,17 @@ function timeAgo(iso) {
 
 function HeroPill({ label, tone = "default" }) {
   const palette = {
-    default: { bg: "rgba(94,234,212,0.10)", color: "var(--accent)",   border: "rgba(94,234,212,0.30)" },
-    warn:    { bg: "rgba(245,158,11,0.10)", color: "#fbbf24",         border: "rgba(245,158,11,0.30)" },
-    muted:   { bg: "rgba(255,255,255,0.04)", color: "var(--text-3)",  border: "rgba(255,255,255,0.10)" },
+    default: { bg: "var(--accent-soft)",    color: "var(--accent)",  border: "var(--accent-dim)" },
+    warn:    { bg: "rgba(245,158,11,0.10)", color: "#b45309",        border: "rgba(245,158,11,0.30)" },
+    muted:   { bg: "var(--bg-surface)",     color: "var(--text-3)",  border: "var(--border)" },
   };
   const p = palette[tone] || palette.default;
   return (
     <span style={{
       display: "inline-flex", alignItems: "center", gap: 6,
-      padding: "6px 14px", borderRadius: 999,
+      padding: "5px 12px", borderRadius: 3,
       background: p.bg, color: p.color, border: `1px solid ${p.border}`,
-      fontSize: 12, fontWeight: 600, letterSpacing: "0.01em",
+      fontSize: 11, fontWeight: 600, letterSpacing: "0.03em", textTransform: "uppercase",
     }}>
       {label}
     </span>
@@ -94,9 +94,9 @@ function ScanHealthBanner({ scanHealth }) {
 
   const palette = hasProblem
     ? (scanHealth.status === "broken"
-        ? { bg: "rgba(239,68,68,0.10)", border: "rgba(239,68,68,0.40)", dot: "#ef4444", text: "#fca5a5" }
-        : { bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.40)", dot: "#f59e0b", text: "#fbbf24" })
-    : { bg: "rgba(94,234,212,0.08)",  border: "rgba(94,234,212,0.30)", dot: "var(--accent)", text: "var(--text-4)" };
+        ? { bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.30)", dot: "#ef4444", text: "#dc2626" }
+        : { bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.30)", dot: "#f59e0b", text: "#b45309" })
+    : { bg: "var(--bg-surface)", border: "var(--border)", dot: "var(--accent)", text: "var(--text-4)" };
 
   async function trigger(mode) {
     if (running) return;
@@ -129,12 +129,12 @@ function ScanHealthBanner({ scanHealth }) {
 
   return (
     <div style={{
-      padding: "14px 20px", borderRadius: 12,
+      padding: "14px 20px", borderRadius: "var(--radius-card)",
       background: palette.bg, border: `1px solid ${palette.border}`,
       display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16,
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14, minWidth: 0 }}>
-        <div style={{ width: 10, height: 10, borderRadius: "50%", background: palette.dot, flexShrink: 0, boxShadow: `0 0 10px ${palette.dot}` }} />
+        <div style={{ width: 8, height: 8, borderRadius: "50%", background: palette.dot, flexShrink: 0 }} />
         <div style={{ minWidth: 0 }}>
           <div style={{ fontWeight: 700, color: "var(--text-1)", fontSize: 13, marginBottom: 2 }}>
             {headline}
@@ -150,13 +150,12 @@ function ScanHealthBanner({ scanHealth }) {
           onClick={() => trigger("fetch")}
           disabled={running}
           style={{
-            padding: "8px 16px", borderRadius: 999,
+            padding: "7px 14px", borderRadius: "var(--radius-pill)",
             background: triggered === "fetch" ? "var(--bg-surface)" : "var(--accent)",
             color: triggered === "fetch" ? "var(--text-3)" : "var(--accent-text)",
-            border: triggered === "fetch" ? "1px solid var(--border)" : "none",
+            border: triggered === "fetch" ? "1px solid var(--border-md)" : "none",
             cursor: running ? "wait" : "pointer",
-            fontSize: 12, fontWeight: 700, letterSpacing: "0.01em",
-            boxShadow: triggered === "fetch" ? "none" : "0 4px 14px rgba(94,234,212,0.18)",
+            fontSize: 12, fontWeight: 600,
           }}
         >
           {triggered === "fetch" ? "Fetch started ✓" : "Run fetch"}
@@ -165,12 +164,12 @@ function ScanHealthBanner({ scanHealth }) {
           onClick={() => trigger("analyze")}
           disabled={running}
           style={{
-            padding: "8px 16px", borderRadius: 999,
-            background: triggered === "analyze" ? "var(--bg-surface)" : "var(--bg-surface)",
+            padding: "7px 14px", borderRadius: "var(--radius-pill)",
+            background: "var(--bg-card)",
             color: triggered === "analyze" ? "var(--text-3)" : "var(--text-2)",
-            border: "1px solid var(--border)",
+            border: "1px solid var(--border-md)",
             cursor: running ? "wait" : "pointer",
-            fontSize: 12, fontWeight: 700, letterSpacing: "0.01em",
+            fontSize: 12, fontWeight: 600,
           }}
         >
           {triggered === "analyze" ? "Analyze started ✓" : "Drain queue"}
@@ -210,25 +209,16 @@ function HeroPanel({ rollup, onMorningBriefing, setTab }) {
 
   return (
     <div style={{
-      position: "relative",
       borderRadius: "var(--radius-card)",
-      background: "linear-gradient(180deg, rgba(18,32,55,0.6) 0%, rgba(8,16,30,0.6) 100%)",
+      background: "var(--bg-card)",
       border: "1px solid var(--border)",
       padding: "32px 36px",
       boxShadow: "var(--shadow-card)",
-      backdropFilter: "blur(8px)",
       overflow: "hidden",
       display: "grid",
       gridTemplateColumns: "minmax(0, 2fr) minmax(280px, 1fr)",
       gap: 32,
     }}>
-      {/* Subtle glow blob */}
-      <div aria-hidden style={{
-        position: "absolute", top: -120, right: -80,
-        width: 380, height: 380, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(94,234,212,0.08) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
 
       {/* Left — pills + headline + description */}
       <div style={{ position: "relative", zIndex: 1 }}>
@@ -256,10 +246,9 @@ function HeroPanel({ rollup, onMorningBriefing, setTab }) {
 
       {/* Right — headline metric card */}
       <div style={{
-        position: "relative", zIndex: 1,
-        padding: "22px 22px",
-        borderRadius: 14,
-        background: "rgba(5,11,24,0.55)",
+        padding: "22px",
+        borderRadius: "var(--radius-card)",
+        background: "var(--bg-surface)",
         border: "1px solid var(--border)",
         display: "flex", flexDirection: "column", gap: 12,
       }}>
@@ -283,11 +272,10 @@ function HeroPanel({ rollup, onMorningBriefing, setTab }) {
             <button
               onClick={() => setTab("tcpa")}
               style={{
-                padding: "10px 18px",
+                padding: "9px 16px",
                 background: "var(--accent)", color: "var(--accent-text)",
-                border: "none", borderRadius: 999,
-                fontSize: 13, fontWeight: 700, cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(94,234,212,0.18)",
+                border: "none", borderRadius: "var(--radius-pill)",
+                fontSize: 13, fontWeight: 600, cursor: "pointer",
               }}
             >
               View tracked cases →
@@ -296,13 +284,12 @@ function HeroPanel({ rollup, onMorningBriefing, setTab }) {
           <button
             onClick={onMorningBriefing}
             style={{
-              padding: "10px 18px",
-              background: showSettlementValue ? "var(--bg-surface)" : "var(--accent)",
+              padding: "9px 16px",
+              background: showSettlementValue ? "var(--bg-card)" : "var(--accent)",
               color: showSettlementValue ? "var(--text-2)" : "var(--accent-text)",
-              border: showSettlementValue ? "1px solid var(--border)" : "none",
-              borderRadius: 999,
-              fontSize: 13, fontWeight: 700, cursor: "pointer",
-              boxShadow: showSettlementValue ? "none" : "0 4px 14px rgba(94,234,212,0.18)",
+              border: showSettlementValue ? "1px solid var(--border-md)" : "none",
+              borderRadius: "var(--radius-pill)",
+              fontSize: 13, fontWeight: 600, cursor: "pointer",
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
             }}
           >

@@ -12,7 +12,7 @@
 // is fresh (default 24h), serve it. Pass ?fresh=1 to force re-run.
 
 import { kv } from "@vercel/kv";
-import { buildClientReport, renderHtml, renderCsv } from "../src/lib/reportBuilder.js";
+import { buildClientReport, renderHtml, renderCsv } from "../src/lib/intelligence/reportBuilder.js";
 import { handleClientToCases } from "./match-cases.js";
 
 const REPORT_KEY = (id) => `tcpa:client_report:${id}`;

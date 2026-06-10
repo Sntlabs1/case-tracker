@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, Btn } from "../components/UI.jsx";
-import { KB_RUBRIC } from "../lib/kbRubric.js";
+import { KB_RUBRIC } from "../lib/intelligence/kbRubric.js";
 import { KB_CASES } from "../data/knowledgeBase.js";
 
 const CHAT_KEY = "mdl-chat-messages";

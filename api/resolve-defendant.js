@@ -18,7 +18,7 @@ import {
   findCandidates,
   addAlias,
   createDefendant,
-} from "../src/lib/defendantResolver.js";
+} from "../src/lib/ingest/defendantResolver.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 

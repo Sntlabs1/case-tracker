@@ -23,8 +23,8 @@
 // Idempotent. Safe to re-run. Logs counts per run for the Agents tab.
 
 import { kv } from "@vercel/kv";
-import { KEYS, CASE_STATUSES } from "../../src/lib/tcpaSchema.js";
-import { normalize as normalizeDefendant } from "../../src/lib/defendantResolver.js";
+import { KEYS, CASE_STATUSES } from "../../src/lib/ingest/tcpaSchema.js";
+import { normalize as normalizeDefendant } from "../../src/lib/ingest/defendantResolver.js";
 import { KNOWN_SETTLEMENTS } from "../../src/data/knownTcpaSettlements.js";
 
 const DEFAULT_MAX = 10000; // cover the whole DB in one pass; the work is cheap

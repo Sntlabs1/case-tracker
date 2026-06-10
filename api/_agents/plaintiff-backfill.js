@@ -15,11 +15,11 @@
 // (~7K cases) needs 7+ runs OR a manual cap override.
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../../src/lib/tcpaSchema.js";
+import { KEYS } from "../../src/lib/ingest/tcpaSchema.js";
 import {
   parsePlaintiffsFromCaption,
   normalizePlaintiff,
-} from "../../src/lib/tcpaIngestNormalize.js";
+} from "../../src/lib/ingest/tcpaIngestNormalize.js";
 
 const DEFAULT_MAX = 1000;
 

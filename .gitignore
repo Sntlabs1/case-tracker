@@ -17,3 +17,10 @@ MDL Outline.*
 # Westlaw CSV exports — kept local only (ToS + session URLs in rows).
 # Ingest path: api/_tcpa-sources/westlaw-csv.js
 *.csv
+
+# Local-only data and reference material — never push (credit-matches holds real-person PII)
+data/credit-matches/
+data/raw/
+docs/backups/
+Frank Docs/
+*.pdf

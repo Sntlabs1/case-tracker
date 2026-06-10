@@ -20,17 +20,24 @@ import PendingOutreach from "./tabs/PendingOutreach.jsx";
 import Portfolio from "./tabs/Portfolio.jsx";
 import Agents from "./tabs/Agents.jsx";
 import BankruptcyCases from "./tabs/BankruptcyCases.jsx";
+import DailyFeed from "./tabs/DailyFeed.jsx";
+import SourceMonitor from "./tabs/SourceMonitor.jsx";
+import CreditPortfolio from "./tabs/CreditPortfolio.jsx";
+import ClaimantMatches from "./tabs/ClaimantMatches.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const TABS = [
   { id: "dashboard",    label: "Dashboard" },
   { id: "leads",        label: "Leads Inbox" },
+  { id: "dailyfeed",    label: "Daily Feed" },
   { id: "clients",      label: "Clients" },
   { id: "tcpa",         label: "TCPA Cases" },
   { id: "bankruptcy",   label: "Bankruptcy Cases" },
   { id: "defendants",   label: "Defendants" },
   { id: "outreach",     label: "Pending Outreach" },
   { id: "portfolio",    label: "Portfolio" },
+  { id: "creditportfolio", label: "Credit Portfolio" },
+  { id: "claimantmatches", label: "Claimant Matches" },
   { id: "campaigns",    label: "Campaigns" },
   { id: "intake",       label: "Intake Screen" },
   { id: "trends",       label: "Trends" },
@@ -40,6 +47,7 @@ const TABS = [
   { id: "knowledge",    label: "Knowledge Base" },
   { id: "chat",         label: "Chat" },
   { id: "sources",      label: "Sources" },
+  { id: "sourcemonitor", label: "Source Monitor" },
   { id: "agents",       label: "Agents" },
 ];
 
@@ -51,6 +59,10 @@ const PAGE_META = {
   leads:        {
     title: "Leads Inbox",
     desc:  "AI-scored leads pulled hourly from 50+ sources — FDA, NHTSA, CFPB, SEC, CourtListener, Reddit, PubMed, Google News, and more. Click any lead to expand a full litigation intelligence report. Use the filters to narrow by score, urgency, case type, or stage.",
+  },
+  dailyfeed:    {
+    title: "Daily Feed",
+    desc:  "Live scan feed with manual trigger and countdown to the next hourly cron. Runs the full backend scanner on demand and streams results as they arrive. Same lead data as Leads Inbox — this view is for monitoring scan activity and forcing a fresh pull.",
   },
   bankruptcy:   {
     title: "Bankruptcy Cases",
@@ -71,6 +83,14 @@ const PAGE_META = {
   portfolio:    {
     title: "Portfolio",
     desc:  "Aggregate recovery report across an entire partner's plaintiff universe. Total estimated $$$ recoverable (floor / ceiling per TCPA, FDCPA, FCRA statutory minimums plus per-claimant settlement amounts where known), top defendants and cases by exposure, claim windows closing within 30 days. Printable + CSV export — the deliverable you bring to a partner meeting.",
+  },
+  creditportfolio: {
+    title: "Credit Portfolio",
+    desc:  "Total dollar value of the credit.com dataset — 1.4M people matched against TCPA, FDCPA, FCRA, RESPA, Student Loan, Auto Lending, Data Breach, and Payday case types. Shows estimated recovery range, top defendants, and highest-priority matched individuals ready for intake.",
+  },
+  claimantmatches: {
+    title: "Claimant Matches",
+    desc:  "Every matched claimant joined to the specific cases they could bring, with plain-language reasoning for each connection and the supporting PACER / CourtListener dockets (metadata only). Filter by defendant, case type, state, or intake-readiness. Expand any claimant to see why each claim applies, the eligibility/SOL status, and the live dockets against that defendant.",
   },
   campaigns:    {
     title: "Campaigns",
@@ -112,6 +132,10 @@ const PAGE_META = {
     title: "Sources",
     desc:  "Every data source the platform monitors. Includes all 50 state attorney general offices, federal regulatory agencies (FDA, NHTSA, CFPB, SEC, EPA, DOJ, EEOC), federal court filings via CourtListener, PubMed, Reddit complaint clusters, social media, and Google News.",
   },
+  sourcemonitor: {
+    title: "Source Monitor",
+    desc:  "Live health status for every data source. Shows last-checked time, up/degraded/down status, and error details for each integration. Pulls from the source-monitor agent rollup.",
+  },
   agents:       {
     title: "Agents",
     desc:  "Recurring background jobs that keep the platform fresh. Each agent runs on a schedule, computes derived data into a rollup, and tells you when it last ran. Trigger any agent manually from this tab.",
@@ -144,11 +168,11 @@ export default function App() {
   const [selectedCase, setSelectedCase] = useState(null);
   const [showAI, setShowAI] = useState({});
   const [caseFilter, setCaseFilter] = useState({});
-  const [lightMode, setLightMode] = useLocalStorage("tt-light-mode", false);
+  const [darkMode, setDarkMode] = useLocalStorage("tt-dark-mode", false);
 
   // Apply theme to body
   if (typeof document !== "undefined") {
-    document.body.classList.toggle("light", lightMode);
+    document.body.classList.toggle("dark", darkMode);
   }
 
   const SIDEBAR_W = 240;
@@ -165,9 +189,8 @@ export default function App() {
           aria-label="Show sidebar"
           style={{
             position: "fixed", top: 16, left: 16, zIndex: 200,
-            width: 36, height: 36, borderRadius: 10,
+            width: 36, height: 36, borderRadius: 3,
             background: "var(--bg-card)", border: "1px solid var(--border)",
-            backdropFilter: "blur(8px)",
             boxShadow: "var(--shadow-card)",
             color: "var(--text-2)",
             cursor: "pointer", fontSize: 16, lineHeight: 1,
@@ -186,28 +209,26 @@ export default function App() {
         width: sidebarOpen ? SIDEBAR_W : 0,
         flexShrink: 0,
         background: "var(--bg-drawer)",
-        borderRight: sidebarOpen ? "1px solid var(--border)" : "none",
-        backdropFilter: "blur(12px)",
+        borderRight: sidebarOpen ? "1px solid rgba(255,255,255,0.10)" : "none",
         position: "sticky", top: 0, height: "100vh",
         display: "flex", flexDirection: "column",
         overflow: "hidden",
         transition: "width 0.22s ease",
       }}>
         {/* Brand */}
-        <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid var(--border)", position: "relative" }}>
+        <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.12)", position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 28 }}>
             <div style={{
-              width: 38, height: 38, background: "var(--accent)", borderRadius: 10,
+              width: 38, height: 38, background: "rgba(255,255,255,0.18)", borderRadius: 3,
               display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              boxShadow: "0 4px 14px rgba(94,234,212,0.20)",
             }}>
               <BullIcon />
             </div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.22em", textTransform: "uppercase", marginBottom: 2 }}>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.22em", textTransform: "uppercase", marginBottom: 2 }}>
                 Ticket Toro
               </div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-1)", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: "#ffffff", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
                 Class Action Intel
               </div>
             </div>
@@ -219,15 +240,15 @@ export default function App() {
             aria-label="Hide sidebar"
             style={{
               position: "absolute", top: 22, right: 14,
-              width: 24, height: 24, borderRadius: 6,
-              background: "var(--bg-surface)", border: "1px solid var(--border)",
-              color: "var(--text-4)",
+              width: 24, height: 24, borderRadius: 3,
+              background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.18)",
+              color: "rgba(255,255,255,0.60)",
               cursor: "pointer", fontSize: 12, lineHeight: 1,
               display: "flex", alignItems: "center", justifyContent: "center",
               transition: "all 0.15s",
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = "var(--accent)"; }}
-            onMouseLeave={e => { e.currentTarget.style.color = "var(--text-4)"; }}
+            onMouseEnter={e => { e.currentTarget.style.color = "#ffffff"; }}
+            onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.60)"; }}
           >
             ‹
           </button>
@@ -236,7 +257,7 @@ export default function App() {
         {/* Nav */}
         <nav style={{ flex: 1, padding: "14px 12px", overflowY: "auto" }}>
           <div style={{
-            fontSize: 9, color: "var(--text-7)", letterSpacing: "0.2em",
+            fontSize: 9, color: "rgba(255,255,255,0.38)", letterSpacing: "0.2em",
             textTransform: "uppercase", padding: "0 10px", marginBottom: 8,
           }}>
             Workspace
@@ -250,31 +271,23 @@ export default function App() {
                 style={{
                   display: "flex", alignItems: "center", gap: 11,
                   width: "100%",
-                  padding: "10px 12px",
-                  marginBottom: 2,
+                  padding: "9px 12px",
+                  marginBottom: 1,
                   border: "none",
-                  borderRadius: 10,
-                  background: active
-                    ? "linear-gradient(180deg, rgba(94,234,212,0.15) 0%, rgba(94,234,212,0.06) 100%)"
-                    : "transparent",
-                  boxShadow: active ? "inset 0 0 0 1px rgba(94,234,212,0.20)" : "none",
-                  color: active ? "var(--accent)" : "var(--text-3)",
+                  borderLeft: active ? "2px solid var(--nav-border-act)" : "2px solid transparent",
+                  borderRadius: 2,
+                  background: active ? "var(--nav-bg-act)" : "transparent",
+                  color: active ? "var(--nav-text-act)" : "var(--nav-text)",
                   cursor: "pointer",
                   fontSize: 13,
-                  fontWeight: active ? 600 : 500,
+                  fontWeight: active ? 600 : 400,
                   letterSpacing: "0.005em",
                   textAlign: "left",
-                  transition: "all 0.15s",
+                  transition: "all 0.12s",
                 }}
-                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "var(--bg-surface)"; e.currentTarget.style.color = "var(--text-2)"; } }}
-                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--text-3)"; } }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.10)"; e.currentTarget.style.color = "#ffffff"; } }}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--nav-text)"; } }}
               >
-                <span style={{
-                  width: 6, height: 6, borderRadius: "50%",
-                  background: active ? "var(--accent)" : "var(--text-7)",
-                  boxShadow: active ? "0 0 8px rgba(94,234,212,0.6)" : "none",
-                  flexShrink: 0,
-                }} />
                 {t.label}
               </button>
             );
@@ -282,17 +295,17 @@ export default function App() {
         </nav>
 
         {/* Footer: theme toggle + KB count */}
-        <div style={{ padding: "12px 16px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+        <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.12)", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
           <button
-            onClick={() => setLightMode(m => !m)}
-            title={lightMode ? "Switch to dark mode" : "Switch to light mode"}
-            style={{ background: "var(--bg-surface)", border: "1px solid var(--border-md)", borderRadius: 6, padding: "5px 9px", cursor: "pointer", fontSize: 13, lineHeight: 1, color: "var(--text-4)" }}
+            onClick={() => setDarkMode(m => !m)}
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.20)", borderRadius: 3, padding: "5px 9px", cursor: "pointer", fontSize: 13, lineHeight: 1, color: "rgba(255,255,255,0.75)" }}
           >
-            {lightMode ? "🌙" : "☀️"}
+            {darkMode ? "☀️" : "🌙"}
           </button>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--accent)", lineHeight: 1 }}>{kbCases.length}</div>
-            <div style={{ fontSize: 9, color: "var(--text-6)", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#ffffff", lineHeight: 1 }}>{kbCases.length}</div>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.50)", letterSpacing: "0.12em", textTransform: "uppercase" }}>KB Cases</div>
           </div>
         </div>
       </aside>
@@ -321,6 +334,7 @@ export default function App() {
           <ErrorBoundary resetKey={tab}>
             {tab === "dashboard"    && <Dashboard cases={cases} setTab={setTab} setSelectedCase={setSelectedCase} setCaseFilter={setCaseFilter} />}
             {tab === "leads"        && <LeadsInbox cases={cases} setCases={setCases} onAddCase={() => setTab("cases")} />}
+            {tab === "dailyfeed"    && <DailyFeed />}
             {tab === "clients"      && <Clients />}
             {tab === "tcpa"         && <TCPACases />}
             {tab === "bankruptcy"   && <BankruptcyCases />}
@@ -336,7 +350,10 @@ export default function App() {
             {tab === "knowledge"    && <KnowledgeBase cases={kbCases} setCases={setKbCases} />}
             {tab === "chat"         && <Chat cases={cases} />}
             {tab === "sources"      && <Sources />}
-            {tab === "agents"       && <Agents />}
+            {tab === "sourcemonitor"    && <SourceMonitor />}
+            {tab === "creditportfolio" && <CreditPortfolio />}
+            {tab === "claimantmatches" && <ClaimantMatches />}
+            {tab === "agents"          && <Agents />}
           </ErrorBoundary>
         </div>
       </main>

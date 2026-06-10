@@ -16,7 +16,7 @@
 // These fields are the most valuable for the claim-filing tracker (item 3).
 
 import { kv } from "@vercel/kv";
-import { importCases } from "../../src/lib/tcpaCaseStore.js";
+import { importCases } from "../../src/lib/ingest/tcpaCaseStore.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 async function callHaiku(prompt) {

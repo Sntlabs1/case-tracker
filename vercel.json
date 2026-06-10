@@ -41,6 +41,10 @@
       "schedule": "30 9 * * *"
     },
     {
+      "path": "/api/match-batch?mode=clients_pending&max=100",
+      "schedule": "45 9 * * *"
+    },
+    {
       "path": "/api/agents?run=case-tracker",
       "schedule": "30 6 * * *"
     },
@@ -71,6 +75,10 @@
     {
       "path": "/api/pacer-sync?cron=daily",
       "schedule": "25 6 * * *"
+    },
+    {
+      "path": "/api/build-case-index",
+      "schedule": "*/5 * * * *"
     }
   ],
   "functions": {
@@ -97,6 +105,9 @@
     },
     "api/case-summary.js": {
       "maxDuration": 60
+    },
+    "api/verify-stage.js": {
+      "maxDuration": 45
     },
     "api/intake-site.js": {
       "maxDuration": 60
@@ -165,6 +176,18 @@
       "maxDuration": 300
     },
     "api/pacer-sync.js": {
+      "maxDuration": 300
+    },
+    "api/webhooks/credit-com.js": {
+      "maxDuration": 30
+    },
+    "api/credit-client.js": {
+      "maxDuration": 10
+    },
+    "api/case-clients.js": {
+      "maxDuration": 30
+    },
+    "api/build-case-index.js": {
       "maxDuration": 300
     }
   },

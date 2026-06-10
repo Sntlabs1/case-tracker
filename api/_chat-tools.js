@@ -7,7 +7,7 @@
 // that reads from KV and returns a compact JSON result.
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../src/lib/tcpaSchema.js";
+import { KEYS } from "../src/lib/ingest/tcpaSchema.js";
 
 // ── Schemas (sent to Anthropic with the request) ────────────────────────────
 

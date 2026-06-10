@@ -16,13 +16,23 @@
 // Optional body: { threshold: 50 } — minimum score to persist (default 50)
 
 import { kv } from "@vercel/kv";
-import { scoreTcpaPair } from "../src/lib/tcpaMatchRubric.js";
-import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
-import { buildClientReport } from "../src/lib/reportBuilder.js";
-import { normalize as normalizeDefendant } from "../src/lib/defendantResolver.js";
+import { scoreTcpaPair } from "../src/lib/matching/tcpaMatchRubric.js";
+import { scoreMassTortPair } from "../src/lib/matching/massTortMatchRubric.js";
+import { KEYS as TCPA_KEYS } from "../src/lib/ingest/tcpaSchema.js";
+import { buildClientReport } from "../src/lib/intelligence/reportBuilder.js";
+import { normalize as normalizeDefendant } from "../src/lib/ingest/defendantResolver.js";
+import { extractMassTortSignals } from "../src/lib/ingest/creditReportToClient.js";
 
 const REPORT_KEY = (id) => `tcpa:client_report:${id}`;
 const REPORT_TTL_DAYS = 7;
+const CLIENT_TTL = 365 * 24 * 3600;
+
+const MT_CLIENT_KEY = (id) => `masstort:client_matches:${id}`;
+const MT_LEAD_KEY   = (id) => `masstort:lead_matches:${id}`;
+const MT_TTL_DAYS = 30;
+const MT_MIN_SCORE = 40;
+const MT_LEAD_MIN_SCORE = 70;
+const MT_TOP_LEADS = 100;
 
 const DEFAULT_THRESHOLD = 50;
 const DEFAULT_TOP_N = 50;
@@ -47,6 +57,9 @@ async function maybeQueueForOutreach(clientId, caseId, scored) {
 
 async function loadAllClients(max = 5000) {
   const ids = await kv.zrange("clients_by_date", 0, -1, { rev: true }).catch(() => []);
+  if (ids.length > max) {
+    console.warn(`loadAllClients: ${ids.length} clients found but only processing first ${max} — use drainPendingClients for full coverage`);
+  }
   const out = [];
   for (let i = 0; i < Math.min(ids.length, max); i += 200) {
     const batch = await Promise.all(ids.slice(i, i + 200).map((id) => kv.get(`client:${id}`)));
@@ -174,10 +187,95 @@ async function loadCasesByIds(ids) {
   return out;
 }
 
+// Load the top N leads by score from `leads_by_score` zset, filtering to
+// candidates that are active and above the minimum opportunity score.
+async function loadTopLeads(topN = MT_TOP_LEADS) {
+  const ids = await kv
+    .zrange("leads_by_score", 0, topN - 1, { rev: true })
+    .catch(() => []);
+  if (!ids.length) return [];
+
+  const raws = await Promise.all(ids.map((id) => kv.get(`lead:${id}`).catch(() => null)));
+  const leads = [];
+  for (const raw of raws) {
+    if (!raw) continue;
+    const lead = typeof raw === "string" ? JSON.parse(raw) : raw;
+    const analysis = lead.analysis || {};
+    if (
+      (analysis.opportunityStatus || "").toUpperCase() === "CLOSED" ||
+      (analysis.caseStage || "").toLowerCase() === "resolved" ||
+      (analysis.targetingReadiness || "").toUpperCase() === "WAIT_FOR_TRIGGER"
+    ) continue;
+    if ((analysis.score || lead.score || 0) < MT_LEAD_MIN_SCORE) continue;
+    leads.push(lead);
+  }
+  return leads;
+}
+
+// Precompute mass-tort matches for one client against the top active leads.
+// Writes to:
+//   masstort:client_matches:${clientId}   zset, score=matchScore, member=leadId
+//   masstort:lead_matches:${leadId}       zset, score=matchScore, member=clientId
+// Both keys carry a 7-day TTL so stale data ages out automatically.
+export async function recomputeMassTortForClient(client, leads) {
+  const clientId = client.id;
+  if (!clientId) return { skipped: true, reason: "no client id" };
+
+  const qualifying = [];
+  for (const lead of leads) {
+    const leadId = lead.id;
+    if (!leadId) continue;
+    const result = scoreMassTortPair(client, lead);
+    if (result.score < MT_MIN_SCORE) continue;
+    qualifying.push({ leadId, score: result.score });
+  }
+
+  const clientKey = MT_CLIENT_KEY(clientId);
+  const ttlSeconds = MT_TTL_DAYS * 24 * 3600;
+
+  // Always clear stale data first — mirrors recomputeClient()'s TCPA pattern.
+  await kv.del(clientKey).catch(() => {});
+
+  if (qualifying.length) {
+    await kv.zadd(clientKey, ...qualifying.map((q) => ({ score: q.score, member: q.leadId })));
+    await kv.expire(clientKey, ttlSeconds).catch(() => {});
+
+    await Promise.all(qualifying.map(({ leadId, score }) =>
+      kv.zadd(MT_LEAD_KEY(leadId), { score, member: clientId })
+        .then(() => kv.expire(MT_LEAD_KEY(leadId), ttlSeconds))
+        .catch(() => {})
+    ));
+  }
+
+  // Write massTortLastComputedAt back to the client record so the UI can show
+  // when mass-tort matching was last run for this client.
+  await kv.get(`client:${clientId}`).then((r) => {
+    if (!r) return;
+    const rec = typeof r === "string" ? JSON.parse(r) : r;
+    rec.massTortLastComputedAt = new Date().toISOString();
+    return kv.set(`client:${clientId}`, JSON.stringify(rec), { ex: CLIENT_TTL });
+  }).catch(() => {});
+
+  return { clientId, massTortPersisted: qualifying.length };
+}
+
 export async function recomputeClient(clientId, { threshold, topN, useCandidateSet = false } = {}) {
   const raw = await kv.get(`client:${clientId}`);
   if (!raw) return { error: "client not found" };
   const client = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+  // Backfill massTortSignals for clients ingested before the field existed.
+  // Write it back so subsequent recomputes skip this branch.
+  if (!client.massTortSignals && client.creditAccounts) {
+    client.massTortSignals = extractMassTortSignals(
+      client.creditAccounts,
+      client.addressHistory || [],
+      client.address || null,
+      client.creditInquiries || [],
+      client.bankruptcies || []
+    );
+    await kv.set(`client:${clientId}`, JSON.stringify(client), { ex: CLIENT_TTL }).catch(() => {});
+  }
 
   // Snapshot the currently-indexed case members BEFORE recomputing so we can
   // diff and remove stale entries from each dropped case's case_matches index.
@@ -263,7 +361,17 @@ export async function recomputeClient(clientId, { threshold, topN, useCandidateS
     // Don't fail the whole recompute if snapshotting trips
   }
 
-  return { clientId, persisted: scored.length, outreachQueued, candidates: cases.length };
+  // ── Mass-tort precompute pass ─────────────────────────────────────────────
+  let massTortPersisted = 0;
+  try {
+    const leads = await loadTopLeads();
+    const mtResult = await recomputeMassTortForClient(client, leads);
+    massTortPersisted = mtResult.massTortPersisted || 0;
+  } catch (e) {
+    // Mass-tort pass failure must never break TCPA recompute
+  }
+
+  return { clientId, persisted: scored.length, outreachQueued, candidates: cases.length, massTortPersisted };
 }
 
 function summarizeFactors(s) {
@@ -348,11 +456,28 @@ export async function drainPendingClients({ threshold, topN, max = 20, useCandid
     }
     results.push(r);
   }
+
+  // Lightweight prune of outreach:dismissed when it grows too large.
+  // OUTREACH_DISMISSED is a plain set — use scard/smembers/srem.
+  const dismissedCount = await kv.scard(OUTREACH_DISMISSED).catch(() => 0);
+  if (dismissedCount > 2000) {
+    const dismissed = await kv.smembers(OUTREACH_DISMISSED).catch(() => []);
+    const toCheck = dismissed.slice(0, 500);
+    const exists = await Promise.all(
+      toCheck.map((pair) => kv.exists(`client:${pair.split("|")[0]}`).catch(() => 1))
+    );
+    const stale = toCheck.filter((_, j) => !exists[j]);
+    if (stale.length > 0) {
+      await kv.srem(OUTREACH_DISMISSED, ...stale).catch(() => {});
+    }
+  }
+
   return { drained: ids.length, results };
 }
 
 async function recomputeAll({ threshold, topN, useCandidateSet = false }) {
   // Compute by iterating clients (each does case fan-out internally).
+  const allIds = await kv.zrange("clients_by_date", 0, -1, { rev: true }).catch(() => []);
   const clients = await loadAllClients();
   const results = [];
   for (const c of clients) {
@@ -365,10 +490,11 @@ async function recomputeAll({ threshold, topN, useCandidateSet = false }) {
   await kv.zremrangebyrank(OUTREACH_PENDING, 0, -10001).catch(() => {});
 
   // Prune outreach:dismissed of entries whose client no longer exists.
+  // OUTREACH_DISMISSED is a plain set (sadd/sismember) — use scard/smembers/srem.
   // Only run when the set is large enough to be worth the scan cost.
-  const dismissedCount = await kv.zcard(OUTREACH_DISMISSED).catch(() => 0);
+  const dismissedCount = await kv.scard(OUTREACH_DISMISSED).catch(() => 0);
   if (dismissedCount > 5000) {
-    const dismissed = await kv.zrange(OUTREACH_DISMISSED, 0, -1).catch(() => []);
+    const dismissed = await kv.smembers(OUTREACH_DISMISSED).catch(() => []);
     // Process in batches of 500 to avoid holding too many promises in flight.
     const PRUNE_BATCH = 500;
     for (let i = 0; i < dismissed.length; i += PRUNE_BATCH) {
@@ -378,12 +504,12 @@ async function recomputeAll({ threshold, topN, useCandidateSet = false }) {
       );
       const stale = toCheck.filter((_, j) => !exists[j]);
       if (stale.length > 0) {
-        await kv.zrem(OUTREACH_DISMISSED, ...stale).catch(() => {});
+        await kv.srem(OUTREACH_DISMISSED, ...stale).catch(() => {});
       }
     }
   }
 
-  return { clients: clients.length, totalPersisted: results.reduce((acc, r) => acc + (r.persisted || 0), 0) };
+  return { totalClients: allIds.length, processed: clients.length, totalPersisted: results.reduce((acc, r) => acc + (r.persisted || 0), 0) };
 }
 
 export default async function handler(req, res) {

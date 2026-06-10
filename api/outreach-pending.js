@@ -6,7 +6,7 @@
 // DELETE /api/outreach-pending?pair=cId|caseId — dismiss (sticky; won't reappear)
 
 import { kv } from "@vercel/kv";
-import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
+import { KEYS as TCPA_KEYS } from "../src/lib/ingest/tcpaSchema.js";
 
 const PENDING_KEY   = "outreach:pending";
 const DISMISSED_KEY = "outreach:dismissed";
@@ -52,12 +52,18 @@ export default async function handler(req, res) {
   for (const { pair, score } of pairs) {
     const [clientId, caseId] = pair.split("|");
     if (!clientId || !caseId) continue;
-    const [clientRaw, caseRaw] = await Promise.all([
-      kv.get(`client:${clientId}`),
-      kv.get(TCPA_KEYS.case(caseId)),
-    ]);
+    let clientRaw, caseRaw;
+    try {
+      [clientRaw, caseRaw] = await Promise.all([
+        kv.get(`client:${clientId}`),
+        kv.get(TCPA_KEYS.case(caseId)),
+      ]);
+    } catch {
+      // Transient KV error — leave the pair in the queue and skip.
+      continue;
+    }
     if (!clientRaw || !caseRaw) {
-      // Stale pair — client or case was deleted. Drop from queue.
+      // Confirmed missing (GET returned null) — stale pair, drop from queue.
       await kv.zrem(PENDING_KEY, pair).catch(() => {});
       continue;
     }

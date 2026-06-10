@@ -17,10 +17,10 @@
 //   ?offset=0     pagination cursor
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../src/lib/tcpaSchema.js";
+import { KEYS } from "../src/lib/ingest/tcpaSchema.js";
 import { KNOWN_SETTLEMENTS } from "../src/data/knownTcpaSettlements.js";
-import { normalize as normalizeDefendant } from "../src/lib/defendantResolver.js";
-import { rebuildSearchIndex } from "../src/lib/tcpaCaseStore.js";
+import { normalize as normalizeDefendant } from "../src/lib/ingest/defendantResolver.js";
+import { rebuildSearchIndex } from "../src/lib/ingest/tcpaCaseStore.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 

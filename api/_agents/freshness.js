@@ -5,7 +5,7 @@
 // Output → `agent:freshness:rollup` (read by Dashboard / TCPA / Trends tabs)
 
 import { kv } from "@vercel/kv";
-import { KEYS, CASE_STATUSES, CASE_TYPES } from "../../src/lib/tcpaSchema.js";
+import { KEYS, CASE_STATUSES, CASE_TYPES } from "../../src/lib/ingest/tcpaSchema.js";
 
 const ROLLUP_KEY = "agent:freshness:rollup";
 const SOURCES = ["courtlistener", "tcpaworld", "classaction", "unicourt", "trellis", "fcc"];

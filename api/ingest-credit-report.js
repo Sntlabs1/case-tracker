@@ -22,15 +22,15 @@
 import { parseCreditReportPdfBase64 }  from "./_ingest-parsers/pdf-parser.js";
 import { parseCreditReportCsv }         from "./_ingest-parsers/csv-parser.js";
 import normalize                         from "./_partner-importers/credit-com-json.js";
-import { buildCreditReport }             from "../src/lib/creditReportSchema.js";
-import { creditReportToClient, creditReportToClients } from "../src/lib/creditReportToClient.js";
+import { buildCreditReport }             from "../src/lib/ingest/creditReportSchema.js";
+import { creditReportToClient, creditReportToClients } from "../src/lib/ingest/creditReportToClient.js";
 import { kv }                            from "@vercel/kv";
 import { put }                           from "@vercel/blob";
 import { createHash }                    from "node:crypto";
 import {
   normalize as normalizeDefendant,
   createDefendant,
-} from "../src/lib/defendantResolver.js";
+} from "../src/lib/ingest/defendantResolver.js";
 
 // ── Raw body helper (works in Node.js serverless) ─────────────────────────────
 
@@ -103,6 +103,7 @@ function buildRecord(c, now, idx) {
     creditReportPdfUrl:  c.creditReportPdfUrl  || null,
     existingCases: c.existingCases || "",
     matchedLeads: [],
+    massTortSignals: c.massTortSignals || null,
   };
 }
 
@@ -228,8 +229,14 @@ async function parseFile(base64, filename, contentType) {
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Partner, X-Partner-Token");
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  const partnerToken = req.headers["x-partner-token"];
+  if (!partnerToken || partnerToken !== process.env.PARTNER_INGEST_TOKEN) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
   try {

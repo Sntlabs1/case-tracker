@@ -26,11 +26,11 @@ import {
   detectCaseType,
   parseDefendantsFromCaption,
   parsePlaintiffsFromCaption,
-} from "../../src/lib/tcpaIngestNormalize.js";
+} from "../../src/lib/ingest/tcpaIngestNormalize.js";
 import {
   normalize as normalizeDefendantName,
   createDefendant,
-} from "../../src/lib/defendantResolver.js";
+} from "../../src/lib/ingest/defendantResolver.js";
 
 // ── Config ───────────────────────────────────────────────────────────────────
 const DEFAULT_CSV_DIRS = [process.cwd(), join(process.cwd(), "dev")];

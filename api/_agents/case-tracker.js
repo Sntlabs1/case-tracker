@@ -20,8 +20,8 @@
 // Schedule: daily at 06:30 UTC (after the ingest cron at 06:00).
 
 import { kv } from "@vercel/kv";
-import { KEYS, CASE_STATUSES } from "../../src/lib/tcpaSchema.js";
-import { importCase } from "../../src/lib/tcpaCaseStore.js";
+import { KEYS, CASE_STATUSES } from "../../src/lib/ingest/tcpaSchema.js";
+import { importCase } from "../../src/lib/ingest/tcpaCaseStore.js";
 
 const HAIKU = "claude-haiku-4-5-20251001";
 const CL_BASE = "https://www.courtlistener.com/api/rest/v4";

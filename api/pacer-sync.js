@@ -280,7 +280,7 @@ async function syncDateRange(dateFrom, dateTo, clientIndex) {
 
     for (const docket of results) {
       processed++;
-      const debtors = extractDebtors(docket.case_name || "");
+      const debtors = extractDebtors(docket.caseName || docket.case_name || "");
       if (!debtors.length) continue;
 
       // Collect best-confidence hit per client across all debtors

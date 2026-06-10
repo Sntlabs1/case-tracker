@@ -6,7 +6,7 @@
 // Results are returned to the UI for review before saving — not auto-saved.
 
 import { kv } from "@vercel/kv";
-import { KEYS } from "../src/lib/tcpaSchema.js";
+import { KEYS } from "../src/lib/ingest/tcpaSchema.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 

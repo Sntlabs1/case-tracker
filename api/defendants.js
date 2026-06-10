@@ -17,8 +17,8 @@
 // batches of 100. The full catalog is cached for 5 min.
 
 import { kv } from "@vercel/kv";
-import { KEYS as TCPA_KEYS } from "../src/lib/tcpaSchema.js";
-import { normalize as normalizeDefendant } from "../src/lib/defendantResolver.js";
+import { KEYS as TCPA_KEYS } from "../src/lib/ingest/tcpaSchema.js";
+import { normalize as normalizeDefendant } from "../src/lib/ingest/defendantResolver.js";
 
 const CACHE_KEY = "tcpa:defendants_catalog_v1";
 const CACHE_TTL = 300; // 5 min
