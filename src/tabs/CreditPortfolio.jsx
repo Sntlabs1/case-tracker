@@ -227,6 +227,30 @@ function solStatus(caseType, ingestedAt) {
   return { status: "ok", label: `Within SOL window (~${monthsAgo}mo old; federal SOL ${sol}mo)` };
 }
 
+// v2 records carry a per-signal solStatus computed from actual tradeline
+// dates at ingest — always prefer it over the ingestedAt heuristic above.
+const SOL_META = {
+  live:              { color: "#22c55e", status: "ok",      short: "LIVE",          label: "Live — within the federal SOL window" },
+  live_state_udap:   { color: "#22c55e", status: "ok",      short: "LIVE (state)",  label: "Live under the state UDAP window (federal SOL may have run)" },
+  discharge_ongoing: { color: "#22c55e", status: "ok",      short: "ONGOING §524",  label: "Ongoing §524 discharge violation — no SOL while still reporting" },
+  undated:           { color: "#f59e0b", status: "caution", short: "UNDATED",       label: "No tradeline date on file — verify dates at intake" },
+  time_barred:       { color: "#ef4444", status: "warning", short: "TIME-BARRED",   label: "Federal SOL expired based on last-reported date" },
+};
+
+function signalSol(sig, caseType, ingestedAt) {
+  const meta = sig && typeof sig === "object" ? SOL_META[sig.solStatus] : null;
+  if (meta) {
+    const when = sig.lastReported ? ` (last reported ${fmtYYYYMM(sig.lastReported)})` : "";
+    return { status: meta.status, color: meta.color, short: meta.short, label: meta.label + when };
+  }
+  const legacy = solStatus(caseType, ingestedAt);
+  return {
+    ...legacy,
+    short: null,
+    color: legacy.status === "ok" ? "#22c55e" : legacy.status === "caution" ? "#f59e0b" : "#ef4444",
+  };
+}
+
 function StatBox({ label, value, sub, color = "var(--accent)" }) {
   return (
     <div style={{ background: "var(--bg-card)", border: `1px solid ${color}30`, borderRadius: 10, padding: "18px 22px", minWidth: 180 }}>
@@ -293,8 +317,8 @@ function EligibilityReport({ profile, focusCase }) {
   const defendant = sig?.defendant || focusCase.defendant || focusCase.name || "this defendant";
   const cColor = CASE_COLORS[ct] || "#6b7280";
 
-  const sol = solStatus(ct, profile.ingestedAt);
-  const solColor = sol.status === "ok" ? "#22c55e" : sol.status === "caution" ? "#f59e0b" : "#ef4444";
+  const sol = signalSol(sig, ct, profile.ingestedAt);
+  const solColor = sol.color;
 
   const verdict = sol.status === "warning"
     ? { label: "Screen carefully — SOL risk", color: "#f59e0b" }
@@ -511,11 +535,19 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                   </span>
                 )}
               </div>
-              {profile.ingestedAt && (
-                <div style={{ fontSize: 11, color: "var(--text-5)" }}>
-                  Data as of {new Date(profile.ingestedAt).toLocaleDateString()}
-                </div>
-              )}
+              <div style={{ fontSize: 11, color: "var(--text-5)" }}>
+                {profile.dataVintage?.newestReported && (
+                  <span>
+                    Credit file: {fmtYYYYMM(profile.dataVintage.oldestReported)} – {fmtYYYYMM(profile.dataVintage.newestReported)}
+                  </span>
+                )}
+                {profile.bankruptcyFiled && (
+                  <span> · Bankruptcy filed {fmtYYYYMM(profile.bankruptcyFiled)}</span>
+                )}
+                {profile.ingestedAt && (
+                  <span>{profile.dataVintage?.newestReported || profile.bankruptcyFiled ? " · " : ""}Matched {new Date(profile.ingestedAt).toLocaleDateString()}</span>
+                )}
+              </div>
             </div>
 
             {/* Scoped eligibility report — shown first when opened from a case */}
@@ -601,8 +633,8 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                 const strength = sig.strength || "low";
                 const sColor = STRENGTH_COLOR[strength] || "#6b7280";
                 const info = CASE_TYPE_INFO[ct];
-                const sol = solStatus(ct, profile.ingestedAt);
-                const solColor = sol.status === "ok" ? "#22c55e" : sol.status === "caution" ? "#f59e0b" : "#ef4444";
+                const sol = signalSol(sig, ct, profile.ingestedAt);
+                const solColor = sol.color;
                 return (
                   <div
                     key={i}
@@ -623,6 +655,16 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                       <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: `${sColor}22`, color: sColor, border: `1px solid ${sColor}44`, fontWeight: 700 }}>
                         {strength} signal
                       </span>
+                      {sol.short && (
+                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: `${solColor}22`, color: solColor, border: `1px solid ${solColor}44`, fontWeight: 700 }}>
+                          {sol.short}
+                        </span>
+                      )}
+                      {sig.lastReported && (
+                        <span style={{ fontSize: 10.5, color: "var(--text-5)" }}>
+                          last reported {fmtYYYYMM(sig.lastReported)}
+                        </span>
+                      )}
                     </div>
 
                     {/* Statute */}
@@ -650,6 +692,9 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                     <div style={{ background: "var(--bg-surface2)", borderRadius: 6, padding: "10px 12px", marginBottom: 10 }}>
                       <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Filing Deadlines / SOL</div>
                       <div style={{ fontSize: 11, color: solColor, fontWeight: 600, marginBottom: 4 }}>{sol.label}</div>
+                      {sig.statuteRef && (
+                        <div style={{ fontSize: 11, color: "var(--text-4)", fontFamily: "monospace", marginBottom: 4 }}>{sig.statuteRef}</div>
+                      )}
                       {info && <div style={{ fontSize: 11, color: "var(--text-2)" }}>Federal: {info.solFederal}</div>}
                       {info && <div style={{ fontSize: 11, color: "var(--text-4)" }}>State: {info.solState}</div>}
                       {info && <div style={{ fontSize: 11, color: "#f59e0b", marginTop: 4 }}>{info.solWarning}</div>}
