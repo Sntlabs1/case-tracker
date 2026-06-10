@@ -535,12 +535,14 @@ def shard_of(pid):
 
 # ── LEX phase ────────────────────────────────────────────────────────────────
 def run_lex(limit=None, dry=False, batch_pids=1000):
+    # NOTE (2026-06-10): writes directly to the LIVE by_score:{shard} zsets
+    # (the new->flip flow predates CCOM sharing those shards; flipping now
+    # would wipe cc_ members). casepeople is no longer written here — delete
+    # casepeople:* + caseindex:stats and force api/build-case-index after.
     print(f"Loading identity state from {STATE_FILE} ...", flush=True)
     people, bankrupt = load_state()
     cr_init()
     breach_ents = load_breach_entities()
-    catalog = set() if dry else load_catalog_tokens()
-    print(f"  catalog tokens: {len(catalog)}", flush=True)
     lex_pids = sorted(p for p in people if p.startswith("lex_"))
     if limit:
         lex_pids = lex_pids[:limit]
@@ -561,6 +563,11 @@ def run_lex(limit=None, dry=False, batch_pids=1000):
             outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, breach_ents)
             stats[outcome] += 1
             if client is None:
+                # No (longer a) signal: remove any record from a previous run.
+                if not dry:
+                    kv_push(["DEL", f"client:{pid}"])
+                    kv_push(["DEL", f"credit_report:{pid}"])
+                    kv_push(["ZREM", f"by_score:{shard_of(pid)}", pid])
                 continue
             stats["matched"] += 1
             if client["actionable"]:
@@ -575,14 +582,7 @@ def run_lex(limit=None, dry=False, batch_pids=1000):
                     samples.append(client)
                 continue
             kv_push(["SET", f"client:{pid}", json.dumps(client)])
-            kv_push(["ZADD", f"by_score:new:{shard_of(pid)}", client["priorityScore"], pid])
-            # per-defendant inverted index, only for catalog defendants
-            seen_tok = set()
-            for cs in client["cases"]:
-                tok = cs["defendantToken"]
-                if tok in catalog and tok not in seen_tok:
-                    seen_tok.add(tok)
-                    kv_push(["ZADD", f"casepeople:new:{tok}", client["priorityScore"], pid])
+            kv_push(["ZADD", f"by_score:{shard_of(pid)}", client["priorityScore"], pid])
             if client["intakeReady"]:
                 rep = {"tl": [dict(c=t.get("c"), orig=t.get("orig"), type=t.get("typ"),
                                    bal=t.get("bal"), od=t.get("od"), lrd=t.get("lrd"),
@@ -590,6 +590,8 @@ def run_lex(limit=None, dry=False, batch_pids=1000):
                               for t in crs.get(pid, {}).get("tl", [])[:30]],
                        "pr": crs.get(pid, {}).get("pr", [])}
                 kv_push(["SET", f"credit_report:{pid}", json.dumps(rep)])
+            else:
+                kv_push(["DEL", f"credit_report:{pid}"])
 
         if not dry and (i // batch_pids) % 50 == 0:
             ckpt["lex_offset"] = i
