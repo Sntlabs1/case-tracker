@@ -22,7 +22,7 @@ every data defect the audit found:
 Modes:
   python3 tools/credit-rederive.py lex            # rederive LEX from cr_db.db
   python3 tools/credit-rederive.py lex --limit 50000 --dry-run   # validate, no writes
-  python3 tools/credit-rederive.py ccom           # rederive CCOM from Azure CSV (undated)
+  python3 tools/credit-rederive.py ccom           # stage CCOM CSV -> cc_tl, rederive (dated)
   python3 tools/credit-rederive.py flip           # RENAME by_score:new:* -> by_score:* + stats
 
 Resumable: checkpoint at WORK_DIR/rederive_ckpt.json (people offset).
@@ -133,18 +133,36 @@ def word_hit(name, pats):
     return None
 
 def parse_ym(s):
-    """Parse 'YYYY-MM' or 'YYYY' -> date; messy formats -> None."""
+    """Parse 'YYYY-MM' or 'YYYY' -> date; messy/implausible formats -> None."""
     if not s:
         return None
     s = str(s).strip()
     m = re.match(r"^(\d{4})-(\d{1,2})", s)
     if m:
         y, mo = int(m.group(1)), max(1, min(12, int(m.group(2))))
-        return date(y, mo, 1)
+        return date(y, mo, 1) if 1950 <= y <= 2035 else None
     m = re.match(r"^(\d{4})$", s)
     if m:
-        return date(int(m.group(1)), 1, 1)
+        y = int(m.group(1))
+        return date(y, 1, 1) if 1950 <= y <= 2035 else None
     return None
+
+def parse_mmyy(s):
+    """LEX cr_pr.filed / cr_tl.od are MMYY strings ('1213' = Dec 2013)."""
+    if not s:
+        return None
+    s = str(s).strip()
+    m = re.match(r"^(\d{2})(\d{2})$", s)
+    if not m:
+        return None
+    mo, yy = int(m.group(1)), int(m.group(2))
+    if not 1 <= mo <= 12:
+        return None
+    y = 2000 + yy if yy <= 26 else 1900 + yy
+    return date(y, mo, 1)
+
+def parse_date_any(s):
+    return parse_ym(s) or parse_mmyy(s)
 
 def years_old(d):
     if d is None:
@@ -380,7 +398,8 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
     bk_filed = []
     for pr in prs:
         if "ankrupt" in str(pr.get("type", "")).lower():
-            d = parse_ym(pr.get("filed"))
+            # LEX cr_pr.filed is an MMYY string; CCOM is staged as YYYY-MM.
+            d = parse_date_any(pr.get("filed"))
             if d:
                 bk_filed.append((d, str(pr.get("chapter") or "")))
     earliest_bk = min((d for d, _ in bk_filed), default=None)
@@ -411,11 +430,12 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
         lrd   = parse_ym(tl.get("lrd"))
         is_collection = any(s in typ for s in COLLECTION_STATUS)
 
-        # §524 discharge-violation overlay: a pre-existing debt still reporting a
-        # live balance / collection AFTER a bankruptcy filing.
-        discharge_hit = False
-        if earliest_bk and lrd and lrd > earliest_bk and (bal and bal > 0 or is_collection):
-            discharge_hit = True
+        # §524 discharge-violation overlay: a PRE-PETITION debt (opened before the
+        # bankruptcy filing) still reporting a live balance / collection AFTER it.
+        od_d = parse_date_any(tl.get("od"))
+        if (earliest_bk and lrd and lrd > earliest_bk
+                and od_d and od_d < earliest_bk
+                and ((bal and bal > 0) or is_collection)):
             add("DischargeViolation", cname or orig or "Furnisher", "high", lrd, discharge_ongoing=True)
 
         # FCRA — only on a real dispute flag.
@@ -658,6 +678,255 @@ def run_stats(log_path):
     print(json.dumps(stats, indent=2))
     print(f"\nwrote credit_portfolio:stats  (cmd_err={kv_cmd_errors} http_err={kv_http_errors})")
 
+# ── CCOM phase ───────────────────────────────────────────────────────────────
+# v1 streamed CCOM_EV_Tradelines.csv row-by-row into fabricated signals and
+# DELETED the file. The CSV in fact carries DateOpened / BalanceDate /
+# FilingDate ("undated" was wrong) — so CCOM gets the same dated SOL treatment
+# as LEX. Stage normalizes dates to YYYY-MM in cr_db.db:cc_tl / cc_pr, then the
+# derive pass reuses derive_person() unchanged.
+
+CC_CSV = WORK_DIR / "CCOM_EV_Tradelines.csv"
+
+CC_TYP = {
+    "COLLECTION": "collection", "CHARGE_OFF": "charge off",
+    "REPOSSESSION": "repossession", "FORECLOSURE": "foreclosure",
+    "SETTLEMENT": "settlement accepted", "INCL_IN_BANKRUPTCY": "incl. in bankruptcy",
+}
+
+def norm_ym(v):
+    """Normalize a CSV/pyarrow date value to 'YYYY-MM' or None."""
+    import datetime as _dt
+    if v is None:
+        return None
+    if isinstance(v, (_dt.datetime, _dt.date)):
+        return f"{v.year:04d}-{v.month:02d}" if 1950 <= v.year <= 2035 else None
+    s = str(v).strip()
+    if not s or s.upper() in ("NULL", "NONE", "NAT"):
+        return None
+    m = re.match(r"^(\d{4})-(\d{1,2})", s)
+    if m:
+        y, mo = int(m.group(1)), max(1, min(12, int(m.group(2))))
+        return f"{y:04d}-{mo:02d}" if 1950 <= y <= 2035 else None
+    return None
+
+def stage_ccom():
+    """One-time: stream the 27M-row CSV into cr_db.db (cc_tl + cc_pr)."""
+    import pyarrow.csv as pa_csv
+
+    if not CC_CSV.exists():
+        print(f"ERROR: {CC_CSV} not found — download CCOM_EV_Tradelines.csv first.")
+        sys.exit(1)
+
+    db = sqlite3.connect(CR_DB_FILE)
+    db.execute("PRAGMA synchronous=OFF")
+    done = db.execute("SELECT name FROM sqlite_master WHERE name='cc_stage_done'").fetchone()
+    if done:
+        n = db.execute("SELECT COUNT(*) FROM cc_tl").fetchone()[0]
+        print(f"Stage already complete ({n:,} cc_tl rows). DROP TABLE cc_stage_done to redo.")
+        db.close()
+        return
+    db.execute("DROP TABLE IF EXISTS cc_tl")
+    db.execute("DROP TABLE IF EXISTS cc_pr")
+    db.execute("""CREATE TABLE cc_tl (pid TEXT NOT NULL, creditor TEXT, orig TEXT,
+                  typ TEXT, bal INTEGER, od TEXT, lrd TEXT)""")
+    db.execute("CREATE TABLE cc_pr (pid TEXT NOT NULL, rec_type TEXT, filed TEXT)")
+
+    ro = pa_csv.ReadOptions(block_size=32 * 1024 * 1024)
+    co = pa_csv.ConvertOptions(
+        include_columns=["ucid", "AccountHolder", "internal_item_type", "DateOpened",
+                         "balance", "internal_item_category", "Experian_item_type",
+                         "BalanceDate", "ProcessDT", "FilingDate", "OriginalCreditor"],
+        column_types={"ucid": "string", "balance": "string"},
+        null_values=["NULL", ""], strings_can_be_null=True)
+    reader = iter(pa_csv.open_csv(str(CC_CSV), read_options=ro, convert_options=co))
+
+    rows = tl_n = pr_n = skipped = 0
+    t0 = time.time()
+    while True:
+        try:
+            batch = next(reader)
+        except StopIteration:
+            break
+        except Exception:
+            skipped += 1
+            continue
+        d = batch.to_pydict()
+        tl_rows, pr_rows = [], []
+        for ucid, ah, ityp, od, bal, cat, exp, bdate, pdt, fdate, orig in zip(
+            d["ucid"], d["AccountHolder"], d["internal_item_type"], d["DateOpened"],
+            d["balance"], d["internal_item_category"], d["Experian_item_type"],
+            d["BalanceDate"], d["ProcessDT"], d["FilingDate"], d["OriginalCreditor"]
+        ):
+            rows += 1
+            if not ucid:
+                continue
+            ityp = str(ityp or "").strip().upper()
+            cat  = str(cat or "").strip().upper()
+            if ityp == "INQUIRY" or cat == "INQUIRY":
+                continue
+            pid = f"cc_{ucid}"
+            if ityp == "BANKRUPTCY":
+                pr_rows.append((pid, "Bankruptcy", norm_ym(fdate) or norm_ym(od)))
+                continue
+            typ = CC_TYP.get(ityp, ityp.lower().replace("_", " "))
+            if exp:
+                typ = f"{typ} {exp}"
+            try:
+                bal_i = int(float(bal)) if bal not in (None, "") else None
+            except ValueError:
+                bal_i = None
+            tl_rows.append((pid, str(ah or "").strip(), str(orig or "").strip(),
+                            typ[:120], bal_i, norm_ym(od),
+                            norm_ym(bdate) or norm_ym(pdt)))
+        if tl_rows:
+            db.executemany("INSERT INTO cc_tl VALUES (?,?,?,?,?,?,?)", tl_rows)
+            tl_n += len(tl_rows)
+        if pr_rows:
+            db.executemany("INSERT INTO cc_pr VALUES (?,?,?)", pr_rows)
+            pr_n += len(pr_rows)
+        db.commit()
+        print(f"\r  staged {rows:,} rows -> tl={tl_n:,} pr={pr_n:,} "
+              f"({rows / max(1e-9, time.time() - t0):,.0f}/s)", end="", flush=True)
+    print()
+    if skipped:
+        print(f"  skipped {skipped} malformed 32MB blocks")
+    print("  indexing ...")
+    db.execute("CREATE INDEX ix_cc_tl_pid ON cc_tl(pid)")
+    db.execute("CREATE INDEX ix_cc_pr_pid ON cc_pr(pid)")
+    db.execute("CREATE TABLE cc_stage_done (at TEXT)")
+    db.execute("INSERT INTO cc_stage_done VALUES (?)", (TODAY.isoformat(),))
+    db.commit()
+    db.close()
+    print(f"  stage complete: {tl_n:,} tradelines, {pr_n:,} bankruptcy records")
+
+def fetch_cc(pids):
+    out = {pid: {"tl": [], "pr": []} for pid in pids}
+    ph = ",".join("?" * len(pids))
+    for pid, creditor, orig, typ, bal, od, lrd in _cr.execute(
+        f"SELECT pid,creditor,orig,typ,bal,od,lrd FROM cc_tl WHERE pid IN ({ph})", pids):
+        if pid in out:
+            out[pid]["tl"].append(dict(bureau="CC", od=od, c=creditor, orig=orig,
+                                       typ=typ, bal=bal, lrd=lrd, disp=0))
+    for pid, rec_type, filed in _cr.execute(
+        f"SELECT pid,rec_type,filed FROM cc_pr WHERE pid IN ({ph})", pids):
+        if pid in out:
+            out[pid]["pr"].append(dict(type=rec_type, chapter="", filed=filed, disch=None))
+    return out
+
+def run_ccom(limit=None, dry=False, batch_pids=1000):
+    stage_ccom()
+    print(f"Loading identity state from {STATE_FILE} ...", flush=True)
+    people, bankrupt = load_state()
+    cr_init()
+    breach_ents = load_breach_entities()
+    cc_pids = sorted(p for p in people if p.startswith("cc_"))
+    if limit:
+        cc_pids = cc_pids[:limit]
+    total = len(cc_pids)
+    print(f"  {total:,} CCOM people to process; dry={dry}", flush=True)
+
+    ckpt = json.loads(CKPT_FILE.read_text()) if (CKPT_FILE.exists() and not dry) else {}
+    start = ckpt.get("ccom_offset", 0)
+    stats = defaultdict(int)
+    samples = []
+    t0 = time.time()
+
+    for i in range(start, total, batch_pids):
+        chunk = cc_pids[i:i + batch_pids]
+        crs = fetch_cc(chunk)
+        for pid in chunk:
+            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, breach_ents)
+            stats[outcome] += 1
+            if client is None:
+                # v1 wrote fabricated client:cc_* records (TCPA-from-phone,
+                # DataBreach-from-ownership) — remove them when v2 finds nothing.
+                if not dry:
+                    kv_push(["DEL", f"client:{pid}"])
+                    kv_push(["DEL", f"credit_report:{pid}"])
+                continue
+            stats["matched"] += 1
+            if client["actionable"]:
+                stats["actionable"] += 1
+            if client["intakeReady"]:
+                stats["intakeReady"] += 1
+            for c in client["cases"]:
+                stats[f"ct:{c['caseType']}"] += 1
+                stats[f"sol:{c['solStatus']}"] += 1
+            if dry:
+                if len(samples) < 8 and client["actionable"]:
+                    samples.append(client)
+                continue
+            kv_push(["SET", f"client:{pid}", json.dumps(client)])
+            # by_score shards are already live (post-flip) — write directly.
+            kv_push(["ZADD", f"by_score:{shard_of(pid)}", client["priorityScore"], pid])
+            if client["intakeReady"]:
+                rep = {"tl": [dict(c=t.get("c"), orig=t.get("orig"), type=t.get("typ"),
+                                   bal=t.get("bal"), od=t.get("od"), lrd=t.get("lrd"),
+                                   bureau=t.get("bureau"), disp=bool(t.get("disp")))
+                              for t in crs.get(pid, {}).get("tl", [])[:30]],
+                       "pr": crs.get(pid, {}).get("pr", [])}
+                kv_push(["SET", f"credit_report:{pid}", json.dumps(rep)])
+            else:
+                kv_push(["DEL", f"credit_report:{pid}"])
+
+        if not dry and (i // batch_pids) % 50 == 0:
+            ckpt["ccom_offset"] = i
+            CKPT_FILE.write_text(json.dumps(ckpt))
+            rate = (i - start) / max(1e-9, time.time() - t0)
+            print(f"\r  {i:,}/{total:,}  matched={stats['matched']:,} "
+                  f"actionable={stats['actionable']:,} ready={stats['intakeReady']:,} "
+                  f"ok={kv_ok:,} cmd_err={kv_cmd_errors} http_err={kv_http_errors} "
+                  f"{rate:.0f}/s", end="", flush=True)
+
+    if not dry:
+        kv_drain()
+        ckpt["ccom_offset"] = total
+        ckpt["ccom_done"] = True
+        CKPT_FILE.write_text(json.dumps(ckpt))
+    print()
+    print("=== CCOM rederive stats ===")
+    for k in sorted(stats):
+        print(f"  {k}: {stats[k]:,}")
+    print(f"  kv_ok={kv_ok:,} cmd_err={kv_cmd_errors} http_err={kv_http_errors}")
+    if dry and samples:
+        print("\n=== SAMPLE actionable clients ===")
+        for s in samples[:4]:
+            print(json.dumps(s, indent=2)[:1400])
+
+    # Merge CCOM counts into the live portfolio stats (once).
+    if not dry and not ckpt.get("ccom_stats_merged"):
+        raw = kv_get_one("credit_portfolio:stats")
+        if raw:
+            ps = json.loads(raw)
+            pop = ps.get("population", {})
+            add_pop = {
+                "processed": stats["matched"] + stats["nosig"] + stats["dnc"],
+                "matched": stats["matched"], "actionable": stats["actionable"],
+                "intakeReady": stats["intakeReady"], "dncExcluded": stats["dnc"],
+                "noSignal": stats["nosig"],
+            }
+            for k, v in add_pop.items():
+                pop[k] = pop.get(k, 0) + v
+            ps["population"] = pop
+            for k, v in stats.items():
+                if k.startswith("ct:"):
+                    ps.setdefault("byCaseType", {})
+                    ps["byCaseType"][k[3:]] = ps["byCaseType"].get(k[3:], 0) + v
+                if k.startswith("sol:"):
+                    ps.setdefault("bySolStatus", {})
+                    ps["bySolStatus"][k[4:]] = ps["bySolStatus"].get(k[4:], 0) + v
+            ps["matchRate"] = round(pop["matched"] / max(pop["processed"], 1) * 100, 1)
+            ps["actionableRate"] = round(pop["actionable"] / max(pop["processed"], 1) * 100, 1)
+            ps["note"] = ("Counts are claim signals after SOL flagging. Recovery figures elsewhere "
+                          "are statutory maximums over actionable claims, not expected value. "
+                          "LEX + CCOM populations, both dated. Source vintage 2017-2024.")
+            ps["ccomCompletedAt"] = TODAY.isoformat()
+            kv_fire([["SET", "credit_portfolio:stats", json.dumps(ps)]])
+            kv_drain()
+            ckpt["ccom_stats_merged"] = True
+            CKPT_FILE.write_text(json.dumps(ckpt))
+            print("  merged CCOM counts into credit_portfolio:stats")
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -673,4 +942,4 @@ if __name__ == "__main__":
     elif args.mode == "stats":
         run_stats(args.log)
     elif args.mode == "ccom":
-        print("CCOM phase: see run_ccom (added in follow-up); source has no dates -> solStatus=undated.")
+        run_ccom(limit=args.limit, dry=args.dry_run)
