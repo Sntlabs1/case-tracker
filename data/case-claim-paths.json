@@ -1,10 +1,10 @@
 {
  "_meta": {
   "built": "2026-06-11",
-  "tokens": 720,
+  "tokens": 713,
   "statusCounts": {
    "claim_window": 132,
-   "joinable_litigation": 420,
+   "joinable_litigation": 413,
    "monitor_only": 17,
    "none": 151
   },
@@ -70,7 +70,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 798,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3026-abbott-laboratories-et-al-preterm-infant-nutrition/"
+     "url": "https://mdlupdate.com/mdl/3026-abbott-laboratories-et-al-preterm-infant-nutrition/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -312,7 +314,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 1489,
      "court": "NJ",
-     "url": "https://mdlupdate.com/mdl/2921-allergan-biocell-textured-breast-implant/"
+     "url": "https://mdlupdate.com/mdl/2921-allergan-biocell-textured-breast-implant/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Allergan Biocell: accepting; bellwether 10/19/2026; QSF established 12/2025 \u2014 settlement forming."
     }
    ]
   },
@@ -581,7 +585,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 391,
      "court": "CAS",
-     "url": "https://mdlupdate.com/mdl/3125-angiodynamics-port-catheter/"
+     "url": "https://mdlupdate.com/mdl/3125-angiodynamics-port-catheter/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -672,7 +678,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 15240,
      "court": "SC",
-     "url": "https://mdlupdate.com/mdl/2873-aqueous-film-forming-foams/"
+     "url": "https://mdlupdate.com/mdl/2873-aqueous-film-forming-foams/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -700,7 +708,9 @@
      "status": "Open - Limited",
      "pendingActions": 24,
      "court": "GAN",
-     "url": "https://mdlupdate.com/mdl/3051-arc-airbag-inflators/"
+     "url": "https://mdlupdate.com/mdl/3051-arc-airbag-inflators/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -895,7 +905,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 450,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3101-baby-food/"
+     "url": "https://mdlupdate.com/mdl/3101-baby-food/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -914,7 +926,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 8422,
      "court": "MN",
-     "url": "https://mdlupdate.com/mdl/2666-bair-hugger-forced-air-warming-devices/"
+     "url": "https://mdlupdate.com/mdl/2666-bair-hugger-forced-air-warming-devices/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -978,7 +992,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 3376,
      "court": "AZ",
-     "url": "https://mdlupdate.com/mdl/3081-bard-implanted-port-catheter/"
+     "url": "https://mdlupdate.com/mdl/3081-bard-implanted-port-catheter/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -1263,7 +1279,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 20,
      "court": "NYS",
-     "url": "https://mdlupdate.com/mdl/3178-byheart-infant-formula/"
+     "url": "https://mdlupdate.com/mdl/3178-byheart-infant-formula/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -1457,7 +1475,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 18,
      "court": "ARE",
-     "url": "https://mdlupdate.com/mdl/3172-cartiva-synthetic-cartilage-implant/"
+     "url": "https://mdlupdate.com/mdl/3172-cartiva-synthetic-cartilage-implant/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -1563,7 +1583,9 @@
      "status": "Open - Limited",
      "pendingActions": 17,
      "court": "NYS",
-     "url": "https://mdlupdate.com/mdl/3050-chantix/"
+     "url": "https://mdlupdate.com/mdl/3050-chantix/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Chantix (nitrosamine): active docket; intake terms unverified \u2014 confirm with counsel."
     }
    ]
   },
@@ -1678,7 +1700,9 @@
      "status": "Open - Limited",
      "pendingActions": 11,
      "court": "MIE",
-     "url": "https://mdlupdate.com/mdl/3040-chrysler-pacifica-fire-recall/"
+     "url": "https://mdlupdate.com/mdl/3040-chrysler-pacifica-fire-recall/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Pacifica fire: litigation ongoing (2017-18 models); 2026 recall repair is free via dealers; no claims program \u2014 counsel intake only."
     }
    ]
   },
@@ -2169,7 +2193,9 @@
      "status": "Open - Limited",
      "pendingActions": 6537,
      "court": "INS",
-     "url": "https://mdlupdate.com/mdl/2570-cook-medical-inc-ivc-filters/"
+     "url": "https://mdlupdate.com/mdl/2570-cook-medical-inc-ivc-filters/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Cook IVC: open to new claims; 6,562 pending; partial settlement terms agreed 10/2025, no global deal."
     }
    ]
   },
@@ -2295,7 +2321,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 2408,
      "court": "MA",
-     "url": "https://mdlupdate.com/mdl/3029-covidien-hernia-mesh/"
+     "url": "https://mdlupdate.com/mdl/3029-covidien-hernia-mesh/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -2574,7 +2602,9 @@
      "status": "Open - Limited",
      "pendingActions": 23573,
      "court": "OHS",
-     "url": "https://mdlupdate.com/mdl/2846-davol-inccr-bard-inc-polypropylene-hernia-mesh/"
+     "url": "https://mdlupdate.com/mdl/2846-davol-inccr-bard-inc-polypropylene-hernia-mesh/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -2637,7 +2667,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 5508,
      "court": "FLN",
-     "url": "https://mdlupdate.com/mdl/3140-depo-provera/"
+     "url": "https://mdlupdate.com/mdl/3140-depo-provera/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -2960,7 +2992,9 @@
      "status": "Open - Limited",
      "pendingActions": 293,
      "court": "NJ",
-     "url": "https://mdlupdate.com/mdl/2973-elmiron/"
+     "url": "https://mdlupdate.com/mdl/2973-elmiron/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Elmiron: winding down via confidential settlements; SOME firms still accepting \u2014 firm-dependent."
     }
    ]
   },
@@ -3269,25 +3303,6 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
-  "evenflo company": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-2938",
-     "name": "Evenflo Company, Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 28,
-     "court": "MA",
-     "url": "https://mdlupdate.com/mdl/2938-evenflo-company-inc/"
-    }
-   ]
-  },
   "everquote": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -3321,7 +3336,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 1838,
      "court": "NYE",
-     "url": "https://mdlupdate.com/mdl/3044-exactech-polyethylene-orthopedic/"
+     "url": "https://mdlupdate.com/mdl/3044-exactech-polyethylene-orthopedic/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -3463,7 +3480,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 2664,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -4066,25 +4085,6 @@
    "openDockets": 16,
    "tcpaOpenDockets": 1
   },
-  "future motion": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-3087",
-     "name": "Future Motion Litigation",
-     "status": "Actively Recruiting",
-     "pendingActions": 159,
-     "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3087-future-motion-inc/"
-    }
-   ]
-  },
   "gardasil": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -4100,7 +4100,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 129,
      "court": "NCW",
-     "url": "https://mdlupdate.com/mdl/3036-gardasil/"
+     "url": "https://mdlupdate.com/mdl/3036-gardasil/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Gardasil: open to new filings (129 active) BUT preemption rulings + 4th Cir. dismissals make new claims weak \u2014 screen hard."
     }
    ]
   },
@@ -4152,7 +4154,9 @@
      "status": "Open - Limited",
      "pendingActions": 8,
      "court": "WIE",
-     "url": "https://mdlupdate.com/mdl/3078-generac-solar-power-systems/"
+     "url": "https://mdlupdate.com/mdl/3078-generac-solar-power-systems/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -4245,7 +4249,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 110,
      "court": "PAE",
-     "url": "https://mdlupdate.com/mdl/3163-glp-1-naion-products-liability-litigation/"
+     "url": "https://mdlupdate.com/mdl/3163-glp-1-naion-products-liability-litigation/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -4264,7 +4270,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 3763,
      "court": "PAE",
-     "url": "https://mdlupdate.com/mdl/3094-glucagon-like-peptide-1-receptor-agonists/"
+     "url": "https://mdlupdate.com/mdl/3094-glucagon-like-peptide-1-receptor-agonists/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -4517,7 +4525,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 11723,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3060-hair-relaxer/"
+     "url": "https://mdlupdate.com/mdl/3060-hair-relaxer/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -5022,17 +5032,7 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 16,
-   "tcpaOpenDockets": 2,
-   "activeMdls": [
-    {
-     "mdl": "MDL-3052",
-     "name": "Kia Hyundai Vehicle Theft Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 100,
-     "court": "CAC",
-     "url": "https://mdlupdate.com/mdl/3052-kia-hyundai-vehicle-theft/"
-    }
-   ]
+   "tcpaOpenDockets": 2
   },
   "i c system": {
    "status": "joinable_litigation",
@@ -5172,7 +5172,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 68029,
      "court": "NJ",
-     "url": "https://mdlupdate.com/mdl/2738-johnson-johnson-talcum-powder-products/"
+     "url": "https://mdlupdate.com/mdl/2738-johnson-johnson-talcum-powder-products/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -5811,7 +5813,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 54,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3171-lyft-passenger-sexual-assault/"
+     "url": "https://mdlupdate.com/mdl/3171-lyft-passenger-sexual-assault/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -5894,25 +5898,6 @@
    "openClassCandidates": 0,
    "openDockets": 14,
    "tcpaOpenDockets": 1
-  },
-  "mckinsey company national prescription opiate consultant": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-2996",
-     "name": "McKinsey & Company, National Prescription Opiate Consultant Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 235,
-     "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/2996-mckinsey-company-inc-national-prescription-opiate-/"
-    }
-   ]
   },
   "med 1 solutions": {
    "status": "joinable_litigation",
@@ -6088,7 +6073,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 2664,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -6335,7 +6322,9 @@
      "status": "Open - Limited",
      "pendingActions": 13,
      "court": "FLS",
-     "url": "https://mdlupdate.com/mdl/2841-monat-hair-care-products/"
+     "url": "https://mdlupdate.com/mdl/2841-monat-hair-care-products/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "MONAT: active; mediation underway; settlement anticipated 2026."
     }
    ]
   },
@@ -6496,7 +6485,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 7,
      "court": "WAW",
-     "url": "https://mdlupdate.com/mdl/3174-air-crash-muan-international-airport/"
+     "url": "https://mdlupdate.com/mdl/3174-air-crash-muan-international-airport/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -6575,7 +6566,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 558,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/2492-national-collegiate-athletic-association-student-a/"
+     "url": "https://mdlupdate.com/mdl/2492-national-collegiate-athletic-association-student-a/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "NCAA concussion: 50-year medical monitoring program live (collegeathleteconcussionsettlement.com, updated 4/2026); screening claims ongoing."
     }
    ]
   },
@@ -6632,25 +6625,6 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 3
-  },
-  "national prescription opiate": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-2804",
-     "name": "National Prescription Opiate Litigation",
-     "status": "Actively Recruiting",
-     "pendingActions": 2930,
-     "court": "OHN",
-     "url": "https://mdlupdate.com/mdl/2804-national-prescription-opiate-litigation/"
-    }
-   ]
   },
   "national recovery agen": {
    "status": "none",
@@ -7070,7 +7044,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 4071,
      "court": "GAN",
-     "url": "https://mdlupdate.com/mdl/2974-paragard-iud/"
+     "url": "https://mdlupdate.com/mdl/2974-paragard-iud/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -7107,7 +7083,9 @@
      "status": "Open - Limited",
      "pendingActions": 6651,
      "court": "ILS",
-     "url": "https://mdlupdate.com/mdl/3004-paraquat/"
+     "url": "https://mdlupdate.com/mdl/3004-paraquat/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -7277,25 +7255,6 @@
    "openClassCandidates": 0,
    "openDockets": 6,
    "tcpaOpenDockets": 0
-  },
-  "philips recalled cpap bi level pap and mechanical ventilator": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-3014",
-     "name": "Philips Recalled CPAP, Bi-Level PAP, and Mechanical Ventilator Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 622,
-     "court": "PAW",
-     "url": "https://mdlupdate.com/mdl/3014-philips-recalled-cpap-bi-level-pap-and-mechanical-/"
-    }
-   ]
   },
   "phoenix financial serv": {
    "status": "none",
@@ -7544,7 +7503,9 @@
      "status": "Open - Limited",
      "pendingActions": 11321,
      "court": "NJ",
-     "url": "https://mdlupdate.com/mdl/2789-proton-pump-inhibitor/"
+     "url": "https://mdlupdate.com/mdl/2789-proton-pump-inhibitor/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "PPI: $590M paid across makers; 11,322 still in negotiation; new claims still being filed."
     }
    ]
   },
@@ -7682,7 +7643,9 @@
      "status": "Open - Limited",
      "pendingActions": 14,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3037-recalled-abbott-infant-formula/"
+     "url": "https://mdlupdate.com/mdl/3037-recalled-abbott-infant-formula/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -7959,7 +7922,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 162,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3166-roblox-child-safety/"
+     "url": "https://mdlupdate.com/mdl/3166-roblox-child-safety/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -8020,7 +7985,9 @@
      "status": "Open - Limited",
      "pendingActions": 3909,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/2741-roundup/"
+     "url": "https://mdlupdate.com/mdl/2741-roundup/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "$7.25B settlement prelim-approved 3/2026 (final hearing 7/9); MDL still accepting new claims; future diagnoses claimable within 6 yrs."
     }
    ]
   },
@@ -8325,7 +8292,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 19,
      "court": "WIW",
-     "url": "https://mdlupdate.com/mdl/3175-shell-eggs-antitrust/"
+     "url": "https://mdlupdate.com/mdl/3175-shell-eggs-antitrust/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -8431,7 +8400,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 2664,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -8954,7 +8925,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 1833,
      "court": "OHN",
-     "url": "https://mdlupdate.com/mdl/3092-suboxone-film/"
+     "url": "https://mdlupdate.com/mdl/3092-suboxone-film/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9153,26 +9126,9 @@
      "status": "Open - Limited",
      "pendingActions": 36,
      "court": "FLM",
-     "url": "https://mdlupdate.com/mdl/3006-tasigna/"
-    }
-   ]
-  },
-  "taxotere eye injury": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-3023",
-     "name": "Taxotere Eye Injury Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 150,
-     "court": "LAE",
-     "url": "https://mdlupdate.com/mdl/3023-taxotere-eye-injury/"
+     "url": "https://mdlupdate.com/mdl/3006-tasigna/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9218,7 +9174,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 278,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3079-tepezza/"
+     "url": "https://mdlupdate.com/mdl/3079-tepezza/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9341,7 +9299,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 2664,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9525,7 +9485,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 63,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/"
+     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9562,7 +9524,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 63,
      "court": "ILN",
-     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/"
+     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -9850,7 +9814,9 @@
      "status": "Actively Recruiting",
      "pendingActions": 3571,
      "court": "CAN",
-     "url": "https://mdlupdate.com/mdl/3084-uber-technologies-inc-passenger-sexual-assault-lit/"
+     "url": "https://mdlupdate.com/mdl/3084-uber-technologies-inc-passenger-sexual-assault-lit/",
+     "intakeVerified": "reported-open",
+     "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
     }
    ]
   },
@@ -10068,7 +10034,9 @@
      "status": "Open - Limited",
      "pendingActions": 1413,
      "court": "NJ",
-     "url": "https://mdlupdate.com/mdl/2875-valsartan-losartan-and-irbesartan/"
+     "url": "https://mdlupdate.com/mdl/2875-valsartan-losartan-and-irbesartan/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "Valsartan: still joinable; 1,400+ pending; bellwethers underway; no global settlement yet."
     }
    ]
   },
@@ -10497,7 +10465,9 @@
      "status": "Open - Limited",
      "pendingActions": 27,
      "court": "CAC",
-     "url": "https://mdlupdate.com/mdl/2905-zf-trw-airbag-control-units/"
+     "url": "https://mdlupdate.com/mdl/2905-zf-trw-airbag-control-units/",
+     "intakeVerified": "verified-open",
+     "intakeNote": "ZF-TRW: open \u2014 Toyota/Mitsubishi settlements final, Hyundai-Kia approved 4/2025; claims window runs >= 18mo past final approval (no earlier than 2026-12-16). Pairs with our verified ACU settlement records."
     }
    ]
   },
@@ -10540,25 +10510,6 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
-  },
-  "zostavax": {
-   "status": "joinable_litigation",
-   "liveSettlements": [],
-   "monitorSettlements": [],
-   "expiredSettlements": [],
-   "openClassCandidates": 0,
-   "openDockets": 0,
-   "tcpaOpenDockets": 0,
-   "activeMdls": [
-    {
-     "mdl": "MDL-2848",
-     "name": "Zostavax Litigation",
-     "status": "Open - Limited",
-     "pendingActions": 826,
-     "court": "PAE",
-     "url": "https://mdlupdate.com/mdl/2848-zostavax/"
-    }
-   ]
   },
   "zwicker associates p c": {
    "status": "joinable_litigation",

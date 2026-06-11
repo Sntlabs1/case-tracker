@@ -266,7 +266,7 @@ try:
         toks = MDL_TOKEN_MAP.get(m["mdl"]) or [canonical_token(re.sub(r"(,? (Inc|LLC|Corp)\.?)|( Litigation.*$)", "", m["name"] or ""))]
         for t in toks:
             if t:
-                mdl_by_token[t].append({k: m[k] for k in ("mdl", "name", "status", "pendingActions", "court", "url")})
+                mdl_by_token[t].append({k: m.get(k) for k in ("mdl", "name", "status", "pendingActions", "court", "url", "intakeVerified", "intakeNote")})
     print(f"active MDLs: {sum(len(v) for v in mdl_by_token.values())} joinable rows across {len(mdl_by_token)} tokens")
 except FileNotFoundError:
     print("active-mdls catalog not found — skipping MDL overlay")
