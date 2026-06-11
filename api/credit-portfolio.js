@@ -52,6 +52,61 @@ async function pageByScore(cursor, limit) {
   return { ids, nextCursor };
 }
 
+// Public lead shape for one stored client record.
+function toLead(r) {
+  const c = typeof r === "string" ? JSON.parse(r) : r;
+  return {
+    id:             c.id,
+    name:           c.name,
+    state:          c.state,
+    phone:          c.phone ? `***-***-${String(c.phone).replace(/\D/g, "").slice(-4)}` : null,
+    email:          c.email || null,
+    score:          c.priorityScore,
+    actionable:     c.actionable ?? null,
+    cases:          c.matchedCases || [],
+    signals:        (c.cases || []).map(s => ({
+      caseType:   s.caseType,
+      defendant:  s.defendant,
+      strength:   s.strength,
+      solStatus:  s.solStatus,
+    })),
+    solSummary:     c.solSummary || null,
+    recovery:       c.recoveryEstimate || {},
+    intakeReady:    c.intakeReady,
+  };
+}
+
+// Name search: there is no name index in KV, so this is a bounded scan down
+// the score-ordered shards. Each request scans at most SEARCH_SCAN_CAP records
+// (fetched via MGET in batches) and returns the matches found plus the cursor
+// to continue scanning, so the client can "search deeper" on demand. Cost per
+// request: ~(cap/chunk)*16 ZRANGEs + cap/100 MGETs.
+const SEARCH_CHUNK    = 200;
+const SEARCH_SCAN_CAP = 2000;
+
+async function searchByName(q, cursor, limit) {
+  let cur = cursor;
+  let scanned = 0;
+  let exhausted = false;
+  const matches = [];
+  while (matches.length < limit && scanned < SEARCH_SCAN_CAP) {
+    const { ids, nextCursor } = await pageByScore(cur, SEARCH_CHUNK);
+    if (ids.length === 0) { exhausted = true; break; }
+    cur = nextCursor;
+    scanned += ids.length;
+    for (let i = 0; i < ids.length; i += 100) {
+      const batch = await kv.mget(...ids.slice(i, i + 100).map(id => `client:${id}`));
+      for (const r of batch) {
+        if (!r) continue;
+        const c = typeof r === "string" ? JSON.parse(r) : r;
+        if ((c.name || "").toLowerCase().includes(q)) matches.push(toLead(c));
+      }
+    }
+    if (ids.length < SEARCH_CHUNK) { exhausted = true; break; }
+  }
+  return { matches, scanned, nextCursor: cur, exhausted };
+}
+
 // Total people in the score index across all shards.
 async function indexTotal() {
   const counts = await Promise.all(
@@ -83,6 +138,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `cursor must be ${N_SHARDS} comma-separated non-negative integers` });
     }
 
+    const q = String(req.query?.q || "").trim().toLowerCase();
+    if (q) {
+      const [{ matches, scanned, nextCursor, exhausted }, leadsTotal] = await Promise.all([
+        searchByName(q, cursor, limit),
+        indexTotal(),
+      ]);
+      return res.status(200).json({
+        status:     "ok",
+        q,
+        topLeads:   matches,
+        scanned,
+        leadsTotal,
+        nextCursor: nextCursor.join(","),
+        hasMore:    !exhausted,
+      });
+    }
+
     const [{ ids: topIds, nextCursor }, leadsTotal] = await Promise.all([
       pageByScore(cursor, limit),
       indexTotal(),
@@ -93,29 +165,7 @@ export default async function handler(req, res) {
       const batch = await Promise.all(
         topIds.slice(i, i + 20).map(id => kv.get(`client:${id}`))
       );
-      batch.forEach(r => {
-        if (!r) return;
-        const c = typeof r === "string" ? JSON.parse(r) : r;
-        topLeads.push({
-          id:             c.id,
-          name:           c.name,
-          state:          c.state,
-          phone:          c.phone ? `***-***-${String(c.phone).replace(/\D/g, "").slice(-4)}` : null,
-          email:          c.email || null,
-          score:          c.priorityScore,
-          actionable:     c.actionable ?? null,
-          cases:          c.matchedCases || [],
-          signals:        (c.cases || []).map(s => ({
-            caseType:   s.caseType,
-            defendant:  s.defendant,
-            strength:   s.strength,
-            solStatus:  s.solStatus,
-          })),
-          solSummary:     c.solSummary || null,
-          recovery:       c.recoveryEstimate || {},
-          intakeReady:    c.intakeReady,
-        });
-      });
+      batch.forEach(r => { if (r) topLeads.push(toLead(r)); });
     }
 
     const consumed = nextCursor.reduce((a, b) => a + b, 0);

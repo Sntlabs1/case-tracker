@@ -1275,6 +1275,16 @@ export default function CreditPortfolio() {
   const pageAbortRef = React.useRef(null);
   const pageCursorsRef = React.useRef({}); // page index -> cursor string that fetches it
 
+  // People search — server-side bounded scan down the score index (KV has no
+  // name index). Each request scans ~2K records ranked by score; "Search
+  // deeper" continues from the returned cursor and appends results.
+  const [peopleQ, setPeopleQ]           = useState("");
+  const [peopleSearch, setPeopleSearch] = useState(null); // { q, results, scanned, total, cursor, hasMore, loading, error }
+  const peopleSearchAbortRef = React.useRef(null);
+
+  // Cases search — client-side filter over the in-memory defendant lists.
+  const [caseQ, setCaseQ]               = useState("");
+
   const [profileId, setProfileId]       = useState(null);
   const [profile, setProfile]           = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -1351,6 +1361,53 @@ export default function CreditPortfolio() {
       .then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.error || r.status); }))
       .then(d => { setProfile(d); setProfileLoading(false); })
       .catch(e => { if (e.name === "AbortError") return; setProfileError(e.message); setProfileLoading(false); });
+  }
+
+  // Run (or continue) a people name search. `deeper` continues the bounded
+  // scan from the last cursor and appends; otherwise starts a fresh search.
+  function runPeopleSearch(rawQ, deeper = false) {
+    const q = rawQ.trim();
+    if (!q) { clearPeopleSearch(); return; }
+    if (peopleSearchAbortRef.current) peopleSearchAbortRef.current.abort();
+    const ac = new AbortController();
+    peopleSearchAbortRef.current = ac;
+    const prev = deeper && peopleSearch && peopleSearch.q === q ? peopleSearch : null;
+    setPeopleSearch({
+      q,
+      results: prev ? prev.results : [],
+      scanned: prev ? prev.scanned : 0,
+      total:   prev ? prev.total : null,
+      cursor:  prev ? prev.cursor : null,
+      hasMore: false,
+      loading: true,
+      error:   null,
+    });
+    const params = new URLSearchParams({ q });
+    if (prev?.cursor) params.set("cursor", prev.cursor);
+    fetch(`/api/credit-portfolio?${params}`, { signal: ac.signal })
+      .then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.error || r.status); }))
+      .then(d => {
+        setPeopleSearch({
+          q,
+          results: [...(prev ? prev.results : []), ...(d.topLeads || [])],
+          scanned: (prev ? prev.scanned : 0) + (d.scanned || 0),
+          total:   d.leadsTotal ?? null,
+          cursor:  d.nextCursor || null,
+          hasMore: !!d.hasMore,
+          loading: false,
+          error:   null,
+        });
+      })
+      .catch(e => {
+        if (e.name === "AbortError") return;
+        setPeopleSearch(s => s ? { ...s, loading: false, hasMore: false, error: e.message } : s);
+      });
+  }
+
+  function clearPeopleSearch() {
+    if (peopleSearchAbortRef.current) peopleSearchAbortRef.current.abort();
+    setPeopleSearch(null);
+    setPeopleQ("");
   }
 
   // Fetch one page of a case's claimants. Cursor-based: the API returns the
@@ -1449,7 +1506,7 @@ export default function CreditPortfolio() {
   };
 
   const totalCaseMatches = Object.values(byCaseType).reduce((a, b) => a + b, 0);
-  const currentLeads = pageLeads ?? topLeads;
+  const currentLeads = peopleSearch ? peopleSearch.results : (pageLeads ?? topLeads);
   const filteredLeads = filter === "all"
     ? currentLeads
     : currentLeads.filter(l => l.cases?.includes(filter));
@@ -1531,9 +1588,13 @@ export default function CreditPortfolio() {
   const pacerCaseTypes = [...new Set(pacerCases.map(c => c.caseType))]
     .sort((a, b) => pacerCases.filter(c => c.caseType === b).length - pacerCases.filter(c => c.caseType === a).length);
   if (tcpaMarketerCases.length && !pacerCaseTypes.includes("TCPA")) pacerCaseTypes.push("TCPA");
-  const visiblePacerCases = pacerCases.filter(c => caseTypeFilter === "all" || c.caseType === caseTypeFilter);
-  const showTcpaMarketers = tcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
-  const showNationalEntities = nationalEntityCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
+  const cq = caseQ.trim().toLowerCase();
+  const caseMatchesQ = c => !cq || (c.name || "").toLowerCase().includes(cq);
+  const visiblePacerCases = pacerCases.filter(c => (caseTypeFilter === "all" || c.caseType === caseTypeFilter) && caseMatchesQ(c));
+  const visibleNationalCases = nationalEntityCases.filter(caseMatchesQ);
+  const visibleTcpaMarketerCases = tcpaMarketerCases.filter(caseMatchesQ);
+  const showTcpaMarketers = visibleTcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
+  const showNationalEntities = visibleNationalCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
 
   return (
     <div style={{ padding: "24px 28px", maxWidth: 1200 }}>
@@ -1588,7 +1649,21 @@ export default function CreditPortfolio() {
             </div>
           )}
 
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 20 }}>
+            <input
+              value={caseQ}
+              onChange={e => setCaseQ(e.target.value)}
+              placeholder="Search defendants..."
+              style={{ fontSize: 12, padding: "5px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-1)", outline: "none", width: 220 }}
+            />
+            {cq && (
+              <button
+                onClick={() => setCaseQ("")}
+                style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-4)", cursor: "pointer" }}
+              >
+                Clear
+              </button>
+            )}
             <button
               onClick={() => setCaseTypeFilter("all")}
               style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: caseTypeFilter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
@@ -1625,6 +1700,12 @@ export default function CreditPortfolio() {
             </div>
           )}
 
+          {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !pacerLoading && (
+            <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
+              No defendants match "{caseQ.trim()}".
+            </div>
+          )}
+
           {visiblePacerCases.length > 0 && (
             <CaseTable
               rows={visiblePacerCases}
@@ -1646,14 +1727,14 @@ export default function CreditPortfolio() {
                   Covers every Top-1000 furnisher plus the big-3 bureaus — the bureau cards apply to the <em>entire</em> base since every person has all three bureau files. Click a furnisher to see its people.
                 </div>
                 <CaseTable
-                  rows={nationalEntityCases.slice(0, 60)}
+                  rows={visibleNationalCases.slice(0, 60)}
                   countLabel="National dockets"
                   countSub="NOS 480/371/490"
                   onOpen={openCase}
                 />
-                {nationalEntityCases.length > 60 && (
+                {visibleNationalCases.length > 60 && (
                   <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 14 }}>
-                    Showing top 60 of {fmtN(nationalEntityCases.length)} entities by docket volume.
+                    Showing top 60 of {fmtN(visibleNationalCases.length)} entities by docket volume.
                   </div>
                 )}
               </div>
@@ -1672,14 +1753,14 @@ export default function CreditPortfolio() {
                   Most are robocall/text marketers that don't appear in credit reports — but the highest-volume defendants are banks and lenders (Citibank, Capital One, Synchrony, Amex…) that <em>do</em> appear as furnishers, so they still match people. Click any defendant to check the credit DB.
                 </div>
                 <CaseTable
-                  rows={tcpaMarketerCases.slice(0, 60)}
+                  rows={visibleTcpaMarketerCases.slice(0, 60)}
                   countLabel="National TCPA dockets"
                   countSub="NOS 485"
                   onOpen={openCase}
                 />
-                {tcpaMarketerCases.length > 60 && (
+                {visibleTcpaMarketerCases.length > 60 && (
                   <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 14 }}>
-                    Showing top 60 of {fmtN(tcpaMarketerCases.length)} multi-case TCPA defendants by docket volume.
+                    Showing top 60 of {fmtN(visibleTcpaMarketerCases.length)} multi-case TCPA defendants by docket volume.
                   </div>
                 )}
               </div>
@@ -1973,6 +2054,40 @@ export default function CreditPortfolio() {
           </div>
         </div>
 
+        {/* Name search — bounded scan down the score index, deepest-first */}
+        <form
+          onSubmit={e => { e.preventDefault(); runPeopleSearch(peopleQ); }}
+          style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 14 }}
+        >
+          <input
+            value={peopleQ}
+            onChange={e => setPeopleQ(e.target.value)}
+            placeholder="Search people by name..."
+            style={{ fontSize: 12, padding: "6px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-1)", outline: "none", width: 260 }}
+          />
+          <button
+            type="submit"
+            disabled={!peopleQ.trim() || peopleSearch?.loading}
+            style={{ fontSize: 11, padding: "6px 14px", borderRadius: 4, border: "none", background: "#2D7D95", color: "#fff", fontWeight: 600, cursor: !peopleQ.trim() || peopleSearch?.loading ? "default" : "pointer", opacity: !peopleQ.trim() || peopleSearch?.loading ? 0.6 : 1 }}
+          >
+            Search
+          </button>
+          {peopleSearch && (
+            <button
+              type="button"
+              onClick={clearPeopleSearch}
+              style={{ fontSize: 11, padding: "6px 14px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-4)", cursor: "pointer" }}
+            >
+              Clear
+            </button>
+          )}
+          {peopleSearch && !peopleSearch.loading && (
+            <span style={{ fontSize: 11, color: "var(--text-5)" }}>
+              {fmtN(peopleSearch.results.length)} match{peopleSearch.results.length === 1 ? "" : "es"} for "{peopleSearch.q}" in {fmtN(peopleSearch.scanned)} of {fmtN(peopleSearch.total ?? leadsTotal)} people scanned (highest score first)
+            </span>
+          )}
+        </form>
+
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
@@ -2021,22 +2136,55 @@ export default function CreditPortfolio() {
               ))}
             </tbody>
           </table>
-          {pageLeadsLoading && (
+          {peopleSearch?.loading && (
+            <div style={{ padding: 24, textAlign: "center", color: "var(--text-4)", fontSize: 12 }}>
+              Searching for "{peopleSearch.q}"...
+            </div>
+          )}
+          {peopleSearch?.error && (
+            <div style={{ padding: 16, color: "#ef4444", fontSize: 12 }}>Search error: {peopleSearch.error}</div>
+          )}
+          {peopleSearch && !peopleSearch.loading && !peopleSearch.error && filteredLeads.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", color: "var(--text-5)", fontSize: 12 }}>
+              No matches for "{peopleSearch.q}" in the first {fmtN(peopleSearch.scanned)} people scanned.
+              {peopleSearch.hasMore ? " Use Search deeper to keep scanning." : ""}
+            </div>
+          )}
+          {!peopleSearch && pageLeadsLoading && (
             <div style={{ padding: 24, textAlign: "center", color: "var(--text-4)", fontSize: 12 }}>
               Loading page {leadsPage + 1}...
             </div>
           )}
-          {pageLeadsError && (
+          {!peopleSearch && pageLeadsError && (
             <div style={{ padding: 16, color: "#ef4444", fontSize: 12 }}>Error loading page: {pageLeadsError}</div>
           )}
-          {!pageLeadsLoading && !pageLeadsError && filteredLeads.length === 0 && (
+          {!peopleSearch && !pageLeadsLoading && !pageLeadsError && filteredLeads.length === 0 && (
             <div style={{ padding: 24, textAlign: "center", color: "var(--text-5)", fontSize: 12 }}>
               {filter === "all" ? "No people on this page." : `No ${CASE_LABELS[filter] || filter} matches on this page — the filter applies within the current page of ${PAGE_SIZE}.`}
             </div>
           )}
         </div>
 
+        {/* Search footer — continue the bounded scan */}
+        {peopleSearch && (
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, flexWrap: "wrap", gap: 10 }}>
+            <div style={{ fontSize: 11, color: "var(--text-5)" }}>
+              Name search scans the score index from the top — deeper scans surface lower-priority people.
+            </div>
+            {peopleSearch.hasMore && (
+              <button
+                onClick={() => runPeopleSearch(peopleSearch.q, true)}
+                disabled={peopleSearch.loading}
+                style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-1)", cursor: peopleSearch.loading ? "default" : "pointer", opacity: peopleSearch.loading ? 0.5 : 1 }}
+              >
+                Search deeper
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Pager */}
+        {!peopleSearch && (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, flexWrap: "wrap", gap: 10 }}>
           <div style={{ fontSize: 11, color: "var(--text-5)" }}>
             {fmtN(leadsTotal)} matched people, ranked by score
@@ -2062,6 +2210,7 @@ export default function CreditPortfolio() {
             </button>
           </div>
         </div>
+        )}
       </Card>
       </>)}
 
