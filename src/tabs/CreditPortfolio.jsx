@@ -1926,6 +1926,9 @@ export default function CreditPortfolio() {
   // credit.com customers can actually file on TODAY.
   // Default to the settled, file-today list — that is the credit.com pitch.
   const [routeFilter, setRouteFilter]             = useState("claimable"); // all | claimable | automatic | rolling
+  // Open-settlements catalog ordering: people = most matched claimants in the
+  // credit file first (the pitch order); deadline = soonest window first.
+  const [stlSort, setStlSort]                     = useState("people"); // people | deadline
 
   // Real PACER case catalog (defendant-grouped) from /api/portfolio-cases
   const [pacer, setPacer]                 = useState(null);
@@ -2256,7 +2259,11 @@ export default function CreditPortfolio() {
   const visibleTcpaMarketerCases = maybeSortByDeadline(tcpaMarketerCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
   const showTcpaMarketers = visibleTcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
   const showNationalEntities = visibleNationalCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
-  const visibleOpenSettlements = maybeSortByDeadline(openSettlementCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
+  const byPeopleThenDeadline = (x, y) =>
+    ((y.consumers || 0) - (x.consumers || 0)) ||
+    (earliestDeadline(x.claimPath) || "9999").localeCompare(earliestDeadline(y.claimPath) || "9999");
+  const visibleOpenSettlements = [...openSettlementCases.filter(c => caseMatchesQ(c) && routeMatches(c))]
+    .sort(stlSort === "people" ? byPeopleThenDeadline : byDeadline);
   const showOpenSettlements = visibleOpenSettlements.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "OpenSettlement");
   // Route counts across all catalogs (a defendant can appear in one only).
   const allCaseRows = [...pacerCases, ...nationalEntityCases, ...tcpaMarketerCases, ...openSettlementCases];
@@ -2397,8 +2404,22 @@ export default function CreditPortfolio() {
               is the credit.com pitch list. */}
           {showOpenSettlements && (
             <div style={{ marginBottom: 36 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 4 }}>
-                Open Settlements — Full Catalog ({fmtN(visibleOpenSettlements.length)})
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 4 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)" }}>
+                  Open Settlements — Full Catalog ({fmtN(visibleOpenSettlements.length)})
+                </div>
+                <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                  <span style={{ fontSize: 10, color: "var(--text-5)", marginRight: 4 }}>SORT</span>
+                  {[["people", "Most matched people"], ["deadline", "Soonest deadline"]].map(([k, label]) => (
+                    <button
+                      key={k}
+                      onClick={() => setStlSort(k)}
+                      style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: `1px solid ${stlSort === k ? "#2D7D95" : "var(--border)"}`, background: stlSort === k ? "#2D7D95" : "var(--bg-surface)", color: stlSort === k ? "#fff" : "var(--text-3)", cursor: "pointer", fontWeight: stlSort === k ? 700 : 400 }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div style={{ fontSize: 12, color: "var(--text-5)", marginBottom: 18, lineHeight: 1.6, maxWidth: 820 }}>
                 Every verified settlement with a live claim window or automatic payout, sourced from administrator sites and the full topclassactions.com sweep — including defendants with no docket history in our PACER index. Each row links straight to the administrator's claim form.
