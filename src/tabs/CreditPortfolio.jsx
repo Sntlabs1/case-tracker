@@ -12,6 +12,7 @@ const CASE_LABELS = {
   UDAP_Payday:  "Payday/UDAP",
   DischargeViolation: "§524 Discharge",
   OpenSettlement:     "Open Settlement",
+  ActiveMDL:          "Active MDL",
 };
 
 const CASE_COLORS = {
@@ -25,6 +26,7 @@ const CASE_COLORS = {
   UDAP_Payday:  "#ec4899",
   DischargeViolation: "#14b8a6",
   OpenSettlement:     "#84cc16",
+  ActiveMDL:          "#2D7D95",
 };
 
 const STRENGTH_COLOR = { high: "#22c55e", medium: "#f59e0b", low: "#ef4444" };
@@ -2257,6 +2259,25 @@ export default function CreditPortfolio() {
       info:            CASE_TYPE_INFO.OpenSettlement,
     }));
 
+  // Active MDLs with open recovery periods — litigation route, own section.
+  const mdlCases = (pacer?.activeMdlDefendants || [])
+    .map(d => ({
+      id:              `mdl-${d.defendantQ.replace(/\s+/g, "-")}`,
+      caseType:        "ActiveMDL",
+      name:            (d.claimPath?.activeMdls?.[0] ? `${d.claimPath.activeMdls[0].mdl} — ${d.claimPath.activeMdls[0].name}` : d.defendant).slice(0, 80),
+      defendant:       d.defendant,
+      defendantQ:      d.defendantQ,
+      caseCount:       d.caseCount,
+      openCases:       d.openCases,
+      consumers:       d.consumers || null,
+      claimPath:       d.claimPath || null,
+      examples:        [],
+      matchByDefendantOnly: true,
+      status:          "Active MDL — recovery period open to new claimants",
+      admin:           "MDL court / plaintiffs' leadership",
+      info:            undefined,
+    }));
+
   const pacerCaseTypes = [...new Set(pacerCases.map(c => c.caseType))]
     .sort((a, b) => pacerCases.filter(c => c.caseType === b).length - pacerCases.filter(c => c.caseType === a).length);
   if (tcpaMarketerCases.length && !pacerCaseTypes.includes("TCPA")) pacerCaseTypes.push("TCPA");
@@ -2267,6 +2288,7 @@ export default function CreditPortfolio() {
     if (routeFilter === "claimable") return filableSettlements(c.claimPath).length > 0;
     if (routeFilter === "automatic") return settlementsOfType(c.claimPath, "automatic_payment").length > 0;
     if (routeFilter === "rolling")   return settlementsOfType(c.claimPath, "rolling").length > 0;
+    if (routeFilter === "mdl")       return (c.claimPath?.activeMdls || []).length > 0;
     return true;
   };
   // When filtering to open claim windows, rank by the soonest filing deadline.
@@ -2284,8 +2306,12 @@ export default function CreditPortfolio() {
   const visibleOpenSettlements = [...openSettlementCases.filter(c => caseMatchesQ(c) && routeMatches(c))]
     .sort(stlSort === "people" ? byPeopleThenDeadline : byDeadline);
   const showOpenSettlements = visibleOpenSettlements.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "OpenSettlement");
+  const visibleMdlCases = [...mdlCases.filter(c => caseMatchesQ(c) && (routeFilter === "all" || routeFilter === "mdl"))]
+    .sort((x, y) => (y.consumers || 0) - (x.consumers || 0));
+  const showMdlCases = visibleMdlCases.length > 0 && (routeFilter === "all" || routeFilter === "mdl") && (caseTypeFilter === "all" || caseTypeFilter === "ActiveMDL");
   // Route counts across all catalogs (a defendant can appear in one only).
   const allCaseRows = [...pacerCases, ...nationalEntityCases, ...tcpaMarketerCases, ...openSettlementCases];
+  const mdlCount = mdlCases.length + allCaseRows.filter(c => (c.claimPath?.activeMdls || []).length > 0 && !mdlCases.some(m => m.defendantQ === c.defendantQ)).length;
   const claimableCount = allCaseRows.filter(c => filableSettlements(c.claimPath).length > 0).length;
   const automaticCount = allCaseRows.filter(c => settlementsOfType(c.claimPath, "automatic_payment").length > 0).length;
   const rollingCount   = allCaseRows.filter(c => settlementsOfType(c.claimPath, "rolling").length > 0).length;
@@ -2364,6 +2390,7 @@ export default function CreditPortfolio() {
               ["claimable", `Claimable now (${claimableCount})`, "#22c55e"],
               ["automatic", `Automatic payment (${automaticCount})`, "#8b5cf6"],
               ["rolling", `Mass-arb (${rollingCount})`, "#0ea5e9"],
+              ["mdl", `MDLs recruiting (${mdlCount})`, "#2D7D95"],
             ].map(([key, label, color]) => (
               <button
                 key={key}
@@ -2407,12 +2434,12 @@ export default function CreditPortfolio() {
             </div>
           )}
 
-          {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !pacerLoading && (
+          {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !showMdlCases && !pacerLoading && (
             <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
               No defendants match "{caseQ.trim()}".
             </div>
           )}
-          {!cq && routeFilter !== "all" && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !pacerLoading && (
+          {!cq && routeFilter !== "all" && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !showMdlCases && !pacerLoading && (
             <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
               No defendants with {routeFilter === "claimable" ? "an open claim window" : routeFilter === "automatic" ? "an automatic-payment settlement" : "a rolling mass-arb sign-up"} under the current case-type filter.
             </div>
@@ -2445,6 +2472,24 @@ export default function CreditPortfolio() {
               </div>
               <CaseTable
                 rows={visibleOpenSettlements}
+                countLabel="Open dockets"
+                countSub="vs this defendant"
+                onOpen={openCase}
+              />
+            </div>
+          )}
+
+          {/* Active MDLs — open recovery periods (litigation, not settlements) */}
+          {showMdlCases && (
+            <div style={{ marginBottom: 36 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 4 }}>
+                Active MDLs — Recovery Period Open ({fmtN(visibleMdlCases.length)})
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-5)", marginBottom: 18, lineHeight: 1.6, maxWidth: 820 }}>
+                Federal multidistrict litigation actively recruiting new claimants (mdlupdate.com index). These are LAWSUITS — no settlement fund exists yet; claimants join through direct filing or plaintiffs' counsel. Sorted by matched people in the credit file.
+              </div>
+              <CaseTable
+                rows={visibleMdlCases}
                 countLabel="Open dockets"
                 countSub="vs this defendant"
                 onOpen={openCase}

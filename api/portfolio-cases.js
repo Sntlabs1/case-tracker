@@ -23,7 +23,7 @@ const N_SHARDS = 16;
 // Eligible-people count per defendant (sum of its casepeople shards), cached
 // in KV — the catalog is ~340 tokens x 16 shards, too many zcards per request.
 // Powers the per-case total-claim estimate column in the Cases table.
-const CASE_TOTALS_KEY   = "portfolio:case_totals:v2"; // v2: includes open-settlement catalog tokens
+const CASE_TOTALS_KEY   = "portfolio:case_totals:v3"; // v3: + active-MDL defendant tokens
 const CASE_TOTALS_TTL_S = 6 * 60 * 60;
 
 async function casepeopleTotal(token) {
@@ -187,6 +187,21 @@ export default async function handler(req, res) {
         examples:    [],
       }));
 
+    // Active MDLs with an open recovery period (mdlupdate.com catalog via the
+    // claim-paths registry). Litigation, not settlements — surfaced as their
+    // own route so they are visible without polluting "claimable now".
+    const activeMdlDefendants = Object.entries(pathReg)
+      .filter(([, r]) => (r.activeMdls || []).length)
+      .map(([token, r]) => ({
+        defendant:   titleize(token),
+        defendantQ:  token,
+        caseType:    "ActiveMDL",
+        caseCount:   (r.openDockets || 0),
+        openCases:   (r.openDockets || 0),
+        claimPath:   claimPathOf(token),
+        examples:    [],
+      }));
+
     // Eligible-people count per defendant for the total-claim estimate column.
     // National entities are included (post catalog expansion the casepeople
     // index covers them); bureau entries are skipped — they apply to the whole
@@ -195,12 +210,14 @@ export default async function handler(req, res) {
       [...defendants.map(d => d.defendantQ),
        ...tcpaMarketers.map(m => m.defendantQ),
        ...openSettlements.map(s => s.defendantQ),
+       ...activeMdlDefendants.map(s => s.defendantQ),
        ...nationalEntities.filter(d => !d.bureau).map(d => d.defendantQ)].filter(Boolean)
     );
     const totalsByToken = await caseTotals([...tokenSet]);
     for (const d of defendants)    d.consumers = totalsByToken[d.defendantQ] || 0;
     for (const m of tcpaMarketers) m.consumers = totalsByToken[m.defendantQ] || 0;
     for (const s of openSettlements) s.consumers = totalsByToken[s.defendantQ] || 0;
+    for (const s of activeMdlDefendants) s.consumers = totalsByToken[s.defendantQ] || 0;
     for (const n of nationalEntities) {
       if (!n.bureau) n.consumers = totalsByToken[n.defendantQ] || 0;
     }
@@ -216,6 +233,7 @@ export default async function handler(req, res) {
         ? { sourceTotal: tcpa.sourceTotal, defendantCount: tcpa.defendantCount, totals: tcpa.totals }
         : null,
       openSettlements,
+      activeMdlDefendants,
       nationalEntities,
       nationalEntityMeta: national
         ? { indexCases: national.indexCases, matchedCases: national.matchedCases,
