@@ -89,6 +89,7 @@ export default async function handler(req, res) {
       return {
         status:           r.status,
         liveSettlements:  (r.liveSettlements || []).slice(0, 3),
+        activeMdls:       r.activeMdls || [],
         openLitigation:   (r.openClassCandidates || 0) + (r.openDockets || 0) + (r.tcpaOpenDockets || 0),
       };
     };

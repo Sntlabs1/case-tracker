@@ -999,12 +999,31 @@ function CaseDetailBrief({ c, claimants }) {
               </div>
             );
           })}
+          {(cp.activeMdls || []).map((m, i) => (
+            <div key={`mdl-${i}`} style={{ padding: "10px 12px", background: "var(--bg-surface)", borderRadius: 6, marginBottom: 10, border: "1px solid #2D7D9540" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, flexWrap: "wrap" }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>{m.mdl} — {m.name}</div>
+                <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 3, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 800, whiteSpace: "nowrap" }}>
+                  ACTIVE MDL — {(m.status || "").toUpperCase()}
+                </span>
+              </div>
+              <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 5, lineHeight: 1.5 }}>
+                {m.pendingActions != null ? `${m.pendingActions.toLocaleString()} pending actions` : ""}{m.court ? ` · ${m.court} district` : ""} — recovery period open: new claimants can file directly into the MDL or sign with plaintiffs' counsel. This is litigation, not a settlement — no fixed payout exists yet.
+              </div>
+              {m.url && (
+                <a href={m.url} target="_blank" rel="noopener noreferrer"
+                   style={{ display: "inline-block", marginTop: 6, fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 700, textDecoration: "none" }}>
+                  MDL tracker ↗
+                </a>
+              )}
+            </div>
+          ))}
           {cp.openLitigation > 0 && (
             <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, marginBottom: 8 }}>
               {cp.openLitigation.toLocaleString()} open federal docket{cp.openLitigation > 1 ? "s" : ""} — joinable / absent-class-member pool.
             </div>
           )}
-          {!(cp.liveSettlements || []).length && !cp.openLitigation && (
+          {!(cp.liveSettlements || []).length && !(cp.activeMdls || []).length && !cp.openLitigation && (
             <div style={{ fontSize: 11, color: "var(--text-4)", lineHeight: 1.5 }}>
               No open settlement window or joinable litigation in the claim-path registry. These matches have origination value only — do not represent them as claimable.
             </div>

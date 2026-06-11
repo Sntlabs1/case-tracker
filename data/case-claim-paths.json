@@ -1,10 +1,10 @@
 {
  "_meta": {
   "built": "2026-06-11",
-  "tokens": 668,
+  "tokens": 720,
   "statusCounts": {
    "claim_window": 132,
-   "joinable_litigation": 368,
+   "joinable_litigation": 420,
    "monitor_only": 17,
    "none": 151
   },
@@ -54,6 +54,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "abbott laboratories et al preterm infant nutrition": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3026",
+     "name": "Abbott Laboratories, et al., Preterm Infant Nutrition Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 798,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3026-abbott-laboratories-et-al-preterm-infant-nutrition/"
+    }
+   ]
   },
   "ability recovery servi": {
    "status": "none",
@@ -277,6 +296,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "allergan biocell textured breast implant": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2921",
+     "name": "Allergan Biocell Textured Breast Implant Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 1489,
+     "court": "NJ",
+     "url": "https://mdlupdate.com/mdl/2921-allergan-biocell-textured-breast-implant/"
+    }
+   ]
   },
   "allianceone receivables management": {
    "status": "joinable_litigation",
@@ -528,6 +566,25 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "angiodynamics and navilyst medical port catheter": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3125",
+     "name": "AngioDynamics, and Navilyst Medical, Port Catheter Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 391,
+     "court": "CAS",
+     "url": "https://mdlupdate.com/mdl/3125-angiodynamics-port-catheter/"
+    }
+   ]
+  },
   "anne arundel dermatology": {
    "status": "claim_window",
    "liveSettlements": [
@@ -600,6 +657,25 @@
    "openDockets": 1,
    "tcpaOpenDockets": 0
   },
+  "aqueous film forming foams": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2873",
+     "name": "Aqueous Film-Forming Foams Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 15240,
+     "court": "SC",
+     "url": "https://mdlupdate.com/mdl/2873-aqueous-film-forming-foams/"
+    }
+   ]
+  },
   "ar resources": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -608,6 +684,25 @@
    "openClassCandidates": 0,
    "openDockets": 1,
    "tcpaOpenDockets": 0
+  },
+  "arc airbag inflators": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3051",
+     "name": "ARC Airbag Inflators Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 24,
+     "court": "GAN",
+     "url": "https://mdlupdate.com/mdl/3051-arc-airbag-inflators/"
+    }
+   ]
   },
   "arstrat": {
    "status": "joinable_litigation",
@@ -785,6 +880,44 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "baby food": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3101",
+     "name": "Baby Food Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 450,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3101-baby-food/"
+    }
+   ]
+  },
+  "bair hugger forced air warming devices": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2666",
+     "name": "Bair Hugger Forced Air Warming Devices Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 8422,
+     "court": "MN",
+     "url": "https://mdlupdate.com/mdl/2666-bair-hugger-forced-air-warming-devices/"
+    }
+   ]
+  },
   "bank of america": {
    "status": "claim_window",
    "liveSettlements": [
@@ -829,6 +962,25 @@
    "openClassCandidates": 0,
    "openDockets": 13,
    "tcpaOpenDockets": 0
+  },
+  "bard implanted port catheter": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3081",
+     "name": "Bard Implanted Port Catheter Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 3376,
+     "court": "AZ",
+     "url": "https://mdlupdate.com/mdl/3081-bard-implanted-port-catheter/"
+    }
+   ]
   },
   "barefoot dreams": {
    "status": "claim_window",
@@ -1096,6 +1248,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "byheart infant formula": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3178",
+     "name": "ByHeart Infant Formula Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 20,
+     "court": "NYS",
+     "url": "https://mdlupdate.com/mdl/3178-byheart-infant-formula/"
+    }
+   ]
+  },
   "caine weiner": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -1271,6 +1442,25 @@
    "openDockets": 7,
    "tcpaOpenDockets": 0
   },
+  "cartiva synthetic cartilage implant": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3172",
+     "name": "Cartiva Synthetic Cartilage Implant Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 18,
+     "court": "ARE",
+     "url": "https://mdlupdate.com/mdl/3172-cartiva-synthetic-cartilage-implant/"
+    }
+   ]
+  },
   "cavalry portfolio services": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -1357,6 +1547,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "chantix": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3050",
+     "name": "Chantix Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 17,
+     "court": "NYS",
+     "url": "https://mdlupdate.com/mdl/3050-chantix/"
+    }
+   ]
   },
   "chapter aesthetic studio": {
    "status": "claim_window",
@@ -1453,6 +1662,25 @@
    "openClassCandidates": 11,
    "openDockets": 1,
    "tcpaOpenDockets": 0
+  },
+  "chrysler pacifica fire recall": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3040",
+     "name": "Chrysler Pacifica Fire Recall Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 11,
+     "court": "MIE",
+     "url": "https://mdlupdate.com/mdl/3040-chrysler-pacifica-fire-recall/"
+    }
+   ]
   },
   "chw group": {
    "status": "joinable_litigation",
@@ -1926,6 +2154,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "cook medical ivc filters": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2570",
+     "name": "Cook Medical, IVC Filters Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 6537,
+     "court": "INS",
+     "url": "https://mdlupdate.com/mdl/2570-cook-medical-inc-ivc-filters/"
+    }
+   ]
+  },
   "copa america final match access": {
    "status": "claim_window",
    "liveSettlements": [
@@ -2032,6 +2279,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "covidien hernia mesh": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3029",
+     "name": "Covidien Hernia Mesh Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2408,
+     "court": "MA",
+     "url": "https://mdlupdate.com/mdl/3029-covidien-hernia-mesh/"
+    }
+   ]
   },
   "covington credit": {
    "status": "none",
@@ -2293,6 +2559,25 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "davol c r bard polypropylene hernia mesh": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2846",
+     "name": "Davol/C.R. Bard, Polypropylene Hernia Mesh Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 23573,
+     "court": "OHS",
+     "url": "https://mdlupdate.com/mdl/2846-davol-inccr-bard-inc-polypropylene-hernia-mesh/"
+    }
+   ]
+  },
   "deanco healthcare": {
    "status": "claim_window",
    "liveSettlements": [
@@ -2336,6 +2621,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "depo provera": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3140",
+     "name": "Depo-Provera Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 5508,
+     "court": "FLN",
+     "url": "https://mdlupdate.com/mdl/3140-depo-provera/"
+    }
+   ]
   },
   "direct energy": {
    "status": "none",
@@ -2640,6 +2944,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "elmiron": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2973",
+     "name": "Elmiron Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 293,
+     "court": "NJ",
+     "url": "https://mdlupdate.com/mdl/2973-elmiron/"
+    }
+   ]
   },
   "emm loans": {
    "status": "claim_window",
@@ -2946,6 +3269,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "evenflo company": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2938",
+     "name": "Evenflo Company, Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 28,
+     "court": "MA",
+     "url": "https://mdlupdate.com/mdl/2938-evenflo-company-inc/"
+    }
+   ]
+  },
   "everquote": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -2963,6 +3305,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 4
+  },
+  "exactech polyethylene orthopedic": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3044",
+     "name": "Exactech Polyethylene Orthopedic Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 1838,
+     "court": "NYE",
+     "url": "https://mdlupdate.com/mdl/3044-exactech-polyethylene-orthopedic/"
+    }
+   ]
   },
   "excelsior orthopaedics": {
    "status": "claim_window",
@@ -3086,6 +3447,25 @@
    "openClassCandidates": 0,
    "openDockets": 17,
    "tcpaOpenDockets": 0
+  },
+  "facebook": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 1,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3047",
+     "name": "Social Media Adolescent Addiction/Personal Injury Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2664,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+    }
+   ]
   },
   "factortrust": {
    "status": "joinable_litigation",
@@ -3686,6 +4066,44 @@
    "openDockets": 16,
    "tcpaOpenDockets": 1
   },
+  "future motion": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3087",
+     "name": "Future Motion Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 159,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3087-future-motion-inc/"
+    }
+   ]
+  },
+  "gardasil": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3036",
+     "name": "Gardasil Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 129,
+     "court": "NCW",
+     "url": "https://mdlupdate.com/mdl/3036-gardasil/"
+    }
+   ]
+  },
   "generac pwrcell solar power systems": {
    "status": "claim_window",
    "liveSettlements": [
@@ -3718,6 +4136,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "generac solar power systems": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3078",
+     "name": "Generac Solar Power Systems Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 8,
+     "court": "WIE",
+     "url": "https://mdlupdate.com/mdl/3078-generac-solar-power-systems/"
+    }
+   ]
   },
   "general motors financial company": {
    "status": "joinable_litigation",
@@ -3792,6 +4229,44 @@
    "openClassCandidates": 0,
    "openDockets": 5,
    "tcpaOpenDockets": 0
+  },
+  "glp 1 naion products liability": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3163",
+     "name": "GLP-1 NAION Products Liability Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 110,
+     "court": "PAE",
+     "url": "https://mdlupdate.com/mdl/3163-glp-1-naion-products-liability-litigation/"
+    }
+   ]
+  },
+  "glucagon like peptide 1 receptor agonists": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3094",
+     "name": "Glucagon-like Peptide-1 Receptor Agonists Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 3763,
+     "court": "PAE",
+     "url": "https://mdlupdate.com/mdl/3094-glucagon-like-peptide-1-receptor-agonists/"
+    }
+   ]
   },
   "gm": {
    "status": "none",
@@ -4026,6 +4501,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "hair relaxer": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3060",
+     "name": "Hair Relaxer Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 11723,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3060-hair-relaxer/"
+    }
+   ]
   },
   "halsted financial services": {
    "status": "joinable_litigation",
@@ -4528,7 +5022,17 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 16,
-   "tcpaOpenDockets": 2
+   "tcpaOpenDockets": 2,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3052",
+     "name": "Kia Hyundai Vehicle Theft Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 100,
+     "court": "CAC",
+     "url": "https://mdlupdate.com/mdl/3052-kia-hyundai-vehicle-theft/"
+    }
+   ]
   },
   "i c system": {
    "status": "joinable_litigation",
@@ -4652,6 +5156,25 @@
    "openClassCandidates": 0,
    "openDockets": 8,
    "tcpaOpenDockets": 0
+  },
+  "johnson johnson talcum powder products": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2738",
+     "name": "Johnson & Johnson Talcum Powder Products Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 68029,
+     "court": "NJ",
+     "url": "https://mdlupdate.com/mdl/2738-johnson-johnson-talcum-powder-products/"
+    }
+   ]
   },
   "jr capital": {
    "status": "joinable_litigation",
@@ -5273,6 +5796,25 @@
    "openDockets": 112,
    "tcpaOpenDockets": 1
   },
+  "lyft sexual assault": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3171",
+     "name": "Lyft Sexual Assault Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 54,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3171-lyft-passenger-sexual-assault/"
+    }
+   ]
+  },
   "m t bank": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -5352,6 +5894,25 @@
    "openClassCandidates": 0,
    "openDockets": 14,
    "tcpaOpenDockets": 1
+  },
+  "mckinsey company national prescription opiate consultant": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2996",
+     "name": "McKinsey & Company, National Prescription Opiate Consultant Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 235,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/2996-mckinsey-company-inc-national-prescription-opiate-/"
+    }
+   ]
   },
   "med 1 solutions": {
    "status": "joinable_litigation",
@@ -5511,6 +6072,25 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 0
+  },
+  "meta": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3047",
+     "name": "Social Media Adolescent Addiction/Personal Injury Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2664,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+    }
+   ]
   },
   "michel law": {
    "status": "joinable_litigation",
@@ -5740,6 +6320,25 @@
    "openDockets": 5,
    "tcpaOpenDockets": 1
   },
+  "monat hair care products": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2841",
+     "name": "MONAT Hair Care Products Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 13,
+     "court": "FLS",
+     "url": "https://mdlupdate.com/mdl/2841-monat-hair-care-products/"
+    }
+   ]
+  },
   "money recovery nationwide": {
    "status": "none",
    "liveSettlements": [],
@@ -5882,6 +6481,25 @@
    "openDockets": 8,
    "tcpaOpenDockets": 2
   },
+  "muan airport air crash": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3174",
+     "name": "Muan Airport Air Crash Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 7,
+     "court": "WAW",
+     "url": "https://mdlupdate.com/mdl/3174-air-crash-muan-international-airport/"
+    }
+   ]
+  },
   "municipal credit union": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -5942,6 +6560,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "national collegiate athletic association student athlete concussion injury litig": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2492",
+     "name": "National Collegiate Athletic Association Student-Athlete Concussion Injury Litig",
+     "status": "Actively Recruiting",
+     "pendingActions": 558,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/2492-national-collegiate-athletic-association-student-a/"
+    }
+   ]
+  },
   "national credit adjusters": {
    "status": "claim_window",
    "liveSettlements": [
@@ -5995,6 +6632,25 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 3
+  },
+  "national prescription opiate": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2804",
+     "name": "National Prescription Opiate Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2930,
+     "court": "OHN",
+     "url": "https://mdlupdate.com/mdl/2804-national-prescription-opiate-litigation/"
+    }
+   ]
   },
   "national recovery agen": {
    "status": "none",
@@ -6399,6 +7055,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 3
   },
+  "paragard iud": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2974",
+     "name": "Paragard IUD Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 4071,
+     "court": "GAN",
+     "url": "https://mdlupdate.com/mdl/2974-paragard-iud/"
+    }
+   ]
+  },
   "paramount recovery sys": {
    "status": "none",
    "liveSettlements": [],
@@ -6416,6 +7091,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "paraquat": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3004",
+     "name": "Paraquat Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 6651,
+     "court": "ILS",
+     "url": "https://mdlupdate.com/mdl/3004-paraquat/"
+    }
+   ]
   },
   "patelco credit union": {
    "status": "claim_window",
@@ -6583,6 +7277,25 @@
    "openClassCandidates": 0,
    "openDockets": 6,
    "tcpaOpenDockets": 0
+  },
+  "philips recalled cpap bi level pap and mechanical ventilator": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3014",
+     "name": "Philips Recalled CPAP, Bi-Level PAP, and Mechanical Ventilator Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 622,
+     "court": "PAW",
+     "url": "https://mdlupdate.com/mdl/3014-philips-recalled-cpap-bi-level-pap-and-mechanical-/"
+    }
+   ]
   },
   "phoenix financial serv": {
    "status": "none",
@@ -6816,6 +7529,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "proton pump inhibitor": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2789",
+     "name": "Proton-Pump Inhibitor Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 11321,
+     "court": "NJ",
+     "url": "https://mdlupdate.com/mdl/2789-proton-pump-inhibitor/"
+    }
+   ]
+  },
   "psea": {
    "status": "claim_window",
    "liveSettlements": [
@@ -6934,6 +7666,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "recalled abbott infant formula": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3037",
+     "name": "Recalled Abbott Infant Formula Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 14,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3037-recalled-abbott-infant-formula/"
+    }
+   ]
   },
   "receivable management": {
    "status": "none",
@@ -7193,6 +7944,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "roblox child sexual exploitation": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3166",
+     "name": "Roblox Child Sexual Exploitation Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 162,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3166-roblox-child-safety/"
+    }
+   ]
+  },
   "rocket mortgage": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -7234,6 +8004,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "roundup": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2741",
+     "name": "Roundup Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 3909,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/2741-roundup/"
+    }
+   ]
   },
   "rubin rothman": {
    "status": "joinable_litigation",
@@ -7521,6 +8310,25 @@
    "openDockets": 1,
    "tcpaOpenDockets": 1
   },
+  "shell eggs antitrust": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3175",
+     "name": "Shell Eggs Antitrust Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 19,
+     "court": "WIW",
+     "url": "https://mdlupdate.com/mdl/3175-shell-eggs-antitrust/"
+    }
+   ]
+  },
   "shellpoint": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -7607,6 +8415,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "snap": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3047",
+     "name": "Social Media Adolescent Addiction/Personal Injury Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2664,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+    }
+   ]
   },
   "social media addiction minors": {
    "status": "monitor_only",
@@ -8112,6 +8939,25 @@
    "openDockets": 10,
    "tcpaOpenDockets": 0
   },
+  "suboxone film": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3092",
+     "name": "Suboxone Film Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 1833,
+     "court": "OHN",
+     "url": "https://mdlupdate.com/mdl/3092-suboxone-film/"
+    }
+   ]
+  },
   "suncoast credit union": {
    "status": "none",
    "liveSettlements": [],
@@ -8292,6 +9138,44 @@
    "openDockets": 0,
    "tcpaOpenDockets": 5
   },
+  "tasigna": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3006",
+     "name": "Tasigna Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 36,
+     "court": "FLM",
+     "url": "https://mdlupdate.com/mdl/3006-tasigna/"
+    }
+   ]
+  },
+  "taxotere eye injury": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3023",
+     "name": "Taxotere Eye Injury Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 150,
+     "court": "LAE",
+     "url": "https://mdlupdate.com/mdl/3023-taxotere-eye-injury/"
+    }
+   ]
+  },
   "td bank": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -8318,6 +9202,25 @@
    "openClassCandidates": 0,
    "openDockets": 4,
    "tcpaOpenDockets": 0
+  },
+  "tepezza hearing loss": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3079",
+     "name": "Tepezza Hearing Loss Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 278,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3079-tepezza/"
+    }
+   ]
   },
   "teva granules heritage metformin": {
    "status": "claim_window",
@@ -8422,6 +9325,25 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 0
+  },
+  "tiktok": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3047",
+     "name": "Social Media Adolescent Addiction/Personal Injury Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 2664,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3047-social-media-adolescent-addiction/"
+    }
+   ]
   },
   "tinder match group": {
    "status": "claim_window",
@@ -8595,7 +9517,17 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 495,
-   "tcpaOpenDockets": 0
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3170",
+     "name": "Trans Union Data Security Breach Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 63,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/"
+    }
+   ]
   },
   "trans union of delaware": {
    "status": "joinable_litigation",
@@ -8622,7 +9554,17 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 216,
-   "tcpaOpenDockets": 0
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3170",
+     "name": "Trans Union Data Security Breach Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 63,
+     "court": "ILN",
+     "url": "https://mdlupdate.com/mdl/3170-trans-union-llc-data-security-breach-litigation/"
+    }
+   ]
   },
   "transunion consumer solutions": {
    "status": "joinable_litigation",
@@ -8893,6 +9835,25 @@
    "openDockets": 5,
    "tcpaOpenDockets": 0
   },
+  "uber": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-3084",
+     "name": "Uber Technologies, Passenger Sexual Assault Litigation",
+     "status": "Actively Recruiting",
+     "pendingActions": 3571,
+     "court": "CAN",
+     "url": "https://mdlupdate.com/mdl/3084-uber-technologies-inc-passenger-sexual-assault-lit/"
+    }
+   ]
+  },
   "uber technologies": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -9091,6 +10052,25 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 0
+  },
+  "valsartan losartan and irbesartan": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2875",
+     "name": "Valsartan, Losartan, and Irbesartan Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 1413,
+     "court": "NJ",
+     "url": "https://mdlupdate.com/mdl/2875-valsartan-losartan-and-irbesartan/"
+    }
+   ]
   },
   "vance huffman": {
    "status": "joinable_litigation",
@@ -9502,6 +10482,25 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "zf trw airbag control units": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2905",
+     "name": "ZF-TRW Airbag Control Units Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 27,
+     "court": "CAC",
+     "url": "https://mdlupdate.com/mdl/2905-zf-trw-airbag-control-units/"
+    }
+   ]
+  },
   "zions debt holdings": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -9541,6 +10540,25 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 0
+  },
+  "zostavax": {
+   "status": "joinable_litigation",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0,
+   "activeMdls": [
+    {
+     "mdl": "MDL-2848",
+     "name": "Zostavax Litigation",
+     "status": "Open - Limited",
+     "pendingActions": 826,
+     "court": "PAE",
+     "url": "https://mdlupdate.com/mdl/2848-zostavax/"
+    }
+   ]
   },
   "zwicker associates p c": {
    "status": "joinable_litigation",

@@ -235,6 +235,42 @@ for row in settlements:
 settlements = list(_best.values())
 print(f"after dedupe: {len(settlements)} settlement rows")
 
+# ── 1d. Active MDLs (mdlupdate.com sweep) ───────────────────────────────────
+# Federal MDLs whose recovery period is still open to new claimants
+# (Actively Recruiting / Open - Limited). Keyed to the person-index tokens the
+# defendants would appear under, so the registry can surface "active MDL —
+# direct filing" as a recovery route alongside settlements and dockets.
+MDL_TOKEN_MAP = {
+    "MDL-3170": ["trans union", "transunion"],
+    "MDL-3114": ["at t", "att"],
+    "MDL-3073": ["t mobile", "tmobile"],
+    "MDL-3108": ["change healthcare", "unitedhealth"],
+    "MDL-2879": ["marriott"],
+    "MDL-3098": ["23andme"],
+    "MDL-3153": ["coinbase"],
+    "MDL-2972": ["blackbaud"],
+    "MDL-3083": ["moveit", "progress software"],
+    "MDL-2904": ["american medical collection agency", "labcorp amca"],
+    "MDL-3149": ["powerschool naviance"],
+    "MDL-3126": ["snowflake"],
+    "MDL-3084": ["uber"],
+    "MDL-3080": ["eli lilly", "novo nordisk", "sanofi"],
+    "MDL-3047": ["meta", "facebook", "tiktok", "snap"],
+}
+mdl_by_token = defaultdict(list)
+try:
+    _mdls = json.load(open(f"{ROOT}/data/settlements/active-mdls-2026-06.json"))["mdls"]
+    for m in _mdls:
+        if not m.get("joinable"):
+            continue
+        toks = MDL_TOKEN_MAP.get(m["mdl"]) or [canonical_token(re.sub(r"(,? (Inc|LLC|Corp)\.?)|( Litigation.*$)", "", m["name"] or ""))]
+        for t in toks:
+            if t:
+                mdl_by_token[t].append({k: m[k] for k in ("mdl", "name", "status", "pendingActions", "court", "url")})
+    print(f"active MDLs: {sum(len(v) for v in mdl_by_token.values())} joinable rows across {len(mdl_by_token)} tokens")
+except FileNotFoundError:
+    print("active-mdls catalog not found — skipping MDL overlay")
+
 # ── 2. Joinable / open litigation per token ──────────────────────────────────
 open_class = defaultdict(int)   # class-screened open candidates (41-defendant set)
 for c in json.load(open(f"{ROOT}/data/pacer-cases/_candidates.json")):
@@ -310,6 +346,7 @@ for k in cp_keys:
         by_tok[m.group(1)].append(k)
 
 all_tokens = ({s["token"] for s in settlements} | set(open_class) | set(by_tok)
+              | set(mdl_by_token)
               | {t for t, n in open_dockets.items() if n >= 3}
               | {t for t, n in tcpa_open.items() if n >= 3})
 LIVE = {"open_claim_window", "automatic_payment", "rolling"}
@@ -336,13 +373,18 @@ for tok in sorted(all_tokens):
         status = "monitor_only"
     else:
         status = "none"
-    registry[tok] = dict(
+    entry = dict(
         status=status,
         liveSettlements=[{k: s[k] for k in LIVE_FIELDS if k in s} for s in live][:6],
         monitorSettlements=[s["name"] for s in mon][:4],
         expiredSettlements=[s["name"] for s in setts if s["windowType"] == "expired"][:4],
         openClassCandidates=oc, openDockets=od, tcpaOpenDockets=tc,
     )
+    if mdl_by_token.get(tok):
+        entry["activeMdls"] = mdl_by_token[tok][:3]
+        if entry["status"] == "none":
+            entry["status"] = "joinable_litigation"
+    registry[tok] = entry
 
 # Case-type-level paths that exist regardless of the specific defendant.
 CASETYPE_PATHS = {
