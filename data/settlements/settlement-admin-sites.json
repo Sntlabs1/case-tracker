@@ -1,0 +1,2129 @@
+{
+ "_meta": {
+  "built": "2026-06-11",
+  "purpose": "Verified settlement-administrator-site facts for live settlements in the claim-path registry. Each record mirrors what the admin site itself publishes: claims URL, administrator, fund, class definition, important dates, claim-form requirement. Joined into liveSettlements by claim-paths-build.py via token + nameNeedles substring match.",
+  "verification": "adminVerified=true means the facts were confirmed against the administrator site or multiple independent sources on verifiedOn date. Entries are date-sensitive: a claimDeadline in the past means the window is CLOSED regardless of what the catalogs say.",
+  "schema": {
+   "tokens": "canonical defendant tokens this record attaches to",
+   "nameNeedles": "lowercase substrings; record joins to a liveSettlements row when any needle appears in its name or defendant string",
+   "windowType": "open_claim_window | automatic_payment | rolling",
+   "claimFormRequired": "true = a claim must be filed to get paid; false = payment/relief is automatic for the fixed class",
+   "importantDates": "ISO dates from the admin site; null = not set/unknown"
+  },
+  "sweep": "2026-06-11 full verification sweep: every live settlement searched as '<company> class action settlement administrator website'; deadline, fund, and claim requirements captured. adminVerified=false rows = official portal not located; confirm before outreach."
+ },
+ "settlements": [
+  {
+   "tokens": [
+    "midland credit management"
+   ],
+   "nameNeedles": [
+    "leedeman",
+    "mcm (california"
+   ],
+   "settlement": "Leedeman v. Midland Credit Management, Inc.",
+   "court": "Santa Clara County Superior Court (CA), Case No. 19CV354554",
+   "claimsUrl": "https://www.mcmsettlement.com/",
+   "administrator": "CPT Group, Inc.",
+   "fund": "$318,000",
+   "perClaimant": "Pro rata share of $318,000 \u2014 depends on participating class members",
+   "classDefinition": "All persons with California addresses to whom MCM sent an initial written communication (per Exhibits 1 and 2 of the First Amended Complaint) attempting to collect a charged-off Capital One Bank (USA) consumer debt sold to MCM on or after January 1, 2014, not returned undeliverable, during the period one year before filing through class certification.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": "2026-04-24",
+    "objectionDeadline": "2026-04-24",
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 class members on MCM's mailing list are paid automatically; optional preferred-payment-method election on the site.",
+   "documentsUrl": "https://www.mcmsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "CLASS IS FIXED \u2014 defined by MCM's own mailing list; people outside the notice list cannot join. Opt-out/objection deadline has passed. CA Fair Debt Buying Practices Act (Civil Code 1788.52(d)(1)) claim, not FDCPA. Do not pitch as an open claim opportunity."
+  },
+  {
+   "tokens": [
+    "phh mortgage"
+   ],
+   "nameNeedles": [
+    "munoz",
+    "phh"
+   ],
+   "settlement": "Munoz, et al. v. PHH Corp., et al.",
+   "court": "E.D. Cal., Case No. 1:08-cv-00759",
+   "claimsUrl": "https://www.phhmisettlement.com/",
+   "administrator": "JND Legal Administration",
+   "fund": "Fixed per-loan payments (no pro-rata reduction)",
+   "perClaimant": "$875 per eligible loan",
+   "classDefinition": "All persons who obtained residential mortgage loans originated and/or acquired by PHH or affiliates January 1, 2007 through December 31, 2009 and purchased private mortgage insurance reinsured through PHH's captive reinsurance arrangements, plus successors and heirs.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-11",
+    "optOutDeadline": "2025-11-13",
+    "objectionDeadline": "2025-11-13",
+    "fairnessHearing": "2025-12-17",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail; loan identification for a 2007-2009 PHH-originated/acquired mortgage with PMI.",
+   "documentsUrl": "https://www.phhmisettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Final approval granted 2025-12-19. Tier-1 matchable: 2007-09 mortgage tradelines naming PHH. Fixed $875/loan, no dilution."
+  },
+  {
+   "tokens": [
+    "flagstar bank",
+    "flagstar bank flagstar bancorp"
+   ],
+   "nameNeedles": [
+    "flagstar"
+   ],
+   "settlement": "Angus, et al. v. Flagstar Bank, N.A.",
+   "court": "E.D. Mich., Case No. 2:21-cv-10657",
+   "claimsUrl": "https://www.flagstarsettlement.com/",
+   "administrator": "Eisner Advisory Group LLC",
+   "fund": "$31,500,000",
+   "perClaimant": "~$60 cash no-proof tier (up to $599); up to $25,000 documented losses; +$100 CA CCPA payment; 3 yrs credit monitoring",
+   "classDefinition": "~2,190,000 U.S. individuals whose personal information was compromised in Flagstar's two 2021 data breaches (Jan 2021 Accellion and Dec 2021).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-11",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-10-01",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form; Class Member ID from mailed notice eases filing; documented losses for the higher tier.",
+   "documentsUrl": "https://www.flagstarsettlement.com/faqs/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Admin contact 1-855-542-0397, info@FlagstarSettlement.com."
+  },
+  {
+   "tokens": [
+    "lastpass",
+    "lastpass us"
+   ],
+   "nameNeedles": [
+    "lastpass"
+   ],
+   "settlement": "In re LastPass Data Security Incident Litigation",
+   "court": "D. Mass.",
+   "claimsUrl": "https://www.lastpasssettlement.com/",
+   "administrator": "LastPass Settlement Administrator (Portland, OR)",
+   "fund": "$24,450,000 total \u2014 $8,200,000 cash fund + $16,250,000 crypto-theft pool",
+   "perClaimant": "$25 base; ordinary losses up to $300; extraordinary up to $10,000; crypto theft up to $900,000 per claimant from separate pool",
+   "classDefinition": "U.S. persons/entities whose LastPass account data was exposed in the Aug-Nov 2022 incident and who had data stored at the time, per LastPass notice.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-02",
+    "optOutDeadline": "2026-06-02",
+    "objectionDeadline": "2026-06-02",
+    "fairnessHearing": "2026-07-14",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online by 11:59 p.m. ET or mailed by deadline; documentation for loss tiers; crypto-theft claims need supporting evidence.",
+   "documentsUrl": "https://www.lastpasssettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Opt-out/objection window already closed. Admin phone 1-877-748-1875."
+  },
+  {
+   "tokens": [
+    "comcast cable communications xfinity",
+    "comcast xfinity"
+   ],
+   "nameNeedles": [
+    "citrix bleed",
+    "xfinity",
+    "comcast"
+   ],
+   "settlement": "In re Comcast/Xfinity Citrix Bleed Data Breach Settlement",
+   "court": "E.D. Pa.",
+   "claimsUrl": "https://www.comcastbreachsettlement.com/",
+   "administrator": "Kroll Settlement Administration",
+   "fund": "$117,500,000",
+   "perClaimant": "$50 cash base (no documentation); up to $10,000 documented losses",
+   "classDefinition": "U.S. individuals (incl. territories) who received an individual data-breach notification from Comcast around Dec 18, 2023 that their personal information may have been compromised in the Oct 16-19, 2023 breach (~31.6M people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-14",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form; notice ID (lookup form on site if lost); Kroll (833) 319-2401.",
+   "documentsUrl": "https://www.comcastbreachsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Some sources report extension to 2026-09-14 \u2014 treat 2026-08-14 as the hard date until the admin site confirms. Site is bot-protected; verify by phone or manual browser."
+  },
+  {
+   "tokens": [
+    "fidelity investments",
+    "fidelity investments fmr"
+   ],
+   "nameNeedles": [
+    "fidelity"
+   ],
+   "settlement": "In re Fidelity Investments Data Breach Litigation",
+   "court": "D. Mass.",
+   "claimsUrl": "https://fidelitydatasettlement.com/",
+   "administrator": "Fidelity Data Settlement Administrator",
+   "fund": "$2,500,000",
+   "perClaimant": "$100 pro rata cash + $50 CCPA (CA) + up to $5,000 documented losses + 2 yrs CyEx Financial Shield monitoring",
+   "classDefinition": "Individuals who received a data breach notice from Fidelity that their financial account number and routing number were compromised between Aug 17-19, 2024 (~77,000 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-27",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online, by mail, or email; breach-notice recipients only.",
+   "documentsUrl": "https://fidelitydatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Small class (~77K) \u2014 eligibility gated on having received the Fidelity notice."
+  },
+  {
+   "tokens": [
+    "hy cite enterprises royal prestige",
+    "hy cite royal prestige"
+   ],
+   "nameNeedles": [
+    "hy cite"
+   ],
+   "settlement": "Angela Keith v. Hy Cite Enterprises, LLC",
+   "court": "W.D. Wis.",
+   "claimsUrl": "https://hycitetcpasettlement.com/",
+   "administrator": "Hy Cite TCPA Settlement Administrator",
+   "fund": "$4,750,000",
+   "perClaimant": "Estimated $600-$1,000 depending on participation",
+   "classDefinition": "U.S. residents who received an artificial/prerecorded voice call on a cell phone from Hy Cite between Oct 22, 2020 and Sept 10, 2025 and were NOT Hy Cite customers.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-08",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-10-06",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by deadline; cell number that received the calls; non-customer attestation.",
+   "documentsUrl": "https://hycitetcpasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Non-customers only \u2014 Tier-2 attestation play across the contactable base."
+  },
+  {
+   "tokens": [
+    "lakeview loan servicing bayview asset management pingora community loan servicing"
+   ],
+   "nameNeedles": [
+    "lakeview"
+   ],
+   "settlement": "In re Lakeview Loan Servicing Data Breach Litigation",
+   "court": "S.D. Fla.",
+   "claimsUrl": "https://lakeviewdatabreachsettlement.com/",
+   "administrator": "Lakeview Settlement Administrator",
+   "fund": "$26,000,000",
+   "perClaimant": "Pro rata cash + up to $5,000 documented out-of-pocket; extra pro rata for CA residents",
+   "classDefinition": "U.S. residents who received notice from Bayview Asset Management, Lakeview Loan Servicing, Pingora Loan Servicing, or Community Loan Servicing that the Oct 11, 2021 breach potentially compromised their information.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-22",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-07-02",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 2026-06-22; admin phone (833) 754-5757.",
+   "documentsUrl": "https://lakeviewdatabreachsettlement.com/documents",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "DEADLINE IMMINENT (11 days from 2026-06-11). Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "register com"
+   ],
+   "nameNeedles": [
+    "register.com",
+    "register com",
+    "reassigned"
+   ],
+   "settlement": "Lewis v. Register.com, Inc.",
+   "court": "Federal (Newfold Digital/Register.com)",
+   "claimsUrl": "https://registertcpasettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC",
+   "fund": "$1,500,000 (non-reversionary)",
+   "perClaimant": "~$2,130 per affected number (court estimate)",
+   "classDefinition": "All persons/entities in the U.S. called by Register.com with an artificial/prerecorded voice Feb 12, 2021 - Nov 24, 2025 after the number was permanently disconnected and listed in the FCC Reassigned Numbers Database. Only 453 numbers / 1,652 calls.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-15",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Name, address, and phone number only.",
+   "documentsUrl": "https://registertcpasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "DEADLINE IMMINENT (4 days). Tiny class (453 numbers) \u2014 cohort match probability very low; verify the specific number before filing."
+  },
+  {
+   "tokens": [
+    "bank of america"
+   ],
+   "nameNeedles": [
+    "7-eleven",
+    "fcti",
+    "atm"
+   ],
+   "settlement": "Bank of America 7-Eleven FCTI ATM Out-of-Network Fee Settlement",
+   "court": "Federal",
+   "claimsUrl": "https://www.oonfeesettlement.com/",
+   "administrator": "Kroll Settlement Administration",
+   "fund": "$2,250,000",
+   "perClaimant": "Varies \u2014 out-of-network fee refunds, pro rata",
+   "classDefinition": "BofA accountholders assessed more than one out-of-network balance-inquiry fee in the same visit to an FCTI ATM in a 7-Eleven, May 1, 2018 - Nov 16, 2021, who were not paid in Weiss v. FCTI.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-29",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "CURRENT accountholders: nothing \u2014 paid automatically. FORMER accountholders: claim form with Class Member ID from notice, online or by mail. Kroll (833) 447-8321.",
+   "documentsUrl": "https://www.oonfeesettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Hybrid: automatic for current accountholders, claim form for former ones by 2026-06-29."
+  },
+  {
+   "tokens": [
+    "capital one"
+   ],
+   "nameNeedles": [
+    "360 savings",
+    "interest rate"
+   ],
+   "settlement": "In re Capital One 360 Savings Account Interest Rate Litigation",
+   "court": "E.D. Va.",
+   "claimsUrl": null,
+   "administrator": "Settlement administrator (court-appointed)",
+   "fund": "$425,000,000",
+   "perClaimant": "Pro rata on lost interest + 2-yr rate-match benefit for current accountholders",
+   "classDefinition": "Anyone who held a Capital One 360 Savings account at any time from Sept 18, 2019 through June 16, 2025.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": "2026-07-21"
+   },
+   "whatToProvide": "Nothing \u2014 automatic payments expected on/about 2026-07-21 absent appeal. Ensure current address/payment info.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Final approval April 2026. No claim form exists. Exclusion closed. Deposit accounts don't appear on credit reports \u2014 Tier-2 proxy via any Capital One relationship."
+  },
+  {
+   "tokens": [
+    "athena bitcoin"
+   ],
+   "nameNeedles": [
+    "athena"
+   ],
+   "settlement": "Jackson v. Athena Bitcoin, Inc. \u2014 TCPA/FTSA Text Settlement",
+   "court": "Federal",
+   "claimsUrl": "https://athenabitcointcpalitigation.com/",
+   "administrator": "Kroll Settlement Administration",
+   "fund": "$4,500,000",
+   "perClaimant": "Share of fund",
+   "classDefinition": "IDNC Class: U.S. residential telephone subscribers who sent STOP to Athena Bitcoin between Aug 20, 2020 and Aug 20, 2024 and received 2+ further texts in a 12-month period.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-30",
+    "optOutDeadline": "2026-05-15",
+    "objectionDeadline": "2026-05-15",
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Cell number(s) that received the texts; Class Member ID preferred for online filing but paper claim possible without.",
+   "documentsUrl": "https://athenabitcointcpalitigation.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-09",
+   "notes": "From case-intake workbook deep pass (2026-06-09). Opt-out/objection closed; claims open to 6/30."
+  },
+  {
+   "tokens": [
+    "milestone genesis"
+   ],
+   "nameNeedles": [
+    "genesis",
+    "ford v"
+   ],
+   "settlement": "Ford v. Genesis Financial Solutions, Inc. (Maryland CLEC unlicensed lending)",
+   "court": "Maryland",
+   "claimsUrl": "https://www.marylandgenesissettlement.com/",
+   "administrator": "Maryland Genesis Settlement Administrator",
+   "fund": "See settlement site",
+   "perClaimant": "Varies",
+   "classDefinition": "Maryland consumers with Genesis-serviced accounts (Genesis Financial Solutions, now Concora Credit; incl. Milestone-branded cards).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-29",
+    "optOutDeadline": "2026-06-29",
+    "objectionDeadline": "2026-06-29",
+    "fairnessHearing": "2026-10-20",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form + PIN from mailed notice (PIN required to file online).",
+   "documentsUrl": "https://www.marylandgenesissettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-09",
+   "notes": "From case-intake workbook deep pass. Needs mailed PIN \u2014 outreach must locate the notice. Payment ~45 days after final approval."
+  },
+  {
+   "tokens": [
+    "national credit adjusters"
+   ],
+   "nameNeedles": [
+    "blackburn",
+    "nca"
+   ],
+   "settlement": "Blackburn et al. v. National Credit Adjusters, LLC (Virginia/Speedy Cash)",
+   "court": "Virginia",
+   "claimsUrl": "https://www.ncaclassaction.com/",
+   "administrator": "NCA Class Action Administrator",
+   "fund": "Debt cancellation + tradeline deletion (non-cash relief)",
+   "perClaimant": "Debt cancel + credit-report deletion",
+   "classDefinition": "Virginia consumers per settlement (NCA-collected accounts, incl. Speedy Cash-originated debt).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": "2025-09-16",
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 relief applied automatically.",
+   "documentsUrl": "https://www.ncaclassaction.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-09",
+   "notes": "From case-intake workbook. Class fixed; nothing to file."
+  },
+  {
+   "tokens": [
+    "navient"
+   ],
+   "nameNeedles": [
+    "cfpb",
+    "navient"
+   ],
+   "settlement": "CFPB v. Navient \u2014 $120M consumer redress",
+   "court": "CFPB enforcement order",
+   "claimsUrl": null,
+   "administrator": "Epiq (CFPB-directed)",
+   "fund": "$120,000,000",
+   "perClaimant": "Varies; CFPB-determined",
+   "classDefinition": "Federal student loan borrowers harmed by Navient servicing failures (forbearance steering etc.) per CFPB order.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": "2026-02-13"
+   },
+   "whatToProvide": "Nothing \u2014 checks mailing since 2026-02-13; ensure current address with Epiq.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-10",
+   "notes": "Government redress, not a class settlement; no claims process."
+  },
+  {
+   "tokens": [
+    "exeter finance"
+   ],
+   "nameNeedles": [
+    "exeter",
+    "mass arbitration"
+   ],
+   "settlement": "Exeter Finance Mass Arbitration (processing/convenience fees)",
+   "court": "Individual arbitrations (no class)",
+   "claimsUrl": "https://classactionu.org/mass-arbitrations/current-claims/exeter-finance/",
+   "administrator": "Milberg PLLC / ClassAction.org intake",
+   "fund": "None \u2014 individual arbitration outcomes",
+   "perClaimant": "Varies by arbitration",
+   "classDefinition": "No court class. Intake: had an Exeter Finance auto loan and paid fees through Exeter's online/phone payment channels.",
+   "windowType": "rolling",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Name, contact, confirmation of Exeter loan; loan docs/statements strengthen the claim.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-09",
+   "notes": "Law-firm sign-up, not a settlement. Rolling; practical limit is each person's SOL."
+  },
+  {
+   "tokens": [
+    "hyundai capital",
+    "kia finance"
+   ],
+   "nameNeedles": [
+    "immobilizer",
+    "theft settlement"
+   ],
+   "settlement": "Hyundai/Kia Multistate Immobilizer Theft Settlement ($4.5M + $9M companion)",
+   "court": "Multistate",
+   "claimsUrl": "https://www.hyundaitheftsettlement.com/",
+   "administrator": "Hyundai Theft Settlement Administrator",
+   "fund": "$4,500,000 (+$9,000,000 companion)",
+   "perClaimant": "$375-$4,500 depending on theft-loss tier",
+   "classDefinition": "Owners/lessees of 2011-2022 Hyundai/Kia vehicles without factory engine immobilizer, with software upgrade installed/scheduled, and a qualifying theft/attempt on/after 2025-04-29 before zinc-sleeve installation.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2027-03-31",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form; vehicle/VIN; theft documentation (police report, insurance).",
+   "documentsUrl": "https://www.hyundaitheftsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-10",
+   "notes": "Long window (to 2027-03-31). Theft event required \u2014 Tier-2 attestation on top of auto tradeline match."
+  },
+  {
+   "tokens": [
+    "amazon com prime",
+    "amazon prime"
+   ],
+   "nameNeedles": [
+    "prime",
+    "dark-pattern",
+    "ftc"
+   ],
+   "settlement": "FTC v. Amazon \u2014 Prime Enrollment/Cancellation Settlement ($2.5B)",
+   "court": "FTC consent \u2014 W.D. Wash.",
+   "claimsUrl": "https://www.subscriptionmembershipsettlement.com/",
+   "administrator": "Subscription Membership Settlement Administrator (FTC-directed)",
+   "fund": "$2,500,000,000",
+   "perClaimant": "Up to $51 reimbursement of Prime fees",
+   "classDefinition": "U.S. consumers who signed up for Prime June 23, 2019 - June 23, 2025, used >3 but <10 Prime benefits in any 12-month period, and unintentionally enrolled via a challenged flow or were unable to cancel online. Many paid automatically; others must claim.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-27",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim ID and PIN from the email/mail notice (sent by 2026-01-28); payment via PayPal/Venmo/check.",
+   "documentsUrl": "https://www.subscriptionmembershipsettlement.com/frequently-asked-questions.aspx",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-gated: claim requires the mailed/emailed Claim ID + PIN."
+  },
+  {
+   "tokens": [
+    "southstate bank"
+   ],
+   "nameNeedles": [
+    "southstate"
+   ],
+   "settlement": "Gregory Maricle, et al. v. SouthState Bank, N.A.",
+   "claimsUrl": "https://www.southstatebankdatasettlement.com/",
+   "administrator": "Settlement Administrator (Santa Ana, CA) \u2014 (888) 232-0977",
+   "fund": "$1,500,000",
+   "perClaimant": "Pro rata cash; documented losses up to $3,500; 1 yr credit monitoring",
+   "classDefinition": "Living U.S. residents sent notice by SouthState Bank that their private information may have been impacted in the February 2024 data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-15",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-06-22",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online by 11:59 p.m. ET 6/15 or postmarked by 6/15; breach-notice recipients.",
+   "documentsUrl": "https://www.southstatebankdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "DEADLINE IMMINENT. Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "bmo bank"
+   ],
+   "nameNeedles": [
+    "repossession",
+    "tobiason"
+   ],
+   "settlement": "Ean J. Tobiason v. BMO Bank, N.A. (WI repossession notices)",
+   "claimsUrl": "https://www.tobiasonvbmosettlement.com/",
+   "administrator": "Settlement Administrator (Jacksonville, FL) \u2014 888-766-7516",
+   "fund": "$850,000",
+   "perClaimant": "Pro rata after fees/costs \u2014 automatic checks",
+   "classDefinition": "Persons with a vehicle installment consumer finance agreement with BMO who received a notice of sale for repossessed property between April 22, 2021 and February 11, 2026 (Wisconsin law claims).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": "2026-06-17",
+    "objectionDeadline": "2026-06-17",
+    "fairnessHearing": "2026-07-17",
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 checks mailed automatically to last known address of primary obligor after final approval.",
+   "documentsUrl": "https://www.tobiasonvbmosettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "NO CLAIM FORM \u2014 automatic. 6/17 is the opt-out/objection deadline, not a claim deadline."
+  },
+  {
+   "tokens": [
+    "south central bank kentucky"
+   ],
+   "nameNeedles": [
+    "overdraft"
+   ],
+   "settlement": "Johnson v. South Central Bank (KY overdraft/retry fees)",
+   "claimsUrl": "https://johnsonoverdraftclassaction.com/",
+   "administrator": "Settlement Administrator \u2014 1-888-808-9516",
+   "fund": "$2,800,000",
+   "perClaimant": "Pro rata \u2014 automatic account credit (current) or check (former)",
+   "classDefinition": "South Central Bank accountholders charged APSN overdraft fees (Oct 4, 2009 - Oct 8, 2018) or retry NSF fees (Oct 4, 2009 - Dec 31, 2025).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": "2026-06-17",
+    "objectionDeadline": "2026-06-17",
+    "fairnessHearing": "2026-07-07",
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 automatic credit or check.",
+   "documentsUrl": "https://johnsonoverdraftclassaction.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "NO CLAIM FORM \u2014 automatic. 6/17 is opt-out/objection, not a claim deadline."
+  },
+  {
+   "tokens": [
+    "absolute dental"
+   ],
+   "nameNeedles": [
+    "absolute dental",
+    "1.2m affected"
+   ],
+   "settlement": "Absolute Dental Group Data Incident Settlement",
+   "claimsUrl": "https://www.absolutedatasettlement.com/",
+   "administrator": "Epiq Global \u2014 1-877-239-0776",
+   "fund": "$3,300,000",
+   "perClaimant": "Documented losses up to $5,000 OR pro rata cash; extra payment for CA residents",
+   "classDefinition": "Individuals who received notice from Absolute Dental Group that their personal information may have been affected in the 2025 data incident (~1.2M).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-18",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail; documentation only for the loss tier.",
+   "documentsUrl": "https://www.absolutedatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "complete payroll solutions"
+   ],
+   "nameNeedles": [
+    "complete payroll",
+    "377k"
+   ],
+   "settlement": "Dunn, et al. v. Complete Payroll Solutions, LLC",
+   "claimsUrl": "https://www.cpssettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 (833) 447-9925",
+   "fund": "$2,600,000",
+   "perClaimant": "~$100 pro rata; documented losses up to $5,000; credit monitoring",
+   "classDefinition": "Individuals notified that their personal information may have been compromised in the March 2024 Complete Payroll Solutions cybersecurity incident (~377K).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-18",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 6/18.",
+   "documentsUrl": "https://www.cpssettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "avis rent a car"
+   ],
+   "nameNeedles": [
+    "avis"
+   ],
+   "settlement": "In re: Avis Rent A Car System, LLC Security Incident Litigation",
+   "claimsUrl": "https://www.avisdatasecuritysettlement.com/",
+   "administrator": "Claims Administrator (Philadelphia) \u2014 888-818-4234",
+   "fund": "$1,020,000",
+   "perClaimant": "Documented losses up to $5,000; pro rata cash for others",
+   "classDefinition": "Individuals whose personal information was compromised in the Avis data breach of Aug 3-6, 2024.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-21",
+    "optOutDeadline": "2026-05-22",
+    "objectionDeadline": "2026-05-22",
+    "fairnessHearing": "2026-07-28",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 6/21; documentation only for the loss tier.",
+   "documentsUrl": "https://www.avisdatasecuritysettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Opt-out/objection already closed."
+  },
+  {
+   "tokens": [
+    "country bank for savings"
+   ],
+   "nameNeedles": [
+    "country bank",
+    "account fee"
+   ],
+   "settlement": "Kimball v. Country Bank for Savings (overdraft/NSF fees)",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator \u2014 888-808-8341, admin@KimballFeesSettlement.com",
+   "fund": "$495,000",
+   "perClaimant": "Pro rata \u2014 automatic account credit (open accounts) or check (closed)",
+   "classDefinition": "Consumer deposit accountholders at Country Bank for Savings between March 12, 2019 and Dec 31, 2025 charged unrefunded retry or account-balance fees.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-11",
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 automatic.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "NO CLAIM FORM \u2014 automatic credit/check after final approval (~8/11 hearing)."
+  },
+  {
+   "tokens": [
+    "krispy kreme"
+   ],
+   "nameNeedles": [
+    "krispy kreme"
+   ],
+   "settlement": "Krispy Kreme Data Security Settlement",
+   "claimsUrl": "https://krispykremedatasettlement.com/",
+   "administrator": "Settlement Administrator (Portland, OR) \u2014 (877) 239-1879",
+   "fund": "$1,600,000",
+   "perClaimant": "~$75 alternate cash (no proof) or documented losses up to $3,500; 1 yr credit monitoring",
+   "classDefinition": "Individuals whose personal information was compromised in the Nov 2024 Krispy Kreme data breach (notice recipients).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-22",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 6/22.",
+   "documentsUrl": "https://krispykremedatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "DEADLINE SOON."
+  },
+  {
+   "tokens": [
+    "alera group"
+   ],
+   "nameNeedles": [
+    "alera"
+   ],
+   "settlement": "Alera Group Data Incident Settlement",
+   "claimsUrl": "https://aleragroupdatasettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "$2,000,000",
+   "perClaimant": "~$50 alternate cash or documented losses up to $3,500",
+   "classDefinition": "U.S. individuals who received notice that their private information may have been compromised in the 2024 Alera Group data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-29",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-03",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 6/29.",
+   "documentsUrl": "https://aleragroupdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Broward County FL state-court settlement."
+  },
+  {
+   "tokens": [
+    "beef packers indirect purchasers"
+   ],
+   "nameNeedles": [
+    "beef"
+   ],
+   "settlement": "In re: Cattle and Beef Antitrust Litigation \u2014 consumer (indirect purchaser) settlements (Tyson/Cargill)",
+   "claimsUrl": "https://www.overchargedforbeef.com/",
+   "administrator": "Epiq Global \u2014 1-877-283-8711",
+   "fund": "$87,500,000",
+   "perClaimant": "Pro rata; no receipts required",
+   "classDefinition": "Consumers who indirectly purchased qualifying beef products (chuck/loin/rib/round) Aug 1, 2014 - Dec 31, 2019 in 27 listed states/DC.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-30",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 6/30; state of purchase; no receipts needed.",
+   "documentsUrl": "https://www.overchargedforbeef.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "DEFENDANTS ARE TYSON/CARGILL (beef packers) \u2014 population-overlap play: anyone who bought qualifying beef in the 27 listed states. No receipts required."
+  },
+  {
+   "tokens": [
+    "european wax center"
+   ],
+   "nameNeedles": [
+    "european wax",
+    "session-recording"
+   ],
+   "settlement": "Cumor, Dunn v. European Wax Center, Inc. (pixel tracking)",
+   "claimsUrl": "https://ewcdigitalsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 833-447-6949",
+   "fund": "$5,000,000 (up to)",
+   "perClaimant": "Up to $10 per claimant (pro rata)",
+   "classDefinition": "Individuals who visited waxcenter.com and/or booked an appointment on the website between June 30, 2023 and April 2, 2026.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-30",
+    "optOutDeadline": "2026-06-30",
+    "objectionDeadline": "2026-06-30",
+    "fairnessHearing": "2026-07-15",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail by 6/30.",
+   "documentsUrl": "https://ewcdigitalsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Tiny per-claimant value (~$10) \u2014 low priority for outreach."
+  },
+  {
+   "tokens": [
+    "e benefit solution"
+   ],
+   "nameNeedles": [
+    "e benefit"
+   ],
+   "settlement": "E-Benefit Solution Data Incident Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator (Santa Ana, CA P.O. Box 25226)",
+   "fund": "Not disclosed",
+   "perClaimant": "$40 alternate cash or documented losses up to $5,000",
+   "classDefinition": "Individuals who received notice of the December 2024 E-Benefit Solution data breach (SSNs exposed).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-01",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 7/01; losses must be traceable to the breach (Dec 10, 2024 - Jul 1, 2026).",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Official portal not located in sweep \u2014 confirm via administrator before outreach."
+  },
+  {
+   "tokens": [
+    "csc serviceworks"
+   ],
+   "nameNeedles": [
+    "csc"
+   ],
+   "settlement": "CSC ServiceWorks Data Settlement",
+   "claimsUrl": "https://www.cscserviceworksdatasettlement.com/",
+   "administrator": "Atticus Administration \u2014 1-800-245-1963",
+   "fund": "Not disclosed",
+   "perClaimant": "Documented losses up to $5,000; 2 yrs credit monitoring + $1M identity-theft insurance",
+   "classDefinition": "Individuals impacted by the months-long 2023-2024 CSC ServiceWorks data breach (notice recipients).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-02",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail by 7/02.",
+   "documentsUrl": "https://www.cscserviceworksdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Fund amount not published; loss-reimbursement structure."
+  },
+  {
+   "tokens": [
+    "motive technologies"
+   ],
+   "nameNeedles": [
+    "motive",
+    "prerecorded"
+   ],
+   "settlement": "Motive Technologies TCPA Settlement (Dash Cam Calling)",
+   "claimsUrl": "https://dashcamcallingsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 833-447-6934",
+   "fund": "Up to $21,408,700 (voucher value)",
+   "perClaimant": "$50 product voucher per claimant (NOT cash)",
+   "classDefinition": "U.S. individuals who received prerecorded/artificial-voice calls on a cell phone from or on behalf of Motive Technologies, Nov 26, 2020 - Apr 3, 2026.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-06",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-10",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 7/06.",
+   "documentsUrl": "https://dashcamcallingsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "VOUCHER-ONLY settlement \u2014 $50 Motive store credit, no cash. Deprioritize for credit.com pitch."
+  },
+  {
+   "tokens": [
+    "pawn america"
+   ],
+   "nameNeedles": [
+    "pawn america"
+   ],
+   "settlement": "Pawn America Consumer Data Breach Settlement",
+   "claimsUrl": "https://www.pawnamericasettlement.com/",
+   "administrator": "Verita Global \u2014 1-888-266-7074",
+   "fund": "$3,185,000",
+   "perClaimant": "$30 cash (no proof) or documented losses up to $5,000; +~$50 for CA residents",
+   "classDefinition": "U.S. residents whose personal information was potentially compromised in the September 2021 Pawn America data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-06",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 7/06; CA residency at breach time adds ~$50.",
+   "documentsUrl": "https://www.pawnamericasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Subprime-relevant population overlap."
+  },
+  {
+   "tokens": [
+    "epic games fortnite"
+   ],
+   "nameNeedles": [
+    "epic",
+    "fortnite",
+    "unauthorized-charges"
+   ],
+   "settlement": "FTC v. Epic Games (Fortnite) \u2014 consumer refunds",
+   "claimsUrl": "https://www.ftc.gov/enforcement/refunds/fortnite-refunds",
+   "administrator": "FTC (admin@fortniterefund.com \u2014 1-833-915-0880)",
+   "fund": "$245,000,000 + $126M distributed",
+   "perClaimant": "Varies",
+   "classDefinition": "Consumers charged for unwanted Fortnite purchases / children's unauthorized charges per FTC order.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2025-07-09",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "CLOSED \u2014 claim deadline was July 9, 2025.",
+   "documentsUrl": "https://www.ftc.gov/enforcement/refunds/fortnite-refunds",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "EXPIRED: the wave-2 catalog carried a wrong 2026 deadline. FTC is no longer accepting claims; previously-filed claims pay out through 2026."
+  },
+  {
+   "tokens": [
+    "sarasota memorial"
+   ],
+   "nameNeedles": [
+    "sarasota",
+    "debt-collection"
+   ],
+   "settlement": "Daugherty v. Sarasota County Public Hospital District (FCCPA collection letters)",
+   "claimsUrl": "https://www.fldaughertyclasssettlement.com/",
+   "administrator": "Atticus Administration \u2014 800-314-5731",
+   "fund": "Not disclosed (per-claimant cap $1,000)",
+   "perClaimant": "Up to $1,000 per claimant",
+   "classDefinition": "Florida residents who received a collection letter from Sarasota County Public Hospital District about past-due emergency medical debt related to an automobile accident.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-10",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online (last name + notice ID from mailed notice) or mailed form.",
+   "documentsUrl": "https://www.fldaughertyclasssettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice ID needed for online filing \u2014 claimant must have the mailed notice."
+  },
+  {
+   "tokens": [
+    "teva granules heritage metformin"
+   ],
+   "nameNeedles": [
+    "metformin"
+   ],
+   "settlement": "In re Metformin NDMA Settlement (Teva $3M + Granules/Heritage $2.55M)",
+   "claimsUrl": "https://www.inremetforminsettlement.com/",
+   "administrator": "Settlement Administrator \u2014 1-866-302-6835",
+   "fund": "$5,550,000",
+   "perClaimant": "Pro rata; no documentation required for consumers",
+   "classDefinition": "U.S. persons who paid for metformin-containing drugs from Teva, Granules, or Heritage between July 20, 2015 and June 2, 2020.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-10",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 7/10; no receipts required.",
+   "documentsUrl": "https://www.inremetforminsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Broad consumer class \u2014 good population-overlap play."
+  },
+  {
+   "tokens": [
+    "robinhood"
+   ],
+   "nameNeedles": [
+    "order flow",
+    "order-flow",
+    "execution"
+   ],
+   "settlement": "In re Robinhood Order Flow Litigation",
+   "claimsUrl": "https://www.robinhoodorderflowsettlement.com/",
+   "administrator": "Settlement Administrator \u2014 1-833-754-8881",
+   "fund": "$2,000,000",
+   "perClaimant": "Average ~$17.60 per claimant",
+   "classDefinition": "U.S. Robinhood customers who placed at least one qualifying market order Sept 1, 2016 - Sept 1, 2018 with execution worse than NBBO and aggregate price difference > $5.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-13",
+    "optOutDeadline": "2026-03-30",
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-05-05",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 7/13 (or 60 days after final approval if later).",
+   "documentsUrl": "https://www.robinhoodorderflowsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Small average payout."
+  },
+  {
+   "tokens": [
+    "maxar space systems"
+   ],
+   "nameNeedles": [
+    "maxar"
+   ],
+   "settlement": "In Re: Maxar Data Security Litigation",
+   "claimsUrl": "https://maxarsettlement.com/",
+   "administrator": "Settlement Administrator \u2014 1-833-386-6496",
+   "fund": "Not disclosed",
+   "perClaimant": "Up to $3,500 documented losses; $80 lost-time (no proof); 3 yrs credit monitoring",
+   "classDefinition": "Living U.S. residents whose PII was potentially compromised in the October 2024 Maxar data incident (notice recipients).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-16",
+    "optOutDeadline": "2026-06-16",
+    "objectionDeadline": "2026-06-16",
+    "fairnessHearing": "2026-09-24",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 7/16.",
+   "documentsUrl": "https://maxarsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Employee-skewed class (Maxar workers)."
+  },
+  {
+   "tokens": [
+    "cross valley fcu"
+   ],
+   "nameNeedles": [
+    "cross valley"
+   ],
+   "settlement": "Chapple v. Cross Valley Federal Credit Union",
+   "claimsUrl": "https://cvfcudatasettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "Up to $1,000,000",
+   "perClaimant": "~$50 cash (no proof) or documented losses up to $5,000",
+   "classDefinition": "Individuals whose information was compromised in the December 2024 CVFCU cyberattack.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-18",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-13",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail by 7/18.",
+   "documentsUrl": "https://cvfcudatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Small PA credit-union class."
+  },
+  {
+   "tokens": [
+    "union bank and trust moveit"
+   ],
+   "nameNeedles": [
+    "union bank",
+    "moveit"
+   ],
+   "settlement": "Union Bank and Trust MOVEit Data Settlement",
+   "claimsUrl": "https://www.ubtdatasettlement.com/",
+   "administrator": "RG/2 Claims Administration LLC \u2014 800-464-3215",
+   "fund": "$2,390,000",
+   "perClaimant": "Cash payment per settlement terms",
+   "classDefinition": "Individuals impacted by the UBT MOVEit security incident of May 27-31, 2023.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-21",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-06",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claimant ID from mailed notice REQUIRED (online also needs the password from the notice).",
+   "documentsUrl": "https://www.ubtdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-gated: cannot file without the mailed claimant ID."
+  },
+  {
+   "tokens": [
+    "willow tv vppa"
+   ],
+   "nameNeedles": [
+    "willow"
+   ],
+   "settlement": "Kishore, et al. v. Times Internet (UK) Ltd (Willow TV VPPA)",
+   "claimsUrl": "https://www.willowtvvppasettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "$850,000",
+   "perClaimant": "Pro rata cash",
+   "classDefinition": "U.S. individuals who subscribed to Willow TV and watched prerecorded videos on Willow.tv between July 20, 2021 and Sept 22, 2023.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-21",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online (unique ID + PIN from notice) or PDF by mail.",
+   "documentsUrl": "https://www.willowtvvppasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Niche subscriber class (cricket streaming)."
+  },
+  {
+   "tokens": [
+    "sag aftra health plan"
+   ],
+   "nameNeedles": [
+    "sag"
+   ],
+   "settlement": "In re SAG Health Data Breach Litigation",
+   "claimsUrl": "https://saghpsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 833-754-7272",
+   "fund": "$950,000",
+   "perClaimant": "Documented losses up to $5,000; 18 mo CyEx Medical Shield automatic",
+   "classDefinition": "SAG-AFTRA Health Plan members affected by the September 2024 phishing data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-23",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 7/23.",
+   "documentsUrl": "https://saghpsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Member class \u2014 entertainment industry."
+  },
+  {
+   "tokens": [
+    "hustler hh entertainment facta"
+   ],
+   "nameNeedles": [
+    "hustler",
+    "facta receipts"
+   ],
+   "settlement": "HH-Entertainment Inc. (Hustler Hollywood) FACTA Settlement",
+   "claimsUrl": null,
+   "administrator": "Angeion Group \u2014 1-855-465-0349",
+   "fund": "$1,530,000",
+   "perClaimant": "$23 cash and/or 1 yr credit monitoring \u2014 automatic",
+   "classDefinition": "Consumers who made a credit/debit card purchase at a U.S. Hustler Hollywood store between Oct 20, 2018 and Feb 26, 2025 (receipt showing too many card digits).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": "2026-07-27",
+    "objectionDeadline": "2026-07-27",
+    "fairnessHearing": "2026-09-15",
+    "paymentDate": null
+   },
+   "whatToProvide": "No claim form \u2014 submit payment selection online for electronic payment.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "AUTOMATIC for identified class members; 7/27 is opt-out/objection. Election portal URL not captured \u2014 confirm via Angeion."
+  },
+  {
+   "tokens": [
+    "powerschool naviance"
+   ],
+   "nameNeedles": [
+    "powerschool",
+    "naviance",
+    "student-privacy"
+   ],
+   "settlement": "PowerSchool/Naviance Student Privacy Settlement",
+   "claimsUrl": null,
+   "administrator": "Kroll Settlement Administration LLC",
+   "fund": "$17,250,000",
+   "perClaimant": "Equal pro rata share",
+   "classDefinition": "Students who logged into Naviance between Aug 18, 2021 and Jan 23, 2026 (parents/guardians may file for minors).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-07-27",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form (online fastest); parent/guardian filing for minors.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Deadline extended to 7/27. Official portal URL not captured in sweep \u2014 Kroll-hosted; confirm before outreach."
+  },
+  {
+   "tokens": [
+    "la financial credit union"
+   ],
+   "nameNeedles": [
+    "la financial"
+   ],
+   "settlement": "LA Financial Federal Credit Union Data Breach Settlement",
+   "claimsUrl": "https://lafinancialsettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "$725,000",
+   "perClaimant": "~$50+ pro rata (no proof) or documented losses up to $5,000; +$100 CA residents",
+   "classDefinition": "Members whose personal information was exposed in the June 2024 LA Financial FCU data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-05",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-07-20",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail by 8/05.",
+   "documentsUrl": "https://lafinancialsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "CA state-court settlement."
+  },
+  {
+   "tokens": [
+    "sprouts farmers market facta"
+   ],
+   "nameNeedles": [
+    "sprouts"
+   ],
+   "settlement": "Sprouts Farmers Market FACTA Settlement",
+   "claimsUrl": "https://settleinfo.com/",
+   "administrator": "Atticus Administration \u2014 1-800-958-1026",
+   "fund": "$5,000,000",
+   "perClaimant": "Pro rata, est. $67.50-$405 per person",
+   "classDefinition": "Customers who used a personal credit/debit card at a U.S. Sprouts location Aug 16, 2020 - Oct 31, 2022 (or EBT Mar 15, 2021 - Apr 15, 2023) and got a receipt showing more than the last 5 card digits.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-05",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 8/05; receipt attestation.",
+   "documentsUrl": "https://settleinfo.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Customers must attest to the non-compliant receipt."
+  },
+  {
+   "tokens": [
+    "motility software"
+   ],
+   "nameNeedles": [
+    "motility"
+   ],
+   "settlement": "In re Motility Data Breach Litigation",
+   "claimsUrl": "https://motilitydatabreachlitigation.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "$4,940,000",
+   "perClaimant": "~$75 cash (no proof) or documented losses up to $5,000",
+   "classDefinition": "U.S. residents impacted by the August 2025 Motility Software Solutions data breach (~760,797 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-07",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-14",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 8/07.",
+   "documentsUrl": "https://motilitydatabreachlitigation.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Large class relative to fund \u2014 expect dilution on the no-proof tier."
+  },
+  {
+   "tokens": [
+    "onsite mammography"
+   ],
+   "nameNeedles": [
+    "onsite"
+   ],
+   "settlement": "Onsite Mammography (Onsite Women's Health) Data Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator (Baton Rouge) \u2014 1-855-389-9238, info@OnsiteSettlement.com",
+   "fund": "$2,530,000",
+   "perClaimant": "Documented losses up to $5,000 or pro rata cash; 3 yrs monitoring",
+   "classDefinition": "Individuals compromised in the October 2024 Onsite Women's Health data incident (~357,265 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-11",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-09-09",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 8/11.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Portal likely OnsiteSettlement.com \u2014 confirm before outreach."
+  },
+  {
+   "tokens": [
+    "deanco healthcare"
+   ],
+   "nameNeedles": [
+    "deanco"
+   ],
+   "settlement": "Deanco Healthcare (Mission Community Hospital) Data Breach Litigation",
+   "claimsUrl": "https://deancodatabreachsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC",
+   "fund": "$1,546,409",
+   "perClaimant": "Up to $5,000 per claim",
+   "classDefinition": "Patients and individuals who received notice from Mission Community Hospital / Deanco Healthcare (~269,847) about the May 2023 data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-12",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 8/12.",
+   "documentsUrl": "https://deancodatabreachsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "duke health mychart",
+    "duke university health system"
+   ],
+   "nameNeedles": [
+    "duke"
+   ],
+   "settlement": "Williams v. Duke University Health System (MyChart pixel)",
+   "claimsUrl": "https://www.duhssettlement.com/",
+   "administrator": "Settlement Administrator \u2014 1-888-893-8721",
+   "fund": "$3,740,000",
+   "perClaimant": "Pro rata cash",
+   "classDefinition": "Individuals who logged into Duke MyChart portal or MyDuke Health app at least once between Feb 18, 2019 and June 17, 2022.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-16",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online (unique ID + PIN from postcard notice) or PDF by mail.",
+   "documentsUrl": "https://www.duhssettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-gated for online filing."
+  },
+  {
+   "tokens": [
+    "emm loans"
+   ],
+   "nameNeedles": [
+    "emm"
+   ],
+   "settlement": "Lehrbach v. EMM Loans, LLC",
+   "claimsUrl": "https://emmloansdatasettlement.com/",
+   "administrator": "Settlement Administrator (Santa Ana) \u2014 833-386-6557",
+   "fund": "Not disclosed",
+   "perClaimant": "Up to $4,000 + credit monitoring",
+   "classDefinition": "Individuals who received notice of the February 2024 EMM Loans data breach (~2,313 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-17",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-24",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online (unique ID + PIN from notice) or by mail.",
+   "documentsUrl": "https://emmloansdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Tiny class (2,313) \u2014 mortgage tradeline screen possible but low volume."
+  },
+  {
+   "tokens": [
+    "datavant group"
+   ],
+   "nameNeedles": [
+    "datavant"
+   ],
+   "settlement": "Datavant (Ciox Health) Data Incident Settlement",
+   "claimsUrl": "https://datavantdataincidentsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 (833) 754-9441",
+   "fund": "$900,000",
+   "perClaimant": "Up to $5,000 per claim",
+   "classDefinition": "Individuals notified by Ciox Health d/b/a Datavant Group about the May 8-9, 2024 phishing breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-18",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 8/18.",
+   "documentsUrl": "https://datavantdataincidentsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "tinder match group"
+   ],
+   "nameNeedles": [
+    "tinder"
+   ],
+   "settlement": "Candelore v. Tinder, Inc. (CA age discrimination)",
+   "claimsUrl": "https://tindercalclassaction.com/",
+   "administrator": "Settlement Administrator (Los Angeles P.O. Box 301172)",
+   "fund": "$60,500,000",
+   "perClaimant": "Cash per settlement allocation \u2014 automatic for identified class members",
+   "classDefinition": "California purchasers of Tinder Plus/Gold on or after March 2, 2015 (age >29) or March 2, 2016 (age >28).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": "2026-08-18",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "No claim form \u2014 Tinder's records identify class members automatically; submit verification/payment-selection form by 8/18 for fast payment.",
+   "documentsUrl": "https://tindercalclassaction.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "AUTOMATIC for identified members; verification form exists for those not auto-identified. 8/18 = payment-election deadline."
+  },
+  {
+   "tokens": [
+    "western union"
+   ],
+   "nameNeedles": [
+    "western union",
+    "remission"
+   ],
+   "settlement": "United States v. Western Union \u2014 Remission Phase 3 (DOJ)",
+   "claimsUrl": "https://www.westernunionremissionphase3.com/",
+   "administrator": "Verita Global (DOJ-directed)",
+   "fund": "$586,000,000 forfeiture fund",
+   "perClaimant": "Up to full transfer amount (fraud loss)",
+   "classDefinition": "Victims of fraud-induced Western Union wire transfers Jan 1, 2004 - Mar 9, 2020 (Phase 3 captures the extended window).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-19",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Petition for Remission online at veritaconnect.com/WesternUnionRemissionPhase3/Claimant or postmarked by 8/19; transfer details (MTCN helps).",
+   "documentsUrl": "https://www.westernunionremissionphase3.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Government remission, not a class action. Free to file \u2014 warn claimants about fee scams."
+  },
+  {
+   "tokens": [
+    "hsbc bank usa"
+   ],
+   "nameNeedles": [
+    "hsbc"
+   ],
+   "settlement": "Cheng v. HSBC Bank USA, N.A. (Direct Savings interest)",
+   "claimsUrl": "https://www.hsbcdirectsavingsaccountsettlement.com/",
+   "administrator": "Settlement Administrator (Santa Ana) \u2014 833-386-6532",
+   "fund": "$495,000",
+   "perClaimant": "At least $10 per claimant",
+   "classDefinition": "Individuals who opened an HSBC direct savings account Mar 25, 2014 - Feb 20, 2021 and made deposits via HSBC's online portal.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-20",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online by 11:59 p.m. EST or postmarked by 8/20.",
+   "documentsUrl": "https://www.hsbcdirectsavingsaccountsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Small fund, small payout."
+  },
+  {
+   "tokens": [
+    "lakeview health"
+   ],
+   "nameNeedles": [
+    "lakeview health"
+   ],
+   "settlement": "Lakeview Health Systems Data Incident Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator (Santa Ana) \u2014 1-833-386-6497, info@LakeviewHealthsettlement.com",
+   "fund": "Not disclosed",
+   "perClaimant": "Cash payment per settlement terms",
+   "classDefinition": "Individuals affected by the Lakeview Health Systems data breach (notice recipients).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-24",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 8/24.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "DISTINCT from Lakeview Loan Servicing (6/22 deadline). Portal URL not captured \u2014 confirm before outreach."
+  },
+  {
+   "tokens": [
+    "national association of realtors re max keller williams anywhere"
+   ],
+   "nameNeedles": [
+    "broker commission",
+    "burnett",
+    "moehrl"
+   ],
+   "settlement": "Residential Real Estate Broker Commissions Antitrust Settlements (Burnett/Moehrl)",
+   "claimsUrl": "https://www.realestatecommissionlitigation.com/",
+   "administrator": "JND Legal Administration",
+   "fund": "$980,000,000+ across settlements",
+   "perClaimant": "Pro rata by home-sale commission",
+   "classDefinition": "Home sellers who listed on an MLS and paid a broker commission during the covered periods (varies by settlement).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2025-12-30",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "CLOSED \u2014 the home-seller claim deadline for the settlement waves passed Dec 30, 2025.",
+   "documentsUrl": "https://www.realestatecommissionlitigation.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "EXPIRED for new claims. Check the official site's Key Dates page for any later-added settlement waves before writing it off."
+  },
+  {
+   "tokens": [
+    "hillcrest convalescent"
+   ],
+   "nameNeedles": [
+    "hillcrest"
+   ],
+   "settlement": "Hillcrest Convalescent Center Data Breach Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator",
+   "fund": "Not disclosed",
+   "perClaimant": "$50 cash (no proof) or documented losses up to $2,500 + credit monitoring",
+   "classDefinition": "Individuals whose data was exposed in the June 2024 Hillcrest Convalescent Center incident (~106,194 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-26",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim via official settlement site (lookup by name / last-4 SSN / email).",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Portal URL not captured in sweep \u2014 confirm before outreach."
+  },
+  {
+   "tokens": [
+    "google",
+    "google assistant privacy"
+   ],
+   "nameNeedles": [
+    "assistant"
+   ],
+   "settlement": "In re Google Assistant Privacy Litigation",
+   "claimsUrl": "https://www.googleassistantprivacylitigation.com/",
+   "administrator": "A.B. Data Ltd.",
+   "fund": "$68,000,000",
+   "perClaimant": "Pro rata; user claims need no proof, device-purchaser claims need proof of purchase",
+   "classDefinition": "Buyers of Google Home/Nest Hub/Pixel devices and Google Assistant users whose communications were captured by False Accepts, May 18, 2016 - Mar 19, 2026.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-27",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-10-01",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form by 8/27; receipts/serial numbers only for the device-purchaser tier.",
+   "documentsUrl": "https://www.googleassistantprivacylitigation.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Broad population-overlap play \u2014 most adults qualify as Assistant users."
+  },
+  {
+   "tokens": [
+    "google"
+   ],
+   "nameNeedles": [
+    "play store"
+   ],
+   "settlement": "Google Play Store Antitrust Settlement (states + consumers, $630M consumer fund)",
+   "claimsUrl": null,
+   "administrator": "States/Settlement Administrator",
+   "fund": "$630,000,000 consumer fund",
+   "perClaimant": "Automatic payments to eligible Play Store purchasers",
+   "classDefinition": "Consumers who made Google Play purchases Aug 16, 2016 - Sept 30, 2023 (state AG antitrust settlement).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 eligible consumers were paid automatically; claims period closed.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Automatic distribution largely complete \u2014 historic; do not pitch."
+  },
+  {
+   "tokens": [
+    "google play children"
+   ],
+   "nameNeedles": [
+    "children"
+   ],
+   "settlement": "A.B. et al. v. Google LLC (Play children's privacy / COPPA)",
+   "claimsUrl": "https://www.coppaprivacyclassaction.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 (833) 447-6416",
+   "fund": "$8,250,000",
+   "perClaimant": "Est. $40-$200 per filer",
+   "classDefinition": "Children younger than 13 who downloaded/used Google Play apps (parents file on their behalf).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-09-14",
+    "optOutDeadline": "2026-08-04",
+    "objectionDeadline": "2026-08-04",
+    "fairnessHearing": "2026-09-24",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 9/14; parent/guardian attestation.",
+   "documentsUrl": "https://www.coppaprivacyclassaction.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Parent-demographic outreach angle."
+  },
+  {
+   "tokens": [
+    "family medicine centers fmc"
+   ],
+   "nameNeedles": [
+    "family medicine"
+   ],
+   "settlement": "Family Medicine Centers Data Breach Settlement",
+   "claimsUrl": "https://fmcdatasettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "$2,150,000",
+   "perClaimant": "~$75 pro rata (no proof) or documented losses up to $5,000; 2 yrs CyEx monitoring",
+   "classDefinition": "Individuals who received notice of the July 2022 Family Medicine Centers data breach (~266,540 people).",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-31",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 8/31.",
+   "documentsUrl": "https://fmcdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-recipient class."
+  },
+  {
+   "tokens": [
+    "circle k",
+    "circle k gas express"
+   ],
+   "nameNeedles": [
+    "circle k",
+    "gas express"
+   ],
+   "settlement": "Circle K (Gas Express) Data Incident Settlement",
+   "claimsUrl": "https://gasexpressdatasettlement.com/",
+   "administrator": "Settlement Administrator \u2014 1-833-386-6575",
+   "fund": "Not disclosed",
+   "perClaimant": "$50 cash (no proof) or documented losses up to $2,000; 2 yrs monitoring + $1M insurance",
+   "classDefinition": "Individuals impacted by the May 2024 Circle K / Gas Express data breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-09-03",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-09-18",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online at gasexpressdatasettlement.com/form/claim or postmarked by 9/03.",
+   "documentsUrl": "https://gasexpressdatasettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Employee-skewed class."
+  },
+  {
+   "tokens": [
+    "labcorp amca"
+   ],
+   "nameNeedles": [
+    "labcorp",
+    "amca"
+   ],
+   "settlement": "Labcorp AMCA Data Breach Settlement",
+   "claimsUrl": "https://www.amcadatabreachsettlement83395.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 (833) 447-6786",
+   "fund": "$35,000,000",
+   "perClaimant": "Documented losses up to $5,000; $50 CA subclass; credit monitoring + restoration",
+   "classDefinition": "Individuals whose personal/health information was compromised in the AMCA breach affecting Labcorp, Aug 1, 2018 - Mar 30, 2019.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-09-03",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or postmarked by 9/03.",
+   "documentsUrl": "https://www.amcadatabreachsettlement83395.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Tier-1 angle: medical-collection tradelines naming AMCA / Retrieval-Masters."
+  },
+  {
+   "tokens": [
+    "lemonade insurance"
+   ],
+   "nameNeedles": [
+    "lemonade"
+   ],
+   "settlement": "In re Lemonade Inc. Data Disclosure Litigation (driver's license numbers)",
+   "claimsUrl": null,
+   "administrator": "Kroll Settlement Administration LLC (P.O. Box 225391, NY)",
+   "fund": "$10,500,000",
+   "perClaimant": "Documented losses up to $10,000 + pro rata cash; 3 yrs monitoring automatic",
+   "classDefinition": "~190,000 individuals whose driver's license numbers were exposed via Lemonade's quote platform April 2023 - September 2024.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-09-08",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-09-10",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online or by mail by 9/08.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "CAUTION: lemonadeprivacysettlement.com is a DIFFERENT (older) Lemonade case. Driver's-license portal URL not captured \u2014 confirm with Kroll before outreach."
+  },
+  {
+   "tokens": [
+    "mercedes benz financial"
+   ],
+   "nameNeedles": [
+    "bluetec",
+    "aem"
+   ],
+   "settlement": "Mercedes-Benz BlueTEC AEM Incentive Program (state AG settlement)",
+   "claimsUrl": "https://www.mbaemincentive.com/",
+   "administrator": "Settlement Administrator \u2014 1-833-841-9362",
+   "fund": "$149,600,000",
+   "perClaimant": "$2,000 per vehicle (current owners/lessees completing AEM repair)",
+   "classDefinition": "Owners/lessees of 2009-2016 Mercedes BlueTEC diesel vehicles who have the Approved Emission Modification installed at an authorized dealership Aug 1, 2023 - Aug 31, 2026.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-09-30",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "AEM repair must be completed by 8/31/2026 at an authorized dealer, then claim at mbaemincentive.com/Login by 9/30.",
+   "documentsUrl": "https://www.mbaemincentive.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Two-step: repair first (by 8/31), claim second (by 9/30)."
+  },
+  {
+   "tokens": [
+    "toyota motor credit"
+   ],
+   "nameNeedles": [
+    "airbag"
+   ],
+   "settlement": "Toyota Airbag Control Unit Settlement",
+   "claimsUrl": "https://www.airbagcontrolunitsettlement.com/",
+   "administrator": "Kroll Settlement Administration LLC \u2014 833-747-5737",
+   "fund": "$78,500,000",
+   "perClaimant": "Up to $250 residual cash + recall-expense reimbursement",
+   "classDefinition": "Current/former owners and lessees of 2011-2019 Corolla, 2011-2013 Corolla Matrix, 2012-2018 Avalon (+Hybrid), 2012-2019 Tacoma, 2012-2017 Tundra/Sequoia with ZF-TRW airbag control units.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-12-16",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form with vehicle/VIN; receipts for reimbursement tier.",
+   "documentsUrl": "https://www.airbagcontrolunitsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Long window. Auto-tradeline matchable (Toyota Motor Credit)."
+  },
+  {
+   "tokens": [
+    "hyundai capital",
+    "kia finance"
+   ],
+   "nameNeedles": [
+    "airbag"
+   ],
+   "settlement": "Hyundai-Kia Airbag Control Unit Settlement (ZF-TRW)",
+   "claimsUrl": "https://www.acusettlement.com/hyundaikia",
+   "administrator": "JND Legal Administration \u2014 1-866-287-0740",
+   "fund": "$62,100,000",
+   "perClaimant": "Up to $350 (recalled vehicles) or $150 (unrecalled) + recall-expense reimbursement",
+   "classDefinition": "Current/former owners and lessees of 2011-2019 Sonata, 2018-2023 Kona, 2019-2021 Veloster, 2010-2013 Forte, 2011-2020 Optima, 2011-2012/2014 Sedona with ZF-TRW airbag control units.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2027-04-08",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form with vehicle/VIN; receipts for reimbursement tier.",
+   "documentsUrl": "https://www.acusettlement.com/hyundaikia",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Deadline EXTENDED to 2027-04-08 (catalog had 3/29). Auto-tradeline matchable."
+  },
+  {
+   "tokens": [
+    "equity bank ks mo ar ok"
+   ],
+   "nameNeedles": [
+    "overdraft",
+    "nsf"
+   ],
+   "settlement": "Merrell v. Equity Bank (overdraft/NSF fees)",
+   "claimsUrl": null,
+   "administrator": "Verita Global \u2014 888-808-7281",
+   "fund": "$1,000,000",
+   "perClaimant": "Automatic check, account credit, or fee forgiveness",
+   "classDefinition": "Equity Bank accountholders charged APSN fees (2017-2019, 2020-2024), retry fees (2018-2023), or sufficient-funds fees (2017-2025).",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": "2026-06-07",
+    "objectionDeadline": "2026-06-07",
+    "fairnessHearing": "2026-06-29",
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing \u2014 automatic after final approval.",
+   "documentsUrl": null,
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "NO CLAIM FORM \u2014 automatic."
+  },
+  {
+   "tokens": [
+    "nissan motor acceptance"
+   ],
+   "nameNeedles": [
+    "cvt"
+   ],
+   "settlement": "Nissan Murano/Maxima CVT Settlement",
+   "claimsUrl": "https://muranomaximacvtsettlement.com/",
+   "administrator": "Settlement Administrator",
+   "fund": "Not disclosed",
+   "perClaimant": "Warranty extension (84mo/84K automatic) + reimbursement/voucher for timely claims",
+   "classDefinition": "Purchasers/lessees of 2015-2018 Murano and 2016-2018 Maxima with defective CVT.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2025-07-31",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "CLOSED for cash claims \u2014 checks for timely filers mailed Jan 30, 2026. Warranty extension applies automatically.",
+   "documentsUrl": "https://muranomaximacvtsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "EXPIRED as a claim window (was wrongly carried as rolling). Warranty extension is the only live benefit; late claims occasionally accepted \u2014 verify individually."
+  },
+  {
+   "tokens": [
+    "chapter aesthetic studio"
+   ],
+   "nameNeedles": [
+    "chapter aesthetic",
+    "texts after stop"
+   ],
+   "settlement": "Chapter Aesthetic Studio TCPA Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator",
+   "fund": "Not disclosed",
+   "perClaimant": "Cash per settlement terms",
+   "classDefinition": "Individuals who received texts from Chapter Aesthetic Studio after replying STOP.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-11",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim deadline is TODAY (6/11) \u2014 effectively closed for outreach purposes.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Do not pitch \u2014 no time to act."
+  },
+  {
+   "tokens": [
+    "patelco credit union"
+   ],
+   "nameNeedles": [
+    "patelco"
+   ],
+   "settlement": "Patelco Credit Union Data Breach Settlement",
+   "claimsUrl": null,
+   "administrator": "Settlement Administrator",
+   "fund": "Not disclosed",
+   "perClaimant": "Cash per settlement terms",
+   "classDefinition": "Members affected by the June 2024 Patelco ransomware breach.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-06-11",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim deadline is TODAY (6/11) \u2014 effectively closed for outreach purposes.",
+   "documentsUrl": null,
+   "adminVerified": false,
+   "verifiedOn": "2026-06-11",
+   "notes": "Do not pitch \u2014 no time to act."
+  },
+  {
+   "tokens": [
+    "henderson walton women s center"
+   ],
+   "nameNeedles": [
+    "henderson"
+   ],
+   "settlement": "Townsel v. Henderson & Walton Women's Center, P.C.",
+   "claimsUrl": "https://hwwcdataincidentsettlement.com/",
+   "administrator": "HWWC Settlement (Philadelphia) \u2014 claims admin",
+   "fund": "$900,000",
+   "perClaimant": "Up to $2,500 documented losses + up to $90 lost time ($30/hr x 3); 3 yrs one-bureau credit monitoring",
+   "classDefinition": "Individuals whose personal or protected health information was potentially compromised in the Henderson & Walton Women's Center data breach of Feb 11-14, 2022.",
+   "windowType": "open_claim_window",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": "2026-08-27",
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": "2026-08-12",
+    "paymentDate": null
+   },
+   "whatToProvide": "Claim form online (notice ID + confirmation code from settlement notice) or PDF by mail.",
+   "documentsUrl": "https://hwwcdataincidentsettlement.com/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "Notice-gated for online filing."
+  }
+ ]
+}

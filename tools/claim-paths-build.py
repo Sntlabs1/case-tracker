@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from defendant_token import canonical_token
 
 ROOT  = "/Users/stef/MDL Business"
-TODAY = date(2026, 6, 11)
+TODAY = date.today()
 
 # ── KV REST helpers (same pattern as credit-rederive.py) ─────────────────────
 for line in open(f"{ROOT}/.env.local"):
@@ -95,25 +95,36 @@ SETTLEMENT_EXTRA_TOKENS = {
     "mercedes":["mercedes benz financial"],
 }
 
-def add_settlement(defendant, name, deadline_text, status_text, verified, source):
+def add_settlement(defendant, name, deadline_text, status_text, verified, source, extra=None):
     wt, dl = window_type(deadline_text, status_text)
     toks = set()
     tok = canonical_token(defendant or "")
     if tok:
         toks.add(tok)
     dl_low = " " + re.sub(r"[^a-z0-9]+", " ", str(defendant or "").lower()) + " "
-    for key, extra in SETTLEMENT_EXTRA_TOKENS.items():
+    for key, extra_toks in SETTLEMENT_EXTRA_TOKENS.items():
         if f" {key} " in dl_low:
-            toks.update(extra)
+            toks.update(extra_toks)
     for t in toks:
-        settlements.append(dict(token=t, defendant=defendant, name=(name or defendant)[:120],
-                                windowType=wt, deadline=dl, verified=bool(verified), source=source))
+        row = dict(token=t, defendant=defendant, name=(name or defendant)[:120],
+                   windowType=wt, deadline=dl, verified=bool(verified), source=source)
+        for k, v in (extra or {}).items():
+            if v not in (None, ""):
+                row[k] = v
+        settlements.append(row)
+
+def catalog_extra(s):
+    """Carry the recovery facts a catalog row already holds into the registry."""
+    return dict(fund=s.get("fund"), perClaimant=s.get("perClaimant"),
+                classDefinition=(s.get("classDefinition") or "")[:400] or None)
 
 w1 = json.load(open(f"{ROOT}/data/settlements/open-settlements-2026-06.json"))
 for s in w1.get("frictionless", []) + w1.get("claim_filing", []):
-    add_settlement(s.get("defendant"), s.get("settlement"), s.get("deadline"), s.get("status"), True, "wave1")
+    add_settlement(s.get("defendant"), s.get("settlement"), s.get("deadline"), s.get("status"), True, "wave1",
+                   catalog_extra(s))
 for s in w1.get("mass_arb", []):
-    add_settlement(s.get("defendant"), s.get("program"), None, s.get("status") or "rolling", True, "wave1")
+    add_settlement(s.get("defendant"), s.get("program"), None, s.get("status") or "rolling", True, "wave1",
+                   catalog_extra(s))
 for s in w1.get("structural_recurring", []):
     # recurring-defendant theory, not a live window by itself
     add_settlement(s.get("defendant"), s.get("basis"), None, "monitor", True, "wave1-structural")
@@ -125,16 +136,82 @@ for section in ("high_value_population_plays", "banking_credit_lending",
     for s in w2.get(section, []):
         add_settlement(s.get("defendant"), s.get("settlement") or s.get("note"),
                        s.get("deadline"), s.get("status") or s.get("note"),
-                       s.get("verified", False), f"wave2:{section}")
+                       s.get("verified", False), f"wave2:{section}", catalog_extra(s))
 for s in w2.get("monitor_not_yet_open", []):
     add_settlement(s.get("defendant"), s.get("fund"), None, "monitor", False, "wave2:monitor")
 
 br = json.load(open(f"{ROOT}/data/pacer-cases/_breach_settlements_open.json"))
 for s in br.get("settlements", []):
     add_settlement(s.get("name"), f"{s.get('name')} data breach settlement",
-                   s.get("deadline"), s.get("status") or "open", True, "breach-open")
+                   s.get("deadline"), s.get("status") or "open", True, "breach-open",
+                   dict(fund=s.get("fund"),
+                        perClaimant=" / ".join(filter(None, [s.get("flatPayout"),
+                                                             f"up to {s['documentedMax']} documented" if s.get("documentedMax") else None,
+                                                             s.get("extras")])) or None,
+                        classDefinition=s.get("eligibility"),
+                        claimsUrl=s.get("portal")))
 
 print(f"settlements collected: {len(settlements)} across {len({s['token'] for s in settlements})} defendant tokens")
+
+# ── 1b. Overlay verified administrator-site facts ────────────────────────────
+# data/settlements/settlement-admin-sites.json holds what each settlement's
+# OWN administrator site publishes (claims URL, fund, class definition,
+# important dates, claim-form requirement), verified on verifiedOn. A matched
+# admin record is authoritative: it overrides the aggregator-sourced window
+# type, deadline, and dollar fields.
+ADMIN = json.load(open(f"{ROOT}/data/settlements/settlement-admin-sites.json"))["settlements"]
+
+def admin_record_for(row):
+    blob = f"{row.get('name', '')} {row.get('defendant', '')}".lower()
+    for rec in ADMIN:
+        if row["token"] in rec["tokens"] and any(nd in blob for nd in rec["nameNeedles"]):
+            return rec
+    # fall back: token has exactly one admin record -> it covers the defendant
+    cands = [rec for rec in ADMIN if row["token"] in rec["tokens"]]
+    return cands[0] if len(cands) == 1 else None
+
+ADMIN_FIELDS = ("settlement", "court", "claimsUrl", "administrator", "fund", "perClaimant",
+                "classDefinition", "claimFormRequired", "importantDates", "whatToProvide",
+                "documentsUrl", "notes")
+admin_hits = 0
+for row in settlements:
+    rec = admin_record_for(row)
+    if not rec:
+        row.setdefault("adminVerified", False)
+        continue
+    admin_hits += 1
+    row["adminVerified"] = bool(rec.get("adminVerified"))
+    row["verifiedOn"]    = rec.get("verifiedOn")
+    row["verified"]      = True
+    row["windowType"]    = rec["windowType"]
+    row["deadline"]      = (rec.get("importantDates") or {}).get("claimDeadline")
+    row["name"]          = rec["settlement"][:120]
+    for k in ADMIN_FIELDS:
+        if rec.get(k) not in (None, ""):
+            row[k] = rec[k]
+print(f"admin-site overlay: {admin_hits} settlement rows matched a verified admin record")
+
+# ── 1c. Date-aware expiry + per-token dedupe ─────────────────────────────────
+# An open claim window whose deadline has passed is EXPIRED no matter what any
+# catalog says — this is exactly the Leedeman/Midland failure mode.
+for row in settlements:
+    if row["windowType"] == "open_claim_window" and row.get("deadline"):
+        if date.fromisoformat(row["deadline"]) < TODAY:
+            row["windowType"] = "expired"
+
+# The same settlement reaches a token from several catalogs (wave1 + wave2 +
+# breach sweep). Collapse rows sharing (token, windowType, deadline), keeping
+# the best-sourced row: admin-verified > verified > unverified, then the one
+# carrying the most fields.
+_best = {}
+for row in settlements:
+    key = (row["token"], row["windowType"], row.get("deadline"))
+    cur = _best.get(key)
+    rank = (row.get("adminVerified", False), row.get("verified", False), len(row))
+    if cur is None or rank > (cur.get("adminVerified", False), cur.get("verified", False), len(cur)):
+        _best[key] = row
+settlements = list(_best.values())
+print(f"after dedupe: {len(settlements)} settlement rows")
 
 # ── 2. Joinable / open litigation per token ──────────────────────────────────
 open_class = defaultdict(int)   # class-screened open candidates (41-defendant set)
@@ -214,10 +291,19 @@ all_tokens = ({s["token"] for s in settlements} | set(open_class) | set(by_tok)
               | {t for t, n in open_dockets.items() if n >= 3}
               | {t for t, n in tcpa_open.items() if n >= 3})
 LIVE = {"open_claim_window", "automatic_payment", "rolling"}
+# Everything the UI needs to mirror the administrator site for each window.
+LIVE_FIELDS = ("name", "windowType", "deadline", "verified", "source", "adminVerified",
+               "verifiedOn", "claimsUrl", "administrator", "fund", "perClaimant",
+               "classDefinition", "claimFormRequired", "importantDates", "whatToProvide",
+               "documentsUrl", "court", "notes")
+# Filing windows first (soonest deadline up), then rolling sign-ups, then
+# automatic payments where there is nothing to file.
+WT_ORDER = {"open_claim_window": 0, "rolling": 1, "automatic_payment": 2}
 registry = {}
 for tok in sorted(all_tokens):
     setts = [s for s in settlements if s["token"] == tok]
-    live  = [s for s in setts if s["windowType"] in LIVE]
+    live  = sorted([s for s in setts if s["windowType"] in LIVE],
+                   key=lambda s: (WT_ORDER.get(s["windowType"], 9), s.get("deadline") or "9999"))
     mon   = [s for s in setts if s["windowType"] == "monitor"]
     oc, od, tc = open_class.get(tok, 0), open_dockets.get(tok, 0), tcpa_open.get(tok, 0)
     if live:
@@ -230,7 +316,7 @@ for tok in sorted(all_tokens):
         status = "none"
     registry[tok] = dict(
         status=status,
-        liveSettlements=[{k: s[k] for k in ("name", "windowType", "deadline", "verified", "source")} for s in live][:6],
+        liveSettlements=[{k: s[k] for k in LIVE_FIELDS if k in s} for s in live][:6],
         monitorSettlements=[s["name"] for s in mon][:4],
         expiredSettlements=[s["name"] for s in setts if s["windowType"] == "expired"][:4],
         openClassCandidates=oc, openDockets=od, tcpaOpenDockets=tc,

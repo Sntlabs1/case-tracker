@@ -112,13 +112,18 @@ export default async function handler(req, res) {
           const cases = c.cases || [];
           if (!cases.length) continue;
 
-          // New records carry a canonical sig.defendantToken; fall back to
-          // computing it for any legacy record. Exact set membership — no more
-          // substring false-positives or normalizer drift.
+          // Index the UNION of the stored sig.defendantToken AND the freshly
+          // recomputed token. Preferring only the stored token meant alias-map
+          // improvements never reached the index until a full re-derivation
+          // rewrote every record; readers (case-clients sigMatches) already
+          // accept either form, so the index must too. Exact set membership —
+          // no substring false-positives.
           const hit = new Set();
           for (const sig of cases) {
-            const tok = sig.defendantToken || canonicalToken(sig.defendant || "");
-            if (tok && tokenSet.has(tok)) hit.add(tok);
+            const stored = sig.defendantToken;
+            if (stored && tokenSet.has(stored)) hit.add(stored);
+            const computed = canonicalToken(sig.defendant || "");
+            if (computed && tokenSet.has(computed)) hit.add(computed);
           }
           const shard = shardOf(id);
           for (const tok of hit) {

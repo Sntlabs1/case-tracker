@@ -28,7 +28,7 @@ Modes:
 Resumable: checkpoint at WORK_DIR/rederive_ckpt.json (people offset).
 """
 
-import os, sys, re, json, time, gzip, pickle, sqlite3, argparse, http.client, ssl
+import os, sys, re, json, time, gzip, pickle, sqlite3, argparse, http.client, ssl, math
 from pathlib import Path
 from datetime import date
 from collections import defaultdict
@@ -482,6 +482,59 @@ def fetch_cr(pids):
             out[pid]["pr"].append(dict(type=rec_type, chapter=chapter, filed=filed, disch=disch))
     return out
 
+# ── Priority score (v3, 2026-06-11) ─────────────────────────────────────────
+# v2 formula (sum of 30/15 strength weights over actionable cases + flat 40 +
+# multi-type 10 + contact 13, clamped to 100) pinned ~16% of the index in a
+# single tie at 100 (~810K people) — ranking inside the range every reader
+# paginates was arbitrary, live_state_udap weighed the same as federal live,
+# and an open settlement closing in days got no urgency boost.
+#
+# v3 (0-100, one decimal, max attainable ~96 so the cap never creates a tie):
+#   base      strongest actionable SOL tier: discharge_ongoing 52 > live 48
+#             > live_state_udap 40   (replaces the flat +40)
+#   signals   per-actionable-case value = strength{high 10, medium 5, low 3}
+#             x tier-mult{discharge/live 1.0, udap 0.5}, sorted desc with
+#             geometric 0.5^i decay  (bounded ~20; count alone can't dominate)
+#   urgency   live settlement window: deadline <=45d +7, <=120d +5, <=365d +3,
+#             rolling/undated +1, expired 0
+#   breadth   min(4, distinct actionable caseTypes); time-barred-only people
+#             get min(4, distinct caseTypes) for class-membership breadth
+#   contact   phone +5, email +3
+#   recovery  min(5, 1.25*log10(1 + mid/100)) — continuous tiebreak, so equal-
+#             profile leads separate by actionable statutory midpoint
+# Non-actionable ceiling is 12; actionable floor is ~44 — the bands cannot
+# overlap, so a single live signal always outranks any stack of time-barred.
+_TIER_BASE = {"discharge_ongoing": 52, "live": 48, "live_state_udap": 40}
+_TIER_MULT = {"discharge_ongoing": 1.0, "live": 1.0, "live_state_udap": 0.5}
+_STR_W     = {"high": 10, "medium": 5, "low": 3}
+
+def priority_score(cases, act_cases, rec_mid, phone, email):
+    base = max((_TIER_BASE.get(c["solStatus"], 0) for c in act_cases), default=0)
+    contribs = sorted((_STR_W.get(c["strength"], 3) * _TIER_MULT.get(c["solStatus"], 0.5)
+                       for c in act_cases), reverse=True)
+    sig = sum(v * (0.5 ** i) for i, v in enumerate(contribs))
+    urg = 0
+    for c in act_cases:
+        s = c.get("settlement")
+        if not s:
+            continue
+        dl = s.get("settlementDeadline")
+        days = None
+        if dl:
+            try:
+                days = (date.fromisoformat(dl) - TODAY).days
+            except ValueError:
+                days = None
+        if days is None:
+            urg = max(urg, 1)               # rolling / undated open window
+        elif days >= 0:
+            urg = max(urg, 7 if days <= 45 else 5 if days <= 120 else 3 if days <= 365 else 1)
+        # expired window: no boost
+    breadth = min(4, len({c["caseType"] for c in (act_cases or cases)}))
+    contact = (5 if phone else 0) + (3 if email else 0)
+    tie = min(5.0, 1.25 * math.log10(1 + rec_mid / 100.0)) if rec_mid > 0 else 0.0
+    return round(min(100.0, max(0.0, base + sig + urg + breadth + contact + tie)), 1)
+
 # ── Per-person derivation ───────────────────────────────────────────────────
 def derive_person(pid, ident, cr, bankrupt, xref_ents):
     """Return a client dict (or None to skip)."""
@@ -607,13 +660,7 @@ def derive_person(pid, ident, cr, bankrupt, xref_ents):
     rec_mid = sum(c["estRecoveryMid"] for c in act_cases)
     rec_high = sum(c["estRecoveryHigh"] for c in act_cases)
 
-    # Score: heavily weight actionable so live/§524 leads rise to the top.
-    sw = {"high": 30, "medium": 15, "low": 8}
-    score = sum(sw.get(c["strength"], 8) for c in act_cases) \
-            + (40 if actionable else 0) \
-            + (10 if len(case_types) > 1 else 0) \
-            + (8 if phone else 0) + (5 if email else 0)
-    score = max(0, min(100, score))
+    score = priority_score(cases, act_cases, rec_mid, phone, email)
 
     intake_ready = actionable and (bool(phone) or bool(email))
 

@@ -29,27 +29,65 @@ const CASE_COLORS = {
 
 const STRENGTH_COLOR = { high: "#22c55e", medium: "#f59e0b", low: "#ef4444" };
 
+// ── Claim-window semantics ──────────────────────────────────────────────
+// liveSettlements (from KV case:claim_paths) mix three very different things:
+//   open_claim_window  — a claim can be FILED today (deadline ahead)
+//   automatic_payment  — settled, class FIXED, paid without filing; nothing
+//                        for a new person to claim
+//   rolling            — mass-arbitration sign-up, no court deadline
+// Only the first is "claimable now". Deadlines are re-checked against today's
+// date at render time so a window that expired after the registry build
+// demotes automatically (the Leedeman/Midland failure mode).
+function isFilableSettlement(s) {
+  if (!s || s.windowType !== "open_claim_window") return false;
+  if (s.deadline && daysUntil(s.deadline) < 0) return false;
+  return true;
+}
+function filableSettlements(claimPath) {
+  return (claimPath?.liveSettlements || []).filter(isFilableSettlement);
+}
+function settlementsOfType(claimPath, wt) {
+  return (claimPath?.liveSettlements || []).filter(s => s.windowType === wt);
+}
+
+// Short money figure out of a settlement fund / per-claimant string
+// ("Pro rata share of $318,000 — ..." -> "Pro rata", "$875 per loan" -> "$875").
+function settlementMoneyShort(str) {
+  if (!str) return null;
+  const s = String(str);
+  if (/pro rata/i.test(s) && !/^\s*[~$]/.test(s)) return "Pro rata";
+  const m = s.match(/~?\$[\d,]+(?:\.\d+)?\s*[MBK]?/);
+  return m ? m[0].replace(/\s+/g, "") : s.slice(0, 16);
+}
+
 // Live claim-path badge (from KV case:claim_paths via /api/portfolio-cases).
-// claim_window = an open settlement is accepting claims / paying now;
-// joinable_litigation = open dockets naming this defendant; none = nothing
-// live today — the match must not be pitched as a claimable case.
+// claim_window status is split by what the window actually allows TODAY.
 function ClaimPathBadge({ claimPath }) {
   if (!claimPath || claimPath.status === "unknown") return null;
-  const CFG = {
-    claim_window:        { color: "#22c55e", label: "Active claim window" },
-    joinable_litigation: { color: "#2D7D95", label: `Joinable litigation${claimPath.openLitigation ? ` (${claimPath.openLitigation})` : ""}` },
-    monitor_only:        { color: "#f59e0b", label: "Settlement pending" },
-    none:                { color: "#6b7280", label: "No live claim path" },
-  };
-  const cfg = CFG[claimPath.status];
+  let cfg = null;
+  if (claimPath.status === "claim_window") {
+    const filable = filableSettlements(claimPath);
+    const rolling = settlementsOfType(claimPath, "rolling");
+    const auto    = settlementsOfType(claimPath, "automatic_payment");
+    const dl = filable.map(s => s.deadline).filter(Boolean).sort()[0];
+    if (filable.length)     cfg = { color: "#22c55e", label: `Claim window open${dl ? ` — file by ${dl}` : ""}` };
+    else if (rolling.length) cfg = { color: "#2D7D95", label: "Mass-arb sign-up open" };
+    else if (auto.length)    cfg = { color: "#8b5cf6", label: "Settled — automatic payment" };
+    else                     cfg = { color: "#f59e0b", label: "Claim window expired" };
+  } else {
+    cfg = {
+      joinable_litigation: { color: "#2D7D95", label: `Joinable litigation${claimPath.openLitigation ? ` (${claimPath.openLitigation})` : ""}` },
+      monitor_only:        { color: "#f59e0b", label: "Settlement pending" },
+      none:                { color: "#6b7280", label: "No live claim path" },
+    }[claimPath.status];
+  }
   if (!cfg) return null;
-  const dl = (claimPath.liveSettlements || []).map(s => s.deadline).filter(Boolean).sort()[0];
   return (
     <span
       title={(claimPath.liveSettlements || []).map(s => s.name).join(" · ") || cfg.label}
       style={{ fontSize: 10, padding: "3px 10px", borderRadius: 10, background: `${cfg.color}18`, color: cfg.color, border: `1px solid ${cfg.color}40`, fontWeight: 700, whiteSpace: "nowrap" }}
     >
-      {cfg.label}{dl ? ` — by ${dl}` : ""}
+      {cfg.label}
     </span>
   );
 }
@@ -448,7 +486,18 @@ function CaseTable({ rows, countLabel, countSub, onOpen }) {
                     {c.info?.damages?.split(".")[0] || "—"}
                   </td>
                   <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "var(--text-1)", fontWeight: 700, whiteSpace: "nowrap" }}>
-                    {caseTotalEstimate(c) || "—"}
+                    {(() => {
+                      // Settled defendants have a FIXED fund — never show a
+                      // statutory range as if it were claimable money.
+                      const ps = filableSettlements(c.claimPath)[0] || settlementsOfType(c.claimPath, "automatic_payment")[0];
+                      if (ps?.fund) return (
+                        <>
+                          {settlementMoneyShort(ps.fund)}
+                          <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>settlement fund (fixed)</div>
+                        </>
+                      );
+                      return caseTotalEstimate(c) || "—";
+                    })()}
                     {(c.consumers ?? c.consumersInDb) ? (
                       <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
                         {fmtN(c.consumers ?? c.consumersInDb)} eligible
@@ -487,8 +536,9 @@ function StatBox({ label, value, sub, color = "var(--accent)" }) {
 // evidence an intake must collect. Numbers shown are statutory ceilings —
 // labeled as such, never as expected recovery.
 
+// Earliest deadline someone can still ACT on — filable windows only.
 function earliestDeadline(claimPath) {
-  return (claimPath?.liveSettlements || []).map(s => s.deadline).filter(Boolean).sort()[0] || null;
+  return filableSettlements(claimPath).map(s => s.deadline).filter(Boolean).sort()[0] || null;
 }
 
 function daysUntil(dateStr) {
@@ -514,9 +564,24 @@ const LIFECYCLE_STAGES = ["Filings", "Active litigation", "Settlement", "Claims 
 
 function caseLifecycle(c) {
   const cp = c.claimPath || {};
-  if (cp.status === "claim_window")
-    return { stage: 3, label: "Open claims window", color: "#22c55e",
-             note: "A settlement administrator is accepting claims now — the cheapest recovery route available." };
+  if (cp.status === "claim_window") {
+    const filable = filableSettlements(cp);
+    const rolling = settlementsOfType(cp, "rolling");
+    const auto    = settlementsOfType(cp, "automatic_payment");
+    if (filable.length) {
+      const dl = earliestDeadline(cp);
+      return { stage: 3, label: "Open claims window", color: "#22c55e",
+               note: `A settlement administrator is accepting claims now${dl ? ` — file by ${dl}` : ""} — the cheapest recovery route available.` };
+    }
+    if (rolling.length)
+      return { stage: 3, label: "Mass-arbitration sign-up open", color: "#2D7D95",
+               note: "No court settlement — a rolling individual-arbitration campaign is recruiting claimants. Each person's SOL is the practical limit." };
+    if (auto.length)
+      return { stage: 3, label: "Settled — automatic payment", color: "#8b5cf6",
+               note: "The settlement pays a FIXED class automatically — there is no claim form and no way for a new person to join. Value here is confirming class membership and payment delivery, not filing claims." };
+    return { stage: 4, label: "Claim window expired", color: "#f59e0b",
+             note: "The settlement's claim deadline has passed since the registry was built. Do not pitch this as claimable — check the administrator site for any extension." };
+  }
   if (cp.status === "monitor_only")
     return { stage: 2, label: "Settlement pending", color: "#f59e0b",
              note: "A settlement exists but no claim window is open yet — monitor for preliminary/final approval and the claims start date." };
@@ -556,15 +621,27 @@ function caseSummaryText(c, n, exposure, trend) {
   parts.push(`${c.name} is a ${kind} named in ${fmtN(c.caseCount || 0)} federal consumer-protection docket${(c.caseCount || 0) === 1 ? "" : "s"} in the 2015–2026 index, ${fmtN(c.openCases || 0)} currently open${c.newCases ? ` and ${fmtN(c.newCases)} filed since 2024` : ""}.`);
   if (trend) parts.push(`Filing velocity is ${trend.dir} (${trend.detail}) — ${trend.dir === "accelerating" ? "the plaintiffs' bar is actively building cases against this defendant" : trend.dir === "declining" ? "litigation interest is cooling; existing dockets matter more than new filings" : "a stable, recurring litigation target"}.`);
   const cp = c.claimPath || {};
-  const live = cp.liveSettlements || [];
-  if (cp.status === "claim_window" && live.length) {
-    parts.push(`Recovery route today: an open settlement claim window (${live.map(s => s.name).join("; ")}) — file claims rather than litigate.`);
+  const filable = filableSettlements(cp);
+  const rolling = settlementsOfType(cp, "rolling");
+  const auto    = settlementsOfType(cp, "automatic_payment");
+  if (filable.length) {
+    const dl = earliestDeadline(cp);
+    parts.push(`Recovery route today: an open settlement claim window (${filable.map(s => s.name).join("; ")})${dl ? ` — file by ${dl}` : ""} — file claims rather than litigate.`);
+  } else if (auto.length) {
+    parts.push(`Settled with AUTOMATIC payment (${auto.map(s => s.name).join("; ")})${auto[0].fund ? ` — a fixed ${auto[0].fund} fund` : ""} — the class is fixed by the settlement records; there is nothing for a new claimant to file.`);
+  } else if (rolling.length) {
+    parts.push(`Recovery route today: rolling mass-arbitration sign-up (${rolling.map(s => s.name).join("; ")}) — individual arbitrations, not a class settlement.`);
+  } else if (cp.status === "claim_window") {
+    parts.push("A settlement existed but its claim deadline has passed — nothing is filable today.");
   } else if (cp.openLitigation > 0) {
     parts.push(`Recovery route today: ${fmtN(cp.openLitigation)} joinable open docket${cp.openLitigation > 1 ? "s" : ""}; no settlement window is accepting claims yet.`);
   } else {
     parts.push("No live recovery route exists today — value here is origination inventory, not an existing claim.");
   }
-  if (n) parts.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a ${CASE_LABELS[c.caseType] || c.caseType} signal naming this defendant${exposure ? `, a statutory ceiling of ${exposure}` : ""}.`);
+  if (n) parts.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a ${CASE_LABELS[c.caseType] || c.caseType} signal naming this defendant${exposure && !auto.length ? `, a statutory ceiling of ${exposure} if litigated` : ""}.`);
+  if (filable.length && filable[0].classDefinition) {
+    parts.push("Eligibility is gated by the class definition, not the signal match — screen each claimant against it before filing.");
+  }
   if (c.bureau) parts.push("Bureau caveat: every person in the base has files at all three bureaus, so matched counts here describe the whole base, not a defendant-specific cohort.");
   return parts.join(" ");
 }
@@ -575,24 +652,47 @@ function caseSummaryText(c, n, exposure, trend) {
 function caseNextSteps(c) {
   const steps = [];
   const cp = c.claimPath || {};
-  const live = cp.liveSettlements || [];
+  const filable = filableSettlements(cp);
+  const rolling = settlementsOfType(cp, "rolling");
+  const auto    = settlementsOfType(cp, "automatic_payment");
   const dl = earliestDeadline(cp);
-  const unverified = live.some(s => !s.verified);
-  if (cp.status === "claim_window" && live.length) {
+  if (filable.length) {
+    const unverified = filable.some(s => !s.adminVerified);
     steps.push({
       tag: "FILE NOW", color: "#22c55e",
       title: `Open settlement window${dl ? ` — earliest deadline ${dl}` : ""}`,
-      detail: `${live.map(s => s.name).join(" · ")}. Confirm the class definition and claim form on the administrator site, then file for matched claimants whose tradelines fit.${unverified ? " At least one entry is aggregator-sourced and unverified — confirm the administrator site before any outreach." : ""}`,
+      detail: `${filable.map(s => s.claimsUrl ? `${s.name} (${s.claimsUrl})` : s.name).join(" · ")}. Screen matched claimants against the class definition, then file on the administrator site.${unverified ? " At least one entry is aggregator-sourced and NOT verified against the administrator site — confirm before any outreach." : ""}`,
+    });
+  }
+  if (auto.length) {
+    steps.push({
+      tag: "AUTO-PAID", color: "#8b5cf6",
+      title: `Settled — automatic payment, nothing to file (${auto.map(s => s.name).join(" · ")})`,
+      detail: `The class is fixed by the settlement records${auto[0].fund ? ` and pays from a fixed ${auto[0].fund} fund` : ""}. Do not pitch as claimable. Value: confirm whether matched claimants fit the class definition and have a current address with the administrator${auto[0].claimsUrl ? ` (${auto[0].claimsUrl})` : ""}.`,
+    });
+  }
+  if (rolling.length) {
+    steps.push({
+      tag: "SIGN-UP", color: "#2D7D95",
+      title: `Rolling mass-arbitration intake (${rolling.map(s => s.name).join(" · ")})`,
+      detail: "No court deadline — individual arbitrations are recruited on a rolling basis. Each claimant's own SOL is the limit; screen before referring.",
+    });
+  }
+  if (cp.status === "claim_window" && !filable.length && !auto.length && !rolling.length) {
+    steps.push({
+      tag: "EXPIRED", color: "#f59e0b",
+      title: "Settlement claim window has closed",
+      detail: "The deadline passed since the registry was built. Check the administrator site for an extension; otherwise treat this defendant as joinable-litigation or origination inventory only.",
     });
   }
   if (cp.openLitigation > 0) {
     steps.push({
-      tag: cp.status === "claim_window" ? "PARALLEL" : "JOIN", color: "#2D7D95",
+      tag: filable.length || rolling.length ? "PARALLEL" : "JOIN", color: "#2D7D95",
       title: `${cp.openLitigation.toLocaleString()} open federal docket${cp.openLitigation > 1 ? "s" : ""} naming this defendant`,
       detail: "Route (a): if any putative class action covers these claimants, they are absent class members — monitor for certification and a claims window. Route (b): offer the top-scored claimants to plaintiffs' counsel on the newest filings as named-plaintiff or mass-action inventory.",
     });
   }
-  if (!live.length && !cp.openLitigation) {
+  if (!(cp.liveSettlements || []).length && !cp.openLitigation) {
     steps.push({
       tag: "ORIGINATE", color: "#f59e0b",
       title: "No live claim path — recovery requires origination",
@@ -632,6 +732,10 @@ function CaseDetailBrief({ c, claimants }) {
   const cp = c.claimPath || {};
   const dl = earliestDeadline(cp);
   const dlDays = dl ? daysUntil(dl) : null;
+  // The settlement that defines today's money: first filable window, else the
+  // automatic-payment fund. A settled case has a FIXED fund — statutory-ceiling
+  // math is litigation framing and must not be shown as what's claimable.
+  const primary = filableSettlements(cp)[0] || settlementsOfType(cp, "automatic_payment")[0] || null;
   const steps = caseNextSteps(c);
   const lc = caseLifecycle(c);
   const trend = filingTrend(c);
@@ -684,18 +788,38 @@ function CaseDetailBrief({ c, claimants }) {
         <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.65 }}>{summary}</div>
       </Card>
 
-      {/* Headline numbers */}
+      {/* Headline numbers — settled cases show the FIXED settlement fund, not
+          a statutory range that implies money which doesn't exist. */}
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
         <StatBox label="Matched Claimants" value={n != null ? fmtN(n) : "—"} sub="people in the credit file with this defendant" color="#2D7D95" />
-        <StatBox label="Statutory Exposure" value={exposure || "—"} sub="ceiling, not expected recovery — settlements pay a fraction" color="#22c55e" />
-        <StatBox label="Per Claimant" value={perClaimant || "—"} sub={info.statute ? info.statute.split("—")[1]?.trim() || "statutory range" : "statutory range"} color="#f59e0b" />
+        {primary ? (
+          <>
+            <StatBox
+              label="Settlement Fund"
+              value={settlementMoneyShort(primary.fund) || "—"}
+              sub={`${primary.name?.slice(0, 56) || "live settlement"} — fixed fund`}
+              color="#22c55e"
+            />
+            <StatBox
+              label="Per Claimant"
+              value={settlementMoneyShort(primary.perClaimant) || "—"}
+              sub={(primary.perClaimant || "per settlement terms").slice(0, 80)}
+              color="#f59e0b"
+            />
+          </>
+        ) : (
+          <>
+            <StatBox label="Statutory Exposure" value={exposure || "—"} sub="litigation ceiling, not expected recovery — settlements pay a fraction" color="#22c55e" />
+            <StatBox label="Per Claimant" value={perClaimant || "—"} sub={info.statute ? info.statute.split("—")[1]?.trim() || "statutory range" : "statutory range"} color="#f59e0b" />
+          </>
+        )}
         <StatBox label="Open Dockets" value={fmtN(c.openCases || 0)} sub={`of ${fmtN(c.caseCount || 0)} federal filings${c.newCases ? ` — ${fmtN(c.newCases)} filed 2024–26` : ""}`} color="#8b5cf6" />
         {dl && (
           <StatBox
             label="Claim Deadline"
-            value={dlDays != null && dlDays >= 0 ? `${dlDays}d` : dl}
-            sub={dlDays != null && dlDays >= 0 ? `earliest live window closes ${dl}` : "earliest live settlement deadline"}
-            color={dlDays != null && dlDays < 60 ? "#ef4444" : "#22c55e"}
+            value={dlDays != null && dlDays >= 0 ? `${dlDays}d` : "Expired"}
+            sub={dlDays != null && dlDays >= 0 ? `claim window closes ${dl}` : `deadline ${dl} has passed`}
+            color={dlDays == null || dlDays < 0 ? "#ef4444" : dlDays < 60 ? "#ef4444" : "#22c55e"}
           />
         )}
       </div>
@@ -726,15 +850,85 @@ function CaseDetailBrief({ c, claimants }) {
             <SectionTitle>Recovery Route Today</SectionTitle>
             <ClaimPathBadge claimPath={cp} />
           </div>
-          {(cp.liveSettlements || []).map((s, i) => (
-            <div key={i} style={{ padding: "8px 10px", background: "var(--bg-surface)", borderRadius: 6, marginBottom: 8, border: "1px solid #22c55e30" }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>{s.name}</div>
-              <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
-                {s.windowType === "rolling" ? "Rolling claims — no deadline" : s.deadline ? `Deadline ${s.deadline}` : "Deadline unverified"}
-                {" · "}{s.verified ? "verified" : "UNVERIFIED — confirm administrator site"}
+          {(cp.liveSettlements || []).map((s, i) => {
+            const filable = isFilableSettlement(s);
+            const expired = s.windowType === "open_claim_window" && !filable;
+            const wtColor = filable ? "#22c55e" : s.windowType === "rolling" ? "#2D7D95" : s.windowType === "automatic_payment" ? "#8b5cf6" : "#f59e0b";
+            const wtLabel = filable ? `CLAIM WINDOW OPEN — file by ${s.deadline || "see site"}`
+              : expired ? `WINDOW EXPIRED — deadline ${s.deadline} passed`
+              : s.windowType === "rolling" ? "ROLLING SIGN-UP — no court deadline"
+              : "AUTOMATIC PAYMENT — class fixed, nothing to file";
+            const dates = s.importantDates || {};
+            const dateRows = [
+              ["Claim deadline", dates.claimDeadline],
+              ["Opt-out", dates.optOutDeadline],
+              ["Objection", dates.objectionDeadline],
+              ["Fairness hearing", dates.fairnessHearing],
+              ["Payment", dates.paymentDate],
+            ].filter(([, v]) => v);
+            return (
+              <div key={i} style={{ padding: "10px 12px", background: "var(--bg-surface)", borderRadius: 6, marginBottom: 10, border: `1px solid ${wtColor}30` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, flexWrap: "wrap" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>{s.name}</div>
+                  <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 3, background: `${wtColor}18`, color: wtColor, border: `1px solid ${wtColor}40`, fontWeight: 800, whiteSpace: "nowrap" }}>
+                    {wtLabel}
+                  </span>
+                </div>
+                {(s.fund || s.perClaimant) && (
+                  <div style={{ fontSize: 11, color: "var(--text-2)", marginTop: 6 }}>
+                    {s.fund && <span style={{ color: "#22c55e", fontWeight: 700 }}>{s.fund}</span>}
+                    {s.fund && s.perClaimant && " · "}
+                    {s.perClaimant}
+                  </div>
+                )}
+                {s.classDefinition && (
+                  <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 6, lineHeight: 1.5 }}>
+                    <span style={{ color: "var(--text-5)", fontWeight: 700 }}>CLASS: </span>{s.classDefinition}
+                  </div>
+                )}
+                {s.whatToProvide && (
+                  <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 4, lineHeight: 1.5 }}>
+                    <span style={{ color: "var(--text-5)", fontWeight: 700 }}>TO FILE: </span>{s.whatToProvide}
+                  </div>
+                )}
+                {dateRows.length > 0 && (
+                  <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 6 }}>
+                    {dateRows.map(([label, v]) => {
+                      const past = daysUntil(v) != null && daysUntil(v) < 0;
+                      return (
+                        <span key={label} style={{ fontSize: 10, color: past ? "var(--text-5)" : "var(--text-2)" }}>
+                          <span style={{ color: "var(--text-5)" }}>{label}: </span>
+                          <span style={{ textDecoration: past ? "line-through" : "none" }}>{v}</span>
+                          {past && " (passed)"}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginTop: 8 }}>
+                  {s.claimsUrl && (
+                    <a href={s.claimsUrl} target="_blank" rel="noopener noreferrer"
+                       style={{ fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 700, textDecoration: "none" }}>
+                      Administrator site ↗
+                    </a>
+                  )}
+                  {s.documentsUrl && s.documentsUrl !== s.claimsUrl && (
+                    <a href={s.documentsUrl} target="_blank" rel="noopener noreferrer"
+                       style={{ fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "var(--bg-card)", color: "var(--text-3)", border: "1px solid var(--border)", fontWeight: 700, textDecoration: "none" }}>
+                      Court documents ↗
+                    </a>
+                  )}
+                  {s.administrator && <span style={{ fontSize: 10, color: "var(--text-5)" }}>{s.administrator}</span>}
+                  <span style={{ fontSize: 10, color: s.adminVerified ? "#22c55e" : "#ef4444", fontWeight: 700 }}>
+                    {s.adminVerified ? `Verified vs admin site ${s.verifiedOn || ""}` : "UNVERIFIED — confirm administrator site before outreach"}
+                  </span>
+                </div>
+                {s.notes && (
+                  <div style={{ fontSize: 10, color: "#f59e0b", marginTop: 6, lineHeight: 1.5 }}>{s.notes}</div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
           {cp.openLitigation > 0 && (
             <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, marginBottom: 8 }}>
               {cp.openLitigation.toLocaleString()} open federal docket{cp.openLitigation > 1 ? "s" : ""} — joinable / absent-class-member pool.
@@ -1271,10 +1465,16 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                         </div>
                         {(sig.claimPath.liveSettlements || []).map((s, j) => (
                           <div key={j} style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 3 }}>
-                            {s.name}
+                            {s.claimsUrl
+                              ? <a href={s.claimsUrl} target="_blank" rel="noopener noreferrer" style={{ color: "#2D7D95", textDecoration: "none", fontWeight: 600 }}>{s.name} ↗</a>
+                              : s.name}
                             <span style={{ color: "var(--text-5)" }}>
-                              {s.deadline ? ` — file by ${s.deadline}` : s.windowType === "rolling" ? " — rolling" : s.windowType === "automatic_payment" ? " — automatic payment" : ""}
-                              {s.verified === false ? " (unverified)" : ""}
+                              {isFilableSettlement(s) ? ` — file by ${s.deadline || "see site"}`
+                                : s.windowType === "rolling" ? " — rolling sign-up"
+                                : s.windowType === "automatic_payment" ? " — automatic payment, nothing to file"
+                                : s.deadline ? ` — EXPIRED ${s.deadline}` : ""}
+                              {s.fund ? ` · ${s.fund}` : ""}
+                              {s.adminVerified === false && s.verified === false ? " (unverified)" : ""}
                             </span>
                           </div>
                         ))}
@@ -1628,6 +1828,10 @@ export default function CreditPortfolio() {
   const caseClientsAbortRef = React.useRef(null);
   const caseCursorsRef      = React.useRef({});   // page index -> cursor string
   const [caseTypeFilter, setCaseTypeFilter]       = useState("all");
+  // Recovery-route filter for the Cases view. "claimable" = a verified-open
+  // settlement claim window with a live (unexpired) deadline — the cases
+  // credit.com customers can actually file on TODAY.
+  const [routeFilter, setRouteFilter]             = useState("all"); // all | claimable | automatic | rolling
 
   // Real PACER case catalog (defendant-grouped) from /api/portfolio-cases
   const [pacer, setPacer]                 = useState(null);
@@ -1914,11 +2118,27 @@ export default function CreditPortfolio() {
   if (tcpaMarketerCases.length && !pacerCaseTypes.includes("TCPA")) pacerCaseTypes.push("TCPA");
   const cq = caseQ.trim().toLowerCase();
   const caseMatchesQ = c => !cq || (c.name || "").toLowerCase().includes(cq);
-  const visiblePacerCases = pacerCases.filter(c => (caseTypeFilter === "all" || c.caseType === caseTypeFilter) && caseMatchesQ(c));
-  const visibleNationalCases = nationalEntityCases.filter(caseMatchesQ);
-  const visibleTcpaMarketerCases = tcpaMarketerCases.filter(caseMatchesQ);
+  const routeMatches = c => {
+    if (routeFilter === "all") return true;
+    if (routeFilter === "claimable") return filableSettlements(c.claimPath).length > 0;
+    if (routeFilter === "automatic") return settlementsOfType(c.claimPath, "automatic_payment").length > 0;
+    if (routeFilter === "rolling")   return settlementsOfType(c.claimPath, "rolling").length > 0;
+    return true;
+  };
+  // When filtering to open claim windows, rank by the soonest filing deadline.
+  const byDeadline = (a, b) =>
+    (earliestDeadline(a.claimPath) || "9999").localeCompare(earliestDeadline(b.claimPath) || "9999");
+  const maybeSortByDeadline = rows => (routeFilter === "claimable" ? [...rows].sort(byDeadline) : rows);
+  const visiblePacerCases = maybeSortByDeadline(pacerCases.filter(c => (caseTypeFilter === "all" || c.caseType === caseTypeFilter) && caseMatchesQ(c) && routeMatches(c)));
+  const visibleNationalCases = maybeSortByDeadline(nationalEntityCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
+  const visibleTcpaMarketerCases = maybeSortByDeadline(tcpaMarketerCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
   const showTcpaMarketers = visibleTcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
   const showNationalEntities = visibleNationalCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
+  // Route counts across all three catalogs (a defendant can appear in one only).
+  const allCaseRows = [...pacerCases, ...nationalEntityCases, ...tcpaMarketerCases];
+  const claimableCount = allCaseRows.filter(c => filableSettlements(c.claimPath).length > 0).length;
+  const automaticCount = allCaseRows.filter(c => settlementsOfType(c.claimPath, "automatic_payment").length > 0).length;
+  const rollingCount   = allCaseRows.filter(c => settlementsOfType(c.claimPath, "rolling").length > 0).length;
 
   return (
     <div style={{ padding: "24px 28px", maxWidth: 1200 }}>
@@ -1988,12 +2208,25 @@ export default function CreditPortfolio() {
                 Clear
               </button>
             )}
-            <button
-              onClick={() => setCaseTypeFilter("all")}
-              style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: caseTypeFilter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
-            >
-              All ({pacerCases.length + tcpaMarketerCases.length + nationalEntityCases.length} defendants)
-            </button>
+            {/* Recovery-route filter — "Claimable now" is the credit.com pitch
+                list: verified open claim windows with a live deadline. */}
+            {[["all", `All (${pacerCases.length + tcpaMarketerCases.length + nationalEntityCases.length} defendants)`, "#2D7D95"],
+              ["claimable", `Claimable now (${claimableCount})`, "#22c55e"],
+              ["automatic", `Automatic payment (${automaticCount})`, "#8b5cf6"],
+              ["rolling", `Mass-arb (${rollingCount})`, "#0ea5e9"],
+            ].map(([key, label, color]) => (
+              <button
+                key={key}
+                onClick={() => { setRouteFilter(key); if (key === "all") setCaseTypeFilter("all"); }}
+                title={key === "claimable" ? "Open settlement claim windows — a claim can be filed today on the administrator site"
+                  : key === "automatic" ? "Settled with automatic payment — class fixed, nothing to file"
+                  : key === "rolling" ? "Rolling mass-arbitration sign-ups — no court deadline" : undefined}
+                style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: `1px solid ${routeFilter === key ? color : "var(--border)"}`, background: routeFilter === key ? color : "var(--bg-surface)", color: routeFilter === key ? "#fff" : "var(--text-1)", cursor: "pointer", fontWeight: routeFilter === key ? 700 : 400 }}
+              >
+                {label}
+              </button>
+            ))}
+            <span style={{ width: 1, height: 18, background: "var(--border)", margin: "0 2px" }} />
             {pacerCaseTypes.map(ct => {
               const ctCount = ct === "TCPA"
                 ? pacerCases.filter(c => c.caseType === "TCPA").length + tcpaMarketerCases.length
@@ -2027,6 +2260,11 @@ export default function CreditPortfolio() {
           {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !pacerLoading && (
             <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
               No defendants match "{caseQ.trim()}".
+            </div>
+          )}
+          {!cq && routeFilter !== "all" && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !pacerLoading && (
+            <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
+              No defendants with {routeFilter === "claimable" ? "an open claim window" : routeFilter === "automatic" ? "an automatic-payment settlement" : "a rolling mass-arb sign-up"} under the current case-type filter.
             </div>
           )}
 

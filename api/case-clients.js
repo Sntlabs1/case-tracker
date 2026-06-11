@@ -215,8 +215,12 @@ export default async function handler(req, res) {
         });
       }
       if (total > 0) {
+        // Always filter by sigMatches: the casepeople index is ZADD-only, so a
+        // member whose record was re-derived after the last sweep may no longer
+        // carry this defendant's signal — without the filter such stale members
+        // render as client rows with an empty signals[] array.
         const { found, nextCursor, exhausted } = await cursorPage(
-          `casepeople:${token}`, cursor, limit, sigMatches, !!caseType
+          `casepeople:${token}`, cursor, limit, sigMatches, true
         );
         const consumed = nextCursor.reduce((a, b) => a + b, 0);
         return res.status(200).json({

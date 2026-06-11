@@ -1,0 +1,348 @@
+{
+  "_meta": {
+    "built": "2026-06-10",
+    "purpose": "Wave-2 expansion of the open-settlement catalog: full sweep of classaction.org/settlements + openclassactions.com on 2026-06-10. Complements (does not replace) open-settlements-2026-06.json wave-1. Filtered for relevance to the 10M-person credit.com/Lexington Law population. Excluded: employment/wage-hour classes, WA job-posting cases, single-employer ERISA, hyper-local property cases.",
+    "verification": "Entries marked verified:false carry aggregator-reported terms only; verify deadline/fund/eligibility on administrator site before outreach.",
+    "tiers": {
+      "1": "field-provable from credit data (creditor + account type + date window)",
+      "2": "proxy + attestation (relationship plausible from data; gating fact attested or administrator-confirmed)"
+    }
+  },
+  "high_value_population_plays": [
+    {
+      "defendant": "Western Union",
+      "settlement": "DOJ/FTC Western Union Remission — Phase 3",
+      "fund": "$586,000,000",
+      "deadline": "2026-08-19",
+      "perClaimant": "Up to full transfer amount",
+      "classDefinition": "Anyone who sent a fraud-induced money transfer via Western Union 2004-01-01 to 2020-03-31",
+      "proofRequired": "Transfer details (MTCN helps but petition possible without)",
+      "dataMapping": {"tier": 2, "note": "Pure population-overlap/attestation play across the full contactable base; subprime population skews toward WU usage. High per-claimant ceiling."},
+      "verified": false
+    },
+    {
+      "defendant": "Visa Inc.",
+      "settlement": "Burke v. Visa — nonbank ATM access fee antitrust",
+      "fund": "$167,500,000",
+      "deadline": "pending final approval — monitor",
+      "perClaimant": "Pro rata",
+      "classDefinition": "Persons who paid an unreimbursed surcharge at a nonbank ATM in the U.S. since 2007-10-24",
+      "proofRequired": "Expected minimal for base tier",
+      "dataMapping": {"tier": 2, "note": "Near-universal class for a subprime/underbanked base (heavy nonbank-ATM users). Watch for claim window opening."},
+      "verified": false
+    },
+    {
+      "defendant": "RealPage + landlord co-defendants",
+      "settlement": "In re RealPage Rental Software Antitrust (MDL 3071) — partial settlements",
+      "fund": "$141,800,000 (accumulating partial settlements)",
+      "deadline": "pending — claim window not yet open",
+      "perClaimant": "TBD",
+      "classDefinition": "Renters of multifamily housing priced via RealPage revenue-management software",
+      "proofRequired": "TBD",
+      "dataMapping": {"tier": 2, "note": "Renters = majority of the credit-repair base; addresses in file can be matched to RealPage-managed properties when class lists publish. Register for monitoring now."},
+      "verified": false
+    },
+    {
+      "defendant": "SunTrust (Truist)",
+      "settlement": "SunTrust overdraft fee settlement",
+      "fund": "$240,000,000",
+      "deadline": "TBA — monitor",
+      "perClaimant": "TBD",
+      "classDefinition": "SunTrust deposit customers charged challenged overdraft fees",
+      "proofRequired": "TBD",
+      "dataMapping": {"tier": 2, "note": "Deposit accounts not in tradelines; proxy = SunTrust/Truist credit relationships + geographic footprint (Southeast). Monitor for claim window."},
+      "verified": false
+    },
+    {
+      "defendant": "Google LLC",
+      "settlement": "Google Play Store antitrust (states + consumers)",
+      "fund": "$700,000,000",
+      "deadline": "automatic payments",
+      "perClaimant": "$2+ automatic",
+      "classDefinition": "Google Play Store consumers (purchases 2016-2023)",
+      "proofRequired": "None — automatic",
+      "dataMapping": {"tier": 2, "note": "Frictionless/automatic; relevant as no-action recovery messaging for the base."},
+      "verified": false
+    },
+    {
+      "defendant": "Google LLC",
+      "settlement": "Google Assistant voice privacy",
+      "fund": "$68,000,000",
+      "deadline": "2026-08-27",
+      "perClaimant": "Pro rata",
+      "classDefinition": "Google Home/Nest/Pixel device owners and Assistant users",
+      "proofRequired": "Minimal",
+      "dataMapping": {"tier": 2, "note": "Broad-population attestation play."},
+      "verified": false
+    },
+    {
+      "defendant": "National Association of Realtors / RE/MAX / Keller Williams / Anywhere",
+      "settlement": "Broker commission antitrust settlements (Burnett/Moehrl-related)",
+      "fund": "$28,500,000 (RE/MAX+KW tranche; NAR $418M separate)",
+      "deadline": "2026-08-25",
+      "perClaimant": "Pro rata",
+      "classDefinition": "Home sellers who listed on an MLS and paid buyer-broker commission (aggregators conflict on buyer vs seller — verify)",
+      "proofRequired": "Sale records help; class lists from MLS data",
+      "dataMapping": {"tier": 1, "note": "Mortgage tradelines + closed dates identify home-sale events in window. Verify class side (seller) and covered MLSs before sizing."},
+      "verified": false
+    },
+    {
+      "defendant": "United / Southwest / Delta / American",
+      "settlement": "Airlines reward program settlement",
+      "fund": "$60,000,000",
+      "deadline": "pending — monitor",
+      "perClaimant": "TBD",
+      "classDefinition": "Airline loyalty-program members affected by devaluation practices",
+      "proofRequired": "TBD",
+      "dataMapping": {"tier": 2, "note": "Broad population; airline co-brand card tradelines (Citi/Barclays/Chase co-brands) are a Tier-1 proxy for membership."},
+      "verified": false
+    },
+    {
+      "defendant": "Domestic airlines (price fixing)",
+      "settlement": "Domestic Flight Antitrust",
+      "fund": "varies",
+      "deadline": "varies — monitor",
+      "perClaimant": "Pro rata",
+      "classDefinition": "Domestic airline ticket buyers 2011-2018",
+      "proofRequired": "Minimal",
+      "dataMapping": {"tier": 2, "note": "Broad-population play."},
+      "verified": false
+    },
+    {
+      "defendant": "Beef packers (indirect purchasers)",
+      "settlement": "Consumer beef price-fixing settlement",
+      "fund": "$87,500,000",
+      "deadline": "2026-06-30",
+      "perClaimant": "Varies; no proof required for base tier",
+      "classDefinition": "Persons who bought beef for personal consumption 2014-08 to 2019-12",
+      "proofRequired": "None for base tier",
+      "dataMapping": {"tier": 2, "note": "Universal-population attestation claim; 6/30 deadline is close — good immediate outreach item."},
+      "verified": false
+    },
+    {
+      "defendant": "Teva/Granules/Heritage (metformin)",
+      "settlement": "Generic metformin NDMA settlement",
+      "fund": "$5,550,000",
+      "deadline": "2026-07-10",
+      "perClaimant": "Pro rata",
+      "classDefinition": "Generic metformin purchasers 2015-07 to 2020-06",
+      "proofRequired": "Minimal",
+      "dataMapping": {"tier": 2, "note": "Large diabetic population overlap; attestation."},
+      "verified": false
+    },
+    {
+      "defendant": "Tinder (Match Group)",
+      "settlement": "Tinder age discrimination (California)",
+      "fund": "$60,500,000",
+      "deadline": "2026-08-18",
+      "perClaimant": "$100-$300 est.",
+      "classDefinition": "California Tinder Plus/Gold subscribers age 29+ charged higher prices 2015-2019",
+      "proofRequired": "Subscription records / account match",
+      "dataMapping": {"tier": 2, "note": "CA subset of base, age 29+ — demographable from identity data + attestation."},
+      "verified": false
+    }
+  ],
+  "banking_credit_lending": [
+    {
+      "defendant": "BMO Bank (Wisconsin)",
+      "settlement": "Repossession-notice settlement (WI)",
+      "deadline": "2026-06-17",
+      "classDefinition": "Wisconsin consumers who received BMO repossession notices 2021-2026",
+      "dataMapping": {"tier": 1, "note": "BMO/Bank of the West auto tradelines + WI address + repo/charge-off status flags. Direct field match — size cohort now; deadline 1 week."},
+      "verified": false
+    },
+    {
+      "defendant": "Sarasota Memorial Healthcare (Florida)",
+      "settlement": "Debt-collection contact settlement (FL)",
+      "deadline": "2026-07-10",
+      "classDefinition": "Florida residents contacted about Sarasota Memorial debts 2017-06 to 2026-05",
+      "dataMapping": {"tier": 1, "note": "Medical-collection tradelines naming Sarasota Memorial / its collectors + FL address."},
+      "verified": false
+    },
+    {
+      "defendant": "Equity Bank (KS/MO/AR/OK)",
+      "settlement": "Overdraft & NSF fee settlement",
+      "fund": "$1,000,000",
+      "deadline": "2026-06-07 (automatic for class)",
+      "classDefinition": "Equity Bank customers in KS/MO/AR/OK charged challenged OD/NSF fees",
+      "dataMapping": {"tier": 2, "note": "Automatic payment; informational."},
+      "verified": false
+    },
+    {
+      "defendant": "South Central Bank (Kentucky)",
+      "settlement": "Overdraft fee settlement",
+      "fund": "$2,800,000",
+      "deadline": "automatic / 2026-06-17 per classaction.org",
+      "classDefinition": "Overdraft fee payers Oct 2009 - Dec 2025",
+      "dataMapping": {"tier": 2, "note": "Automatic; KY footprint."},
+      "verified": false
+    },
+    {
+      "defendant": "HSBC Bank USA",
+      "settlement": "HSBC Direct savings interest settlement",
+      "fund": "$495,000",
+      "deadline": "2026-08-20",
+      "perClaimant": "$10 minimum",
+      "classDefinition": "HSBC Direct savings customers 2014-03-25 to 2021-02-20",
+      "dataMapping": {"tier": 2, "note": "Small fund; HSBC relationship proxy. Same theory as Capital One 360 — savings-rate two-tiering."},
+      "verified": false
+    },
+    {
+      "defendant": "Country Bank for Savings",
+      "settlement": "Account fee settlement",
+      "deadline": "2026-06-22",
+      "classDefinition": "Account holders charged challenged fees 2019-2025",
+      "dataMapping": {"tier": 2, "note": "Small regional; low priority."},
+      "verified": false
+    },
+    {
+      "defendant": "Robinhood",
+      "settlement": "Order-flow execution settlement",
+      "fund": "$2,000,000",
+      "deadline": "2026-07-13",
+      "perClaimant": "~$17.60",
+      "classDefinition": "Customers with qualifying trades 2016-09 to 2018-09",
+      "dataMapping": {"tier": 2, "note": "Attestation; younger subset of base."},
+      "verified": false
+    }
+  ],
+  "auto_matchable_by_tradeline": [
+    {
+      "defendant": "Hyundai / Kia",
+      "settlement": "Airbag control unit settlement",
+      "perClaimant": "$150-$350+",
+      "deadline": "2027-03-29",
+      "classDefinition": "Owners/lessees of affected models as of April 2025",
+      "dataMapping": {"tier": 1, "note": "Hyundai Capital/Kia Finance tradelines (measured cohorts ~44K/54K LEX) + model-year window. Long runway — pipeline case alongside the theft settlement."},
+      "verified": false
+    },
+    {
+      "defendant": "Toyota",
+      "settlement": "Airbag control unit settlement",
+      "fund": "$78,500,000",
+      "deadline": "2026-12-16",
+      "classDefinition": "2011-2019 Toyota owners/lessees (affected ACUs)",
+      "dataMapping": {"tier": 1, "note": "Toyota Motor Credit tradelines (373 PACER cases already indexed; cohort sizable) + vintage window."},
+      "verified": false
+    },
+    {
+      "defendant": "Mercedes-Benz",
+      "settlement": "BlueTEC diesel AEM settlement",
+      "perClaimant": "$2,000 + software fix",
+      "deadline": "2026-09-30",
+      "classDefinition": "2009-2016 BlueTEC diesel owners/lessees",
+      "dataMapping": {"tier": 1, "note": "Mercedes-Benz Financial tradelines + vintage."},
+      "verified": false
+    },
+    {
+      "defendant": "Nissan",
+      "settlement": "CVT transmission settlement",
+      "fund": "$10,000,000",
+      "perClaimant": "$1,500-$5,000",
+      "deadline": "rolling (30 days after repair) / varies",
+      "classDefinition": "2014-2018 Rogue/Pathfinder/QX60 owners with CVT failures",
+      "dataMapping": {"tier": 1, "note": "Nissan Motor Acceptance tradelines (304 PACER cases indexed) + vintage; repair docs from claimant."},
+      "verified": false
+    },
+    {
+      "defendant": "Ford",
+      "settlement": "PowerShift transmission (Focus/Fiesta)",
+      "fund": "$30,000,000",
+      "perClaimant": "up to $2,325",
+      "deadline": "varies",
+      "classDefinition": "2011-2016 Focus/Fiesta owners with transmission problems",
+      "dataMapping": {"tier": 1, "note": "Ford Motor Credit tradelines (437 PACER cases indexed) + model/vintage."},
+      "verified": false
+    },
+    {
+      "defendant": "Kia",
+      "settlement": "Engine failure settlement (Theta II et al.)",
+      "deadline": "varies / ongoing",
+      "classDefinition": "2010-2020 Kia owners/lessees with engine issues",
+      "dataMapping": {"tier": 1, "note": "Kia Finance tradelines + vintage."},
+      "verified": false
+    },
+    {
+      "defendant": "GM",
+      "settlement": "Duramax fuel pump (CP4) settlement",
+      "deadline": "varies",
+      "classDefinition": "Duramax diesel truck buyers in specified states",
+      "dataMapping": {"tier": 1, "note": "GM Financial tradelines + truck model proxy."},
+      "verified": false
+    }
+  ],
+  "data_breach_consumer_financial": [
+    {"defendant": "Comcast/Xfinity", "fund": "$117,500,000", "deadline": "2026-08-14", "perClaimant": "$50-$10,000", "note": "Already in wave-1; confirmed in sweep."},
+    {"defendant": "Labcorp (AMCA)", "fund": "$35,000,000", "deadline": "2026-09-03", "perClaimant": "$50-$5,000", "note": "Patients whose info went to AMCA 2018-08 to 2019-03. Medical-collection tradelines naming AMCA/Retrieval-Masters = Tier-1 screen."},
+    {"defendant": "Flagstar Bank", "fund": "$31,500,000", "deadline": "2026-08-11", "note": "wave-1 confirmed."},
+    {"defendant": "Patelco Credit Union", "deadline": "2026-06-11", "perClaimant": "$100-$5,000", "note": "June 2024 breach; Patelco tradelines + CA. Deadline tomorrow — flag only."},
+    {"defendant": "SouthState Bank", "fund": "$1,500,000", "deadline": "2026-06-15", "perClaimant": "up to $3,500", "note": "Feb 2024 breach; Southeast footprint."},
+    {"defendant": "Avis Rent A Car", "deadline": "2026-06-21", "perClaimant": "up to $5,000", "note": "Aug 2024 breach."},
+    {"defendant": "Krispy Kreme", "fund": "$1,600,000", "deadline": "2026-06-22", "perClaimant": "$75-$3,500", "note": "Nov 2024 breach."},
+    {"defendant": "CSC ServiceWorks", "deadline": "2026-07-02", "perClaimant": "up to $5,000", "note": "Aug 2024 breach."},
+    {"defendant": "Pawn America", "fund": "$3,185,000", "deadline": "2026-07-06", "perClaimant": "$30-$5,000", "note": "Subprime-relevant customer base overlap."},
+    {"defendant": "Union Bank and Trust (MOVEit)", "deadline": "2026-07-21", "perClaimant": "$100-$12,500", "note": "MOVEit MDL 3083 member settlement."},
+    {"defendant": "Fidelity Investments", "fund": "$2,500,000", "deadline": "2026-07-27", "note": "wave-1 confirmed."},
+    {"defendant": "Circle K", "deadline": "2026-09-03", "perClaimant": "$50-$2,000", "note": "May 2024 incident."},
+    {"defendant": "Lemonade Insurance", "fund": "$10,500,000", "deadline": "2026-09-08", "perClaimant": "up to $10,000", "note": "Driver-license exposure via quote platform 2023-04 to 2024-09."},
+    {"defendant": "Datavant Group", "deadline": "2026-08-18", "perClaimant": "up to $5,000", "note": "May 2024 breach."},
+    {"defendant": "PowerSchool (Naviance)", "deadline": "2026-07-27", "note": "Student-privacy companion to PowerSchool MDL 3149 already indexed."},
+    {"defendant": "LastPass", "fund": "$24,450,000", "deadline": "2026-07-02", "note": "wave-1 confirmed."},
+    {"defendant": "EMM Loans", "deadline": "2026-08-17", "perClaimant": "$50-$4,000", "note": "Mortgage lender breach Feb 2024 — mortgage tradeline screen possible."},
+    {"defendant": "LA Financial Credit Union", "deadline": "2026-08-05", "perClaimant": "$50-$5,000", "note": "June 2024 breach."},
+    {"defendant": "Cross Valley FCU", "deadline": "2026-07-18", "perClaimant": "$50-$5,000", "note": "Dec 2024 breach."},
+    {"defendant": "Absolute Dental", "fund": "$3,300,000", "deadline": "2026-06-18", "perClaimant": "up to $5,000", "note": "~1.2M affected."},
+    {"defendant": "Motility Software", "deadline": "2026-08-07", "perClaimant": "$75-$5,000", "note": "760K affected."},
+    {"defendant": "Complete Payroll Solutions", "fund": "$2,600,000", "deadline": "2026-06-18", "note": "~377K affected."},
+    {"defendant": "Family Medicine Centers (FMC)", "deadline": "2026-08-31", "perClaimant": "$75-$5,000", "note": "266K affected, July 2022 breach."}
+  ],
+  "privacy_tcpa_facta": [
+    {"defendant": "Google Play (children)", "fund": "$8,250,000", "deadline": "2026-09-14", "perClaimant": "$40-$200", "classDefinition": "App users under 13, 2015-04 onward (parents claim)", "note": "Parent-demographic outreach."},
+    {"defendant": "Hy Cite / Royal Prestige", "fund": "$4,750,000", "deadline": "2026-07-08", "note": "wave-1 confirmed."},
+    {"defendant": "Athena Bitcoin", "fund": "$4,500,000", "deadline": "2026-06-30", "note": "wave-1 confirmed."},
+    {"defendant": "Motive Technologies", "deadline": "2026-07-06", "perClaimant": "$50 voucher", "note": "Prerecorded calls; voucher only — low priority."},
+    {"defendant": "Chapter Aesthetic Studio", "fund": "$1,320,000", "deadline": "2026-06-11", "perClaimant": "up to $55/text", "note": "Texts after STOP; deadline tomorrow."},
+    {"defendant": "Toyota (TCPA)", "fund": "$889,000", "deadline": "pending", "note": "Prerecorded calls; monitor."},
+    {"defendant": "BCBS (robocalls)", "fund": "$2,670,000", "deadline": "pending distribution", "note": "Monitor."},
+    {"defendant": "Sprouts Farmers Market (FACTA)", "fund": "$5,000,000", "deadline": "2026-08-05", "note": "Card digits on receipts."},
+    {"defendant": "Hustler/HH-Entertainment (FACTA)", "deadline": "2026-07-27", "perClaimant": "$23", "note": "FACTA receipts 2018-2025."},
+    {"defendant": "European Wax Center", "fund": "$5,000,000", "deadline": "2026-06-30", "perClaimant": "up to $10", "note": "Website session-recording privacy."},
+    {"defendant": "Duke Health (MyChart)", "fund": "$3,740,000", "deadline": "2026-08-16", "note": "Pixel/portal privacy 2019-2022."},
+    {"defendant": "Willow TV (VPPA)", "fund": "$850,000", "deadline": "2026-07-21", "note": "Video privacy."}
+  ],
+  "ftc_redress": [
+    {
+      "defendant": "Amazon (Prime)",
+      "settlement": "FTC dark-patterns subscription settlement",
+      "fund": "$2,500,000,000 ($1.5B consumer redress)",
+      "deadline": "many paid automatically (2025-11 onward); claims process open 180 days for others (per FTC) — wave-1 listed 2026-07-27",
+      "perClaimant": "up to $51",
+      "classDefinition": "Prime enrollees via challenged flows 2019-06 to 2025-06 who used few benefits",
+      "claimsUrl": "https://www.subscriptionmembershipsettlement.com/",
+      "dataMapping": {"tier": 2, "note": "Universal-population play; email base outreach. Largest FTC redress ever."},
+      "verified": true
+    },
+    {
+      "defendant": "Epic Games (Fortnite)",
+      "settlement": "FTC unauthorized-charges/dark-patterns refunds",
+      "fund": "$245,000,000 + $126,000,000 tranche paying 2026-06-25/26",
+      "deadline": "2026-07-09 (extended claim deadline)",
+      "perClaimant": "varies",
+      "classDefinition": "Players charged for unwanted items 2017-2022, parents of minors with unauthorized card charges 2017-2018, accounts locked after disputes",
+      "claimsUrl": "https://www.ftc.gov/enforcement/refunds",
+      "dataMapping": {"tier": 2, "note": "Parents-of-gamers demographic; attestation; deadline 4 weeks out."},
+      "verified": true
+    }
+  ],
+  "monitor_not_yet_open": [
+    {"defendant": "Visa (Burke nonbank ATM)", "fund": "$167,500,000", "status": "preliminary approval stage"},
+    {"defendant": "RealPage MDL 3071", "fund": "$141,800,000 partial", "status": "claims not open"},
+    {"defendant": "SunTrust overdraft", "fund": "$240,000,000", "status": "deadline TBA"},
+    {"defendant": "Generic drugs end-payer antitrust", "fund": "$850,000,000", "status": "pending"},
+    {"defendant": "Fragrance end-user antitrust (IFF)", "fund": "$11,000,000", "status": "register for updates"},
+    {"defendant": "Hormel & Seaboard pork", "fund": "$7,300,000", "status": "pending"},
+    {"defendant": "SeaWorld pass auto-renewal", "fund": "$1,500,000", "status": "pending"},
+    {"defendant": "Airlines reward programs", "fund": "$60,000,000", "status": "pending"},
+    {"defendant": "Social media addiction (minors)", "status": "state-dependent; intake building nationally"}
+  ]
+}

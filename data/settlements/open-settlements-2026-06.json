@@ -1,0 +1,234 @@
+{
+  "_meta": {
+    "built": "2026-06-10",
+    "purpose": "Wave-1 catalog of consumer class action settlements relevant to the credit.com / Lexington Law population, for the credit.com recovery report. Organized by friction: 'frictionless' = already settled, class member gets paid with no/minimal action; 'claim_filing' = a claim must be submitted (workflow we run); 'mass_arb' = rolling individual-arbitration sign-up; 'structural' = recurring defendants where new claims can be originated.",
+    "tiers": {
+      "1": "field-provable: our data fields directly satisfy the class-definition elements (creditor + account type + date window)",
+      "2": "proxy + attestation: data establishes the plausible pool (relationship with defendant in period); the gating fact (received call/text/notice, event) must be attested by the claimant or confirmed by the administrator"
+    },
+    "cohort_counts_source": "casepeople sharded index (rederive v2, LEX + CCOM for capital one; others LEX until CCOM reprocess)",
+    "status": "wave 1 — sweep of Top Class Actions, ClassAction.org, openclassactions, settlement sites + administrator pages, 2026-06-10. Deeper per-settlement verification and cr_db sizing queries pending."
+  },
+  "frictionless": [
+    {
+      "defendant": "Capital One, N.A.",
+      "settlement": "In re Capital One 360 Savings Account Interest Rate Litigation",
+      "fund": "$425,000,000",
+      "status": "Final approval; automatic payments ~2026-07-21 by check/electronic",
+      "classDefinition": "Holders of Capital One 360 Savings accounts during the period Capital One offered the higher-rate 360 Performance Savings without converting/notifying existing 360 Savings customers (approx. Sept 2019 onward)",
+      "perClaimant": "Pro rata on lost interest; no claim form needed",
+      "actionNeeded": "None if address/payment info current; monitor for check. Exclusion already closed.",
+      "dataMapping": {"tier": 2, "note": "Deposit accounts do not appear on credit reports. Proxy = any Capital One relationship in file + outreach asking about 360 Savings. Cohort ceiling (any Capital One tradeline): 1,712,966."},
+      "sources": ["https://topclassactions.com/lawsuit-settlements/lawsuit-news/capital-one-425m-class-action-settlement-approved-over-savings-account-interest-claims/"]
+    },
+    {
+      "defendant": "Bank of America, N.A.",
+      "settlement": "7-Eleven FCTI ATM out-of-network balance-inquiry fees",
+      "fund": "$2,250,000",
+      "status": "OPEN — current accountholders paid automatically; former accountholders must file by 2026-06-29",
+      "classDefinition": "BofA accountholders charged more than one out-of-network balance inquiry fee in the same visit to an FCTI ATM at a 7-Eleven, 2018-05-01 to 2021-11-16, who did not get paid in Weiss v. FCTI",
+      "perClaimant": "Varies (fee refunds)",
+      "actionNeeded": "None for current accountholders; claim form for former ones",
+      "dataMapping": {"tier": 2, "note": "BofA relationship provable (cohort 333,611); the ATM event is not in credit data — attestation. Split current vs former accountholder matters."},
+      "sources": ["https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-25m-bank-of-america-7-eleven-atm-fees-class-action-settlement/"]
+    },
+    {
+      "defendant": "Navient Solutions / Navient Corp.",
+      "settlement": "CFPB v. Navient — $120M consumer redress",
+      "fund": "$120,000,000",
+      "status": "PAYING — administrator began mailing checks 2026-02-13; automatic, no claim",
+      "classDefinition": "Federal student loan borrowers harmed by Navient servicing failures (forbearance steering etc.) per CFPB order",
+      "perClaimant": "Varies; CFPB-determined",
+      "actionNeeded": "None; ensure current address with administrator (Epiq)",
+      "dataMapping": {"tier": 1, "note": "Navient student-loan tradeline directly identifies servicer relationship. Cohort: 451,340."},
+      "sources": ["https://www.claimdepot.com/settlements/cfpb-payments-navient"]
+    },
+    {
+      "defendant": "Midland Credit Management",
+      "settlement": "Leedeman v. MCM (California)",
+      "fund": "see case-intake workbook",
+      "status": "AUTOMATIC — CA class paid without claim form (optional digital-pay election)",
+      "classDefinition": "See data/case-intake/case-intake-platforms.xlsx Claim Requirements sheet",
+      "perClaimant": "Varies",
+      "actionNeeded": "None",
+      "dataMapping": {"tier": 1, "note": "MCM tradeline/collection + CA address. Cohort (national): 241,303; filter state=CA."},
+      "sources": ["data/case-intake/case-intake-platforms.xlsx"]
+    },
+    {
+      "defendant": "National Credit Adjusters, LLC",
+      "settlement": "Blackburn v. NCA (Virginia)",
+      "fund": "debt cancellation + tradeline deletion",
+      "status": "AUTOMATIC — relief applied without filing",
+      "classDefinition": "VA consumers per settlement (see case-intake workbook)",
+      "perClaimant": "Debt cancel + deletion",
+      "actionNeeded": "None",
+      "dataMapping": {"tier": 1, "note": "NCA collection tradeline + VA address."},
+      "sources": ["data/case-intake/case-intake-platforms.xlsx"]
+    }
+  ],
+  "claim_filing": [
+    {
+      "defendant": "PHH Mortgage / PHH Corp. and affiliates",
+      "settlement": "Munoz v. PHH Corp. — captive mortgage reinsurance kickbacks (RESPA)",
+      "fund": "fixed per-loan payments, no pro-rata reduction",
+      "deadline": "2026-08-11",
+      "perClaimant": "$875 per loan (fixed)",
+      "proofRequired": "Claim form; class list is loan-based",
+      "classDefinition": "Persons who obtained residential mortgage loans originated and/or acquired by PHH or affiliates 2007-01-01 to 2009-12-31, purchased private mortgage insurance, and whose loans were in PHH's captive mortgage reinsurance agreements (incl. successors/heirs/assigns)",
+      "claimsUrl": "https://www.phhmisettlement.com/",
+      "dataMapping": {"tier": 1, "note": "Mortgage tradeline with creditor ~ PHH AND open_date 2007-2009. PMI/captive-reinsurance element not visible in data but loan vintage + creditor is a strong screen; administrator list confirms. MEASURED 2026-06-10: PHH any-vintage = 29,679 LEX + 14,552 CCOM people; 2007-2009 vintage = 4,180 LEX + 1,624 CCOM (~5,800 combined, overlap not deduped) — at $875 fixed/loan that is a ~$5.1M claim ceiling before the captive-reinsurance screen. Ocwen (acquirer, context only): 52,681 LEX. Spellings: PHH MORTGAGE SERVICES / PHH MORT SVC / PHH MORTGAGE ICE CENTER.", "fields": ["creditor_name_raw/AccountHolder ~ PHH", "open_date in 2007..2009", "typ = mortgage"]},
+      "sources": ["https://www.phhmisettlement.com/", "https://www.classaction.org/news/phh-settlement-offers-875-payouts-to-resolve-class-action-over-alleged-mortgage-insurance-kickbacks"]
+    },
+    {
+      "defendant": "Flagstar Bank / Flagstar Bancorp",
+      "settlement": "2021 data breaches (Jan 2021 Accellion + Dec 2021) — $31.5M",
+      "fund": "$31,500,000",
+      "deadline": "2026-08-11",
+      "perClaimant": "~$60 cash (up to $599) no-proof tier; up to $25,000 documented losses; +$100 CA CCPA; 3yr credit monitoring",
+      "proofRequired": "Claim ID from mailed/emailed notice required to file; documented-loss tier needs receipts",
+      "classDefinition": "~2,187,170 U.S. individuals whose personal information was exposed in Flagstar's two 2021 cyberattacks",
+      "claimsUrl": "see notice / administrator",
+      "dataMapping": {"tier": 2, "note": "Flagstar mortgage/banking tradeline in 2020-2021 = plausible class member; gate is the breach notice (Claim ID). Workflow: locate notice or administrator lookup by name/address. MEASURED 2026-06-10: 24,158 LEX + 14,260 CCOM people with Flagstar tradelines (any window; spellings FLAGSTAR BANK / FLAGSTAR BK / NYCB AKA FLAGSTAR BANK). Class is 2.19M nationally, so expect a meaningful subset to hold Claim IDs.", "fields": ["creditor ~ flagstar", "lrd/open window 2019-2021"]},
+      "sources": ["https://www.classaction.org/news/31.5m-flagstar-bank-settlement-resolves-class-action-lawsuit-over-2021-data-breaches"]
+    },
+    {
+      "defendant": "Comcast Cable Communications (Xfinity)",
+      "settlement": "Citrix Bleed data breach (Oct 16-19, 2023) class settlement — Kroll administering",
+      "fund": "$117,500,000",
+      "deadline": "2026-08-14 (some sources report extension to 2026-09-14 — verify)",
+      "perClaimant": "$50 cash base; up to $10,000 documented losses",
+      "proofRequired": "No proof for $50 base tier; documentation for loss tier",
+      "classDefinition": "~31.6M U.S. individuals whose personal information was compromised in the Comcast/Xfinity breach of Oct 16-19, 2023",
+      "claimsUrl": "https://www.comcastbreachsettlement.com/",
+      "dataMapping": {"tier": 2, "note": "Xfinity is a utility/telecom relationship — usually NOT a tradeline. MEASURED 2026-06-10: only 4,492 LEX + 1,029 CCOM people show Comcast/Xfinity tradelines or collections. The real play is population overlap: ~31.6M national class against a 10M contactable base means roughly 1 in 10 of the base is plausibly a class member by national incidence — outreach/attestation channel, not creditor matching."},
+      "sources": ["https://www.classaction.org/settlements (8/14/26 row)"]
+    },
+    {
+      "defendant": "Fidelity Investments (FMR LLC)",
+      "settlement": "Aug 2024 data breach — $2.5M",
+      "fund": "$2,500,000",
+      "deadline": "2026-07-27",
+      "perClaimant": "~$100 base (+$50 CA); up to $5,000 documented",
+      "proofRequired": "Login ID + PIN from notice (administrator can resend)",
+      "classDefinition": "U.S. individuals whose financial account/routing numbers were exposed in the 2024-08-17..19 breach or who received notice (~77,000 people)",
+      "claimsUrl": "FidelityDataSettlement.com",
+      "dataMapping": {"tier": 2, "note": "Small class (77K). Fidelity not typically a tradeline. Low expected overlap — include for completeness only."},
+      "sources": ["https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-5m-fidelity-investment-data-breach-class-action-settlement/"]
+    },
+    {
+      "defendant": "Hy Cite Enterprises (Royal Prestige)",
+      "settlement": "TCPA prerecorded calls to non-customers — $4.75M",
+      "fund": "$4,750,000",
+      "deadline": "2026-07-08",
+      "perClaimant": "estimated $600-$1,000",
+      "proofRequired": "Claim form; attestation (verify whether phone-number matching against dialer records)",
+      "classDefinition": "U.S. residents who received an artificial/prerecorded voice call on a cell phone from Hy Cite 2020-10-22 to 2025-09-10 and were NOT Hy Cite customers",
+      "claimsUrl": "verify (dapeer.com lists; find administrator site)",
+      "dataMapping": {"tier": 2, "note": "Pure attestation — credit data cannot show call receipt; phone numbers on file enable administrator dialer-list matching. High per-claimant value makes outreach worthwhile."},
+      "sources": ["https://www.dapeer.com/open-settlements/hy-cite-tcpa-settlement", "https://www.claimdepot.com/settlements/hycite-tcpa-settlement"]
+    },
+    {
+      "defendant": "Register.com Inc.",
+      "settlement": "TCPA reassigned-number prerecorded calls — $1.5M",
+      "fund": "$1,500,000",
+      "deadline": "2026-06-15",
+      "perClaimant": "~$2,130 per affected number (court estimate)",
+      "proofRequired": "Proof of cell number that received the call",
+      "classDefinition": "Persons called by Register.com with artificial/prerecorded voice 2021-02-12 to 2025-11-24 after the number was permanently disconnected and listed in the FCC Reassigned Numbers Database",
+      "claimsUrl": "verify administrator",
+      "dataMapping": {"tier": 2, "note": "Very narrow (reassigned numbers). Phone numbers on file could be cross-checked, but 5-day window — likely skip unless trivial."},
+      "sources": ["https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/1-5m-register-com-robocalls-class-action-settlement/"]
+    },
+    {
+      "defendant": "Athena Bitcoin, Inc.",
+      "settlement": "Jackson v. Athena Bitcoin — TCPA/FTSA texts — $4.5M",
+      "fund": "$4,500,000",
+      "deadline": "2026-06-30",
+      "perClaimant": "share of fund",
+      "proofRequired": "Class Member ID from notice",
+      "classDefinition": "See case-intake workbook Claim Requirements sheet",
+      "claimsUrl": "see workbook",
+      "dataMapping": {"tier": 2, "note": "Notice-gated; phone match via administrator."},
+      "sources": ["data/case-intake/case-intake-platforms.xlsx"]
+    },
+    {
+      "defendant": "Genesis Financial Solutions (Concora Credit)",
+      "settlement": "Ford v. Genesis — Maryland unlicensed lending (interest/fees)",
+      "fund": "see workbook",
+      "deadline": "2026-06-29",
+      "perClaimant": "varies",
+      "proofRequired": "Claim form + mailed PIN",
+      "classDefinition": "Maryland consumers with Genesis-serviced accounts (see workbook)",
+      "claimsUrl": "see workbook",
+      "dataMapping": {"tier": 1, "note": "Genesis/Milestone tradeline + MD address. Cohort token: milestone genesis (indexed)."},
+      "sources": ["data/case-intake/case-intake-platforms.xlsx"]
+    },
+    {
+      "defendant": "Hyundai Motor America / Kia America",
+      "settlement": "Multistate immobilizer theft settlement ($4.5M) + $9M companion",
+      "fund": "$4,500,000 (+$9M)",
+      "deadline": "2027-03-31",
+      "perClaimant": "$375-$4,500 depending on theft loss tier",
+      "proofRequired": "Yes — vehicle ownership/lease, software-upgrade status, theft/attempt documentation (police report/insurance)",
+      "classDefinition": "Owners/lessees of 2011-2022 Hyundai/Kia vehicles without factory engine immobilizer, software upgrade installed or scheduled, qualifying theft/attempt on/after 2025-04-29 and before zinc-sleeve install or 2027-03-31",
+      "claimsUrl": "https://www.hyundaitheftsettlement.com/",
+      "dataMapping": {"tier": 2, "note": "Auto tradelines with Hyundai Capital/Kia Finance identify owners; theft event requires claimant docs. Long window = good pipeline case. MEASURED 2026-06-10: Hyundai finance = 44,385 LEX + 15,530 CCOM; Kia finance = 54,466 LEX + 15,386 CCOM (overlap between brands/populations not deduped). Model year 2011-2022 + turn-key ignition narrows further; financing dates ~2011-2022 are the proxy."},
+      "sources": ["https://www.hyundaitheftsettlement.com/", "https://www.classaction.org/news/4.5m-hyundai-kia-settlement-offers-financial-repair-benefits-to-owners-of-stolen-vehicles"]
+    },
+    {
+      "defendant": "Lakeview Loan Servicing / Bayview Asset Management / Pingora / Community Loan Servicing",
+      "settlement": "In re Lakeview Loan Servicing Data Breach Litigation (Oct 11, 2021 breach)",
+      "fund": "$26,000,000",
+      "deadline": "2026-06-22",
+      "perClaimant": "Pro rata cash + up to $5,000 documented out-of-pocket; extra pro rata for CA residents",
+      "proofRequired": "Claim form; documented-loss tier needs receipts; class = breach-notice recipients",
+      "classDefinition": "U.S. residents who received a notice from Bayview Asset Management, Lakeview Loan Servicing, Pingora Loan Servicing, or Community Loan Servicing that the Oct 11, 2021 breach potentially compromised their PII",
+      "claimsUrl": "https://lakeviewdatabreachsettlement.com/",
+      "dataMapping": {"tier": 2, "note": "MEASURED 2026-06-10: essentially absent from tradelines (~195 LEX matches, mostly UNRELATED 'Lakeview' credit unions/financial cos — name collision). Lakeview subservices via LoanCare, so it rarely appears as the reporting creditor. Outreach/attestation only; deprioritize given 6/22 deadline."},
+      "sources": ["https://www.classaction.org/settlements (6/22/26 row)"]
+    },
+    {
+      "defendant": "LastPass US LP",
+      "settlement": "2022 Data Security Incident Litigation",
+      "fund": "$24,450,000 ($8.2M cash fund + $16.25M crypto-theft pool)",
+      "deadline": "2026-07-02",
+      "perClaimant": "$25-$10,400 depending on tier; crypto-theft claims from separate pool",
+      "proofRequired": "Notice-gated (email notice from LastPass Nov-Dec 2022 or settlement notice); crypto claims need documentation",
+      "classDefinition": "U.S. persons/entities whose LastPass account data was exposed in the Aug-Nov 2022 incident and who had data stored at the time, per LastPass notice",
+      "claimsUrl": "https://www.lastpasssettlement.com/",
+      "dataMapping": {"tier": 2, "note": "No credit-data signal; outreach-only candidate for the email base."},
+      "sources": ["https://www.classaction.org/settlements (7/2/26 row)"]
+    },
+    {
+      "defendant": "Amazon.com (Prime)",
+      "settlement": "FTC dark-patterns enrollment case — consumer redress",
+      "fund": "FTC order",
+      "deadline": "2026-07-27",
+      "perClaimant": "up to $51",
+      "proofRequired": "No",
+      "classDefinition": "Consumers enrolled in Prime via challenged flows (FTC will define; many paid automatically, others claim)",
+      "claimsUrl": "FTC redress administrator",
+      "dataMapping": {"tier": 2, "note": "Universal-population play for the email base; no credit-data gate."},
+      "sources": ["https://www.classaction.org/settlements (7/27/26 row)"]
+    }
+  ],
+  "mass_arb": [
+    {
+      "defendant": "Exeter Finance, LLC",
+      "program": "Mass arbitration — undisclosed processing/convenience fees",
+      "status": "OPEN rolling sign-up, no deadline",
+      "perClaimant": "individual arbitration outcomes vary",
+      "dataMapping": {"tier": 1, "note": "Exeter auto tradeline directly identifies the relationship. Cohort: 235,993."},
+      "sources": ["data/case-intake/case-intake-platforms.xlsx"]
+    }
+  ],
+  "structural_recurring": [
+    {"defendant": "Credit One Bank", "basis": "TCPA + FDCPA recurring litigation", "cohort": 403156},
+    {"defendant": "Synchrony Bank", "basis": "TCPA autodialer collection calls — repeat defendant", "cohort": 549694},
+    {"defendant": "Wells Fargo", "basis": "TCPA collection robocalls — repeat defendant", "cohort": 392187},
+    {"defendant": "Santander Consumer USA", "basis": "Subprime auto — multistate AG settlements, repossession practices", "cohort": 556939},
+    {"defendant": "Westlake Financial", "basis": "FDCPA/repossession — Klare settlement closed 2026-05-18 but recurring", "cohort": 200689},
+    {"defendant": "Midland Credit Management", "basis": "FDCPA — perennial defendant; Leedeman CA automatic", "cohort": 241303},
+    {"defendant": "Navient", "basis": "Servicer misconduct — CFPB redress paying now; state cases recurring", "cohort": 451340}
+  ]
+}
