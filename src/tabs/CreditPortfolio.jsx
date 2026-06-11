@@ -451,6 +451,26 @@ function CaseTable({ rows, countLabel, countSub, onOpen }) {
                       {[c.category || c.entityType, (c.consumers ?? c.consumersInDb) ? `${fmtN(c.consumers ?? c.consumersInDb)} consumers in file` : null]
                         .filter(Boolean).join(" · ") || " "}
                     </div>
+                    {(() => {
+                      // Direct sign-up link to the settlement administrator —
+                      // the single thing an intake person needs from this row.
+                      const ps = fixedTermsSettlement(c.claimPath);
+                      if (!ps) return null;
+                      if (ps.claimsUrl) return (
+                        <a
+                          href={ps.claimsUrl} target="_blank" rel="noopener noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          style={{ display: "inline-block", marginTop: 5, fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#22c55e18", color: "#22c55e", border: "1px solid #22c55e40", fontWeight: 700, textDecoration: "none" }}
+                        >
+                          {ps.windowType === "automatic_payment" ? "Settlement site ↗" : "File claim ↗"}
+                        </a>
+                      );
+                      return (
+                        <div style={{ marginTop: 5, fontSize: 10, color: "var(--text-5)" }}>
+                          {ps.windowType === "automatic_payment" ? "automatic — no sign-up exists" : "portal unverified — see case detail"}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td style={{ padding: "12px 14px", verticalAlign: "top", color: "var(--text-3)", maxWidth: 260, lineHeight: 1.45 }}>
                     <span style={{ color: cColor, fontWeight: 600 }}>{CASE_LABELS[c.caseType] || c.caseType}</span>

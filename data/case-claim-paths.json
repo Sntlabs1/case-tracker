@@ -3,9 +3,9 @@
   "built": "2026-06-11",
   "tokens": 668,
   "statusCounts": {
-   "claim_window": 133,
+   "claim_window": 132,
    "joinable_litigation": 368,
-   "monitor_only": 16,
+   "monitor_only": 17,
    "none": 151
   },
   "caseTypePaths": {
@@ -4212,34 +4212,11 @@
    "tcpaOpenDockets": 0
   },
   "hillcrest convalescent": {
-   "status": "claim_window",
-   "liveSettlements": [
-    {
-     "name": "Hillcrest Convalescent Center Data Breach Settlement",
-     "windowType": "open_claim_window",
-     "deadline": "2026-08-26",
-     "verified": true,
-     "source": "breach-open",
-     "adminVerified": false,
-     "verifiedOn": "2026-06-11",
-     "claimsUrl": "https://openclassactions.com/settlements/hillcrest-convalescent-center-data-breach-class-action-settlement-notice.php",
-     "administrator": "Settlement Administrator",
-     "fund": "Not disclosed",
-     "perClaimant": "$50 cash (no proof) or documented losses up to $2,500 + credit monitoring",
-     "classDefinition": "Individuals whose data was exposed in the June 2024 Hillcrest Convalescent Center incident (~106,194 people).",
-     "claimFormRequired": true,
-     "importantDates": {
-      "claimDeadline": "2026-08-26",
-      "optOutDeadline": null,
-      "objectionDeadline": null,
-      "fairnessHearing": null,
-      "paymentDate": null
-     },
-     "whatToProvide": "Claim via official settlement site (lookup by name / last-4 SSN / email).",
-     "notes": "Portal URL not captured in sweep \u2014 confirm before outreach."
-    }
+   "status": "monitor_only",
+   "liveSettlements": [],
+   "monitorSettlements": [
+    "Hillcrest Convalescent Center Data Breach Settlement"
    ],
-   "monitorSettlements": [],
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 0,
@@ -4941,12 +4918,12 @@
      "deadline": "2026-08-24",
      "verified": true,
      "source": "breach-open",
-     "adminVerified": false,
+     "adminVerified": true,
      "verifiedOn": "2026-06-11",
-     "claimsUrl": "https://openclassactions.com/settlements/lakeview-health-data-breach-settlement.php",
+     "claimsUrl": "https://www.lakeviewhealthsettlement.com/",
      "administrator": "Settlement Administrator (Santa Ana) \u2014 1-833-386-6497, info@LakeviewHealthsettlement.com",
-     "fund": "Not disclosed",
-     "perClaimant": "Cash payment per settlement terms",
+     "fund": "Not disclosed (10,772-person class)",
+     "perClaimant": "$50 cash OR up to $2,000 ordinary + $5,000 extraordinary losses + $20/hr x 4 lost time; 1 yr monitoring",
      "classDefinition": "Individuals affected by the Lakeview Health Systems data breach (notice recipients).",
      "claimFormRequired": true,
      "importantDates": {
@@ -4957,7 +4934,7 @@
       "paymentDate": null
      },
      "whatToProvide": "Claim form by 8/24.",
-     "notes": "DISTINCT from Lakeview Loan Servicing (6/22 deadline). Portal URL not captured \u2014 confirm before outreach."
+     "notes": "Skov v. Lakeview Health Systems. DISTINCT from Lakeview Loan Servicing."
     }
    ],
    "monitorSettlements": [],
@@ -5116,7 +5093,7 @@
       "paymentDate": null
      },
      "whatToProvide": "Claim form online or by mail by 9/08.",
-     "notes": "CAUTION: lemonadeprivacysettlement.com is a DIFFERENT (older) Lemonade case. Driver's-license portal URL not captured \u2014 confirm with Kroll before outreach."
+     "notes": "Official driver's-license-breach portal NOT located (Kroll-administered, 833-447-6429). lemonadeprivacysettlement.com is a DIFFERENT older case. Confirm with Kroll before outreach."
     }
    ],
    "monitorSettlements": [],
@@ -6332,9 +6309,9 @@
      "deadline": "2026-08-11",
      "verified": true,
      "source": "breach-open",
-     "adminVerified": false,
+     "adminVerified": true,
      "verifiedOn": "2026-06-11",
-     "claimsUrl": "https://openclassactions.com/settlements/onsite-mammography-data-breach-class-action-settlement.php",
+     "claimsUrl": "http://onsitesettlement.pnclassaction.com",
      "administrator": "Settlement Administrator (Baton Rouge) \u2014 1-855-389-9238, info@OnsiteSettlement.com",
      "fund": "$2,530,000",
      "perClaimant": "Documented losses up to $5,000 or pro rata cash; 3 yrs monitoring",
@@ -6348,7 +6325,7 @@
       "paymentDate": null
      },
      "whatToProvide": "Claim form by 8/11.",
-     "notes": "Portal likely OnsiteSettlement.com \u2014 confirm before outreach."
+     "notes": "Portal from TCA article (P&N class action platform)."
     }
    ],
    "monitorSettlements": [],
@@ -6697,8 +6674,9 @@
      "deadline": "2026-07-27",
      "verified": true,
      "source": "wave2:data_breach_consumer_financial",
-     "adminVerified": false,
+     "adminVerified": true,
      "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://powerschoolnaviancesettlement.com/",
      "administrator": "Kroll Settlement Administration LLC",
      "fund": "$17,250,000",
      "perClaimant": "Equal pro rata share",
@@ -6712,7 +6690,7 @@
       "paymentDate": null
      },
      "whatToProvide": "Claim form (online fastest); parent/guardian filing for minors.",
-     "notes": "Deadline extended to 7/27. Official portal URL not captured in sweep \u2014 Kroll-hosted; confirm before outreach."
+     "notes": "Official portal: Q.J. v. PowerSchool Holdings (Kroll). Claim deadline extended to 2026-07-27."
     }
    ],
    "monitorSettlements": [],

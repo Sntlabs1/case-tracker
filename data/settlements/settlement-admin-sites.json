@@ -1282,7 +1282,7 @@
     "student-privacy"
    ],
    "settlement": "PowerSchool/Naviance Student Privacy Settlement",
-   "claimsUrl": null,
+   "claimsUrl": "https://powerschoolnaviancesettlement.com/",
    "administrator": "Kroll Settlement Administration LLC",
    "fund": "$17,250,000",
    "perClaimant": "Equal pro rata share",
@@ -1298,9 +1298,9 @@
    },
    "whatToProvide": "Claim form (online fastest); parent/guardian filing for minors.",
    "documentsUrl": null,
-   "adminVerified": false,
+   "adminVerified": true,
    "verifiedOn": "2026-06-11",
-   "notes": "Deadline extended to 7/27. Official portal URL not captured in sweep \u2014 Kroll-hosted; confirm before outreach."
+   "notes": "Official portal: Q.J. v. PowerSchool Holdings (Kroll). Claim deadline extended to 2026-07-27."
   },
   {
    "tokens": [
@@ -1394,7 +1394,7 @@
     "onsite"
    ],
    "settlement": "Onsite Mammography (Onsite Women's Health) Data Settlement",
-   "claimsUrl": null,
+   "claimsUrl": "http://onsitesettlement.pnclassaction.com",
    "administrator": "Settlement Administrator (Baton Rouge) \u2014 1-855-389-9238, info@OnsiteSettlement.com",
    "fund": "$2,530,000",
    "perClaimant": "Documented losses up to $5,000 or pro rata cash; 3 yrs monitoring",
@@ -1410,9 +1410,9 @@
    },
    "whatToProvide": "Claim form by 8/11.",
    "documentsUrl": null,
-   "adminVerified": false,
+   "adminVerified": true,
    "verifiedOn": "2026-06-11",
-   "notes": "Portal likely OnsiteSettlement.com \u2014 confirm before outreach."
+   "notes": "Portal from TCA article (P&N class action platform)."
   },
   {
    "tokens": [
@@ -1620,10 +1620,10 @@
     "lakeview health"
    ],
    "settlement": "Lakeview Health Systems Data Incident Settlement",
-   "claimsUrl": null,
+   "claimsUrl": "https://www.lakeviewhealthsettlement.com/",
    "administrator": "Settlement Administrator (Santa Ana) \u2014 1-833-386-6497, info@LakeviewHealthsettlement.com",
-   "fund": "Not disclosed",
-   "perClaimant": "Cash payment per settlement terms",
+   "fund": "Not disclosed (10,772-person class)",
+   "perClaimant": "$50 cash OR up to $2,000 ordinary + $5,000 extraordinary losses + $20/hr x 4 lost time; 1 yr monitoring",
    "classDefinition": "Individuals affected by the Lakeview Health Systems data breach (notice recipients).",
    "windowType": "open_claim_window",
    "claimFormRequired": true,
@@ -1636,9 +1636,9 @@
    },
    "whatToProvide": "Claim form by 8/24.",
    "documentsUrl": null,
-   "adminVerified": false,
+   "adminVerified": true,
    "verifiedOn": "2026-06-11",
-   "notes": "DISTINCT from Lakeview Loan Servicing (6/22 deadline). Portal URL not captured \u2014 confirm before outreach."
+   "notes": "Skov v. Lakeview Health Systems. DISTINCT from Lakeview Loan Servicing."
   },
   {
    "tokens": [
@@ -1683,7 +1683,7 @@
    "fund": "Not disclosed",
    "perClaimant": "$50 cash (no proof) or documented losses up to $2,500 + credit monitoring",
    "classDefinition": "Individuals whose data was exposed in the June 2024 Hillcrest Convalescent Center incident (~106,194 people).",
-   "windowType": "open_claim_window",
+   "windowType": "monitor",
    "claimFormRequired": true,
    "importantDates": {
     "claimDeadline": "2026-08-26",
@@ -1696,7 +1696,7 @@
    "documentsUrl": null,
    "adminVerified": false,
    "verifiedOn": "2026-06-11",
-   "notes": "Portal URL not captured in sweep \u2014 confirm before outreach."
+   "notes": "CONFLICT: openclassactions lists a claim window (8/26) but classaction.org shows investigation-only, no settlement. DO NOT PITCH until the settlement and portal are confirmed."
   },
   {
    "tokens": [
@@ -1896,7 +1896,7 @@
    "documentsUrl": null,
    "adminVerified": false,
    "verifiedOn": "2026-06-11",
-   "notes": "CAUTION: lemonadeprivacysettlement.com is a DIFFERENT (older) Lemonade case. Driver's-license portal URL not captured \u2014 confirm with Kroll before outreach."
+   "notes": "Official driver's-license-breach portal NOT located (Kroll-administered, 833-447-6429). lemonadeprivacysettlement.com is a DIFFERENT older case. Confirm with Kroll before outreach."
   },
   {
    "tokens": [
