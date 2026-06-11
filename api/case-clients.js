@@ -172,9 +172,11 @@ export default async function handler(req, res) {
   // people — return 0 instead of falling through to the slow global scan.
   async function tokenInCatalog(tok) {
     try {
-      const [evRaw, tcpaRaw] = await Promise.all([
+      const [evRaw, tcpaRaw, natRaw, pathsRaw] = await Promise.all([
         kv.get("match:defendant_evidence"),
         kv.get("pacer:tcpa_marketers"),
+        kv.get("pacer:national_entities"),
+        kv.get("case:claim_paths"),
       ]);
       const ev = evRaw ? (typeof evRaw === "string" ? JSON.parse(evRaw) : evRaw) : {};
       for (const name of Object.keys(ev.clusters || {})) {
@@ -184,6 +186,12 @@ export default async function handler(req, res) {
       for (const d of (tcpa.defendants || [])) {
         if (canonicalToken(d.defendant || d.defendantQ || "") === tok) return true;
       }
+      const nat = natRaw ? (typeof natRaw === "string" ? JSON.parse(natRaw) : natRaw) : {};
+      for (const d of (nat.entities || [])) {
+        if (canonicalToken(d.defendant || d.defendantQ || "") === tok) return true;
+      }
+      const paths = pathsRaw ? (typeof pathsRaw === "string" ? JSON.parse(pathsRaw) : pathsRaw) : {};
+      if ((paths.registry || {})[tok]) return true;
     } catch { /* fall through to scan */ }
     return false;
   }

@@ -47,7 +47,7 @@ DEADLETTER  = WORK_DIR / "rederive_deadletter.jsonl"
 PROJECT     = Path("/Users/stef/MDL Business")
 PACER_DIR   = PROJECT / "data" / "pacer-cases"
 
-TODAY       = date(2026, 6, 9)
+TODAY       = date(2026, 6, 11)
 N_SHARDS    = 16
 KV_BATCH    = 2000
 KV_THREADS  = 32
@@ -62,6 +62,7 @@ RECOVERY = {
     "AutoLending":       {"low": 300,  "mid": 1000,  "high": 5000},
     "UDAP_Payday":       {"low": 200,  "mid": 500,   "high": 2000},
     "DataBreach":        {"low": 75,   "mid": 250,   "high": 3500},
+    "OpenSettlement":    {"low": 100,  "mid": 400,   "high": 2500},
 }
 
 STATUTE_REF = {
@@ -73,6 +74,7 @@ STATUTE_REF = {
     "AutoLending": "TILA 1-3yr; state UDAP 4-7yr",
     "UDAP_Payday": "state UDAP 3-7yr",
     "DataBreach": "state breach statute; open settlement claim window",
+    "OpenSettlement": "Rule 23 class settlement — open claim window / rolling program",
 }
 
 # Strong state-UDAP jurisdictions (longer windows, plaintiff-favorable).
@@ -174,7 +176,7 @@ def sol_status(case_type, lrd, state, discharge_ongoing):
     """Return one of: discharge_ongoing | live | live_state_udap | time_barred | undated."""
     if discharge_ongoing:
         return "discharge_ongoing"          # 11 USC 524 — no SOL while still reporting
-    if case_type == "DataBreach":
+    if case_type in ("DataBreach", "OpenSettlement"):
         return "live"                        # only tagged when an OPEN settlement window matched
     age = years_old(lrd)
     if age is None:
@@ -190,8 +192,81 @@ def sol_status(case_type, lrd, state, discharge_ongoing):
 
 ACTIONABLE = {"live", "live_state_udap", "discharge_ongoing"}
 
-# ── DataBreach: open-settlement cross-reference (replaces ownership tagging) ──
-def load_breach_entities():
+# ── Open-settlement cross-reference (replaces ownership tagging) ─────────────
+# Tier-1 tradeline-matchable settlement windows from the wave-1/wave-2 catalogs
+# (data/settlements/). Only settlements where the tradeline IS the eligibility
+# proxy (financed the vehicle / holds the account / has the collection) are
+# tagged at person level; attestation-population plays (beef, Prime, Google)
+# are NOT — those stay defendant/base-level only. Deadlines checked vs TODAY.
+SETTLEMENT_XREF = [
+    dict(defendant="Toyota Motor Credit", needles=["toyota"],
+         name="Toyota airbag control unit (ACU) settlement", deadline="2026-12-16",
+         windowType="open_claim_window", verified=False, strength="medium",
+         odLo="2009-01", odHi="2021-12", source="wave2:auto",
+         note="2011-2019 Toyota owners/lessees; financing tradeline is an eligibility proxy — verify model/VIN"),
+    dict(defendant="Hyundai Capital America", needles=["hyundai"],
+         name="Hyundai/Kia ACU settlement + multistate immobilizer-theft settlement",
+         deadline="2027-03-29", windowType="open_claim_window", verified=False,
+         strength="medium", source="wave2:auto+wave1",
+         note="Affected-model owners/lessees as of Apr 2025; theft settlement runs to 2027-03-31; verify model"),
+    dict(defendant="Kia Finance America", needles=["kia"],
+         name="Kia ACU / Theta II engine / immobilizer-theft settlements",
+         deadline="2027-03-29", windowType="open_claim_window", verified=False,
+         strength="medium", source="wave2:auto+wave1",
+         note="Affected-model owners/lessees; engine settlement ongoing; verify model/VIN"),
+    dict(defendant="Mercedes-Benz Financial", needles=["mercedes"],
+         name="Mercedes BlueTEC diesel AEM settlement", deadline="2026-09-30",
+         windowType="open_claim_window", verified=False, strength="medium",
+         odLo="2008-01", odHi="2018-12", source="wave2:auto",
+         note="2009-2016 BlueTEC diesel owners/lessees; $2,000 + software fix; verify model"),
+    dict(defendant="Nissan Motor Acceptance", needles=["nissan", "infiniti"],
+         name="Nissan CVT transmission settlement", deadline=None,
+         windowType="rolling", verified=False, strength="medium",
+         odLo="2013-01", odHi="2020-12", source="wave2:auto",
+         note="2014-2018 Rogue/Pathfinder/QX60 CVT failures; $1,500-$5,000; rolling (30 days after repair); repair docs needed"),
+    dict(defendant="Ford Motor Credit", needles=["ford motor", "ford credit", "ford cred", "ford mtr", "fordcredit"],
+         name="Ford PowerShift transmission settlement (Focus/Fiesta)", deadline=None,
+         windowType="rolling", verified=False, strength="medium",
+         odLo="2010-01", odHi="2018-12", source="wave2:auto",
+         note="2011-2016 Focus/Fiesta transmission problems; up to $2,325; verify model"),
+    dict(defendant="GM Financial", needles=["gm financial", "americredit"],
+         name="GM Duramax CP4 fuel pump settlement", deadline=None,
+         windowType="rolling", verified=False, strength="medium", source="wave2:auto",
+         note="Duramax diesel truck buyers in specified states; verify model/state"),
+    dict(defendant="BMO Bank", needles=["bmo", "bank of the west"],
+         name="BMO repossession-notice settlement (Wisconsin)", deadline="2026-06-17",
+         windowType="open_claim_window", verified=False, strength="high",
+         states={"WI"}, requireCollection=True, source="wave2:banking",
+         note="WI consumers with BMO/Bank of the West repossession notices 2021-2026; direct tradeline+state match"),
+    dict(defendant="Sarasota Memorial Health", needles=["sarasota mem", "sarasota memorial"],
+         name="Sarasota Memorial debt-collection settlement (Florida)", deadline="2026-07-10",
+         windowType="open_claim_window", verified=False, strength="high",
+         states={"FL"}, source="wave2:banking",
+         note="FL residents contacted about Sarasota Memorial debts 2017-2026; direct tradeline+state match"),
+    dict(defendant="Genesis Financial Solutions (Concora)", needles=["concora", "genesis financial", "genesis fs", "milestone", "indigo"],
+         name="Ford v. Genesis — Maryland unlicensed-lending settlement", deadline="2026-06-29",
+         windowType="open_claim_window", verified=True, strength="high",
+         states={"MD"}, source="wave1:claim_filing",
+         note="MD consumers with Genesis-serviced accounts (Milestone/Indigo); claim form + mailed PIN"),
+]
+
+def _window_live(ent):
+    """A settlement is taggable only while its window is live as of TODAY."""
+    if ent.get("windowType") in ("rolling", "automatic_payment"):
+        return True
+    dl = ent.get("deadline")
+    if not dl:
+        return True
+    try:
+        return date.fromisoformat(dl) >= TODAY
+    except ValueError:
+        return True
+
+def load_xref_entities():
+    """Combined settlement xref: open breach settlements (DataBreach, as in the
+    v2 run) + tier-1 tradeline-matchable settlement windows (OpenSettlement).
+    Returns a list of dicts: {needles, caseType, defendant, name, deadline,
+    verified, strength, states, requireCollection, odLo, odHi, note}."""
     ents = []
     try:
         data = json.loads((PACER_DIR / "_breach_settlements_open.json").read_text())
@@ -199,10 +274,33 @@ def load_breach_entities():
             nm = (s.get("name") or "").strip()
             if nm:
                 core = re.sub(r"[^a-z0-9 ]", " ", nm.lower()).strip()
-                ents.append((core, s))
+                ents.append(dict(needles=[core], caseType="DataBreach",
+                                 defendant=s.get("name"), name=f"{s.get('name')} data breach settlement",
+                                 deadline=s.get("deadline"), verified=True, strength="high",
+                                 windowType="open_claim_window",
+                                 note=s.get("note") or "Open data-breach settlement; class = notice recipients"))
     except Exception as e:
         print(f"  WARN: breach settlements not loaded: {e}")
-    return ents
+    covered = {e["needles"][0].split()[0] for e in ents if e["needles"]}
+    try:
+        w2 = json.loads((PROJECT / "data" / "settlements" / "open-settlements-wave2-2026-06.json").read_text())
+        for s in w2.get("data_breach_consumer_financial", []):
+            nm = (s.get("defendant") or "").strip()
+            core = re.sub(r"[^a-z0-9 ]", " ", nm.lower()).strip()
+            if not core or core.split()[0] in covered:
+                continue
+            ents.append(dict(needles=[core], caseType="DataBreach",
+                             defendant=nm, name=f"{nm} data breach settlement",
+                             deadline=s.get("deadline"), verified=False, strength="medium",
+                             windowType="open_claim_window",
+                             note=s.get("note") or "Aggregator-sourced breach settlement; verify admin site before outreach"))
+    except Exception as e:
+        print(f"  WARN: wave-2 breach settlements not loaded: {e}")
+    for ent in SETTLEMENT_XREF:
+        ents.append(dict(ent, caseType="OpenSettlement"))
+    live = [e for e in ents if _window_live(e)]
+    print(f"  xref entities: {len(live)} live settlement windows ({len(ents) - len(live)} expired dropped)")
+    return live
 
 # ── State (identity) ─────────────────────────────────────────────────────────
 def load_state():
@@ -385,7 +483,7 @@ def fetch_cr(pids):
     return out
 
 # ── Per-person derivation ───────────────────────────────────────────────────
-def derive_person(pid, ident, cr, bankrupt, breach_ents):
+def derive_person(pid, ident, cr, bankrupt, xref_ents):
     """Return a client dict (or None to skip)."""
     name, phone, email, state, dnc = ident
     if dnc:
@@ -404,9 +502,9 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
                 bk_filed.append((d, str(pr.get("chapter") or "")))
     earliest_bk = min((d for d, _ in bk_filed), default=None)
 
-    # signals[(caseType, token)] = dict(defendant, strength, sol, lrd)
+    # signals[(caseType, token)] = dict(defendant, strength, sol, lrd, meta)
     signals = {}
-    def add(ct, defendant, strength, lrd, discharge_ongoing=False):
+    def add(ct, defendant, strength, lrd, discharge_ongoing=False, meta=None):
         tok = canonical_token(defendant)
         if not tok:
             return
@@ -419,7 +517,8 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
             signals[key] = dict(defendant=defendant[:80], token=tok,
                                  strength=strength if (prev is None or better_str) else prev["strength"],
                                  sol=sol if (prev is None or better_sol) else prev["sol"],
-                                 lrd=(lrd.isoformat()[:7] if lrd else (prev or {}).get("lrd")))
+                                 lrd=(lrd.isoformat()[:7] if lrd else (prev or {}).get("lrd")),
+                                 meta=meta or (prev or {}).get("meta"))
 
     for tl in tls:
         cname = str(tl.get("c") or "").strip()
@@ -462,13 +561,24 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
         if word_hit(cname, PAYDAY_PAT):
             add("UDAP_Payday", cname, "medium", lrd)
 
-        # DataBreach — only via an OPEN settlement entity match (not ownership).
-        nl = (cname + " " + orig).lower()
-        for core, s in breach_ents:
-            token = core.split()[0] if core else ""
-            if core and core in nl:
-                add("DataBreach", s.get("name", cname), "high", lrd)
-                break
+        # Settlement xref — DataBreach + OpenSettlement, only via a LIVE
+        # settlement window whose tradeline match is the eligibility proxy.
+        nl = cname + " " + orig
+        for ent in xref_ents:
+            if not any(word_hit(nl, [n]) for n in ent["needles"]):
+                continue
+            if ent.get("states") and state not in ent["states"]:
+                continue
+            if ent.get("requireCollection") and not (is_collection or (bal and bal > 0)):
+                continue
+            if ent.get("odLo") and od_d:
+                if not (date.fromisoformat(ent["odLo"] + "-01") <= od_d
+                        <= date.fromisoformat(ent["odHi"] + "-28")):
+                    continue
+            add(ent["caseType"], ent["defendant"], ent.get("strength", "medium"), lrd,
+                meta=dict(settlementName=ent["name"], settlementDeadline=ent.get("deadline"),
+                          windowType=ent.get("windowType"), verified=bool(ent.get("verified")),
+                          note=ent.get("note")))
 
     if not signals:
         return ("nosig", None)
@@ -479,11 +589,14 @@ def derive_person(pid, ident, cr, bankrupt, breach_ents):
     for (ct, tok), s in signals.items():
         r = RECOVERY.get(ct, {})
         sol_counts[s["sol"]] += 1
-        cases.append(dict(caseType=ct, defendant=s["defendant"], defendantToken=tok,
-                          strength=s["strength"], solStatus=s["sol"], lastReported=s.get("lrd"),
-                          statuteRef=STATUTE_REF.get(ct, ""),
-                          estRecoveryLow=r.get("low", 0), estRecoveryMid=r.get("mid", 0),
-                          estRecoveryHigh=r.get("high", 0)))
+        case = dict(caseType=ct, defendant=s["defendant"], defendantToken=tok,
+                    strength=s["strength"], solStatus=s["sol"], lastReported=s.get("lrd"),
+                    statuteRef=STATUTE_REF.get(ct, ""),
+                    estRecoveryLow=r.get("low", 0), estRecoveryMid=r.get("mid", 0),
+                    estRecoveryHigh=r.get("high", 0))
+        if s.get("meta"):
+            case["settlement"] = s["meta"]
+        cases.append(case)
         case_types.add(ct)
 
     actionable = any(c["solStatus"] in ACTIONABLE for c in cases)
@@ -542,13 +655,13 @@ def run_lex(limit=None, dry=False, batch_pids=1000):
     print(f"Loading identity state from {STATE_FILE} ...", flush=True)
     people, bankrupt = load_state()
     cr_init()
-    breach_ents = load_breach_entities()
+    xref_ents = load_xref_entities()
     lex_pids = sorted(p for p in people if p.startswith("lex_"))
     if limit:
         lex_pids = lex_pids[:limit]
     total = len(lex_pids)
     print(f"  {len(people):,} people; {total:,} LEX to process; {len(bankrupt):,} bankruptcies; "
-          f"{len(breach_ents)} breach entities; dry={dry}", flush=True)
+          f"{len(xref_ents)} xref entities; dry={dry}", flush=True)
 
     ckpt = json.loads(CKPT_FILE.read_text()) if (CKPT_FILE.exists() and not dry) else {}
     start = ckpt.get("lex_offset", 0)
@@ -560,7 +673,7 @@ def run_lex(limit=None, dry=False, batch_pids=1000):
         chunk = lex_pids[i:i + batch_pids]
         crs = fetch_cr(chunk)
         for pid in chunk:
-            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, breach_ents)
+            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, xref_ents)
             stats[outcome] += 1
             if client is None:
                 # No (longer a) signal: remove any record from a previous run.
@@ -820,7 +933,7 @@ def run_ccom(limit=None, dry=False, batch_pids=1000):
     print(f"Loading identity state from {STATE_FILE} ...", flush=True)
     people, bankrupt = load_state()
     cr_init()
-    breach_ents = load_breach_entities()
+    xref_ents = load_xref_entities()
     cc_pids = sorted(p for p in people if p.startswith("cc_"))
     if limit:
         cc_pids = cc_pids[:limit]
@@ -837,7 +950,7 @@ def run_ccom(limit=None, dry=False, batch_pids=1000):
         chunk = cc_pids[i:i + batch_pids]
         crs = fetch_cc(chunk)
         for pid in chunk:
-            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, breach_ents)
+            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, xref_ents)
             stats[outcome] += 1
             if client is None:
                 # v1 wrote fabricated client:cc_* records (TCPA-from-phone,
@@ -929,10 +1042,136 @@ def run_ccom(limit=None, dry=False, batch_pids=1000):
             CKPT_FILE.write_text(json.dumps(ckpt))
             print("  merged CCOM counts into credit_portfolio:stats")
 
+# ── Settlement xref phase ────────────────────────────────────────────────────
+XREF_PIDS_FILE = WORK_DIR / "xref_pids.json"
+
+def xref_candidate_pids(ents):
+    """SQL prefilter: distinct pids holding any tradeline whose creditor/orig
+    contains an xref needle. Superset of the real match — derive_person
+    re-checks with word boundaries, state, status, and vintage filters."""
+    if XREF_PIDS_FILE.exists():
+        cached = json.loads(XREF_PIDS_FILE.read_text())
+        print(f"  using cached candidate pids ({len(cached):,}) from {XREF_PIDS_FILE}")
+        return cached
+    needles = sorted({n.lower() for e in ents for n in e["needles"]})
+    print(f"  SQL prefilter: {len(needles)} needles over cr_tl + cc_tl ...", flush=True)
+    pids = set()
+    for tbl in ("cr_tl", "cc_tl"):
+        cond = " OR ".join(f"instr(lower(coalesce(creditor,'')||' '||coalesce(orig,'')), ?) > 0"
+                           for _ in needles)
+        t0 = time.time()
+        for (pid,) in _cr.execute(f"SELECT DISTINCT pid FROM {tbl} WHERE {cond}", needles):
+            pids.add(pid)
+        print(f"    {tbl}: cumulative {len(pids):,} pids ({time.time()-t0:.0f}s)", flush=True)
+    out = sorted(pids)
+    XREF_PIDS_FILE.write_text(json.dumps(out))
+    return out
+
+def run_xref(limit=None, dry=False, batch_pids=1000):
+    """Targeted re-derive of every person holding a tradeline that matches a
+    live settlement window (SETTLEMENT_XREF + breach catalogs). Re-runs the
+    FULL derive for those people, so existing records gain the new
+    OpenSettlement/DataBreach signals and previously-nosig people get records."""
+    print(f"Loading identity state from {STATE_FILE} ...", flush=True)
+    people, bankrupt = load_state()
+    cr_init()
+    xref_ents = load_xref_entities()
+    pids = [p for p in xref_candidate_pids(xref_ents) if p in people]
+    if limit:
+        pids = pids[:limit]
+    total = len(pids)
+    print(f"  {total:,} candidate people to re-derive; dry={dry}", flush=True)
+
+    ckpt = json.loads(CKPT_FILE.read_text()) if (CKPT_FILE.exists() and not dry) else {}
+    start = ckpt.get("xref_offset", 0)
+    stats = defaultdict(int)
+    samples = []
+    t0 = time.time()
+
+    for i in range(start, total, batch_pids):
+        chunk = pids[i:i + batch_pids]
+        lex_chunk = [p for p in chunk if p.startswith("lex_")]
+        cc_chunk  = [p for p in chunk if p.startswith("cc_")]
+        crs = {}
+        if lex_chunk:
+            crs.update(fetch_cr(lex_chunk))
+        if cc_chunk:
+            crs.update(fetch_cc(cc_chunk))
+        for pid in chunk:
+            outcome, client = derive_person(pid, people[pid], crs.get(pid, {}), bankrupt, xref_ents)
+            stats[outcome] += 1
+            if client is None:
+                continue   # xref candidates: never delete here; full runs own deletions
+            stats["matched"] += 1
+            has_settlement = any(c.get("settlement") for c in client["cases"])
+            if has_settlement:
+                stats["settlementTagged"] += 1
+            if client["actionable"]:
+                stats["actionable"] += 1
+            if client["intakeReady"]:
+                stats["intakeReady"] += 1
+            for c in client["cases"]:
+                stats[f"ct:{c['caseType']}"] += 1
+            if dry:
+                if len(samples) < 8 and has_settlement:
+                    samples.append(client)
+                continue
+            kv_push(["SET", f"client:{pid}", json.dumps(client)])
+            kv_push(["ZADD", f"by_score:{shard_of(pid)}", client["priorityScore"], pid])
+            if client["intakeReady"]:
+                rep = {"tl": [dict(c=t.get("c"), orig=t.get("orig"), type=t.get("typ"),
+                                   bal=t.get("bal"), od=t.get("od"), lrd=t.get("lrd"),
+                                   bureau=t.get("bureau"), disp=bool(t.get("disp")))
+                              for t in crs.get(pid, {}).get("tl", [])[:30]],
+                       "pr": crs.get(pid, {}).get("pr", [])}
+                kv_push(["SET", f"credit_report:{pid}", json.dumps(rep)])
+
+        if not dry and (i // batch_pids) % 50 == 0:
+            ckpt["xref_offset"] = i
+            CKPT_FILE.write_text(json.dumps(ckpt))
+            rate = (i - start) / max(1e-9, time.time() - t0)
+            print(f"\r  {i:,}/{total:,}  settlementTagged={stats['settlementTagged']:,} "
+                  f"matched={stats['matched']:,} ready={stats['intakeReady']:,} "
+                  f"ok={kv_ok:,} cmd_err={kv_cmd_errors} http_err={kv_http_errors} "
+                  f"{rate:.0f}/s", end="", flush=True)
+
+    if not dry:
+        kv_drain()
+        ckpt["xref_offset"] = total
+        ckpt["xref_done"] = True
+        CKPT_FILE.write_text(json.dumps(ckpt))
+    print()
+    print("=== Settlement xref stats ===")
+    for k in sorted(stats):
+        print(f"  {k}: {stats[k]:,}")
+    print(f"  kv_ok={kv_ok:,} cmd_err={kv_cmd_errors} http_err={kv_http_errors}")
+    if dry and samples:
+        print("\n=== SAMPLE settlement-tagged clients ===")
+        for s in samples[:4]:
+            print(json.dumps(s, indent=2)[:1400])
+
+    # Record the sweep on the live portfolio stats (idempotent overwrite).
+    if not dry:
+        raw = kv_get_one("credit_portfolio:stats")
+        if raw:
+            ps = json.loads(raw)
+            ps["settlementXref"] = {
+                "ranAt": TODAY.isoformat(),
+                "candidates": total,
+                "settlementTagged": stats["settlementTagged"],
+                "openSettlementSignals": stats.get("ct:OpenSettlement", 0),
+                "dataBreachSignals": stats.get("ct:DataBreach", 0),
+                "note": ("Tier-1 tradeline-matchable open settlement windows (wave-1/wave-2 catalogs). "
+                         "Tradeline is an eligibility proxy; verify class definition before outreach."),
+            }
+            kv_fire([["SET", "credit_portfolio:stats", json.dumps(ps)]])
+            kv_drain()
+            print("  recorded settlementXref summary in credit_portfolio:stats")
+
 # ── CLI ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("mode", choices=["lex", "ccom", "flip", "stats"])
+    ap.add_argument("mode", choices=["lex", "ccom", "flip", "stats", "xref"])
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--log", default="/tmp/credit-ingest-work/rederive-lex.log")
@@ -945,3 +1184,5 @@ if __name__ == "__main__":
         run_stats(args.log)
     elif args.mode == "ccom":
         run_ccom(limit=args.limit, dry=args.dry_run)
+    elif args.mode == "xref":
+        run_xref(limit=args.limit, dry=args.dry_run)

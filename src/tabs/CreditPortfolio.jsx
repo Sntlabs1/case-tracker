@@ -10,6 +10,8 @@ const CASE_LABELS = {
   AutoLending:  "Auto Lending",
   DataBreach:   "Data Breach",
   UDAP_Payday:  "Payday/UDAP",
+  DischargeViolation: "§524 Discharge",
+  OpenSettlement:     "Open Settlement",
 };
 
 const CASE_COLORS = {
@@ -21,6 +23,8 @@ const CASE_COLORS = {
   AutoLending:  "#f97316",
   DataBreach:   "#ef4444",
   UDAP_Payday:  "#ec4899",
+  DischargeViolation: "#14b8a6",
+  OpenSettlement:     "#84cc16",
 };
 
 const STRENGTH_COLOR = { high: "#22c55e", medium: "#f59e0b", low: "#ef4444" };
@@ -107,6 +111,8 @@ function signalBasis(caseType, defendant) {
     case "AutoLending": return `Auto financing by ${d} — potential predatory lending terms`;
     case "DataBreach":  return `Data exposed in ${d} breach — potential notification/security failures`;
     case "UDAP_Payday": return `Payday/short-term lending by ${d} — potential UDAP violations`;
+    case "DischargeViolation": return `Pre-petition debt with ${d} still reporting a balance/collection after bankruptcy filing — potential §524 discharge-injunction violation`;
+    case "OpenSettlement":     return `Tradeline with ${d} matches an open class-settlement window — eligibility proxy; verify class definition`;
     default:            return `Activity by ${d}`;
   }
 }
@@ -248,6 +254,32 @@ const CASE_TYPE_INFO = {
     ],
     watchOut: "Tribal lender sovereign immunity claims — many payday lenders use tribal affiliations to evade state law. Check for genuine tribal nexus vs. rent-a-tribe schemes.",
   },
+  DischargeViolation: {
+    statute: "Bankruptcy discharge injunction — 11 U.S.C. § 524",
+    summary: "A creditor or furnisher that keeps reporting a discharged pre-petition debt as owing (live balance, collection status) — or attempts to collect it — violates the discharge injunction. Enforced through contempt in the bankruptcy court that issued the discharge.",
+    solFederal: "No statute of limitations while the violation is ongoing — each continued report/collection attempt continues the violation",
+    solState: "N/A — federal bankruptcy remedy (state FCRA-analog claims may run alongside)",
+    solWarning: "Requires the debt to be pre-petition and actually discharged — verify the discharge order and that the account was opened before the filing date.",
+    administrator: "U.S. Bankruptcy Court (contempt motion in the issuing court); often paired with FCRA dispute claims",
+    openedNote: "Signal is computed from a pre-petition open date plus a live balance/collection status reported after the bankruptcy filing date.",
+    damages: "Compensatory damages, attorney fees, and (in egregious cases) punitive sanctions via civil contempt — Taggart v. Lorenzen (2019) sets the 'fair ground of doubt' standard.",
+    keyEvidence: ["Bankruptcy petition + discharge order (PACER)", "Credit report showing the account still reporting a balance or collection status after discharge", "Account open date pre-dating the petition", "Any post-discharge collection letters/calls"],
+    activeCases: [],
+    watchOut: "Confirm the debt was actually discharged (not reaffirmed, not a non-dischargeable category) and the chapter/discharge date from the court record — the credit file alone shows the filing, not the discharge.",
+  },
+  OpenSettlement: {
+    statute: "Rule 23 class settlement — open claim window / rolling claims program",
+    summary: "The tradeline matches the defendant of a class settlement whose claim window is currently open (or a rolling claims program). The person is a likely class member; the recovery path is filing a claim with the settlement administrator, not new litigation.",
+    solFederal: "Governed by the settlement's claim deadline, not a statute of limitations",
+    solState: "N/A — contractual claim window",
+    solWarning: "The tradeline is an eligibility proxy. Verify the class definition (model years, state, account type, notice) on the administrator site before outreach.",
+    administrator: "Court-appointed settlement administrator (see the live claim path below for the specific settlement and deadline)",
+    openedNote: "Signal is tagged only while the claim window is live; expired windows are dropped at derivation.",
+    damages: "Per the settlement's plan of allocation — see the per-claimant figure on the matched settlement.",
+    keyEvidence: ["Tradeline showing the qualifying account/financing relationship", "Class-definition facts (model/VIN, state of residence, account dates)", "Settlement notice if received"],
+    activeCases: [],
+    watchOut: "Most aggregator-sourced settlement entries are unverified — confirm the administrator site and deadline before promising a claim. Do not file claims without a good-faith basis for class membership.",
+  },
 };
 
 function solStatus(caseType, ingestedAt) {
@@ -298,6 +330,8 @@ const CASE_TOTAL_RANGE = {
   RESPA:       [1500, 1500],
   DataBreach:  [150, 150],
   UDAP_Payday: [500, 500],
+  DischargeViolation: [1000, 15000],
+  OpenSettlement:     [100, 2500],
 };
 
 function fmtDollarsCompact(n) {
@@ -881,6 +915,58 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                       {info && <div style={{ fontSize: 11, color: "var(--text-4)", marginTop: 4 }}>{info.openedNote}</div>}
                     </div>
 
+                    {/* Matched settlement (signal carries its own settlement window) */}
+                    {sig.settlement && (
+                      <div style={{ background: "rgba(132,204,22,0.06)", border: "1px solid #84cc1633", borderRadius: 6, padding: "10px 12px", marginBottom: 10 }}>
+                        <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Matched Settlement</div>
+                        <div style={{ fontSize: 12, color: "var(--text-1)", fontWeight: 600 }}>
+                          {sig.settlement.settlementName}
+                          {!sig.settlement.verified && (
+                            <span style={{ fontSize: 9.5, marginLeft: 8, padding: "2px 6px", borderRadius: 3, background: "#f59e0b22", color: "#f59e0b", border: "1px solid #f59e0b44", fontWeight: 700 }}>UNVERIFIED — confirm admin site</span>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 3 }}>
+                          {sig.settlement.settlementDeadline
+                            ? `Claim deadline: ${sig.settlement.settlementDeadline}`
+                            : sig.settlement.windowType === "rolling"
+                              ? "Rolling claims program — no fixed deadline"
+                              : "Open claim window"}
+                        </div>
+                        {sig.settlement.note && (
+                          <div style={{ fontSize: 11, color: "var(--text-4)", marginTop: 3 }}>{sig.settlement.note}</div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Live claim path for this defendant (claim-path registry) */}
+                    {sig.claimPath && sig.claimPath.status !== "unknown" && (
+                      <div style={{ background: "var(--bg-surface2)", borderRadius: 6, padding: "10px 12px", marginBottom: 10 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                          <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1 }}>Live Claim Path</div>
+                          <ClaimPathBadge claimPath={sig.claimPath} />
+                        </div>
+                        {(sig.claimPath.liveSettlements || []).map((s, j) => (
+                          <div key={j} style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 3 }}>
+                            {s.name}
+                            <span style={{ color: "var(--text-5)" }}>
+                              {s.deadline ? ` — file by ${s.deadline}` : s.windowType === "rolling" ? " — rolling" : s.windowType === "automatic_payment" ? " — automatic payment" : ""}
+                              {s.verified === false ? " (unverified)" : ""}
+                            </span>
+                          </div>
+                        ))}
+                        {sig.claimPath.openLitigation > 0 && (
+                          <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 3 }}>
+                            {sig.claimPath.openLitigation.toLocaleString()} open federal docket{sig.claimPath.openLitigation > 1 ? "s" : ""} naming this defendant — joinable / absent-class-member pool
+                          </div>
+                        )}
+                        {sig.claimPath.status === "none" && (
+                          <div style={{ fontSize: 11, color: "#ef4444" }}>
+                            Nothing live today — do not pitch this match as a claimable case.
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* SOL status */}
                     <div style={{ background: "var(--bg-surface2)", borderRadius: 6, padding: "10px 12px", marginBottom: 10 }}>
                       <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Filing Deadlines / SOL</div>
@@ -956,6 +1042,31 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                   </div>
                 );
               })}
+
+              {/* Base-wide bureau eligibility — applies to every person in the
+                  file (all three bureau files exist), NOT a personal signal. */}
+              {(profile.baseWide || []).length > 0 && (
+                <div style={{ background: "var(--bg-card)", border: "1px dashed var(--border)", borderRadius: 8, padding: "16px 18px", marginBottom: 14 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
+                    <span style={{ fontWeight: 800, color: "#f59e0b", fontSize: 13 }}>Base-Wide — Credit Bureau Litigation</span>
+                    <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: "#6b728022", color: "#9ca3af", border: "1px solid #6b728044", fontWeight: 700 }}>
+                      applies to the entire file, not a personal signal
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "var(--text-4)", marginBottom: 10, lineHeight: 1.6 }}>
+                    Every person has Equifax, Experian, and TransUnion files, so the bureaus' FCRA litigation pool applies base-wide. A personal claim still requires an individual hook (a dispute, an inaccuracy) — verify at intake.
+                  </div>
+                  {profile.baseWide.map((b, j) => (
+                    <div key={j} style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", fontSize: 12, color: "var(--text-2)", marginBottom: 5 }}>
+                      <span style={{ fontWeight: 600, color: "var(--text-1)" }}>{b.defendant}</span>
+                      <span style={{ color: "var(--text-5)" }}>
+                        {fmtN(b.caseCount)} federal dockets — {fmtN(b.openCases)} open{b.candidates ? `, ${fmtN(b.candidates)} class candidates` : ""}
+                      </span>
+                      <ClaimPathBadge claimPath={b.claimPath} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             )}
 
@@ -1177,6 +1288,7 @@ export default function CreditPortfolio() {
   const [caseClientsLoading, setCaseClientsLoading] = useState(false);
   const [caseClientsError, setCaseClientsError]   = useState(null);
   const [caseClientsTotal, setCaseClientsTotal]   = useState(null);
+  const [caseClientsSource, setCaseClientsSource] = useState(null);
   const [caseClientsHasMore, setCaseClientsHasMore] = useState(false);
   const [caseClientsPage, setCaseClientsPage]     = useState(0);
   const caseClientsAbortRef = React.useRef(null);
@@ -1268,6 +1380,7 @@ export default function CreditPortfolio() {
         if (d.nextCursor) caseCursorsRef.current[page + 1] = d.nextCursor;
         setCaseClients(d.clients || []);
         setCaseClientsTotal(d.total ?? null);
+        setCaseClientsSource(d.source || null);
         setCaseClientsHasMore(!!d.hasMore);
         setCaseClientsPage(page);
         setCaseClientsLoading(false);
@@ -1279,6 +1392,7 @@ export default function CreditPortfolio() {
     setSelectedCase(c);
     setCaseClients([]);
     setCaseClientsTotal(null);
+    setCaseClientsSource(null);
     setCaseClientsHasMore(false);
     setCaseClientsPage(0);
     caseCursorsRef.current = {};
@@ -1403,6 +1517,7 @@ export default function CreditPortfolio() {
       caseCount:       d.caseCount,
       openCases:       d.openCases,
       candidates:      d.candidates,
+      consumers:       d.consumers ?? null,
       consumersInDb:   d.consumersInDb,
       claimPath:       d.claimPath || null,
       examples:        d.examples || [],
@@ -1478,11 +1593,13 @@ export default function CreditPortfolio() {
               onClick={() => setCaseTypeFilter("all")}
               style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: caseTypeFilter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
             >
-              All ({pacerCases.length + tcpaMarketerCases.length})
+              All ({pacerCases.length + tcpaMarketerCases.length + nationalEntityCases.length} defendants)
             </button>
             {pacerCaseTypes.map(ct => {
               const ctCount = ct === "TCPA"
                 ? pacerCases.filter(c => c.caseType === "TCPA").length + tcpaMarketerCases.length
+                : ct === "FCRA"
+                ? pacerCases.filter(c => c.caseType === "FCRA").length + nationalEntityCases.length
                 : pacerCases.filter(c => c.caseType === ct).length;
               return (
               <button
@@ -1619,9 +1736,11 @@ export default function CreditPortfolio() {
               </div>
               {caseClients.length === 0 ? (
                 <div style={{ color: "var(--text-5)", fontSize: 13 }}>
-                  {caseClientsPage === 0
-                    ? "No matches found in scanned records. Try browsing the People view and filtering by case type."
-                    : "No matches on this page."}
+                  {caseClientsPage !== 0
+                    ? "No matches on this page."
+                    : caseClientsSource === "index"
+                    ? "Definitively zero matched people: the complete person index for this defendant is empty — no one in the credit file carries a signal naming it."
+                    : "This defendant is outside the matched-index catalog; a bounded scan found no one. Absence here is not proof of zero — the defendant may simply never generate person-level signals."}
                 </div>
               ) : (
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>

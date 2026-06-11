@@ -1,4 +1,19 @@
 import { kv } from "@vercel/kv";
+import { canonicalToken } from "./_lib/defendantToken.js";
+
+// Live claim-path registry entry (open settlement window / joinable open
+// litigation) for one defendant token. Built by tools/claim-paths-build.py.
+function claimPathOf(registry, tok) {
+  if (!registry || !tok) return null;
+  const r = registry[tok];
+  if (!r) return { status: "unknown" };
+  return {
+    status:             r.status,
+    liveSettlements:    (r.liveSettlements || []).slice(0, 4),
+    monitorSettlements: (r.monitorSettlements || []).slice(0, 2),
+    openLitigation:     (r.openClassCandidates || 0) + (r.openDockets || 0) + (r.tcpaOpenDockets || 0),
+  };
+}
 
 // LEX-sourced tradeline dates (od, lrd, pr.filed/disch, signal lastReported)
 // were ingested as raw MMYY strings ("0117" = Jan 2017); CC-sourced dates are
@@ -32,9 +47,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [raw, crRaw] = await Promise.all([
+    const [raw, crRaw, pathsRaw, natRaw] = await Promise.all([
       kv.get(`client:${id}`),
       kv.get(`credit_report:${id}`),
+      kv.get("case:claim_paths").catch(() => null),
+      kv.get("pacer:national_entities").catch(() => null),
     ]);
     if (raw === null || raw === undefined) {
       return res.status(404).json({ error: "Client not found" });
@@ -45,11 +62,32 @@ export default async function handler(req, res) {
       creditReport.tl = (creditReport.tl || []).map(t => ({ ...t, od: normYM(t.od), lrd: normYM(t.lrd) }));
       creditReport.pr = (creditReport.pr || []).map(p => ({ ...p, filed: normYM(p.filed), disch: normYM(p.disch) }));
     }
-    const cases = (c.cases || c.caseSignals || []).map(s => ({ ...s, lastReported: normYM(s.lastReported) }));
+    const pathsDoc = pathsRaw ? (typeof pathsRaw === "string" ? JSON.parse(pathsRaw) : pathsRaw) : null;
+    const registry = pathsDoc?.registry || null;
+    const cases = (c.cases || c.caseSignals || []).map(s => ({
+      ...s,
+      lastReported: normYM(s.lastReported),
+      claimPath: claimPathOf(registry, s.defendantToken || canonicalToken(s.defendant || "")),
+    }));
+    // Base-wide bureau context: every person has Equifax/Experian/TransUnion
+    // files, so the bureaus' FCRA litigation applies to the entire base. This
+    // is NOT a personal signal — the UI labels it separately.
+    const nat = natRaw ? (typeof natRaw === "string" ? JSON.parse(natRaw) : natRaw) : null;
+    const baseWide = (nat?.entities || [])
+      .filter(d => d.bureau)
+      .map(d => ({
+        defendant:  d.defendant,
+        caseCount:  d.caseCount,
+        openCases:  d.openCases,
+        candidates: d.candidates,
+        claimPath:  claimPathOf(registry, d.defendantQ || canonicalToken(d.defendant || "")),
+      }));
+
     const normalized = {
       ...c,
       score:           c.priorityScore  ?? c.score,
       cases,
+      baseWide,
       bankruptcyFiled: normYM(c.bankruptcyFiled),
       intakeReady:     c.intakeReady,
       creditReport,

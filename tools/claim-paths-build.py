@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from defendant_token import canonical_token
 
 ROOT  = "/Users/stef/MDL Business"
-TODAY = date(2026, 6, 10)
+TODAY = date(2026, 6, 11)
 
 # ── KV REST helpers (same pattern as credit-rederive.py) ─────────────────────
 for line in open(f"{ROOT}/.env.local"):
@@ -80,13 +80,34 @@ def window_type(deadline_text, status_text=""):
     return "unknown", None
 
 settlements = []  # {token, defendant, name, windowType, deadline, verified, source}
+
+# Settlement defendant strings that must ALSO register under the canonical
+# tradeline tokens the person signals carry (defendant_token.py aliases handle
+# most spellings, but bare brand names like "Ford"/"GM" and multi-entity
+# strings like "Hyundai / Kia" don't hit the alias needles).
+SETTLEMENT_EXTRA_TOKENS = {
+    "hyundai": ["hyundai capital", "kia finance"],
+    "kia":     ["kia finance"],
+    "ford":    ["ford motor credit"],
+    "gm":      ["gm financial"],
+    "toyota":  ["toyota motor credit"],
+    "nissan":  ["nissan motor acceptance"],
+    "mercedes":["mercedes benz financial"],
+}
+
 def add_settlement(defendant, name, deadline_text, status_text, verified, source):
-    tok = canonical_token(defendant or "")
-    if not tok:
-        return
     wt, dl = window_type(deadline_text, status_text)
-    settlements.append(dict(token=tok, defendant=defendant, name=(name or defendant)[:120],
-                            windowType=wt, deadline=dl, verified=bool(verified), source=source))
+    toks = set()
+    tok = canonical_token(defendant or "")
+    if tok:
+        toks.add(tok)
+    dl_low = " " + re.sub(r"[^a-z0-9]+", " ", str(defendant or "").lower()) + " "
+    for key, extra in SETTLEMENT_EXTRA_TOKENS.items():
+        if f" {key} " in dl_low:
+            toks.update(extra)
+    for t in toks:
+        settlements.append(dict(token=t, defendant=defendant, name=(name or defendant)[:120],
+                                windowType=wt, deadline=dl, verified=bool(verified), source=source))
 
 w1 = json.load(open(f"{ROOT}/data/settlements/open-settlements-2026-06.json"))
 for s in w1.get("frictionless", []) + w1.get("claim_filing", []):

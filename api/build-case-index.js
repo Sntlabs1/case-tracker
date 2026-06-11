@@ -11,8 +11,10 @@
 // far under Upstash's 100MB per-key limit while retaining the COMPLETE matched
 // population — no cap. Readers merge the shards.
 //
-// Catalog = the 41 PACER FDCPA/FCRA clusters (match:defendant_evidence) plus
-// the national TCPA marketer defendants (pacer:tcpa_marketers).
+// Catalog = the 41 PACER FDCPA/FCRA clusters (match:defendant_evidence), the
+// national TCPA marketer defendants (pacer:tcpa_marketers), the national
+// consumer-credit entities (pacer:national_entities — Top-1000 + bureaus), and
+// every claim-path registry token (case:claim_paths — settlement defendants).
 //
 // Resumable via `caseindex:stats.cursor`; idempotent (ZADD). Driven by cron
 // until the SCAN cursor returns to 0, then refreshes at most once per REFRESH_MS.
@@ -34,12 +36,17 @@ function shardOf(id) {
 }
 
 async function loadCatalogTokens() {
-  const [evRaw, tcpaRaw] = await Promise.all([
+  const [evRaw, tcpaRaw, natRaw, pathsRaw] = await Promise.all([
     kv.get("match:defendant_evidence"),
     kv.get("pacer:tcpa_marketers"),
+    kv.get("pacer:national_entities"),
+    kv.get("case:claim_paths"),
   ]);
-  const ev   = evRaw ? (typeof evRaw === "string" ? JSON.parse(evRaw) : evRaw) : {};
-  const tcpa = tcpaRaw ? (typeof tcpaRaw === "string" ? JSON.parse(tcpaRaw) : tcpaRaw) : {};
+  const parse = r => (r ? (typeof r === "string" ? JSON.parse(r) : r) : {});
+  const ev    = parse(evRaw);
+  const tcpa  = parse(tcpaRaw);
+  const nat   = parse(natRaw);
+  const paths = parse(pathsRaw);
 
   const tokens = new Set();
   for (const name of Object.keys(ev.clusters || {})) {
@@ -48,6 +55,13 @@ async function loadCatalogTokens() {
   }
   for (const d of (tcpa.defendants || [])) {
     const t = canonicalToken(d.defendant || d.defendantQ || "");
+    if (t) tokens.add(t);
+  }
+  for (const d of (nat.entities || [])) {
+    const t = canonicalToken(d.defendant || d.defendantQ || "");
+    if (t) tokens.add(t);
+  }
+  for (const t of Object.keys(paths.registry || {})) {
     if (t) tokens.add(t);
   }
   return [...tokens];

@@ -169,12 +169,20 @@ export default async function handler(req, res) {
       : [];
 
     // Eligible-people count per defendant for the total-claim estimate column.
+    // National entities are included (post catalog expansion the casepeople
+    // index covers them); bureau entries are skipped — they apply to the whole
+    // base, there is no per-person join for them.
     const tokenSet = new Set(
-      [...defendants.map(d => d.defendantQ), ...tcpaMarketers.map(m => m.defendantQ)].filter(Boolean)
+      [...defendants.map(d => d.defendantQ),
+       ...tcpaMarketers.map(m => m.defendantQ),
+       ...nationalEntities.filter(d => !d.bureau).map(d => d.defendantQ)].filter(Boolean)
     );
     const totalsByToken = await caseTotals([...tokenSet]);
     for (const d of defendants)    d.consumers = totalsByToken[d.defendantQ] || 0;
     for (const m of tcpaMarketers) m.consumers = totalsByToken[m.defendantQ] || 0;
+    for (const n of nationalEntities) {
+      if (!n.bureau) n.consumers = totalsByToken[n.defendantQ] || 0;
+    }
 
     return res.status(200).json({
       status:       "ok",
