@@ -1903,42 +1903,6 @@ export default function CreditPortfolio() {
       {/* People view (existing content) — only shown when in people mode */}
       {viewMode === "people" && (<>
 
-      {/* Name search — bounded scan down the score index, deepest-first.
-          While a search is active the summary sections collapse so the
-          results table sits at the top of the view. */}
-      <form
-        onSubmit={e => { e.preventDefault(); runPeopleSearch(peopleQ); }}
-        style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 22 }}
-      >
-        <input
-          value={peopleQ}
-          onChange={e => setPeopleQ(e.target.value)}
-          placeholder="Search people by name..."
-          style={{ fontSize: 13, padding: "8px 14px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-1)", outline: "none", width: 300 }}
-        />
-        <button
-          type="submit"
-          disabled={!peopleQ.trim() || peopleSearch?.loading}
-          style={{ fontSize: 12, padding: "8px 18px", borderRadius: 6, border: "none", background: "#2D7D95", color: "#fff", fontWeight: 600, cursor: !peopleQ.trim() || peopleSearch?.loading ? "default" : "pointer", opacity: !peopleQ.trim() || peopleSearch?.loading ? 0.6 : 1 }}
-        >
-          Search
-        </button>
-        {peopleSearch && (
-          <button
-            type="button"
-            onClick={clearPeopleSearch}
-            style={{ fontSize: 12, padding: "8px 18px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-4)", cursor: "pointer" }}
-          >
-            Clear
-          </button>
-        )}
-        {peopleSearch && !peopleSearch.loading && (
-          <span style={{ fontSize: 11, color: "var(--text-5)" }}>
-            {fmtN(peopleSearch.results.length)} match{peopleSearch.results.length === 1 ? "" : "es"} for "{peopleSearch.q}" in {fmtN(peopleSearch.scanned)} of {fmtN(peopleSearch.total ?? leadsTotal)} people scanned (highest score first)
-          </span>
-        )}
-      </form>
-
       {!peopleSearch && (<>
       {/* Top stat boxes */}
       <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 28 }}>
@@ -2066,6 +2030,42 @@ export default function CreditPortfolio() {
         </div>
       </Card>
       </>)}
+
+      {/* Name search — bounded scan down the score index, deepest-first.
+          While a search is active the summary sections above collapse so
+          the results table sits directly under this bar. */}
+      <form
+        onSubmit={e => { e.preventDefault(); runPeopleSearch(peopleQ); }}
+        style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 14 }}
+      >
+        <input
+          value={peopleQ}
+          onChange={e => setPeopleQ(e.target.value)}
+          placeholder="Search people by name..."
+          style={{ fontSize: 13, padding: "8px 14px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-1)", outline: "none", width: 300 }}
+        />
+        <button
+          type="submit"
+          disabled={!peopleQ.trim() || peopleSearch?.loading}
+          style={{ fontSize: 12, padding: "8px 18px", borderRadius: 6, border: "none", background: "#2D7D95", color: "#fff", fontWeight: 600, cursor: !peopleQ.trim() || peopleSearch?.loading ? "default" : "pointer", opacity: !peopleQ.trim() || peopleSearch?.loading ? 0.6 : 1 }}
+        >
+          Search
+        </button>
+        {peopleSearch && (
+          <button
+            type="button"
+            onClick={clearPeopleSearch}
+            style={{ fontSize: 12, padding: "8px 18px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg-surface)", color: "var(--text-4)", cursor: "pointer" }}
+          >
+            Clear
+          </button>
+        )}
+        {peopleSearch && !peopleSearch.loading && (
+          <span style={{ fontSize: 11, color: "var(--text-5)" }}>
+            {fmtN(peopleSearch.results.length)} match{peopleSearch.results.length === 1 ? "" : "es"} for "{peopleSearch.q}" in {fmtN(peopleSearch.scanned)} of {fmtN(peopleSearch.total ?? leadsTotal)} people scanned (highest score first)
+          </span>
+        )}
+      </form>
 
       {/* Top leads */}
       <Card style={{ padding: 20 }}>
