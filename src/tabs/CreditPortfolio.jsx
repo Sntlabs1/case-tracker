@@ -50,6 +50,14 @@ function settlementsOfType(claimPath, wt) {
   return (claimPath?.liveSettlements || []).filter(s => s.windowType === wt);
 }
 
+// The settlement whose terms fix the money TODAY — an open (filable) claim
+// window first, else an automatic-payment fund. When one exists, per-claimant
+// money is FIXED by the administrator's published terms; statutory ranges
+// must never be shown as what someone "can claim".
+function fixedTermsSettlement(claimPath) {
+  return filableSettlements(claimPath)[0] || settlementsOfType(claimPath, "automatic_payment")[0] || null;
+}
+
 // Short money figure out of a settlement fund / per-claimant string
 // ("Pro rata share of $318,000 — ..." -> "Pro rata", "$875 per loan" -> "$875").
 function settlementMoneyShort(str) {
@@ -409,10 +417,13 @@ function CaseTable({ rows, countLabel, countSub, onOpen }) {
                 {countLabel}
                 {countSub && <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>{countSub}</div>}
               </th>
-              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>Est. per claimant</th>
               <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>
-                Est. total claim
-                <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>eligible × statutory</div>
+                Per claimant
+                <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>settlement terms</div>
+              </th>
+              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>
+                Settlement fund
+                <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>fixed by administrator</div>
               </th>
               <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>Speed to file</th>
             </tr>
@@ -483,20 +494,42 @@ function CaseTable({ rows, countLabel, countSub, onOpen }) {
                     {c.newCases ? <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{fmtN(c.newCases)} filed 2024–26</div> : null}
                   </td>
                   <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "#22c55e", maxWidth: 180, lineHeight: 1.4 }}>
-                    {c.info?.damages?.split(".")[0] || "—"}
+                    {(() => {
+                      // Money columns show ONLY what a settlement administrator
+                      // has fixed. No settlement = no number; statutory ranges
+                      // are litigation theory and must never read as claimable.
+                      const ps = fixedTermsSettlement(c.claimPath);
+                      if (ps?.perClaimant) return (
+                        <>
+                          {settlementMoneyShort(ps.perClaimant)}
+                          <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>settlement terms (fixed)</div>
+                        </>
+                      );
+                      if (ps) return <span style={{ color: "var(--text-4)", fontWeight: 400 }}>see admin site</span>;
+                      return <span style={{ color: "var(--text-5)", fontWeight: 400 }}>—</span>;
+                    })()}
                   </td>
                   <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "var(--text-1)", fontWeight: 700, whiteSpace: "nowrap" }}>
                     {(() => {
-                      // Settled defendants have a FIXED fund — never show a
-                      // statutory range as if it were claimable money.
-                      const ps = filableSettlements(c.claimPath)[0] || settlementsOfType(c.claimPath, "automatic_payment")[0];
+                      const ps = fixedTermsSettlement(c.claimPath);
                       if (ps?.fund) return (
                         <>
                           {settlementMoneyShort(ps.fund)}
                           <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>settlement fund (fixed)</div>
                         </>
                       );
-                      return caseTotalEstimate(c) || "—";
+                      if (ps) return (
+                        <span style={{ color: "var(--text-4)", fontWeight: 400 }}>
+                          fund not published
+                          <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>see administrator site</div>
+                        </span>
+                      );
+                      return (
+                        <span style={{ color: "var(--text-5)", fontWeight: 400 }}>
+                          —
+                          <div style={{ fontSize: 10, marginTop: 2 }}>no settlement — litigation route</div>
+                        </span>
+                      );
                     })()}
                     {(c.consumers ?? c.consumersInDb) ? (
                       <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
@@ -638,7 +671,7 @@ function caseSummaryText(c, n, exposure, trend) {
   } else {
     parts.push("No live recovery route exists today — value here is origination inventory, not an existing claim.");
   }
-  if (n) parts.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a ${CASE_LABELS[c.caseType] || c.caseType} signal naming this defendant${exposure && !auto.length ? `, a statutory ceiling of ${exposure} if litigated` : ""}.`);
+  if (n) parts.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a ${CASE_LABELS[c.caseType] || c.caseType} signal naming this defendant${exposure && !auto.length && !filable.length ? `, a statutory ceiling of ${exposure} if litigated` : ""}.`);
   if (filable.length && filable[0].classDefinition) {
     parts.push("Eligibility is gated by the class definition, not the signal match — screen each claimant against it before filing.");
   }
@@ -735,7 +768,7 @@ function CaseDetailBrief({ c, claimants }) {
   // The settlement that defines today's money: first filable window, else the
   // automatic-payment fund. A settled case has a FIXED fund — statutory-ceiling
   // math is litigation framing and must not be shown as what's claimable.
-  const primary = filableSettlements(cp)[0] || settlementsOfType(cp, "automatic_payment")[0] || null;
+  const primary = fixedTermsSettlement(cp);
   const steps = caseNextSteps(c);
   const lc = caseLifecycle(c);
   const trend = filingTrend(c);
@@ -809,8 +842,8 @@ function CaseDetailBrief({ c, claimants }) {
           </>
         ) : (
           <>
-            <StatBox label="Statutory Exposure" value={exposure || "—"} sub="litigation ceiling, not expected recovery — settlements pay a fraction" color="#22c55e" />
-            <StatBox label="Per Claimant" value={perClaimant || "—"} sub={info.statute ? info.statute.split("—")[1]?.trim() || "statutory range" : "statutory range"} color="#f59e0b" />
+            <StatBox label="If Litigated (Not Claimable)" value={exposure || "—"} sub="statutory theory only — no settlement exists; nothing is recoverable today" color="#6b7280" />
+            <StatBox label="Statutory Per Person" value={perClaimant || "—"} sub="what a court COULD award if a case were filed and won" color="#6b7280" />
           </>
         )}
         <StatBox label="Open Dockets" value={fmtN(c.openCases || 0)} sub={`of ${fmtN(c.caseCount || 0)} federal filings${c.newCases ? ` — ${fmtN(c.newCases)} filed 2024–26` : ""}`} color="#8b5cf6" />
@@ -1069,6 +1102,9 @@ function EligibilityReport({ profile, focusCase }) {
 
   const rec = sig || {};
   const hasRec = rec.estimatedRecoveryLow != null || rec.estimatedRecoveryMid != null || rec.estimatedRecoveryHigh != null;
+  // An open/automatic settlement fixes the recovery — its administrator terms
+  // beat any statutory low/mid/high estimate.
+  const fixedSettlement = fixedTermsSettlement(sig?.claimPath || focusCase.claimPath);
 
   const Section = ({ title, color, children }) => (
     <div style={{ background: "var(--bg-surface2)", borderRadius: 6, padding: "10px 12px", marginBottom: 10 }}>
@@ -1131,9 +1167,16 @@ function EligibilityReport({ profile, focusCase }) {
       </Section>
 
       {/* Recovery */}
-      {(hasRec || info?.damages) && (
-        <Section title="Estimated recovery">
-          {hasRec ? (
+      {(fixedSettlement?.perClaimant || hasRec || info?.damages) && (
+        <Section title={fixedSettlement?.perClaimant ? "Recovery — fixed by settlement" : "Estimated recovery"}>
+          {fixedSettlement?.perClaimant ? (
+            <div style={{ fontSize: 12, color: "var(--text-2)" }}>
+              <span style={{ color: "#22c55e", fontWeight: 700 }}>{fixedSettlement.perClaimant}</span>
+              <div style={{ fontSize: 10.5, color: "var(--text-5)", marginTop: 3 }}>
+                Per the administrator's terms for {fixedSettlement.name} — not a statutory range.
+              </div>
+            </div>
+          ) : hasRec ? (
             <div style={{ fontSize: 12, color: "var(--text-2)" }}>
               Low {fmt$(rec.estimatedRecoveryLow)} / <span style={{ color: "#22c55e", fontWeight: 700 }}>Mid {fmt$(rec.estimatedRecoveryMid)}</span> / High {fmt$(rec.estimatedRecoveryHigh)}
             </div>
@@ -1380,6 +1423,9 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                 const info = CASE_TYPE_INFO[ct];
                 const sol = signalSol(sig, ct, profile.ingestedAt);
                 const solColor = sol.color;
+                // Open/automatic settlement → per-claimant money is fixed by
+                // the administrator's terms, not a statutory range.
+                const fixedStl = fixedTermsSettlement(sig.claimPath);
                 return (
                   <div
                     key={i}
@@ -1511,8 +1557,17 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                           <div style={{ fontSize: 11, color: "var(--text-2)", lineHeight: 1.5 }}>{info.administrator}</div>
                         </div>
                         <div style={{ background: "var(--bg-surface2)", borderRadius: 6, padding: "10px 12px" }}>
-                          <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>Potential Damages</div>
-                          <div style={{ fontSize: 11, color: "#22c55e", lineHeight: 1.5 }}>{info.damages}</div>
+                          <div style={{ fontSize: 10, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                            {fixedStl?.perClaimant ? "Per Claimant — Fixed by Settlement" : "Potential Damages"}
+                          </div>
+                          <div style={{ fontSize: 11, color: "#22c55e", lineHeight: 1.5 }}>
+                            {fixedStl?.perClaimant || info.damages}
+                          </div>
+                          {fixedStl?.perClaimant && (
+                            <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 4 }}>
+                              Per the administrator's terms for {fixedStl.name}.
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1552,8 +1607,9 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                       </div>
                     )}
 
-                    {/* Recovery */}
-                    {(sig.estimatedRecoveryLow != null || sig.estimatedRecoveryMid != null || sig.estimatedRecoveryHigh != null) && (
+                    {/* Recovery — suppressed when a settlement fixes the
+                        amount; the damages box above already shows it. */}
+                    {!fixedStl?.perClaimant && (sig.estimatedRecoveryLow != null || sig.estimatedRecoveryMid != null || sig.estimatedRecoveryHigh != null) && (
                       <div style={{ fontSize: 12, color: "var(--text-5)", borderTop: "1px solid var(--border)", paddingTop: 10 }}>
                         Recovery estimate for this claim:{" "}
                         <span style={{ color: "var(--text-2)" }}>Low {fmt$(sig.estimatedRecoveryLow)}</span>
@@ -1831,7 +1887,8 @@ export default function CreditPortfolio() {
   // Recovery-route filter for the Cases view. "claimable" = a verified-open
   // settlement claim window with a live (unexpired) deadline — the cases
   // credit.com customers can actually file on TODAY.
-  const [routeFilter, setRouteFilter]             = useState("all"); // all | claimable | automatic | rolling
+  // Default to the settled, file-today list — that is the credit.com pitch.
+  const [routeFilter, setRouteFilter]             = useState("claimable"); // all | claimable | automatic | rolling
 
   // Real PACER case catalog (defendant-grouped) from /api/portfolio-cases
   const [pacer, setPacer]                 = useState(null);
