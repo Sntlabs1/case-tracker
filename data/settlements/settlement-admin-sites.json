@@ -3591,6 +3591,626 @@
    "adminVerified": true,
    "verifiedOn": "2026-06-11",
    "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Asbestos property trust \u2014 rolling claims, no deadline."
+  },
+  {
+   "tokens": [
+    "all american check cashing"
+   ],
+   "nameNeedles": [
+    "all american check cashing"
+   ],
+   "settlement": "CFPB v. All American Check Cashing \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by All American Check Cashing per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "andrew gamber"
+   ],
+   "nameNeedles": [
+    "andrew gamber"
+   ],
+   "settlement": "CFPB v. Andrew Gamber, et al. \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Andrew Gamber, et al. per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "bounceback"
+   ],
+   "nameNeedles": [
+    "bounceback"
+   ],
+   "settlement": "CFPB v. Bounceback INC \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Bounceback INC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "brightspeed"
+   ],
+   "nameNeedles": [
+    "brightspeed"
+   ],
+   "settlement": "CFPB v. BrightSpeed \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by BrightSpeed per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "burlington"
+   ],
+   "nameNeedles": [
+    "burlington"
+   ],
+   "settlement": "CFPB v. Burlington \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Burlington per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "candy kernfuller"
+   ],
+   "nameNeedles": [
+    "candy kernfuller"
+   ],
+   "settlement": "CFPB v. Candy Kern-Fuller, et al. \u2014 consumer redress (Bureau Administered Redress)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Bureau Administered Redress)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Candy Kern-Fuller, et al. per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Bureau Administered Redress."
+  },
+  {
+   "tokens": [
+    "certified forensic loan auditors et al"
+   ],
+   "nameNeedles": [
+    "certified forensic loan auditors et al"
+   ],
+   "settlement": "CFPB v. Certified Forensic Loan Auditors et al. \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Certified Forensic Loan Auditors et al. per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "driverloan"
+   ],
+   "nameNeedles": [
+    "driverloan"
+   ],
+   "settlement": "CFPB v. DriverLoan LLC., and Angelo Jose Sarjeant \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by DriverLoan LLC., and Angelo Jose Sarjeant per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "fay servicing"
+   ],
+   "nameNeedles": [
+    "fay servicing"
+   ],
+   "settlement": "CFPB v. Fay Servicing, LLC \u2014 consumer redress (Bureau Administered Redress)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Bureau Administered Redress)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Fay Servicing, LLC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Bureau Administered Redress."
+  },
+  {
+   "tokens": [
+    "federal debt assistance association fdaa"
+   ],
+   "nameNeedles": [
+    "federal debt assistance association fdaa"
+   ],
+   "settlement": "CFPB v. Federal Debt Assistance Association (FDAA) \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Federal Debt Assistance Association (FDAA) per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "katharine snyder"
+   ],
+   "nameNeedles": [
+    "katharine snyder"
+   ],
+   "settlement": "CFPB v. Katharine Snyder, et al. \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Katharine Snyder, et al. per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "mark corbett"
+   ],
+   "nameNeedles": [
+    "mark corbett"
+   ],
+   "settlement": "CFPB v. Mark Corbett \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Mark Corbett per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "lendup",
+    "lendup loans"
+   ],
+   "nameNeedles": [
+    "lendup"
+   ],
+   "settlement": "CFPB v. LendUp Loans, LLC \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by LendUp Loans, LLC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "prehired"
+   ],
+   "nameNeedles": [
+    "prehired"
+   ],
+   "settlement": "CFPB v. Prehired, LLC \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Prehired, LLC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "performant recovery",
+    "performant"
+   ],
+   "nameNeedles": [
+    "performant recovery"
+   ],
+   "settlement": "CFPB v. Performant Recovery \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Performant Recovery per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "stephen lyster siringoringo also dba siringoringo law firm clausen  cobb management company"
+   ],
+   "nameNeedles": [
+    "stephen lyster siringoringo also dba siringoringo law firm clausen  cobb management company"
+   ],
+   "settlement": "CFPB v. Stephen Lyster Siringoringo also d/b/a Siringoringo Law Firm, Clausen & Cobb Management Company, Inc., and Joshua Cobb \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Stephen Lyster Siringoringo also d/b/a Siringoringo Law Firm, Clausen & Cobb Management Company, Inc., and Joshua Cobb per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "sutherland"
+   ],
+   "nameNeedles": [
+    "sutherland"
+   ],
+   "settlement": "CFPB v. Sutherland \u2014 consumer redress (Bureau Administered Redress)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Bureau Administered Redress)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Sutherland per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Bureau Administered Redress."
+  },
+  {
+   "tokens": [
+    "tempoe"
+   ],
+   "nameNeedles": [
+    "tempoe"
+   ],
+   "settlement": "CFPB v. Tempoe, LLC \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Tempoe, LLC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "think finance",
+    "plain green",
+    "great plains lending"
+   ],
+   "nameNeedles": [
+    "think finance"
+   ],
+   "settlement": "CFPB v. Think Finance, LLC \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Think Finance, LLC per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "timemark"
+   ],
+   "nameNeedles": [
+    "timemark"
+   ],
+   "settlement": "CFPB v. Timemark \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Timemark per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "western benefits"
+   ],
+   "nameNeedles": [
+    "western benefits"
+   ],
+   "settlement": "CFPB v. Western Benefits \u2014 consumer redress (Civil Penalty Fund)",
+   "claimsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "administrator": "CFPB (Civil Penalty Fund)",
+   "fund": "Per CFPB order",
+   "perClaimant": "CFPB-determined; distribution in progress",
+   "classDefinition": "Consumers harmed by Western Benefits per the CFPB enforcement order. CFPB identifies eligible consumers from company records.",
+   "windowType": "automatic_payment",
+   "claimFormRequired": false,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Nothing in most cases \u2014 CFPB/its administrator (often Epiq) contacts eligible consumers; ensure current mailing address. Check the case page for any claims process.",
+   "documentsUrl": "https://www.consumerfinance.gov/enforcement/payments-harmed-consumers/payments-by-case/",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "GOVERNMENT REDRESS \u2014 ongoing distribution per CFPB payments-by-case index (updated 2026-06-03). Type: Civil Penalty Fund."
+  },
+  {
+   "tokens": [
+    "vivint"
+   ],
+   "nameNeedles": [
+    "vivint"
+   ],
+   "settlement": "FTC v. Vivint Smart Home \u2014 $20M FCRA misuse redress (late claims)",
+   "claimsUrl": "https://www.ftc.gov/enforcement/refunds/vivint-smart-home-settlement",
+   "administrator": "FTC refund administrator \u2014 1-833-472-1996, admin@vivintrefund.com",
+   "fund": "$20,000,000",
+   "perClaimant": "Avg ~$1,056 in first distribution round",
+   "classDefinition": "Consumers whose credit reports were misused by Vivint (\"white paging\") or who had a Vivint account opened in their name 2016-2019 without signing up.",
+   "windowType": "rolling",
+   "claimFormRequired": true,
+   "importantDates": {
+    "claimDeadline": null,
+    "optOutDeadline": null,
+    "objectionDeadline": null,
+    "fairnessHearing": null,
+    "paymentDate": null
+   },
+   "whatToProvide": "Main deadline passed 2023-10-09; FTC states late applicants (esp. identity-theft victims with 2016-2019 Vivint accounts in their name) can contact the administrator by phone/email to apply.",
+   "documentsUrl": "https://www.ftc.gov/enforcement/refunds/vivint-smart-home-settlement",
+   "adminVerified": true,
+   "verifiedOn": "2026-06-11",
+   "notes": "FCRA identity-misuse redress \u2014 matches our identity-theft/mixed-file screening. Late-claim path is phone/email based, not a portal."
   }
  ]
 }
