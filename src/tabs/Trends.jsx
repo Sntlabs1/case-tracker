@@ -8,7 +8,7 @@ const VELOCITY_CONFIG = {
   ACCELERATING: { color: "#ef4444", label: "ACCELERATING", icon: "↑↑" },
   GROWING:      { color: "#f97316", label: "GROWING",      icon: "↑" },
   STABLE:       { color: "#6b7280", label: "STABLE",       icon: "→" },
-  DECLINING:    { color: "#3b82f6", label: "DECLINING",    icon: "↓" },
+  DECLINING:    { color: "#2D7D95", label: "DECLINING",    icon: "↓" },
   FLAT:         { color: "#374151", label: "FLAT",         icon: "—" },
 };
 
@@ -17,7 +17,7 @@ const CASE_TYPE_COLORS = {
   "Pharmaceutical":     "#B83E2C",
   "Auto Defect":        "#f59e0b",
   "Environmental":      "#22c55e",
-  "Consumer Fraud":     "#3b82f6",
+  "Consumer Fraud":     "#2D7D95",
   "Data Breach":        "#ec4899",
   "Securities":         "#f97316",
   "Food Safety":        "#84cc16",
@@ -38,7 +38,7 @@ const URGENCY_COLORS = {
 const SOURCE_COLORS = {
   Federal:  "var(--accent)",
   Judicial: "#B83E2C",
-  News:     "#3b82f6",
+  News:     "#2D7D95",
   Social:   "#22c55e",
   Medical:  "#f59e0b",
   Other:    "#6b7280",
@@ -212,7 +212,7 @@ export default function Trends() {
         <StatCard label="Avg Viability Score" value={summary.avgScore ? `${summary.avgScore}/100` : "—"} color="#22c55e" />
         <StatCard label="Complaint Clusters" value={summary.totalClusters} color="#f59e0b" sub="pre-litigation signals" />
         <StatCard label="Hot Topics" value={hotTopics.filter(t => t.velocityLabel === "ACCELERATING" || t.velocityLabel === "NEW").length} color="#ef4444" sub="accel. or new this week" />
-        <StatCard label="Peak Day" value={summary.peakDay?.leads || 0} color="#3b82f6" sub={summary.peakDay?.date || ""} />
+        <StatCard label="Peak Day" value={summary.peakDay?.leads || 0} color="#2D7D95" sub={summary.peakDay?.date || ""} />
       </div>
 
       {/* ── Daily volume chart ── */}

@@ -12,7 +12,7 @@ const STATUS_META = {
   active:     { label: "Active",     color: "#f59e0b" },
   discharged: { label: "Discharged", color: "#22c55e" },
   dismissed:  { label: "Dismissed",  color: "#6b7280" },
-  converted:  { label: "Converted",  color: "#3b82f6" },
+  converted:  { label: "Converted",  color: "#2D7D95" },
 };
 
 function StatusBadge({ status }) {

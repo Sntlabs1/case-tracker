@@ -21,6 +21,7 @@ MDL Outline.*
 # Local-only data and reference material — never push (credit-matches holds real-person PII)
 data/credit-matches/
 data/raw/
+tools/__pycache__/
 docs/backups/
 Frank Docs/
 *.pdf

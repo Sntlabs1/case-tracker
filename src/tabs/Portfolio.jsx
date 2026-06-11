@@ -95,7 +95,7 @@ export default function Portfolio() {
           <div style={{ flex: 1 }} />
 
           <a href={htmlUrl} target="_blank" rel="noopener noreferrer"
-             style={{ fontSize: 12, padding: "7px 14px", borderRadius: 6, background: "rgba(59,130,246,0.12)", color: "#3b82f6", border: "1px solid rgba(59,130,246,0.3)", textDecoration: "none", fontWeight: 700 }}>
+             style={{ fontSize: 12, padding: "7px 14px", borderRadius: 6, background: "rgba(45,125,149,0.12)", color: "#2D7D95", border: "1px solid rgba(45,125,149,0.3)", textDecoration: "none", fontWeight: 700 }}>
             Open printable report ↗
           </a>
           <a href={csvUrl} download
@@ -139,7 +139,7 @@ export default function Portfolio() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
             <StatPill label="Clients in scope"             value={(r.clientsTotal ?? 0).toLocaleString()}    color="#C8442F" />
-            <StatPill label="Analyzed"                     value={(r.clientsAnalyzed ?? 0).toLocaleString()} color="#3b82f6" />
+            <StatPill label="Analyzed"                     value={(r.clientsAnalyzed ?? 0).toLocaleString()} color="#2D7D95" />
             <StatPill label="With qualifying matches"      value={(r.clientsWithRecovery ?? 0).toLocaleString()} color="#16a34a" />
             <StatPill label="Claim windows < 30d"          value={r.urgentClaims?.length ?? 0}                color="#ea580c" />
           </div>

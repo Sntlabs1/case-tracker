@@ -1,4 +1,4 @@
-/clea# Class Action & MDL Analysis Dashboard
+# Ticket Toro — Class Action Intelligence
 
 A plaintiff intelligence platform for identifying, tracking, and analyzing potential class action lawsuits and multidistrict litigation (MDL) cases.
 
@@ -25,7 +25,6 @@ A plaintiff intelligence platform for identifying, tracking, and analyzing poten
 ## Setup
 
 ```bash
-
 # Clone the repo
 git clone https://github.com/Sntlabs1/case-tracker.git
 cd case-tracker

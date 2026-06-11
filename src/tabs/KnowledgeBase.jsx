@@ -55,7 +55,7 @@ function CaseLibrary({ cases, setCases }) {
     <div>
       {/* Stats bar */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}>
-        {[["Total Cases", stats.total, "var(--accent)"], ["Certified", stats.certified, "#22c55e"], ["Denied", stats.denied, "#ef4444"], ["Settled", stats.settled, "#3b82f6"]].map(([label, val, color]) => (
+        {[["Total Cases", stats.total, "var(--accent)"], ["Certified", stats.certified, "#22c55e"], ["Denied", stats.denied, "#ef4444"], ["Settled", stats.settled, "#2D7D95"]].map(([label, val, color]) => (
           <Card key={label} style={{ padding: 14, textAlign: "center" }}>
             <div style={{ fontSize: 26, fontWeight: 700, color }}>{val}</div>
             <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{label}</div>

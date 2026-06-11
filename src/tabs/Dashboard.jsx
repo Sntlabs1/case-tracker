@@ -9,13 +9,13 @@ function scoreColor(s) {
 function urgencyColor(u) {
   if (!u) return "#6b7280";
   const up = u.toUpperCase();
-  return up === "CRITICAL" ? "#ef4444" : up === "HIGH" ? "#f59e0b" : up === "MEDIUM" ? "#3b82f6" : "#6b7280";
+  return up === "CRITICAL" ? "#ef4444" : up === "HIGH" ? "#f59e0b" : up === "MEDIUM" ? "#2D7D95" : "#6b7280";
 }
 
 const STATUS_DISPLAY = {
   "MDL Active":    { label: "MDL Active",   color: "#22c55e" },
   "MDL Pending":   { label: "MDL Pending",  color: "#f59e0b" },
-  "Case Filed":    { label: "Filed",        color: "#3b82f6" },
+  "Case Filed":    { label: "Filed",        color: "#2D7D95" },
   "Investigation": { label: "Investigating",color: "#B83E2C" },
   "Monitoring":    { label: "Monitoring",   color: "#6b7280" },
   "Settled":       { label: "Settled",      color: "#4b5563" },
@@ -25,7 +25,7 @@ const STATUS_DISPLAY = {
 const STATUS_PIPELINE = [
   { key: "Investigation", color: "#B83E2C", label: "Investigating" },
   { key: "Monitoring",    color: "#6b7280", label: "Monitoring"    },
-  { key: "Case Filed",    color: "#3b82f6", label: "Filed"         },
+  { key: "Case Filed",    color: "#2D7D95", label: "Filed"         },
   { key: "MDL Pending",   color: "#f59e0b", label: "MDL Pending"   },
   { key: "MDL Active",    color: "#22c55e", label: "MDL Active"    },
   { key: "Settled",       color: "#4b5563", label: "Settled"       },
@@ -38,7 +38,7 @@ function sourceMeta(source) {
   if (s.includes("faers"))                        return { label: "FDA FAERS",    color: "#ef4444" };
   if (s.includes("fda"))                          return { label: "FDA",          color: "#ef4444" };
   if (s.includes("reddit"))                       return { label: "Reddit",       color: "#f97316" };
-  if (s.includes("courtlistener"))                return { label: "CourtListener",color: "#3b82f6" };
+  if (s.includes("courtlistener"))                return { label: "CourtListener",color: "#2D7D95" };
   if (s.includes("sec") || s.includes("edgar"))   return { label: "SEC EDGAR",    color: "#8b5cf6" };
   if (s.includes("nhtsa"))                        return { label: "NHTSA",        color: "#06b6d4" };
   if (s.includes("cfpb"))                         return { label: "CFPB",         color: "#10b981" };

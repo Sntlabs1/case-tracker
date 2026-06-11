@@ -1,24 +1,63 @@
 // GET /api/credit-portfolio
 // Returns the credit.com dataset match stats stored by tools/credit-ingest.js.
 // Powers the Credit Portfolio tab.
+//
+// Pagination: cursor-based over the 16 sharded by_score zsets. The cursor is a
+// comma-separated list of per-shard rank offsets (how many entries of each
+// shard have already been consumed). Each page fetches at most `limit` entries
+// per shard from its offset, k-way merges them by score, takes the top
+// `limit`, and returns the advanced cursor. Cost per page is O(limit * shards)
+// regardless of depth, so the entire index is browsable.
 
 import { kv } from "@vercel/kv";
 
 const N_SHARDS = 16;
 
-// Merge the top of every by_score shard to get the global highest-priority ids.
-async function topByScore(n) {
+function parseCursor(raw) {
+  if (!raw) return Array(N_SHARDS).fill(0);
+  const parts = String(raw).split(",").map(n => parseInt(n, 10));
+  if (parts.length !== N_SHARDS || parts.some(n => !Number.isInteger(n) || n < 0)) {
+    return null;
+  }
+  return parts;
+}
+
+// One global score-ordered page across all shards starting at `cursor`.
+async function pageByScore(cursor, limit) {
   const slices = await Promise.all(
     Array.from({ length: N_SHARDS }, (_, s) =>
-      kv.zrange(`by_score:${s}`, 0, n - 1, { rev: true, withScores: true }).catch(() => [])
+      kv.zrange(`by_score:${s}`, cursor[s], cursor[s] + limit - 1, { rev: true, withScores: true })
+        .catch(() => [])
     )
   );
-  const merged = [];
-  for (const slice of slices) {
-    for (let i = 0; i < slice.length; i += 2) merged.push([slice[i], Number(slice[i + 1])]);
+  // Per-shard candidate heads, already score-descending within each shard.
+  const heads = slices.map(slice => {
+    const arr = [];
+    for (let i = 0; i < slice.length; i += 2) arr.push([slice[i], Number(slice[i + 1])]);
+    return arr;
+  });
+  const taken = Array(N_SHARDS).fill(0);
+  const ids = [];
+  while (ids.length < limit) {
+    let best = -1, bestScore = -Infinity;
+    for (let s = 0; s < N_SHARDS; s++) {
+      const h = heads[s][taken[s]];
+      if (h && h[1] > bestScore) { bestScore = h[1]; best = s; }
+    }
+    if (best === -1) break; // all shards exhausted
+    ids.push(heads[best][taken[best]][0]);
+    taken[best]++;
   }
-  merged.sort((a, b) => b[1] - a[1]);
-  return merged.slice(0, n).map(m => m[0]);
+  const nextCursor = cursor.map((c, s) => c + taken[s]);
+  return { ids, nextCursor };
+}
+
+// Total people in the score index across all shards.
+async function indexTotal() {
+  const counts = await Promise.all(
+    Array.from({ length: N_SHARDS }, (_, s) => kv.zcard(`by_score:${s}`).catch(() => 0))
+  );
+  return counts.reduce((a, b) => a + (b || 0), 0);
 }
 
 export default async function handler(req, res) {
@@ -38,8 +77,17 @@ export default async function handler(req, res) {
 
     const parsed = typeof stats === "string" ? JSON.parse(stats) : stats;
 
-    // Top leads by score from the sharded index.
-    const topIds = await topByScore(50);
+    const limit  = Math.min(100, Math.max(1, parseInt(req.query?.limit, 10) || 50));
+    const cursor = parseCursor(req.query?.cursor);
+    if (!cursor) {
+      return res.status(400).json({ error: `cursor must be ${N_SHARDS} comma-separated non-negative integers` });
+    }
+
+    const [{ ids: topIds, nextCursor }, leadsTotal] = await Promise.all([
+      pageByScore(cursor, limit),
+      indexTotal(),
+    ]);
+
     const topLeads = [];
     for (let i = 0; i < topIds.length; i += 20) {
       const batch = await Promise.all(
@@ -70,10 +118,16 @@ export default async function handler(req, res) {
       });
     }
 
+    const consumed = nextCursor.reduce((a, b) => a + b, 0);
+
     return res.status(200).json({
-      status:   "ok",
-      stats:    parsed,
+      status:     "ok",
+      stats:      parsed,
       topLeads,
+      limit,
+      leadsTotal,
+      nextCursor: nextCursor.join(","),
+      hasMore:    consumed < leadsTotal,
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });

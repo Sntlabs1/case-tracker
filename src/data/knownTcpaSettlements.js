@@ -1052,6 +1052,36 @@ export const KNOWN_SETTLEMENTS = [
     geographicScope: "nationwide",
     source: "Midland Funding FDCPA time-barred debt settlement",
   },
+  {
+    // OPEN as of June 2026 (final-approval stage) — verify docket and claim
+    // deadline before partner presentation. Per-claimant amount is a pro-rata
+    // share of the fund, deliberately left null to avoid a fabricated figure.
+    defendantNorm: "citibank",
+    caseType: "TCPA",
+    classDefinition:
+      "Persons who received prerecorded calls from Citibank on numbers Citibank did not have on file for a customer (non-customer / wrong-number calls).",
+    classPeriod: null,
+    totalFund: "$29,500,000",
+    perClaimantRange: null,
+    finalApprovalDate: null,
+    geographicScope: "nationwide",
+    source: "Citibank TCPA prerecorded calls to non-customers — $29.5M fund, final-approval stage; defendant and case type verified live June 2026 (Top Class Actions / ClassAction.org). Confirm docket before relying.",
+  },
+  {
+    // OPEN as of June 2026 — automatic-payment class re misleading default
+    // notices; per-loan payment formula, no flat per-claimant amount. Verify
+    // docket and claim deadline before partner presentation.
+    defendantNorm: "phh mortgage",
+    caseType: "FDCPA",
+    classDefinition:
+      "Borrowers whose loans were serviced by PHH Mortgage and who received misleading default or delinquency notices (auto-pay class; per-loan payment formula).",
+    classPeriod: null,
+    totalFund: "$1,500,000",
+    perClaimantRange: null,
+    finalApprovalDate: null,
+    geographicScope: "nationwide",
+    source: "PHH Mortgage FDCPA misleading default notices — $1.5M fund, open auto-pay class; defendant and case type verified live June 2026 (Top Class Actions / ClassAction.org). Confirm docket before relying.",
+  },
 ];
 
 // Returns just the unique normalized defendant keys we know about.

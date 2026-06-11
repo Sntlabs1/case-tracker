@@ -13,7 +13,7 @@ const CASE_LABELS = {
 };
 
 const CASE_COLORS = {
-  TCPA:         "#3b82f6",
+  TCPA:         "#2D7D95",
   FDCPA:        "#8b5cf6",
   FCRA:         "#f59e0b",
   RESPA:        "#22c55e",
@@ -24,6 +24,31 @@ const CASE_COLORS = {
 };
 
 const STRENGTH_COLOR = { high: "#22c55e", medium: "#f59e0b", low: "#ef4444" };
+
+// Live claim-path badge (from KV case:claim_paths via /api/portfolio-cases).
+// claim_window = an open settlement is accepting claims / paying now;
+// joinable_litigation = open dockets naming this defendant; none = nothing
+// live today — the match must not be pitched as a claimable case.
+function ClaimPathBadge({ claimPath }) {
+  if (!claimPath || claimPath.status === "unknown") return null;
+  const CFG = {
+    claim_window:        { color: "#22c55e", label: "Active claim window" },
+    joinable_litigation: { color: "#2D7D95", label: `Joinable litigation${claimPath.openLitigation ? ` (${claimPath.openLitigation})` : ""}` },
+    monitor_only:        { color: "#f59e0b", label: "Settlement pending" },
+    none:                { color: "#6b7280", label: "No live claim path" },
+  };
+  const cfg = CFG[claimPath.status];
+  if (!cfg) return null;
+  const dl = (claimPath.liveSettlements || []).map(s => s.deadline).filter(Boolean).sort()[0];
+  return (
+    <span
+      title={(claimPath.liveSettlements || []).map(s => s.name).join(" · ") || cfg.label}
+      style={{ fontSize: 10, padding: "3px 10px", borderRadius: 10, background: `${cfg.color}18`, color: cfg.color, border: `1px solid ${cfg.color}40`, fontWeight: 700, whiteSpace: "nowrap" }}
+    >
+      {cfg.label}{dl ? ` — by ${dl}` : ""}
+    </span>
+  );
+}
 
 function fmt$(n) {
   if (!n && n !== 0) return "—";
@@ -37,13 +62,22 @@ function fmtN(n) {
   return (n || 0).toLocaleString();
 }
 
+const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
 function fmtYYYYMM(s) {
   if (!s) return "—";
-  const parts = String(s).split(/[-/]/);
-  if (parts.length < 2) return s;
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const str = String(s).trim();
+  // Raw LEX MMYY ("0117" = Jan 2017) that escaped API normalization.
+  const mmyy = /^(\d{2})(\d{2})$/.exec(str);
+  if (mmyy) {
+    const m = parseInt(mmyy[1], 10);
+    const yy = parseInt(mmyy[2], 10);
+    if (m >= 1 && m <= 12) return `${MONTHS_SHORT[m - 1]} ${yy <= 26 ? 2000 + yy : 1900 + yy}`;
+  }
+  const parts = str.split(/[-/]/);
+  if (parts.length < 2) return str;
   const m = parseInt(parts[1], 10);
-  return `${months[m - 1] || parts[1]} ${parts[0]}`;
+  return `${MONTHS_SHORT[m - 1] || parts[1]} ${parts[0]}`;
 }
 
 function maskPhone(phone) {
@@ -249,6 +283,157 @@ function signalSol(sig, caseType, ingestedAt) {
     short: null,
     color: legacy.status === "ok" ? "#22c55e" : legacy.status === "caution" ? "#f59e0b" : "#ef4444",
   };
+}
+
+// Per-claimant statutory floor/ceiling by case type — mirrors PER_VIOLATION
+// in src/lib/intelligence/recoveryEstimate.js (TCPA 47 USC §227(b)(3), FDCPA
+// 15 USC §1692k, FCRA 15 USC §1681n) and the per-case mids this tab already
+// uses for the non-statutory types.
+const CASE_TOTAL_RANGE = {
+  TCPA:        [500, 1500],
+  FDCPA:       [500, 1000],
+  FCRA:        [100, 1000],
+  AutoLending: [1000, 1000],
+  StudentLoan: [2000, 2000],
+  RESPA:       [1500, 1500],
+  DataBreach:  [150, 150],
+  UDAP_Payday: [500, 500],
+};
+
+function fmtDollarsCompact(n) {
+  if (!n) return "—";
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1).replace(/\.0$/, "")}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1).replace(/\.0$/, "")}M`;
+  if (n >= 1e3) return `$${Math.round(n / 1e3)}K`;
+  return `$${Math.round(n)}`;
+}
+
+// Total-claim potential for one case row: eligible people in the file x the
+// per-claimant statutory range. A ceiling, not an expected recovery.
+function caseTotalEstimate(c) {
+  const eligible = c.consumers ?? c.consumersInDb;
+  const range = CASE_TOTAL_RANGE[c.caseType];
+  if (!eligible || !range) return null;
+  const [lo, hi] = range;
+  return lo === hi
+    ? fmtDollarsCompact(eligible * lo)
+    : `${fmtDollarsCompact(eligible * lo)}–${fmtDollarsCompact(eligible * hi)}`;
+}
+
+// Report-style defendant table for the Cases view. Pure restyle of the old
+// card grid — same fields, same click-through, just rendered as ranked rows
+// with status pills, a right-aligned ceiling column, and speed-to-file dots.
+function CaseTable({ rows, countLabel, countSub, onOpen }) {
+  return (
+    <Card style={{ padding: 0, overflow: "hidden" }}>
+      <div style={{ overflowX: "auto" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead>
+            <tr style={{ color: "var(--text-5)", borderBottom: "1px solid var(--border)", background: "var(--bg-surface)" }}>
+              <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 700 }}>Defendant / case type</th>
+              <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 700 }}>Claim basis</th>
+              <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 700 }}>Status</th>
+              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>
+                {countLabel}
+                {countSub && <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>{countSub}</div>}
+              </th>
+              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>Est. per claimant</th>
+              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>
+                Est. total claim
+                <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)" }}>eligible × statutory</div>
+              </th>
+              <th style={{ textAlign: "right", padding: "10px 14px", fontWeight: 700 }}>Speed to file</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(c => {
+              const cColor = CASE_COLORS[c.caseType] || "#6b7280";
+              const sol = solStatus(c.caseType, null);
+              const solColor = sol.status === "ok" ? "#22c55e" : sol.status === "caution" ? "#f59e0b" : "#ef4444";
+              const speed = c.classSettlement || (c.openCases || 0) >= 25 ? 3 : (c.openCases || 0) > 0 ? 2 : 1;
+              const clickable = !c.bureau;
+              const ex = (c.examples || [])[0];
+              const pill = { fontSize: 10, padding: "3px 10px", borderRadius: 10, fontWeight: 700, whiteSpace: "nowrap" };
+              return (
+                <tr
+                  key={c.id}
+                  onClick={() => clickable && onOpen(c)}
+                  style={{ borderBottom: "1px solid var(--border)", cursor: clickable ? "pointer" : "default" }}
+                  onMouseEnter={e => { if (clickable) e.currentTarget.style.background = "var(--bg-surface)"; }}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                >
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", minWidth: 170 }}>
+                    <div style={{ color: "var(--text-1)", fontWeight: 700, fontSize: 13 }}>{c.name}</div>
+                    <div style={{ color: "var(--text-5)", fontSize: 10, marginTop: 3 }}>
+                      {[c.category || c.entityType, (c.consumers ?? c.consumersInDb) ? `${fmtN(c.consumers ?? c.consumersInDb)} consumers in file` : null]
+                        .filter(Boolean).join(" · ") || " "}
+                    </div>
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", color: "var(--text-3)", maxWidth: 260, lineHeight: 1.45 }}>
+                    <span style={{ color: cColor, fontWeight: 600 }}>{CASE_LABELS[c.caseType] || c.caseType}</span>
+                    {ex && (
+                      <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 250 }}>
+                        {ex.number || ex.docket} — {ex.title}
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top" }}>
+                    <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                      {(c.openCases || 0) > 0 && (
+                        <span style={{ ...pill, background: "#22c55e18", color: "#22c55e", border: "1px solid #22c55e40" }}>
+                          {fmtN(c.openCases)} open
+                        </span>
+                      )}
+                      {c.classSettlement && (
+                        <span style={{ ...pill, background: "#8b5cf618", color: "#8b5cf6", border: "1px solid #8b5cf640" }}>
+                          Class settlement
+                        </span>
+                      )}
+                      {(c.candidates || 0) > 0 && (
+                        <span style={{ ...pill, background: "#f59e0b18", color: "#f59e0b", border: "1px solid #f59e0b40" }}>
+                          {fmtN(c.candidates)} class candidates
+                        </span>
+                      )}
+                      <ClaimPathBadge claimPath={c.claimPath} />
+                      {c.bureau ? (
+                        <span style={{ ...pill, background: `${cColor}18`, color: cColor, border: `1px solid ${cColor}40` }}>
+                          Applies to entire base
+                        </span>
+                      ) : (
+                        <span style={{ ...pill, background: `${solColor}14`, color: solColor, border: `1px solid ${solColor}33` }}>
+                          {sol.status === "ok" ? "SOL Open" : sol.status === "caution" ? "SOL Closing" : "SOL Risk"}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "var(--text-1)", fontWeight: 700, whiteSpace: "nowrap" }}>
+                    {fmtN(c.caseCount)}
+                    {c.newCases ? <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>{fmtN(c.newCases)} filed 2024–26</div> : null}
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "#22c55e", maxWidth: 180, lineHeight: 1.4 }}>
+                    {c.info?.damages?.split(".")[0] || "—"}
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", color: "var(--text-1)", fontWeight: 700, whiteSpace: "nowrap" }}>
+                    {caseTotalEstimate(c) || "—"}
+                    {(c.consumers ?? c.consumersInDb) ? (
+                      <div style={{ fontWeight: 400, fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
+                        {fmtN(c.consumers ?? c.consumersInDb)} eligible
+                      </div>
+                    ) : null}
+                  </td>
+                  <td style={{ padding: "12px 14px", verticalAlign: "top", textAlign: "right", whiteSpace: "nowrap" }}>
+                    {[1, 2, 3].map(i => (
+                      <span key={i} style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", marginLeft: 4, background: i <= speed ? "#e11d48" : "var(--border)" }} />
+                    ))}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
 }
 
 function StatBox({ label, value, sub, color = "var(--accent)" }) {
@@ -589,7 +774,7 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                 </div>
                 <div style={{ gridColumn: "1 / -1" }}>
                   <span style={{ color: "var(--text-5)" }}>Source: </span>
-                  <span style={{ fontSize: 11, padding: "1px 8px", borderRadius: 3, background: "#3b82f622", color: "#3b82f6", border: "1px solid #3b82f644" }}>
+                  <span style={{ fontSize: 11, padding: "1px 8px", borderRadius: 3, background: "#2D7D9522", color: "#2D7D95", border: "1px solid #2D7D9544" }}>
                     Credit.com Dataset
                   </span>
                 </div>
@@ -613,7 +798,7 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                     borderRadius: 5,
                     border: "none",
                     cursor: "pointer",
-                    background: modalTab === mode ? "#3b82f6" : "transparent",
+                    background: modalTab === mode ? "#2D7D95" : "transparent",
                     color: modalTab === mode ? "#fff" : "var(--text-4)",
                     transition: "all 0.15s",
                   }}
@@ -765,7 +950,7 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                         {" / "}
                         <span style={{ color: "#22c55e", fontWeight: 600 }}>Mid {fmt$(sig.estimatedRecoveryMid)}</span>
                         {" / "}
-                        <span style={{ color: "#3b82f6" }}>High {fmt$(sig.estimatedRecoveryHigh)}</span>
+                        <span style={{ color: "#2D7D95" }}>High {fmt$(sig.estimatedRecoveryHigh)}</span>
                       </div>
                     )}
                   </div>
@@ -786,7 +971,7 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
                   {" / "}
                   <span style={{ color: "#22c55e", fontWeight: 700 }}>Mid {fmt$(profile.recoveryEstimate.mid)}</span>
                   {" / "}
-                  <span style={{ color: "#3b82f6" }}>High {fmt$(profile.recoveryEstimate.high)}</span>
+                  <span style={{ color: "#2D7D95" }}>High {fmt$(profile.recoveryEstimate.high)}</span>
                 </div>
                 <div style={{ fontSize: 11, color: "var(--text-5)" }}>
                   Estimates based on class-action settlement averages. Not legal advice.
@@ -966,6 +1151,19 @@ export default function CreditPortfolio() {
   const [filter, setFilter]             = useState("all");
   const [viewMode, setViewMode]         = useState("people"); // "people" | "cases"
 
+  // Pagination over the Highest-Priority Matched People table (50 per page).
+  // Cursor-based: the API returns a nextCursor with each page, so every person
+  // in the index is reachable. Page 0 ships with the initial payload; we keep
+  // the cursor that fetches each page so Prev can re-fetch earlier pages.
+  const PAGE_SIZE = 50;
+  const [leadsPage, setLeadsPage]               = useState(0);
+  const [pageLeads, setPageLeads]               = useState(null); // null = use data.topLeads (page 0)
+  const [pageHasMore, setPageHasMore]           = useState(null); // null = use data.hasMore (page 0)
+  const [pageLeadsLoading, setPageLeadsLoading] = useState(false);
+  const [pageLeadsError, setPageLeadsError]     = useState(null);
+  const pageAbortRef = React.useRef(null);
+  const pageCursorsRef = React.useRef({}); // page index -> cursor string that fetches it
+
   const [profileId, setProfileId]       = useState(null);
   const [profile, setProfile]           = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -978,6 +1176,11 @@ export default function CreditPortfolio() {
   const [caseClients, setCaseClients]             = useState([]);
   const [caseClientsLoading, setCaseClientsLoading] = useState(false);
   const [caseClientsError, setCaseClientsError]   = useState(null);
+  const [caseClientsTotal, setCaseClientsTotal]   = useState(null);
+  const [caseClientsHasMore, setCaseClientsHasMore] = useState(false);
+  const [caseClientsPage, setCaseClientsPage]     = useState(0);
+  const caseClientsAbortRef = React.useRef(null);
+  const caseCursorsRef      = React.useRef({});   // page index -> cursor string
   const [caseTypeFilter, setCaseTypeFilter]       = useState("all");
 
   // Real PACER case catalog (defendant-grouped) from /api/portfolio-cases
@@ -988,9 +1191,33 @@ export default function CreditPortfolio() {
   useEffect(() => {
     fetch("/api/credit-portfolio")
       .then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.error || r.status); }))
-      .then(d => { setData(d); setLoading(false); })
+      .then(d => {
+        if (d.nextCursor) pageCursorsRef.current[1] = d.nextCursor;
+        setData(d);
+        setLoading(false);
+      })
       .catch(e => { setError(e.message); setLoading(false); });
   }, []);
+
+  useEffect(() => {
+    if (pageAbortRef.current) pageAbortRef.current.abort();
+    if (leadsPage === 0) { setPageLeads(null); setPageHasMore(null); setPageLeadsError(null); setPageLeadsLoading(false); return; }
+    const cursor = pageCursorsRef.current[leadsPage];
+    if (!cursor) { setLeadsPage(0); return; }
+    const ac = new AbortController();
+    pageAbortRef.current = ac;
+    setPageLeadsLoading(true);
+    setPageLeadsError(null);
+    fetch(`/api/credit-portfolio?cursor=${encodeURIComponent(cursor)}`, { signal: ac.signal })
+      .then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.error || r.status); }))
+      .then(d => {
+        if (d.nextCursor) pageCursorsRef.current[leadsPage + 1] = d.nextCursor;
+        setPageLeads(d.topLeads || []);
+        setPageHasMore(!!d.hasMore);
+        setPageLeadsLoading(false);
+      })
+      .catch(e => { if (e.name === "AbortError") return; setPageLeadsError(e.message); setPageLeadsLoading(false); });
+  }, [leadsPage]);
 
   useEffect(() => {
     fetch("/api/portfolio-cases")
@@ -1014,11 +1241,15 @@ export default function CreditPortfolio() {
       .catch(e => { if (e.name === "AbortError") return; setProfileError(e.message); setProfileLoading(false); });
   }
 
-  function openCase(c) {
-    setSelectedCase(c);
-    setCaseClients([]);
-    setCaseClientsError(null);
+  // Fetch one page of a case's claimants. Cursor-based: the API returns the
+  // complete population page by page; we keep each page's cursor so Prev can
+  // re-fetch earlier pages.
+  function fetchCaseClients(c, page) {
+    if (caseClientsAbortRef.current) caseClientsAbortRef.current.abort();
+    const ac = new AbortController();
+    caseClientsAbortRef.current = ac;
     setCaseClientsLoading(true);
+    setCaseClientsError(null);
     const params = new URLSearchParams();
     // For real PACER defendant clusters the defendant name is the join key to
     // people; don't constrain by case type (ingest may tag the same furnisher
@@ -1029,10 +1260,29 @@ export default function CreditPortfolio() {
       params.set("caseType", c.caseType);
       if (c.defendantQ) params.set("defendant", c.defendantQ);
     }
-    fetch(`/api/case-clients?${params}`)
+    const cur = caseCursorsRef.current[page];
+    if (cur) params.set("cursor", cur);
+    fetch(`/api/case-clients?${params}`, { signal: ac.signal })
       .then(r => r.ok ? r.json() : r.json().then(e => { throw new Error(e.error || r.status); }))
-      .then(d => { setCaseClients(d.clients || []); setCaseClientsLoading(false); })
-      .catch(e => { setCaseClientsError(e.message); setCaseClientsLoading(false); });
+      .then(d => {
+        if (d.nextCursor) caseCursorsRef.current[page + 1] = d.nextCursor;
+        setCaseClients(d.clients || []);
+        setCaseClientsTotal(d.total ?? null);
+        setCaseClientsHasMore(!!d.hasMore);
+        setCaseClientsPage(page);
+        setCaseClientsLoading(false);
+      })
+      .catch(e => { if (e.name === "AbortError") return; setCaseClientsError(e.message); setCaseClientsLoading(false); });
+  }
+
+  function openCase(c) {
+    setSelectedCase(c);
+    setCaseClients([]);
+    setCaseClientsTotal(null);
+    setCaseClientsHasMore(false);
+    setCaseClientsPage(0);
+    caseCursorsRef.current = {};
+    fetchCaseClients(c, 0);
   }
 
   if (loading) return (
@@ -1080,14 +1330,19 @@ export default function CreditPortfolio() {
     undated:           "Undated source",
   };
   const SOL_COLORS = {
-    discharge_ongoing: "#22c55e", live: "#3b82f6", live_state_udap: "#8b5cf6",
+    discharge_ongoing: "#22c55e", live: "#2D7D95", live_state_udap: "#8b5cf6",
     time_barred: "#6b7280", undated: "#9ca3af",
   };
 
   const totalCaseMatches = Object.values(byCaseType).reduce((a, b) => a + b, 0);
+  const currentLeads = pageLeads ?? topLeads;
   const filteredLeads = filter === "all"
-    ? topLeads
-    : topLeads.filter(l => l.cases?.includes(filter));
+    ? currentLeads
+    : currentLeads.filter(l => l.cases?.includes(filter));
+
+  const leadsTotal = data.leadsTotal ?? topLeads.length;
+  const leadsPageCount = Math.max(1, Math.ceil(leadsTotal / PAGE_SIZE));
+  const leadsHasMore = pageHasMore ?? data.hasMore ?? false;
 
   // Real PACER cases (defendant-grouped) for the Cases view. Each defendant is
   // a litigation cluster the credit DB is matched against.
@@ -1102,6 +1357,8 @@ export default function CreditPortfolio() {
     openCases:       d.openCases,
     newCases:        d.newCases,
     classSettlement: d.classSettlement,
+    consumers:       d.consumers || null,
+    claimPath:       d.claimPath || null,
     examples:        d.examples || [],
     matchByDefendantOnly: true,
     status:          `${(d.caseCount || 0).toLocaleString()} federal dockets — ${d.openCases || 0} open${d.newCases ? `, ${d.newCases} filed 2024–26` : ""}`,
@@ -1118,6 +1375,8 @@ export default function CreditPortfolio() {
     defendantQ:      d.defendantQ,
     caseCount:       d.caseCount,
     openCases:       d.openCases,
+    consumers:       d.consumers || null,
+    claimPath:       d.claimPath || null,
     examples:        d.examples || [],
     matchByDefendantOnly: true,
     status:          `${(d.caseCount || 0).toLocaleString()} national TCPA dockets — ${d.openCases || 0} open`,
@@ -1126,11 +1385,40 @@ export default function CreditPortfolio() {
   }));
   const tcpaMeta = pacer?.tcpaMarketerMeta || null;
 
+  // National consumer-credit index (NOS 480/371/490, all Top-1000 entities +
+  // bureaus). Defendants already shown as 41-cluster cards are skipped so each
+  // entity appears once. Bureau cards apply to the entire base — no per-person
+  // casepeople join exists for them, so they render without the people query.
+  const clusterTokens = new Set(pacerCases.map(c => c.defendantQ));
+  const nationalEntityCases = (pacer?.nationalEntities || [])
+    .filter(d => !clusterTokens.has(d.defendantQ))
+    .map(d => ({
+      id:              `nat-${d.defendantQ.replace(/\s+/g, "-")}`,
+      caseType:        "FCRA",
+      name:            d.defendant,
+      defendant:       d.defendant,
+      defendantQ:      d.defendantQ,
+      bureau:          d.bureau,
+      entityType:      d.entityType,
+      caseCount:       d.caseCount,
+      openCases:       d.openCases,
+      candidates:      d.candidates,
+      consumersInDb:   d.consumersInDb,
+      claimPath:       d.claimPath || null,
+      examples:        d.examples || [],
+      matchByDefendantOnly: true,
+      status:          `${(d.caseCount || 0).toLocaleString()} national consumer-credit dockets — ${d.openCases || 0} open`,
+      admin:           "Consumer plaintiffs' bar (FCRA/FDCPA/TILA)",
+      info:            CASE_TYPE_INFO.FCRA,
+    }));
+  const nationalMeta = pacer?.nationalEntityMeta || null;
+
   const pacerCaseTypes = [...new Set(pacerCases.map(c => c.caseType))]
     .sort((a, b) => pacerCases.filter(c => c.caseType === b).length - pacerCases.filter(c => c.caseType === a).length);
   if (tcpaMarketerCases.length && !pacerCaseTypes.includes("TCPA")) pacerCaseTypes.push("TCPA");
   const visiblePacerCases = pacerCases.filter(c => caseTypeFilter === "all" || c.caseType === caseTypeFilter);
   const showTcpaMarketers = tcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
+  const showNationalEntities = nationalEntityCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
 
   return (
     <div style={{ padding: "24px 28px", maxWidth: 1200 }}>
@@ -1159,7 +1447,7 @@ export default function CreditPortfolio() {
               <button
                 key={mode}
                 onClick={() => { setViewMode(mode); setSelectedCase(null); }}
-                style={{ fontSize: 12, padding: "5px 16px", borderRadius: 4, border: "none", cursor: "pointer", fontWeight: 600, background: viewMode === mode ? "#3b82f6" : "transparent", color: viewMode === mode ? "#fff" : "#9ca3af", transition: "all 0.15s" }}
+                style={{ fontSize: 12, padding: "5px 16px", borderRadius: 4, border: "none", cursor: "pointer", fontWeight: 600, background: viewMode === mode ? "#2D7D95" : "transparent", color: viewMode === mode ? "#fff" : "#9ca3af", transition: "all 0.15s" }}
               >
                 {label}
               </button>
@@ -1188,7 +1476,7 @@ export default function CreditPortfolio() {
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
             <button
               onClick={() => setCaseTypeFilter("all")}
-              style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: caseTypeFilter === "all" ? "#3b82f6" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
+              style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: caseTypeFilter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
             >
               All ({pacerCases.length + tcpaMarketerCases.length})
             </button>
@@ -1220,71 +1508,40 @@ export default function CreditPortfolio() {
             </div>
           )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
-            {visiblePacerCases.map(c => {
-                const sol = solStatus(c.caseType, null);
-                const solColor = sol.status === "ok" ? "#22c55e" : sol.status === "caution" ? "#f59e0b" : "#ef4444";
-                const cColor = CASE_COLORS[c.caseType] || "#6b7280";
-                return (
-                  <div
-                    key={c.id}
-                    onClick={() => openCase(c)}
-                    style={{ background: "var(--bg-card)", border: `1px solid ${cColor}33`, borderRadius: 10, padding: 20, cursor: "pointer", transition: "border-color 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = `${cColor}88`}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = `${cColor}33`}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 3, background: `${cColor}22`, color: cColor, border: `1px solid ${cColor}44`, fontWeight: 700 }}>
-                        {CASE_LABELS[c.caseType] || c.caseType}
-                      </span>
-                      <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: `${solColor}18`, color: solColor, border: `1px solid ${solColor}33`, fontWeight: 600 }}>
-                        {sol.status === "ok" ? "SOL Open" : sol.status === "caution" ? "SOL Closing" : "SOL Risk"}
-                      </span>
-                      {c.openCases > 0 && (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: "#22c55e18", color: "#22c55e", border: "1px solid #22c55e33", fontWeight: 600 }}>
-                          {c.openCases} open
-                        </span>
-                      )}
-                      {c.classSettlement && (
-                        <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: "#8b5cf618", color: "#8b5cf6", border: "1px solid #8b5cf633", fontWeight: 600 }}>
-                          Class settlement
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 4, lineHeight: 1.3 }}>
-                      {c.name}
-                    </div>
-                    <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 10, lineHeight: 1.5 }}>
-                      {(c.caseCount || 0).toLocaleString()} federal dockets
-                      {c.newCases ? ` · ${c.newCases} filed 2024–26` : ""}
-                      {` · ${c.category}`}
-                    </div>
-                    {c.examples && c.examples.length > 0 && (
-                      <div style={{ marginBottom: 12 }}>
-                        {c.examples.slice(0, 2).map((ex, j) => (
-                          <div key={j} style={{ fontSize: 10.5, color: "var(--text-5)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {ex.number} — {ex.title}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div style={{ fontSize: 11, color: "var(--text-5)" }}>
-                        {c.info?.damages && (
-                          <span style={{ color: "#22c55e" }}>{c.info.damages.split(".")[0]}</span>
-                        )}
-                      </div>
-                      <button
-                        onClick={e => { e.stopPropagation(); openCase(c); }}
-                        style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: `1px solid ${cColor}44`, background: `${cColor}18`, color: cColor, cursor: "pointer", fontWeight: 600 }}
-                      >
-                        View eligible people
-                      </button>
-                    </div>
+          {visiblePacerCases.length > 0 && (
+            <CaseTable
+              rows={visiblePacerCases}
+              countLabel="Federal dockets"
+              countSub="PACER index"
+              onOpen={openCase}
+            />
+          )}
+
+          {/* National consumer-credit index (NOS 480/371/490, all entities) */}
+          {showNationalEntities && (
+            <div style={{ marginTop: 36 }}>
+              <div style={{ borderTop: "1px solid var(--border)", paddingTop: 24 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 4 }}>
+                  National Consumer-Credit Index — All Furnishers & Bureaus
+                </div>
+                <div style={{ fontSize: 12, color: "var(--text-5)", marginBottom: 18, lineHeight: 1.6, maxWidth: 820 }}>
+                  {nationalMeta ? <><span style={{ color: "var(--text-3)", fontWeight: 600 }}>{fmtN(nationalMeta.indexCases)}</span> federal consumer-credit dockets (NOS 480/371/490, 2015–2026), <span style={{ color: "var(--text-3)", fontWeight: 600 }}>{fmtN(nationalMeta.matchedCases)}</span> matched to creditors in the file. </> : null}
+                  Covers every Top-1000 furnisher plus the big-3 bureaus — the bureau cards apply to the <em>entire</em> base since every person has all three bureau files. Click a furnisher to see its people.
+                </div>
+                <CaseTable
+                  rows={nationalEntityCases.slice(0, 60)}
+                  countLabel="National dockets"
+                  countSub="NOS 480/371/490"
+                  onOpen={openCase}
+                />
+                {nationalEntityCases.length > 60 && (
+                  <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 14 }}>
+                    Showing top 60 of {fmtN(nationalEntityCases.length)} entities by docket volume.
                   </div>
-                );
-              })}
-          </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* National TCPA marketer index (reference catalog) */}
           {showTcpaMarketers && (
@@ -1297,47 +1554,12 @@ export default function CreditPortfolio() {
                   {tcpaMeta ? <><span style={{ color: "var(--text-3)", fontWeight: 600 }}>{fmtN(tcpaMeta.sourceTotal)}</span> national TCPA dockets (NOS 485) grouped into <span style={{ color: "var(--text-3)", fontWeight: 600 }}>{fmtN(tcpaMeta.defendantCount)}</span> multi-case defendants. </> : null}
                   Most are robocall/text marketers that don't appear in credit reports — but the highest-volume defendants are banks and lenders (Citibank, Capital One, Synchrony, Amex…) that <em>do</em> appear as furnishers, so they still match people. Click any defendant to check the credit DB.
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
-                  {tcpaMarketerCases.slice(0, 60).map(c => {
-                    const cColor = CASE_COLORS.TCPA;
-                    return (
-                      <div
-                        key={c.id}
-                        onClick={() => openCase(c)}
-                        style={{ background: "var(--bg-card)", border: `1px solid ${cColor}33`, borderRadius: 10, padding: 18, cursor: "pointer", transition: "border-color 0.15s" }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = `${cColor}88`}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = `${cColor}33`}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-                          <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 3, background: `${cColor}22`, color: cColor, border: `1px solid ${cColor}44`, fontWeight: 700 }}>TCPA</span>
-                          {c.openCases > 0 && (
-                            <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: "#22c55e18", color: "#22c55e", border: "1px solid #22c55e33", fontWeight: 600 }}>{c.openCases} open</span>
-                          )}
-                          <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 3, background: "var(--bg-surface)", color: "var(--text-5)", border: "1px solid var(--border)", fontWeight: 600 }}>reference</span>
-                        </div>
-                        <div style={{ fontSize: 14, fontWeight: 800, color: "var(--text-1)", marginBottom: 4, lineHeight: 1.3 }}>{c.name}</div>
-                        <div style={{ fontSize: 11, color: "var(--text-4)", marginBottom: 10 }}>{(c.caseCount || 0).toLocaleString()} national TCPA dockets</div>
-                        {c.examples && c.examples.length > 0 && (
-                          <div style={{ marginBottom: 12 }}>
-                            {c.examples.slice(0, 2).map((ex, j) => (
-                              <div key={j} style={{ fontSize: 10.5, color: "var(--text-5)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                {ex.number} — {ex.title}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                          <button
-                            onClick={e => { e.stopPropagation(); openCase(c); }}
-                            style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: `1px solid ${cColor}44`, background: `${cColor}18`, color: cColor, cursor: "pointer", fontWeight: 600 }}
-                          >
-                            View eligible people
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <CaseTable
+                  rows={tcpaMarketerCases.slice(0, 60)}
+                  countLabel="National TCPA dockets"
+                  countSub="NOS 485"
+                  onOpen={openCase}
+                />
                 {tcpaMarketerCases.length > 60 && (
                   <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 14 }}>
                     Showing top 60 of {fmtN(tcpaMarketerCases.length)} multi-case TCPA defendants by docket volume.
@@ -1390,11 +1612,17 @@ export default function CreditPortfolio() {
           {!caseClientsLoading && !caseClientsError && (
             <Card style={{ padding: 20 }}>
               <div style={{ fontSize: 13, color: "var(--text-4)", marginBottom: 14 }}>
-                Top {caseClients.length} highest-priority matches
+                {caseClientsTotal != null
+                  ? `${fmtN(caseClientsTotal)} total claimants — page ${fmtN(caseClientsPage + 1)} of ${fmtN(Math.max(1, Math.ceil(caseClientsTotal / 50)))}, ranked by priority score`
+                  : `Page ${fmtN(caseClientsPage + 1)} — ranked by priority score`}
                 {selectedCase.defendantQ ? ` — defendant keyword: "${selectedCase.defendantQ}"` : ` — all ${CASE_LABELS[selectedCase.caseType] || selectedCase.caseType} signals`}
               </div>
               {caseClients.length === 0 ? (
-                <div style={{ color: "var(--text-5)", fontSize: 13 }}>No matches found in scanned records. Try browsing the People view and filtering by case type.</div>
+                <div style={{ color: "var(--text-5)", fontSize: 13 }}>
+                  {caseClientsPage === 0
+                    ? "No matches found in scanned records. Try browsing the People view and filtering by case type."
+                    : "No matches on this page."}
+                </div>
               ) : (
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                   <thead>
@@ -1443,6 +1671,29 @@ export default function CreditPortfolio() {
                     })}
                   </tbody>
                 </table>
+              )}
+
+              {/* Pager */}
+              {(caseClientsPage > 0 || caseClientsHasMore) && (
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, marginTop: 14 }}>
+                  <button
+                    onClick={() => fetchCaseClients(selectedCase, caseClientsPage - 1)}
+                    disabled={caseClientsPage === 0 || caseClientsLoading}
+                    style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: caseClientsPage === 0 ? "var(--text-5)" : "var(--text-1)", cursor: caseClientsPage === 0 || caseClientsLoading ? "default" : "pointer", opacity: caseClientsPage === 0 || caseClientsLoading ? 0.5 : 1 }}
+                  >
+                    Prev
+                  </button>
+                  <span style={{ fontSize: 11, color: "var(--text-4)" }}>
+                    Page {fmtN(caseClientsPage + 1)}{caseClientsTotal != null ? ` of ${fmtN(Math.max(1, Math.ceil(caseClientsTotal / 50)))}` : ""}
+                  </span>
+                  <button
+                    onClick={() => fetchCaseClients(selectedCase, caseClientsPage + 1)}
+                    disabled={!caseClientsHasMore || caseClientsLoading}
+                    style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: !caseClientsHasMore ? "var(--text-5)" : "var(--text-1)", cursor: !caseClientsHasMore || caseClientsLoading ? "default" : "pointer", opacity: !caseClientsHasMore || caseClientsLoading ? 0.5 : 1 }}
+                  >
+                    Next
+                  </button>
+                </div>
               )}
             </Card>
           )}
@@ -1587,7 +1838,7 @@ export default function CreditPortfolio() {
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             <button
               onClick={() => setFilter("all")}
-              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, border: "1px solid var(--border)", background: filter === "all" ? "#3b82f6" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, border: "1px solid var(--border)", background: filter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
             >
               All
             </button>
@@ -1616,7 +1867,7 @@ export default function CreditPortfolio() {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.slice(0, 50).map((lead) => (
+              {filteredLeads.map((lead) => (
                 <tr
                   key={lead.id}
                   onClick={() => openProfile(lead.id)}
@@ -1651,6 +1902,46 @@ export default function CreditPortfolio() {
               ))}
             </tbody>
           </table>
+          {pageLeadsLoading && (
+            <div style={{ padding: 24, textAlign: "center", color: "var(--text-4)", fontSize: 12 }}>
+              Loading page {leadsPage + 1}...
+            </div>
+          )}
+          {pageLeadsError && (
+            <div style={{ padding: 16, color: "#ef4444", fontSize: 12 }}>Error loading page: {pageLeadsError}</div>
+          )}
+          {!pageLeadsLoading && !pageLeadsError && filteredLeads.length === 0 && (
+            <div style={{ padding: 24, textAlign: "center", color: "var(--text-5)", fontSize: 12 }}>
+              {filter === "all" ? "No people on this page." : `No ${CASE_LABELS[filter] || filter} matches on this page — the filter applies within the current page of ${PAGE_SIZE}.`}
+            </div>
+          )}
+        </div>
+
+        {/* Pager */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14, flexWrap: "wrap", gap: 10 }}>
+          <div style={{ fontSize: 11, color: "var(--text-5)" }}>
+            {fmtN(leadsTotal)} matched people, ranked by score
+            {filter !== "all" ? ` — filter applies within the current page` : ""}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button
+              onClick={() => setLeadsPage(p => Math.max(0, p - 1))}
+              disabled={leadsPage === 0 || pageLeadsLoading}
+              style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: leadsPage === 0 ? "var(--text-5)" : "var(--text-1)", cursor: leadsPage === 0 || pageLeadsLoading ? "default" : "pointer", opacity: leadsPage === 0 || pageLeadsLoading ? 0.5 : 1 }}
+            >
+              Prev
+            </button>
+            <span style={{ fontSize: 11, color: "var(--text-4)" }}>
+              Page {fmtN(leadsPage + 1)} of {fmtN(leadsPageCount)}
+            </span>
+            <button
+              onClick={() => setLeadsPage(p => p + 1)}
+              disabled={!leadsHasMore || pageLeadsLoading}
+              style={{ fontSize: 11, padding: "4px 12px", borderRadius: 4, border: "1px solid var(--border)", background: "var(--bg-surface)", color: !leadsHasMore ? "var(--text-5)" : "var(--text-1)", cursor: !leadsHasMore || pageLeadsLoading ? "default" : "pointer", opacity: !leadsHasMore || pageLeadsLoading ? 0.5 : 1 }}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </Card>
       </>)}

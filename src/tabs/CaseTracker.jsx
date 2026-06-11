@@ -19,7 +19,7 @@ function urgencyColor(u) {
 
 function stageColor(stage) {
   if (stage === "Pre-Litigation") return "#f59e0b";
-  if (stage === "Filed / Discovery") return "#3b82f6";
+  if (stage === "Filed / Discovery") return "#2D7D95";
   if (stage === "MDL Consolidated") return "#8b5cf6";
   if (stage === "Bellwether Set") return "#f97316";
   if (stage === "Settlement Discussions") return "#22c55e";
@@ -268,7 +268,7 @@ function VerifyStage({ c, updateCase }) {
   if (result) {
     const confColor = result.confidence >= 80 ? "#22c55e" : result.confidence >= 60 ? "#f59e0b" : "#ef4444";
     return (
-      <div style={{ marginTop: 6, padding: "10px 12px", background: "rgba(59,130,246,0.06)", borderRadius: 6, border: "1px solid rgba(59,130,246,0.25)" }}>
+      <div style={{ marginTop: 6, padding: "10px 12px", background: "rgba(45,125,149,0.06)", borderRadius: 6, border: "1px solid rgba(45,125,149,0.25)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
           <span style={{ fontSize: 11, fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: stageColor(result.caseStage) + "22", color: stageColor(result.caseStage), border: `1px solid ${stageColor(result.caseStage)}44` }}>
             {result.caseStage}
@@ -278,7 +278,7 @@ function VerifyStage({ c, updateCase }) {
         </div>
         <div style={{ fontSize: 12, color: "#a0a0b8", marginBottom: 6, lineHeight: 1.5 }}>{result.caseStageRationale}</div>
         {result.docketUrl && (
-          <a href={result.docketUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa" }}>
+          <a href={result.docketUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#82D3E0" }}>
             {result.docketName || "View docket"} ↗
           </a>
         )}
@@ -306,7 +306,7 @@ function VerifyStage({ c, updateCase }) {
   return (
     <button
       onClick={verify}
-      style={{ fontSize: 11, color: "#60a5fa", background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)", borderRadius: 4, padding: "2px 9px", cursor: "pointer", marginTop: 4 }}
+      style={{ fontSize: 11, color: "#82D3E0", background: "rgba(45,125,149,0.08)", border: "1px solid rgba(45,125,149,0.2)", borderRadius: 4, padding: "2px 9px", cursor: "pointer", marginTop: 4 }}
     >
       Verify via CourtListener
     </button>
@@ -378,7 +378,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {/* ── CASE DETAILS ── */}
       {(c.caseStage || c.causesOfAction?.length > 0 || c.existingMDLNumber || c.activeFederalCases) && (
         <div style={{ marginBottom: 18 }}>
-          <SLabel title="Case Details" color="#3b82f6" />
+          <SLabel title="Case Details" color="#2D7D95" />
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6, alignItems: "center" }}>
             {c.caseStage && (
               <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 999, background: stageColor(c.caseStage) + "22", color: stageColor(c.caseStage), border: `1px solid ${stageColor(c.caseStage)}44` }}>
@@ -405,7 +405,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
               <div style={{ fontSize: 11, color: "#555", marginBottom: 5 }}>Causes of Action</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
                 {c.causesOfAction.map((ca, i) => (
-                  <span key={i} style={{ fontSize: 11, padding: "2px 9px", borderRadius: 999, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.2)" }}>{ca}</span>
+                  <span key={i} style={{ fontSize: 11, padding: "2px 9px", borderRadius: 999, background: "rgba(45,125,149,0.1)", color: "#93c5fd", border: "1px solid rgba(45,125,149,0.2)" }}>{ca}</span>
                 ))}
               </div>
             </div>
@@ -430,7 +430,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
           {c.geographicHotspots?.length > 0 && (
             <div style={{ marginTop: 6, display: "flex", flexWrap: "wrap", gap: 4 }}>
               {c.geographicHotspots.map((g, i) => (
-                <span key={i} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.2)" }}>{g}</span>
+                <span key={i} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(45,125,149,0.1)", color: "#93c5fd", border: "1px solid rgba(45,125,149,0.2)" }}>{g}</span>
               ))}
             </div>
           )}
@@ -461,7 +461,7 @@ function CaseDetailPanel({ c, updateCase, deleteCase, showAI, setShowAI }) {
       {/* ── JUDGE ── */}
       {c.assignedJudge && (
         <div style={{ marginBottom: 18 }}>
-          <SLabel title="Assigned Judge" color="#60a5fa" />
+          <SLabel title="Assigned Judge" color="#82D3E0" />
           <div style={{ fontSize: 13, color: "var(--text-1)", fontWeight: 600 }}>{c.assignedJudge}</div>
           {c.assignedJudgeCourt && <div style={{ fontSize: 12, color: "#555", marginTop: 2 }}>{c.assignedJudgeCourt}</div>}
         </div>
@@ -953,7 +953,7 @@ export default function CaseTracker({ cases, setCases, selectedCase, setSelected
                       {c.feeToFirm && <DataPill label="Firm Fee" value={c.feeToFirm} color="#22c55e" />}
                       {c.sol && <DataPill label="SOL" value={c.sol} color="#f59e0b" />}
                       {c.existingMDLNumber && <DataPill label="MDL" value={c.existingMDLNumber} color="#8b5cf6" />}
-                      {c.assignedJudge && <DataPill label="Judge" value={c.assignedJudge.split(" ").slice(-1)[0]} color="#60a5fa" />}
+                      {c.assignedJudge && <DataPill label="Judge" value={c.assignedJudge.split(" ").slice(-1)[0]} color="#82D3E0" />}
                     </div>
 
                     <div style={{ maxWidth: 220 }}><ScoreBar score={c.score} /></div>

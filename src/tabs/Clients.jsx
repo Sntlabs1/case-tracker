@@ -7,7 +7,7 @@ const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","
 const RETAINER_STATUSES = ["Uncontacted", "Contacted", "Consultation", "Retained", "Filed", "Declined"];
 const RETAINER_COLORS = {
   Uncontacted:  "#5080d8",
-  Contacted:    "#3b82f6",
+  Contacted:    "#2D7D95",
   Consultation: "#f59e0b",
   Retained:     "#22c55e",
   Filed:        "#8b5cf6",
@@ -57,7 +57,7 @@ const STATUS_META = {
   active:     { label: "Active",     color: "#f59e0b" },
   discharged: { label: "Discharged", color: "#22c55e" },
   dismissed:  { label: "Dismissed",  color: "#5080d8" },
-  converted:  { label: "Converted",  color: "#3b82f6" },
+  converted:  { label: "Converted",  color: "#2D7D95" },
 };
 
 function StatusBadge({ status }) {
@@ -876,8 +876,8 @@ function OutreachDrafter({ client, lead }) {
           onClick={draft}
           style={{
             padding: "6px 14px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-            background: "rgba(59,130,246,0.12)", color: "#3b82f6",
-            border: "1px solid rgba(59,130,246,0.3)", cursor: "pointer",
+            background: "rgba(45,125,149,0.12)", color: "#2D7D95",
+            border: "1px solid rgba(45,125,149,0.3)", cursor: "pointer",
           }}
         >
           Draft Outreach Letter
@@ -1503,7 +1503,7 @@ function ImportWizard({ onImported, onGoToClient }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20, maxWidth: 600, margin: "0 auto 20px" }}>
           {[
             ["New",            r.imported || 0,       "#22c55e"],
-            ["Merged",         r.updated || 0,        "#3b82f6"],
+            ["Merged",         r.updated || 0,        "#2D7D95"],
             ["Invalid",        r.invalid || 0,        "#ef4444"],
             ["Queued to match", r.queuedForMatch || 0, "var(--accent)"],
           ].map(([label, value, color]) => (
@@ -1659,7 +1659,7 @@ function ImportWizard({ onImported, onGoToClient }) {
                 <div style={{ height: "100%", width: `${crJob.pct || 0}%`, background: "var(--accent)", borderRadius: 4, transition: "width 0.5s" }} />
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 10 }}>
-                {[["New", crJob.imported || 0, "#22c55e"], ["Merged", crJob.updated || 0, "#3b82f6"], ["Failed", crJob.failed || 0, "#ef4444"]].map(([label, val, color]) => (
+                {[["New", crJob.imported || 0, "#22c55e"], ["Merged", crJob.updated || 0, "#2D7D95"], ["Failed", crJob.failed || 0, "#ef4444"]].map(([label, val, color]) => (
                   <div key={label} style={{ padding: "8px 10px", borderRadius: 6, background: "var(--bg-surface2)", border: "1px solid var(--border)", textAlign: "center" }}>
                     <div style={{ fontSize: 18, fontWeight: 800, color, lineHeight: 1 }}>{val.toLocaleString()}</div>
                     <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2, textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
@@ -2297,7 +2297,7 @@ export default function Clients() {
       {/* ── Stats row ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
         <StatPill label="Total Clients" value={clients.length} color="var(--accent)" />
-        <StatPill label="Firms Imported" value={firms.length} color="#3b82f6" />
+        <StatPill label="Firms Imported" value={firms.length} color="#2D7D95" />
         <StatPill label="Retained" value={retainedCount || "—"} color="#22c55e" />
         <StatPill label="In Progress" value={inProgressCount || "—"} color="#f59e0b" />
       </div>
@@ -2590,7 +2590,7 @@ export default function Clients() {
                         if (!nonCol.length) return null;
 
                         const groups = [
-                          { key: "revolving",    label: "Credit Cards",       color: "#3b82f6", accts: nonCol.filter(a => a.type === "revolving") },
+                          { key: "revolving",    label: "Credit Cards",       color: "#2D7D95", accts: nonCol.filter(a => a.type === "revolving") },
                           { key: "installment",  label: "Installment Loans",  color: "#8b5cf6", accts: nonCol.filter(a => a.type === "installment") },
                           { key: "mortgage",     label: "Mortgages",          color: "#22c55e", accts: nonCol.filter(a => a.type === "mortgage") },
                           { key: "other",        label: "Other Accounts",     color: "#5080d8", accts: nonCol.filter(a => !["revolving","installment","mortgage"].includes(a.type)) },

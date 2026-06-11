@@ -30,6 +30,8 @@
 // CAPS below are deliberate; tune them as real call-log data becomes
 // available from credit.com.
 
+import { hasFloridaAreaCode } from "../matching/tcpaMatchRubric.js";
+
 const PER_VIOLATION = {
   TCPA:             { floor: 500,  ceiling: 1500  },  // 47 USC § 227(b)(3)
   FDCPA:            { floor: 500,  ceiling: 1000  },  // 15 USC § 1692k
@@ -37,7 +39,7 @@ const PER_VIOLATION = {
   "TCPA+FDCPA":     { floor: 1000, ceiling: 2500  },  // combined claims (conservative)
   CROA:             { floor: 1000, ceiling: 5000  },  // 15 USC § 1679 actual + punitive
   CIPA:             { floor: 5000, ceiling: 5000  },  // CA Penal Code 631/632 fixed
-  FL_FTSA:          { floor: 500,  ceiling: 1500  },  // FL F.S. § 501.059
+  FL_FTSA:          { floor: 500,  ceiling: 1500  },  // FL F.S. § 501.059 — plus prevailing-party attorneys' fees (federal TCPA has none)
   UDAAP:            { floor: 500,  ceiling: 10000 },  // state UDAP range
   FCRA_FURNISHER:   { floor: 100,  ceiling: 1000  },  // § 1681s-2(b) willful
   ECOA:             { floor: 500,  ceiling: 10000 },  // individual; class cap $500K
@@ -180,9 +182,11 @@ export function estimateRecovery(client, caseRecord, { isQualifying = true } = {
   let statutory = PER_VIOLATION[caseRecord.caseType] || PER_VIOLATION.TCPA;
   const clientStateUpper = (client?.state || "").toUpperCase();
   const caseTypeUpper = (caseRecord.caseType || "").toUpperCase();
-  // FL_FTSA — only meaningful for FL residents
-  if (caseTypeUpper === "FL_FTSA" && clientStateUpper !== "FL") {
-    statutory = PER_VIOLATION.TCPA; // fall back to TCPA rates for non-FL
+  // FL_FTSA — runs off the NUMBER, not just residency: a FL area code is
+  // presumed a FL resident under § 501.059, wherever the consumer lives.
+  if (caseTypeUpper === "FL_FTSA" && clientStateUpper !== "FL" &&
+      !(client?.phoneNumbers || []).some(hasFloridaAreaCode)) {
+    statutory = PER_VIOLATION.TCPA; // no FL nexus — fall back to TCPA rates
   }
   // CIPA — only meaningful for CA/FL/MA residents (though CA has the $5k fixed floor)
   if (caseTypeUpper === "CIPA") {

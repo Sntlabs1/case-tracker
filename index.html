@@ -6,98 +6,99 @@
     <title>Ticket Toro — Class Action Intelligence</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      /* ── Default (light) — white content + cobalt blue sidebar ── */
+      /* ── Default (light) — credit.com brand: warm cream surfaces,
+            warm ink text, muted teal accent, charcoal sidebar ── */
       :root {
-        --bg-page:      #f4f8ff;
-        --bg-card:      #ffffff;
-        --bg-card-hov:  #eef4ff;
-        --bg-header:    #ffffff;
-        --bg-input:     #eaf0ff;
-        --bg-drawer:    #1d4ed8;
-        --bg-drawer-hd: #1535b0;
-        --bg-surface:   rgba(29,78,216,0.08);
-        --bg-surface2:  rgba(29,78,216,0.04);
-        --border:       rgba(29,78,216,0.16);
-        --border-hov:   rgba(29,78,216,0.35);
-        --border-md:    rgba(29,78,216,0.22);
-        --text-1:       #08102a;
-        --text-2:       #0d2050;
-        --text-3:       #1a3878;
-        --text-4:       #2858b8;
-        --text-5:       #3b78d8;
-        --text-6:       #5a96ea;
-        --text-7:       #8ab8f8;
+        --bg-page:      #FCF8EF;
+        --bg-card:      #FEFEFC;
+        --bg-card-hov:  #FDFBF7;
+        --bg-header:    #FEFEFC;
+        --bg-input:     #EEF5F7;
+        --bg-drawer:    #2D7D95;
+        --bg-drawer-hd: #004F58;
+        --bg-surface:   rgba(45,125,149,0.08);
+        --bg-surface2:  rgba(45,125,149,0.04);
+        --border:       #D4D4D4;
+        --border-hov:   rgba(45,125,149,0.45);
+        --border-md:    rgba(24,22,17,0.20);
+        --text-1:       #181611;
+        --text-2:       #303030;
+        --text-3:       #454545;
+        --text-4:       #5F5746;
+        --text-5:       #7d7464;
+        --text-6:       #9c9384;
+        --text-7:       #c2bab0;
 
-        --accent:        #1d4ed8;
-        --accent-strong: #1535b0;
-        --accent-soft:   rgba(29,78,216,0.12);
-        --accent-dim:    rgba(29,78,216,0.22);
+        --accent:        #2D7D95;
+        --accent-strong: #004F58;
+        --accent-soft:   rgba(45,125,149,0.12);
+        --accent-dim:    rgba(45,125,149,0.22);
         --accent-text:   #ffffff;
 
         --nav-text:      rgba(255,255,255,0.72);
         --nav-text-act:  #ffffff;
-        --nav-bg-act:    rgba(255,255,255,0.18);
-        --nav-border-act: rgba(255,255,255,0.95);
+        --nav-bg-act:    rgba(255,255,255,0.16);
+        --nav-border-act: #B3EDF7;
 
-        --radius-card:   4px;
-        --radius-pill:   4px;
-        --shadow-card:   0 1px 3px rgba(0,0,0,0.06), 0 2px 10px rgba(29,78,216,0.10);
+        --radius-card:   12px;
+        --radius-pill:   8px;
+        --shadow-card:   none;
       }
 
-      /* ── Dark mode — deep blue, no grey ── */
+      /* ── Dark mode — warm ink + charcoal, light teal accent ── */
       body.dark {
-        --bg-page:      #0c1640;
-        --bg-card:      #112056;
-        --bg-card-hov:  #162868;
-        --bg-header:    #0e1a4a;
-        --bg-input:     #0e1a4a;
-        --bg-drawer:    #091230;
-        --bg-drawer-hd: #060c1e;
-        --bg-surface:   rgba(255,255,255,0.10);
-        --bg-surface2:  rgba(255,255,255,0.06);
-        --border:       rgba(74,158,255,0.16);
-        --border-hov:   rgba(74,158,255,0.32);
-        --border-md:    rgba(74,158,255,0.20);
-        --text-1:       #eef6ff;
-        --text-2:       #c0d8fc;
-        --text-3:       #8ab8f8;
-        --text-4:       #5090e8;
-        --text-5:       #2a60c0;
-        --text-6:       #1840a0;
-        --text-7:       #0e2870;
+        --bg-page:      #181611;
+        --bg-card:      #242118;
+        --bg-card-hov:  #2b281e;
+        --bg-header:    #1d1a13;
+        --bg-input:     #242118;
+        --bg-drawer:    #001F28;
+        --bg-drawer-hd: #00161d;
+        --bg-surface:   rgba(254,254,252,0.08);
+        --bg-surface2:  rgba(254,254,252,0.05);
+        --border:       rgba(212,212,212,0.16);
+        --border-hov:   rgba(130,211,224,0.40);
+        --border-md:    rgba(212,212,212,0.22);
+        --text-1:       #FEFEFC;
+        --text-2:       #F8F0DF;
+        --text-3:       #d9d2c2;
+        --text-4:       #b3ab99;
+        --text-5:       #8f8775;
+        --text-6:       #6b6454;
+        --text-7:       #474336;
 
-        --accent:        #4a9eff;
-        --accent-strong: #70bcff;
-        --accent-soft:   rgba(74,158,255,0.16);
-        --accent-dim:    rgba(74,158,255,0.26);
-        --accent-text:   #ffffff;
-        --shadow-card:   0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 14px rgba(0,0,0,0.50);
+        --accent:        #82D3E0;
+        --accent-strong: #B3EDF7;
+        --accent-soft:   rgba(130,211,224,0.16);
+        --accent-dim:    rgba(130,211,224,0.28);
+        --accent-text:   #001F28;
+        --shadow-card:   none;
 
-        --nav-text:      rgba(180,210,255,0.75);
+        --nav-text:      rgba(254,254,252,0.70);
         --nav-text-act:  #ffffff;
-        --nav-bg-act:    rgba(74,158,255,0.22);
-        --nav-border-act: #4a9eff;
+        --nav-bg-act:    rgba(130,211,224,0.18);
+        --nav-border-act: #82D3E0;
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #f4f8ff;
+        font-family: 'DM Sans', -apple-system, 'Segoe UI', sans-serif;
+        background: #FCF8EF;
         background-attachment: fixed;
         min-height: 100vh;
       }
       body.dark {
-        background: #0c1640;
+        background: #181611;
         background-attachment: fixed;
       }
 
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.25); border-radius: 2px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.45); }
+      ::-webkit-scrollbar-thumb { background: rgba(45,125,149,0.28); border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(45,125,149,0.50); }
     </style>
   </head>
   <body>

@@ -27,7 +27,7 @@ function ConnectionRow({ c }) {
         <Badge label={c.strength} color={STRENGTH_COLOR[c.strength]} />
         <Badge label={c.eligibilityLabel || c.eligibility} color={ELIG_COLOR[c.eligibility] || "#666"} />
         {c.classSettlement && <Badge label="CLASS SETTLEMENT" color="#8b5cf6" />}
-        {c.newCases > 0 && <Badge label={`${c.newCases} new dockets`} color="#3b82f6" />}
+        {c.newCases > 0 && <Badge label={`${c.newCases} new dockets`} color="#2D7D95" />}
       </div>
       <div style={{ fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>{c.reasoning}</div>
       {c.dockets && c.dockets.length > 0 && (

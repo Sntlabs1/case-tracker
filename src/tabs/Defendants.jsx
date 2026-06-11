@@ -12,7 +12,7 @@ function StatPill({ label, value, color = "#C8442F" }) {
 }
 
 function CaseCountBadge({ count }) {
-  const color = count >= 100 ? "#C8442F" : count >= 25 ? "#f59e0b" : count >= 5 ? "#3b82f6" : "#6b7280";
+  const color = count >= 100 ? "#C8442F" : count >= 25 ? "#f59e0b" : count >= 5 ? "#2D7D95" : "#6b7280";
   return (
     <span style={{
       fontSize: 10, padding: "1px 7px", borderRadius: 4,
@@ -161,7 +161,7 @@ function DefendantDetail({ canonicalId, onClose }) {
                 </div>
                 <a href={`/api/client-report?clientId=${encodeURIComponent(c.id)}&format=html`}
                    target="_blank" rel="noopener noreferrer"
-                   style={{ fontSize: 10, color: "#3b82f6", textDecoration: "none", marginTop: 3, display: "inline-block" }}>
+                   style={{ fontSize: 10, color: "#2D7D95", textDecoration: "none", marginTop: 3, display: "inline-block" }}>
                   Open report ↗
                 </a>
               </div>
@@ -362,7 +362,7 @@ const COLLECTOR_PROFILES = [
 const RISK_COLOR = {
   critical: "#C8442F",
   high:     "#f59e0b",
-  medium:   "#3b82f6",
+  medium:   "#2D7D95",
   low:      "#6b7280",
 };
 
@@ -526,7 +526,7 @@ function CollectorIntelligence({ defendants }) {
                   </div>
                   <a href={`/api/client-report?clientId=${encodeURIComponent(c.id)}&format=html`}
                     target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: 10, color: "#3b82f6", textDecoration: "none", marginTop: 4, display: "inline-block" }}>
+                    style={{ fontSize: 10, color: "#2D7D95", textDecoration: "none", marginTop: 4, display: "inline-block" }}>
                     Open full report ↗
                   </a>
                 </div>
@@ -562,7 +562,7 @@ function CollectorCard({ profile, selected, onSelect, onFindClients }) {
             {riskLabel}
           </span>
           {profile.caseCount > 0 && (
-            <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 4, background: "rgba(59,130,246,0.1)", color: "#3b82f6", border: "1px solid rgba(59,130,246,0.3)", fontWeight: 700 }}>
+            <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 4, background: "rgba(45,125,149,0.1)", color: "#2D7D95", border: "1px solid rgba(45,125,149,0.3)", fontWeight: 700 }}>
               {profile.caseCount} case{profile.caseCount === 1 ? "" : "s"} in DB
             </span>
           )}
@@ -715,7 +715,7 @@ export default function Defendants() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
         <StatPill label="Defendants tracked"         value={totalDefendants}                color="#C8442F" />
         <StatPill label="Repeat (≥ 5 cases)"          value={repeatDefendants}               color="#f59e0b" />
-        <StatPill label="Top defendant cases"         value={topDefendant?.caseCount || "—"} color="#3b82f6" />
+        <StatPill label="Top defendant cases"         value={topDefendant?.caseCount || "—"} color="#2D7D95" />
         <StatPill label="Case links indexed"          value={totalCases}                     color="#22c55e" />
       </div>
 

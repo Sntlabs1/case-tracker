@@ -495,7 +495,7 @@ export default function Sources() {
 
   const stats = [
     { value: GRAND_TOTAL,      label: "Total Sources",      color: "var(--accent)" },
-    { value: totalFederalRSS,  label: "Federal RSS Feeds",  color: "#3b82f6" },
+    { value: totalFederalRSS,  label: "Federal RSS Feeds",  color: "#2D7D95" },
     { value: 50,               label: "States AGs Covered", color: "#22c55e" },
     { value: totalReddit,      label: "Reddit Communities", color: "#f59e0b" },
   ];
@@ -519,8 +519,8 @@ export default function Sources() {
 
         {/* Federal RSS Feeds */}
         <div style={card}>
-          <CategoryHeader title="Federal Agency RSS Feeds" count={FEDERAL_RSS.length} color="#3b82f6" badge="Live RSS" />
-          <SourceList items={FEDERAL_RSS} color="#3b82f6" />
+          <CategoryHeader title="Federal Agency RSS Feeds" count={FEDERAL_RSS.length} color="#2D7D95" badge="Live RSS" />
+          <SourceList items={FEDERAL_RSS} color="#2D7D95" />
         </div>
 
         {/* Special APIs */}
@@ -586,9 +586,9 @@ export default function Sources() {
 
         {/* Google News Queries */}
         <div style={card}>
-          <CategoryHeader title="Google News Queries" count={GOOGLE_NEWS_TOPICS.length} color="#60a5fa" badge="Backend Cron" />
+          <CategoryHeader title="Google News Queries" count={GOOGLE_NEWS_TOPICS.length} color="#82D3E0" badge="Backend Cron" />
           <p style={{ fontSize: 11, color: "#666", marginBottom: 10 }}>Runs server-side hourly via Vercel cron — pulls top 12 articles per query</p>
-          <SourceList items={GOOGLE_NEWS_TOPICS} color="#60a5fa" />
+          <SourceList items={GOOGLE_NEWS_TOPICS} color="#82D3E0" />
         </div>
 
         {/* Claude Web Searches */}
@@ -627,7 +627,7 @@ export default function Sources() {
         <div style={{ fontSize: 12, fontWeight: 600, color: "#888", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>Pipeline Architecture</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {[
-            { title: "Backend Cron (Hourly)", desc: "Vercel serverless: RSS feeds, Google News (65+ queries), Reddit (56 subs + complaint cluster AI), CourtListener, SEC EDGAR, FDA FAERS, NHTSA, CFPB, PubMed, X/Twitter (25 queries), Claude web searches. Stored in Vercel KV.", color: "#3b82f6" },
+            { title: "Backend Cron (Hourly)", desc: "Vercel serverless: RSS feeds, Google News (65+ queries), Reddit (56 subs + complaint cluster AI), CourtListener, SEC EDGAR, FDA FAERS, NHTSA, CFPB, PubMed, X/Twitter (25 queries), Claude web searches. Stored in Vercel KV.", color: "#2D7D95" },
             { title: "Browser Feed (Auto)", desc: "DailyFeed tab: 29 Claude web_search queries running client-side. Two-pass analysis: Haiku triage → Sonnet deep analysis for score ≥55. Stored in localStorage.", color: "#22c55e" },
             { title: "Convergence Detection", desc: "After every scan, Claude extracts defendant names from all signals and flags entities appearing in 2+ independent source categories (gov + social + legal + news). Highest-confidence pre-litigation alerts bypass triage.", color: "var(--accent)" },
           ].map((item, i) => (

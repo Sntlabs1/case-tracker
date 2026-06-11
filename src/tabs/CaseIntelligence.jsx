@@ -21,7 +21,7 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 2000) {
 
 const CATEGORY_COLORS = {
   "Product Liability":   "var(--accent)",
-  "Consumer Protection": "#3b82f6",
+  "Consumer Protection": "#2D7D95",
   "Securities":          "#f59e0b",
   "Government Liability":"#ef4444",
   "Environmental":       "#22c55e",
@@ -256,7 +256,7 @@ function CADetail({ ca }) {
                   { label: "Gender Split",      value: demographics.gender,       color: "#B83E2C" },
                   { label: "Income Class",      value: demographics.incomeClass,  color: "#f59e0b" },
                   { label: "Race / Ethnicity",  value: demographics.raceEthnicity,color: "#ec4899" },
-                  { label: "Occupation",        value: demographics.occupation,   color: "#3b82f6" },
+                  { label: "Occupation",        value: demographics.occupation,   color: "#2D7D95" },
                   { label: "Education",         value: demographics.education,    color: "#14b8a6" },
                 ].map(d => (
                   <div key={d.label} style={{ padding: "12px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 10, border: `1px solid ${d.color}33` }}>

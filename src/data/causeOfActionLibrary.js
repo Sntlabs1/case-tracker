@@ -512,6 +512,11 @@ export const CAUSES_OF_ACTION = [
     keyPrecedents: [
       "Facebook v. Duguid (2021 SCOTUS) — ATDS definition narrowed to systems using random/sequential number generators; limits some TCPA cases",
       "Spokeo v. Robins (2016 SCOTUS) — statutory violation alone may not give Article III standing; concrete harm needed (but per-violation statutes generally satisfy this)",
+      "McLaughlin Chiropractic v. McKesson (2025 SCOTUS) — district courts are NOT bound by FCC interpretations of the TCPA; statutes construed independently",
+      "Bradford v. Sovereign Pest Control (5th Cir. 2026) — oral consent suffices for autodialed/prerecorded calls; FCC written-consent rule exceeded statutory authority (TX/LA/MS)",
+      "Insurance Marketing Coalition v. FCC (11th Cir. 2025) — FCC one-to-one consent rule vacated; FCC deleted the rule entirely (July 2025)",
+      "Valiente v. NexGen Global (11th Cir. 2025) — arbitration clause unenforceable where browsewrap/clickwrap consent mechanisms failed to establish mutual assent",
+      "Drazen v. Pinto (Fla. 3d DCA 2023) — five unsolicited texts sufficient for standing; multiple contacts strengthen Article III position",
     ],
     classificationSignals: ["Robocall complaint", "spam text message", "TCPA lawsuit", "debt collection harassment", "form collection letter", "illegal debt collection practice", "CFPB complaint about calls"],
     idealPlaintiffProfile: "TCPA: Cell phone owner who received demonstrably automated calls or texts without clear prior consent. Has phone records showing calls. Did not provide consent in any form. FDCPA: Received uniform debt collection letter or call with specific FDCPA violation. Has the letter in hand. Multiple people received identical letter.",
@@ -521,10 +526,12 @@ export const CAUSES_OF_ACTION = [
       "FDCPA only covers THIRD-PARTY debt collectors — original creditors are exempt",
       "1-year statute of limitations for FDCPA claims",
       "Aggregate damages so large they may trigger due process concerns (defendant faces bankruptcy from massive statutory damages)",
+      "Active circuit split on whether texts are 'calls' under § 227(c) DNC claims — text-based DNC classes are jurisdiction-dependent",
+      "5th Circuit (TX/LA/MS) accepts oral consent post-Bradford — written-consent theories weaker there",
     ],
     timeToResolution: "1–4 years",
-    feeStructure: "33% contingency; FDCPA provides mandatory fee-shifting (defendant pays if plaintiff prevails)",
-    watchOut: "Facebook v. Duguid (2021) gutted many TCPA cases by narrowing the ATDS definition. Carefully analyze whether defendant's specific dialing system qualifies as an ATDS under the new standard before filing.",
+    feeStructure: "33% contingency; FDCPA provides mandatory fee-shifting (defendant pays if plaintiff prevails); federal TCPA has NO fee provision — pair with state mini-TCPA (e.g., FL FTSA) for fee shifting where available",
+    watchOut: "Facebook v. Duguid (2021) narrowed the ATDS definition, and McLaughlin (2025) unmoored courts from FCC interpretations — every FCC-rule-based theory must now survive independent statutory reading, and consent standards vary by circuit (Bradford). Where the plaintiff has a state nexus, plead the state mini-TCPA alongside: FL FTSA covers texts by name, keeps a statutory written-consent requirement Bradford cannot reach, and fee-shifts.",
   },
 
   // ─── FALSE CLAIMS ACT ─────────────────────────────────────────────────────

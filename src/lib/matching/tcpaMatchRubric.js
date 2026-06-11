@@ -53,6 +53,24 @@ export const DISQUALIFY = {
 
 const TCPA_SOL_DAYS = 4 * 365;
 
+// FL area codes — F.S. § 501.059 presumes a call to a FL area code reaches a
+// FL resident, regardless of where the caller or the consumer actually is.
+// FTSA eligibility therefore runs off the NUMBER, not just client.state.
+export const FL_AREA_CODES = new Set([
+  "239", "305", "321", "352", "386", "407", "448", "561", "645", "656",
+  "689", "727", "754", "772", "786", "813", "850", "863", "904", "941", "954",
+]);
+
+export function hasFloridaAreaCode(p) {
+  return typeof p === "string" && /^\+1\d{10}$/.test(p) && FL_AREA_CODES.has(p.slice(2, 5));
+}
+
+// Bradford v. Sovereign Pest Control (5th Cir. Feb. 2026): oral consent
+// suffices for autodialed/prerecorded calls — the FCC's written-consent
+// regulation exceeded statutory authority. Consent defenses are therefore
+// materially easier for defendants in these states.
+const FIFTH_CIRCUIT_STATES = new Set(["TX", "LA", "MS"]);
+
 // Score one (client, case) pair.
 // `caseRecord` must be a TCPA case as built by tcpaSchema.buildCase.
 export function scoreTcpaPair(client, caseRecord) {
@@ -269,6 +287,14 @@ export function scoreTcpaPair(client, caseRecord) {
   const hasInquiries = (client.creditInquiries || []).length > 0;
   const addressCount = (client.addressHistory || []).length;
 
+  // Circuit-dependent consent standard (Bradford, 5th Cir. 2026): in TX/LA/MS
+  // oral consent defeats a written-consent theory, so TCPA matches there are
+  // easier to defend against. Soft signal — lower confidence, never disqualify.
+  if ((ct === "TCPA" || ct === "TCPA+FDCPA") && FIFTH_CIRCUIT_STATES.has(clientState)) {
+    matchingFactors.push(`Client in ${clientState} — 5th Cir. (Bradford) accepts oral consent; consent defense stronger`);
+    confidenceContributors -= 10;
+  }
+
   if (ct === "CROA") {
     // Credit Repair Organizations Act — Lexington Law referrals via Credit.com
     if (ingestSrc.includes("credit.com") || ingestSrc.includes("credit_com")) {
@@ -301,15 +327,28 @@ export function scoreTcpaPair(client, caseRecord) {
   }
 
   if (ct === "FL_FTSA") {
-    // Florida FTSA — broader than TCPA, SMS-heavy
+    // Florida FTSA — fee-shifted, texts covered by name. Eligibility runs off
+    // the NUMBER: a FL area code is presumed a FL resident (§ 501.059),
+    // wherever the consumer actually lives.
+    const flByAreaCode = (client.phoneNumbers || []).some(hasFloridaAreaCode);
     if (clientState === "FL") {
       score += 35; matchingFactors.push("Client is FL resident — FL FTSA eligible");
       confidenceContributors += 20;
+    } else if (flByAreaCode) {
+      score += 35; matchingFactors.push("Phone has FL area code — presumed FL resident under FTSA");
+      confidenceContributors += 15;
     }
-    // Reuse defendant match logic: any SMS contact by defendant gets +30
-    // (already handled by generic defendant matching above — add a type bonus)
-    if (clientState === "FL" && hasCollections) {
-      score += 30; matchingFactors.push("FL resident with collection accounts — FL FTSA SMS contact likely");
+    if (clientState === "FL" || flByAreaCode) {
+      // The FTSA statutorily EXEMPTS calls made primarily in connection with
+      // an existing debt or contract — so a collections-heavy profile cuts
+      // AGAINST the claim (the contact was likely collection, not a sales
+      // solicitation). And text claims must plead a STOP reply followed by
+      // texts continuing >15 days, which only intake can confirm.
+      if (hasCollections) {
+        matchingFactors.push("Collections on file — FTSA exempts existing-debt calls; confirm contact was a sales solicitation, not collection");
+        confidenceContributors -= 10;
+      }
+      matchingFactors.push("FTSA text claims require a STOP reply + texts continuing 15+ days after — confirm at intake");
     }
   }
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Card, Btn } from "../components/UI.jsx";
 
 const STATUS_COLORS = {
-  active:       "#3b82f6",
+  active:       "#2D7D95",
   settled:      "#f59e0b",
   claim_open:   "#22c55e",
   claim_closed: "#6b7280",
@@ -17,7 +17,7 @@ const STATUS_LABELS = {
 };
 
 const POSTURE_LABELS = {
-  new_filing:         { label: "New Filing (< 6 mo)",         color: "#3b82f6", hint: "Filed within the last 6 months — complaint stage" },
+  new_filing:         { label: "New Filing (< 6 mo)",         color: "#2D7D95", hint: "Filed within the last 6 months — complaint stage" },
   discovery:          { label: "Discovery (6–18 mo)",         color: "#8b5cf6", hint: "Filed 6–18 months ago — typically in discovery" },
   class_cert_pending: { label: "Class Cert (18–36 mo)",       color: "#f59e0b", hint: "Filed 18–36 months ago — class certification stage" },
   pre_trial:          { label: "Pre-Trial (3+ yrs)",          color: "#f97316", hint: "Filed 3+ years ago — approaching trial or settlement talks" },
@@ -619,7 +619,7 @@ const EVENT_LABELS = {
   settlement_final:       { label: "Final settlement approval", color: "#22c55e" },
   claim_window_opens:     { label: "Claim window opened",       color: "#22c55e" },
   claim_window_closes:    { label: "Claim window closing",      color: "#ef4444" },
-  mtd_filed:              { label: "Motion to dismiss filed",   color: "#3b82f6" },
+  mtd_filed:              { label: "Motion to dismiss filed",   color: "#2D7D95" },
   mtd_granted:            { label: "Motion to dismiss granted", color: "#ef4444" },
   mtd_denied:             { label: "Motion to dismiss denied",  color: "#22c55e" },
   class_cert_granted:     { label: "Class certified",           color: "#22c55e" },
@@ -782,7 +782,7 @@ function ClaimFilingPanel({ tcase }) {
     await loadClaims();
   }
 
-  const STATUS_COLORS = { identified: "#f59e0b", drafted: "#3b82f6", submitted: "#8b5cf6", confirmed: "#22c55e", paid: "#22c55e", rejected: "#ef4444", dismissed: "#6b7280" };
+  const STATUS_COLORS = { identified: "#f59e0b", drafted: "#2D7D95", submitted: "#8b5cf6", confirmed: "#22c55e", paid: "#22c55e", rejected: "#ef4444", dismissed: "#6b7280" };
   const closingDays = tcase.settlement?.claimWindowCloses
     ? Math.ceil((Date.parse(tcase.settlement.claimWindowCloses) - Date.now()) / (1000 * 60 * 60 * 24))
     : null;
@@ -806,7 +806,7 @@ function ClaimFilingPanel({ tcase }) {
           {tcase.settlement?.claimPortalUrl && (
             <a href={tcase.settlement.claimPortalUrl} target="_blank" rel="noopener noreferrer"
                onClick={e => e.stopPropagation()}
-               style={{ fontSize: 10, color: "#3b82f6", textDecoration: "none", fontWeight: 600 }}>
+               style={{ fontSize: 10, color: "#2D7D95", textDecoration: "none", fontWeight: 600 }}>
               Claim Portal ↗
             </a>
           )}
@@ -1654,7 +1654,7 @@ export default function TCPACases() {
         <StatPill label="Total Cases"           value={total}            color="var(--accent)" />
         <StatPill label="Claim Windows Open"    value={claimOpen || "—"} color="#22c55e" />
         <StatPill label="Closing in 30 Days"    value={closingSoon || "—"} color="#f59e0b" />
-        <StatPill label="Tracked Settlements ($M)" value={totalFundMillions ? Math.round(totalFundMillions) : "—"} color="#3b82f6" />
+        <StatPill label="Tracked Settlements ($M)" value={totalFundMillions ? Math.round(totalFundMillions) : "—"} color="#2D7D95" />
       </div>
 
       <QuickAddCase onAdded={load} />

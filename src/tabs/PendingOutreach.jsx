@@ -304,7 +304,7 @@ export default function PendingOutreach() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
         <StatPill label="Pending pairs"       value={total}                color="#C8442F" />
         <StatPill label="Score ≥ 90 (strong)" value={high}                  color="#16a34a" />
-        <StatPill label="Distinct partners"   value={partners.length || "—"} color="#3b82f6" />
+        <StatPill label="Distinct partners"   value={partners.length || "—"} color="#2D7D95" />
         <StatPill label="States represented"  value={states.length || "—"}  color="#8b5cf6" />
       </div>
 

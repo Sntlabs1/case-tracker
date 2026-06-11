@@ -60,18 +60,18 @@ function sourceCategory(source) {
   if (s.includes("usda") || s.includes("fsis")) return { label: "USDA / FSIS", color: "#22c55e" };
   if (s.includes("ftc")) return { label: "FTC", color: "#f97316" };
   if (s.includes("eeoc")) return { label: "EEOC", color: "#f59e0b" };
-  if (s.includes("courtlistener") || s.includes("court listener")) return { label: "CourtListener", color: "#3b82f6" };
-  if (s.includes("jpml") || s.includes("mdl order")) return { label: "JPML / MDL", color: "#3b82f6" };
-  if (s.includes("courthouse news")) return { label: "Courthouse News", color: "#3b82f6" };
+  if (s.includes("courtlistener") || s.includes("court listener")) return { label: "CourtListener", color: "#2D7D95" };
+  if (s.includes("jpml") || s.includes("mdl order")) return { label: "JPML / MDL", color: "#2D7D95" };
+  if (s.includes("courthouse news")) return { label: "Courthouse News", color: "#2D7D95" };
   if (s.includes("pubmed")) return { label: "PubMed", color: "#22c55e" };
   if (s.includes("convergence")) return { label: "Convergence Signal", color: "var(--accent)" };
   if (s.includes("reddit complaint cluster")) return { label: "Reddit Cluster", color: "#f97316" };
   if (s.includes("reddit")) return { label: "Reddit", color: "#f97316" };
-  if (s.includes("x/twitter") || s.includes("twitter")) return { label: "X / Twitter", color: "#60a5fa" };
+  if (s.includes("x/twitter") || s.includes("twitter")) return { label: "X / Twitter", color: "#82D3E0" };
   if (s.includes("youtube")) return { label: "YouTube", color: "#ef4444" };
   if (s.includes("complaint search")) return { label: "Complaint Search", color: "#f59e0b" };
   if (s.includes("web:") || s.includes("claude web") || s.startsWith("web ")) return { label: "Claude Web Search", color: "#9090c0" };
-  if (s.includes("google news")) return { label: "Google News", color: "#60a5fa" };
+  if (s.includes("google news")) return { label: "Google News", color: "#82D3E0" };
   if (s.includes("miller") || s.includes("mass tort") || s.includes("levin") || s.includes("motley") || s.includes("jd supra")) return { label: "Plaintiff Firm Intel", color: "var(--accent)" };
   return { label: source.split(":")[0].split(" —")[0].trim().slice(0, 22), color: "#666" };
 }
@@ -105,7 +105,7 @@ function SourceBadge({ source, url }) {
 
 function stageColor(stage) {
   if (stage === "Pre-Litigation") return "#f59e0b";
-  if (stage === "Filed / Discovery") return "#3b82f6";
+  if (stage === "Filed / Discovery") return "#2D7D95";
   if (stage === "MDL Consolidated") return "#8b5cf6";
   if (stage === "Bellwether Set") return "#f97316";
   if (stage === "Settlement Discussions") return "#22c55e";
@@ -148,7 +148,7 @@ function TagList({ items, color = "var(--accent)" }) {
 }
 
 function SignalItem({ text, type }) {
-  const colors = { present: "#22c55e", missing: "#ef4444", watch: "#f59e0b", strengthen: "#3b82f6" };
+  const colors = { present: "#22c55e", missing: "#ef4444", watch: "#f59e0b", strengthen: "#2D7D95" };
   const icons = { present: "✓", missing: "✗", watch: "◎", strengthen: "↑" };
   const color = colors[type] || "#888";
   return (
@@ -306,10 +306,10 @@ function AcquisitionBrief({ lead }) {
           {/* Where to Find */}
           {brief.whereToFind?.length > 0 && (
             <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Where to Find Plaintiffs</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#2D7D95", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Where to Find Plaintiffs</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {brief.whereToFind.map((w, i) => (
-                  <span key={i} style={{ fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.25)" }}>{w}</span>
+                  <span key={i} style={{ fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "rgba(45,125,149,0.1)", color: "#93c5fd", border: "1px solid rgba(45,125,149,0.25)" }}>{w}</span>
                 ))}
               </div>
             </div>
@@ -340,10 +340,10 @@ function AcquisitionBrief({ lead }) {
             )}
             {brief.geographicHotspots?.length > 0 && (
               <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Geographic Hotspots</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#2D7D95", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Geographic Hotspots</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                   {brief.geographicHotspots.map((g, i) => (
-                    <span key={i} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(59,130,246,0.1)", color: "#93c5fd", border: "1px solid rgba(59,130,246,0.2)" }}>{g}</span>
+                    <span key={i} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(45,125,149,0.1)", color: "#93c5fd", border: "1px solid rgba(45,125,149,0.2)" }}>{g}</span>
                   ))}
                 </div>
               </div>
@@ -435,7 +435,7 @@ function JudgeIntel({ lead }) {
 
   if (loading) {
     return (
-      <div style={{ marginBottom: 14, padding: "20px 16px", background: "rgba(59,130,246,0.05)", borderRadius: 10, border: "1px solid rgba(59,130,246,0.2)", textAlign: "center" }}>
+      <div style={{ marginBottom: 14, padding: "20px 16px", background: "rgba(45,125,149,0.05)", borderRadius: 10, border: "1px solid rgba(45,125,149,0.2)", textAlign: "center" }}>
         <div style={{ fontSize: 13, color: "#555" }}>Researching judge ruling history...</div>
         <div style={{ fontSize: 11, color: "#444", marginTop: 4 }}>Searching published opinions, class cert rulings, MDL history</div>
       </div>
@@ -445,10 +445,10 @@ function JudgeIntel({ lead }) {
   const pf = profile.plaintiffFriendlyScore ?? 5;
 
   return (
-    <div style={{ marginBottom: 16, border: "1px solid rgba(59,130,246,0.3)", borderRadius: 10, overflow: "hidden" }}>
-      <div style={{ padding: "10px 14px", background: "rgba(59,130,246,0.08)", borderBottom: "1px solid rgba(59,130,246,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+    <div style={{ marginBottom: 16, border: "1px solid rgba(45,125,149,0.3)", borderRadius: 10, overflow: "hidden" }}>
+      <div style={{ padding: "10px 14px", background: "rgba(45,125,149,0.08)", borderBottom: "1px solid rgba(45,125,149,0.2)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color: "#60a5fa", letterSpacing: "0.1em", textTransform: "uppercase" }}>Judge Intelligence</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#82D3E0", letterSpacing: "0.1em", textTransform: "uppercase" }}>Judge Intelligence</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{profile.name}</span>
           {profile.court && <span style={{ fontSize: 11, color: "#555" }}>{profile.court}</span>}
           {profile.appointedBy && <span style={{ fontSize: 11, color: "#555" }}>· Appt. {profile.appointedBy}</span>}
@@ -513,7 +513,7 @@ function JudgeIntel({ lead }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           {profile.notableRulings?.length > 0 && (
             <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Notable Rulings</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#2D7D95", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>Notable Rulings</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                 {profile.notableRulings.slice(0, 4).map((r, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, fontSize: 12, alignItems: "flex-start" }}>
@@ -756,7 +756,7 @@ function InfluencerCard({ inf, rank }) {
           <div style={{ marginBottom: 8 }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Partnership Score Breakdown</div>
             <ScoreBar_ label="Niche fit" value={inf.scores?.niche || 0} max={30} color="#a78bfa" />
-            <ScoreBar_ label="Demographics" value={inf.scores?.demographic || 0} max={25} color="#60a5fa" />
+            <ScoreBar_ label="Demographics" value={inf.scores?.demographic || 0} max={25} color="#82D3E0" />
             <ScoreBar_ label="Geography" value={inf.scores?.geographic || 0} max={20} color="#34d399" />
             <ScoreBar_ label="Reach" value={inf.scores?.reach || 0} max={15} color="#f59e0b" />
             <ScoreBar_ label="Tone / Trust" value={inf.scores?.tone || 0} max={10} color="#f87171" />
@@ -766,8 +766,8 @@ function InfluencerCard({ inf, rank }) {
           {/* Contact info */}
           {(inf.email || inf.website) && (
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 6 }}>
-              {inf.email && <a href={`mailto:${inf.email}`} style={{ fontSize: 11, color: "#60a5fa" }}>{inf.email}</a>}
-              {inf.website && <a href={inf.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#60a5fa" }}>{inf.website.replace(/^https?:\/\//, "")}</a>}
+              {inf.email && <a href={`mailto:${inf.email}`} style={{ fontSize: 11, color: "#82D3E0" }}>{inf.email}</a>}
+              {inf.website && <a href={inf.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: "#82D3E0" }}>{inf.website.replace(/^https?:\/\//, "")}</a>}
             </div>
           )}
 
@@ -1346,7 +1346,7 @@ Return ONLY valid JSON (no markdown) with this structure:
           {/* Required docs */}
           {data.requiredDocumentation?.length > 0 && (
             <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#3b82f6", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Required Documentation</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#2D7D95", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Required Documentation</div>
               {data.requiredDocumentation.map((d, i) => (
                 <div key={i} style={{ fontSize: 11, color: "#93c5fd", marginBottom: 3 }}>• {d}</div>
               ))}
@@ -1477,8 +1477,8 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
           </div>
 
           {a.recallIntelligence.classDefinition && (
-            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(59,130,246,0.06)", borderRadius: 6, border: "1px solid rgba(59,130,246,0.2)" }}>
-              <div style={{ fontSize: 10, color: "#60a5fa", marginBottom: 2, fontWeight: 700, textTransform: "uppercase" }}>Proposed Class Definition</div>
+            <div style={{ marginBottom: 12, padding: "8px 12px", background: "rgba(45,125,149,0.06)", borderRadius: 6, border: "1px solid rgba(45,125,149,0.2)" }}>
+              <div style={{ fontSize: 10, color: "#82D3E0", marginBottom: 2, fontWeight: 700, textTransform: "uppercase" }}>Proposed Class Definition</div>
               <div style={{ fontSize: 12, color: "#93c5fd", lineHeight: 1.5 }}>{a.recallIntelligence.classDefinition}</div>
             </div>
           )}
@@ -1543,7 +1543,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         )}
 
         {a.classProfile && (
-          <Section title="Class Profile" accent="#3b82f6">
+          <Section title="Class Profile" accent="#2D7D95">
             <InfoRow label="Estimated size" value={a.classProfile.estimatedSize} />
             <InfoRow label="Size confidence" value={a.classProfile.sizeConfidence} />
             <InfoRow label="Geographic scope" value={a.classProfile.geographicScope} />
@@ -1591,7 +1591,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
           {a.plaintiffProfile.geographicHotspots?.length > 0 && (
             <div style={{ marginTop: 8 }}>
               <div style={{ fontSize: 11, color: "#666", marginBottom: 4 }}>Geographic hotspots</div>
-              <TagList items={a.plaintiffProfile.geographicHotspots} color="#3b82f6" />
+              <TagList items={a.plaintiffProfile.geographicHotspots} color="#2D7D95" />
             </div>
           )}
         </Section>
@@ -1644,9 +1644,9 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
         )}
 
         {a.existingLitigation && (
-          <Section title="Existing Litigation" accent="#3b82f6">
+          <Section title="Existing Litigation" accent="#2D7D95">
             {a.existingLitigation.mdlConsolidated && (
-              <div style={{ marginBottom: 6, padding: "4px 8px", background: "rgba(59,130,246,0.1)", borderRadius: 4, fontSize: 11, color: "#93c5fd", fontWeight: 600 }}>
+              <div style={{ marginBottom: 6, padding: "4px 8px", background: "rgba(45,125,149,0.1)", borderRadius: 4, fontSize: 11, color: "#93c5fd", fontWeight: 600 }}>
                 MDL CONSOLIDATED {a.existingMDLNumber ? `— MDL ${a.existingMDLNumber}` : ""}
               </div>
             )}
@@ -1655,7 +1655,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
             {a.existingLitigation.leadFirmsInvolved?.filter(Boolean).length > 0 && (
               <div style={{ marginBottom: 6 }}>
                 <div style={{ fontSize: 11, color: "#666", marginBottom: 4 }}>Lead firms</div>
-                <TagList items={a.existingLitigation.leadFirmsInvolved} color="#3b82f6" />
+                <TagList items={a.existingLitigation.leadFirmsInvolved} color="#2D7D95" />
               </div>
             )}
             {a.existingLitigation.opportunityAssessment && (
@@ -1740,7 +1740,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
               )}
               {a.signalsAnalysis.strengthening?.length > 0 && (
                 <div>
-                  <div style={{ fontSize: 11, color: "#3b82f6", marginBottom: 4, fontWeight: 600 }}>Strengthening</div>
+                  <div style={{ fontSize: 11, color: "#2D7D95", marginBottom: 4, fontWeight: 600 }}>Strengthening</div>
                   {a.signalsAnalysis.strengthening.map((s, i) => <SignalItem key={i} text={s} type="strengthen" />)}
                 </div>
               )}
@@ -1913,7 +1913,7 @@ function IntelligenceReport({ lead, onDismiss, onAddToTracker }) {
       )}
 
       {/* Judge Intel — always available; input shown when judge not yet identified */}
-      <Section title="Judge Intelligence" accent="#3b82f6">
+      <Section title="Judge Intelligence" accent="#2D7D95">
         <JudgeIntel lead={lead} />
       </Section>
 
@@ -2072,7 +2072,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
               </span>
             )}
             {a.joinOrCreate && (
-              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: a.joinOrCreate === "JOIN" ? "rgba(59,130,246,0.15)" : "rgba(184,62,44,0.15)", color: a.joinOrCreate === "JOIN" ? "#60a5fa" : "var(--accent)", border: `1px solid ${a.joinOrCreate === "JOIN" ? "#3b82f644" : "#B83E2C44"}` }}>
+              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: a.joinOrCreate === "JOIN" ? "rgba(45,125,149,0.15)" : "rgba(184,62,44,0.15)", color: a.joinOrCreate === "JOIN" ? "#82D3E0" : "var(--accent)", border: `1px solid ${a.joinOrCreate === "JOIN" ? "#2D7D9544" : "#B83E2C44"}` }}>
                 {a.joinOrCreate}
               </span>
             )}
@@ -2116,7 +2116,7 @@ function LeadCard({ lead, onDismiss, onAddToTracker }) {
               </span>
             )}
             {a.plaintiffProfile?.demographics && (
-              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 5, background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)", color: "#93c5fd" }}>
+              <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 5, background: "rgba(45,125,149,0.08)", border: "1px solid rgba(45,125,149,0.2)", color: "#93c5fd" }}>
                 {a.plaintiffProfile.demographics}
               </span>
             )}
@@ -2485,7 +2485,7 @@ export default function LeadsInbox({ onAddCase, setCases, cases }) {
           ["Critical Urgency", criticalCount, "#ef4444"],
           ["High Priority (75+)", highCount, "#22c55e"],
           ["CREATE Opportunities", createCount, "var(--accent)"],
-          ["JOIN Existing Cases", joinCount, "#3b82f6"],
+          ["JOIN Existing Cases", joinCount, "#2D7D95"],
         ].map(([label, val, color]) => (
           <Card key={label} style={{ padding: 14, textAlign: "center" }}>
             <div style={{ fontSize: 26, fontWeight: 700, color }}>{val}</div>

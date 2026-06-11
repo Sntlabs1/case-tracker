@@ -5,7 +5,7 @@ import { Card, Btn } from "../components/UI.jsx";
 const LETTER_STATUSES = ["generated", "sent", "responded", "retained", "declined"];
 const LETTER_STATUS_COLORS = {
   generated: "#6b7280",
-  sent:      "#3b82f6",
+  sent:      "#2D7D95",
   responded: "#f59e0b",
   retained:  "#22c55e",
   declined:  "#ef4444",
@@ -76,7 +76,7 @@ function CampaignCard({ campaign, onOpen, onDelete, onCancelDelete, isPendingDel
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
             {[
               { label: "Letters",    value: total,      color: "var(--text-2)" },
-              { label: "Sent",       value: sent,       color: "#3b82f6" },
+              { label: "Sent",       value: sent,       color: "#2D7D95" },
               { label: "Responded",  value: responded,  color: "#f59e0b" },
               { label: "Retained",   value: retained,   color: "#22c55e" },
               { label: "Conv. rate", value: `${convRate}%`, color: retained > 0 ? "#22c55e" : "var(--text-5)" },
@@ -542,7 +542,7 @@ export default function Campaigns() {
             {[
               { label: "Campaigns",  value: campaigns.length, color: "var(--accent)" },
               { label: "Letters",    value: totalLetters,     color: "var(--text-1)" },
-              { label: "Sent",       value: totalSent,        color: "#3b82f6" },
+              { label: "Sent",       value: totalSent,        color: "#2D7D95" },
               { label: "Retained",   value: totalRetained,    color: "#22c55e" },
             ].map(s => (
               <div key={s.label} style={{ padding: "10px 16px", borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border)", textAlign: "center" }}>
@@ -606,7 +606,7 @@ export default function Campaigns() {
         <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
           {[
             { label: "Total Letters", value: total,      color: "var(--text-1)" },
-            { label: "Sent",          value: sent,       color: "#3b82f6" },
+            { label: "Sent",          value: sent,       color: "#2D7D95" },
             { label: "Responded",     value: responded,  color: "#f59e0b" },
             { label: "Retained",      value: retained,   color: "#22c55e" },
             { label: "Conv. Rate",    value: `${convRate}%`, color: retained > 0 ? "#22c55e" : "var(--text-5)" },

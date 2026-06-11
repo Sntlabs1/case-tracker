@@ -18,6 +18,39 @@ const CATEGORY_CASE_TYPE = {
   "subprime-installment":  "FCRA",
 };
 
+const N_SHARDS = 16;
+
+// Eligible-people count per defendant (sum of its casepeople shards), cached
+// in KV — the catalog is ~340 tokens x 16 shards, too many zcards per request.
+// Powers the per-case total-claim estimate column in the Cases table.
+const CASE_TOTALS_KEY   = "portfolio:case_totals";
+const CASE_TOTALS_TTL_S = 6 * 60 * 60;
+
+async function casepeopleTotal(token) {
+  const cards = await Promise.all(
+    Array.from({ length: N_SHARDS }, (_, s) => kv.zcard(`casepeople:${token}:${s}`).catch(() => 0))
+  );
+  return cards.reduce((a, b) => a + (b || 0), 0);
+}
+
+async function caseTotals(tokens) {
+  const cachedRaw = await kv.get(CASE_TOTALS_KEY).catch(() => null);
+  if (cachedRaw) {
+    const cached = typeof cachedRaw === "string" ? JSON.parse(cachedRaw) : cachedRaw;
+    if (cached && cached.totals) return cached.totals;
+  }
+  const totals = {};
+  const BATCH = 40; // 40 tokens x 16 shards = 640 parallel zcards per wave
+  for (let i = 0; i < tokens.length; i += BATCH) {
+    const slice = tokens.slice(i, i + BATCH);
+    const counts = await Promise.all(slice.map(t => casepeopleTotal(t)));
+    slice.forEach((t, j) => { if (counts[j] > 0) totals[t] = counts[j]; });
+  }
+  await kv.set(CASE_TOTALS_KEY, { computedAt: Date.now(), totals }, { ex: CASE_TOTALS_TTL_S })
+    .catch(() => {});
+  return totals;
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=600");
@@ -25,9 +58,11 @@ export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const [raw, tcpaRaw] = await Promise.all([
+    const [raw, tcpaRaw, nationalRaw, pathsRaw] = await Promise.all([
       kv.get("match:defendant_evidence"),
       kv.get("pacer:tcpa_marketers"),
+      kv.get("pacer:national_entities"),
+      kv.get("case:claim_paths"),
     ]);
     if (!raw) {
       return res.status(200).json({
@@ -41,17 +76,36 @@ export default async function handler(req, res) {
     const newCounts = ev.newCaseCounts || {};
     const classSettlement = new Set(ev.classSettlementDefendants || []);
 
+    // Claim-path registry (tools/claim-paths-build.py): per defendant token,
+    // whether a LIVE recovery avenue exists today — an open settlement window
+    // (claim_window) or open litigation the person's match can join/originate
+    // against (joinable_litigation). Defendants with status "none" must not be
+    // pitched as claimable.
+    const pathsDoc = pathsRaw ? (typeof pathsRaw === "string" ? JSON.parse(pathsRaw) : pathsRaw) : null;
+    const pathReg = pathsDoc?.registry || {};
+    const claimPathOf = token => {
+      const r = pathReg[token];
+      if (!r) return { status: "unknown" };
+      return {
+        status:           r.status,
+        liveSettlements:  (r.liveSettlements || []).slice(0, 3),
+        openLitigation:   (r.openClassCandidates || 0) + (r.openDockets || 0) + (r.tcpaOpenDockets || 0),
+      };
+    };
+
     const defendants = Object.entries(clusters).map(([name, c]) => {
       const caseType = CATEGORY_CASE_TYPE[c.category] || "FDCPA";
+      const token = canonicalToken(name);
       return {
         defendant:        name,
-        defendantQ:       canonicalToken(name),
+        defendantQ:       token,
         category:         c.category,
         caseType,
         caseCount:        c.caseCount || 0,
         openCases:        c.openCases || 0,
         newCases:         newCounts[name] || 0,
         classSettlement:  classSettlement.has(name),
+        claimPath:        claimPathOf(token),
         examples:         (c.examples || []).slice(0, 3),
       };
     });
@@ -76,15 +130,51 @@ export default async function handler(req, res) {
     // entries are banks/lenders that DO appear and are matchable to people.
     const tcpa = tcpaRaw ? (typeof tcpaRaw === "string" ? JSON.parse(tcpaRaw) : tcpaRaw) : null;
     const tcpaMarketers = tcpa
-      ? (tcpa.defendants || []).map(d => ({
-          defendant:   d.defendant,
-          defendantQ:  canonicalToken(d.defendant || d.defendantQ || ""),
-          caseType:    "TCPA",
-          caseCount:   d.caseCount,
-          openCases:   d.openCases,
-          examples:    d.examples || [],
+      ? (tcpa.defendants || []).map(d => {
+          const token = canonicalToken(d.defendant || d.defendantQ || "");
+          return {
+            defendant:   d.defendant,
+            defendantQ:  token,
+            caseType:    "TCPA",
+            caseCount:   d.caseCount,
+            openCases:   d.openCases,
+            claimPath:   claimPathOf(token),
+            examples:    d.examples || [],
+          };
+        })
+      : [];
+
+    // National consumer-credit index (NOS 480/371/490, 2015-2026, all Top-1000
+    // entities + the big-3 bureaus). Built by tools/national-entities-build.mjs
+    // from the 120,869-case national pull. Bureau entries apply to the entire
+    // base (every person has all three bureau files), so they are flagged and
+    // the UI skips the per-person casepeople join for them.
+    const national = nationalRaw
+      ? (typeof nationalRaw === "string" ? JSON.parse(nationalRaw) : nationalRaw)
+      : null;
+    const nationalEntities = national
+      ? (national.entities || []).map(d => ({
+          defendant:     d.defendant,
+          defendantQ:    d.defendantQ,
+          caseType:      "FCRA",
+          bureau:        !!d.bureau,
+          entityType:    d.type || null,
+          caseCount:     d.caseCount,
+          openCases:     d.openCases,
+          candidates:    d.candidates,
+          consumersInDb: d.consumersInDb || null,
+          claimPath:     claimPathOf(d.defendantQ),
+          examples:      d.examples || [],
         }))
       : [];
+
+    // Eligible-people count per defendant for the total-claim estimate column.
+    const tokenSet = new Set(
+      [...defendants.map(d => d.defendantQ), ...tcpaMarketers.map(m => m.defendantQ)].filter(Boolean)
+    );
+    const totalsByToken = await caseTotals([...tokenSet]);
+    for (const d of defendants)    d.consumers = totalsByToken[d.defendantQ] || 0;
+    for (const m of tcpaMarketers) m.consumers = totalsByToken[m.defendantQ] || 0;
 
     return res.status(200).json({
       status:       "ok",
@@ -96,6 +186,12 @@ export default async function handler(req, res) {
       tcpaMarketerMeta: tcpa
         ? { sourceTotal: tcpa.sourceTotal, defendantCount: tcpa.defendantCount, totals: tcpa.totals }
         : null,
+      nationalEntities,
+      nationalEntityMeta: national
+        ? { indexCases: national.indexCases, matchedCases: national.matchedCases,
+            entityCount: national.entityCount, totals: national.totals }
+        : null,
+      claimPathMeta: pathsDoc?._meta || null,
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });

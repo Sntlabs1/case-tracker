@@ -39,7 +39,7 @@ function scoreStyle(score) {
 }
 
 function urgencyColor(lvl) {
-  return { CRITICAL: "#ef4444", HIGH: "#f59e0b", MEDIUM: "#3b82f6", LOW: "#6b7280" }[lvl] || "#6b7280";
+  return { CRITICAL: "#ef4444", HIGH: "#f59e0b", MEDIUM: "#2D7D95", LOW: "#6b7280" }[lvl] || "#6b7280";
 }
 
 function opportunityStyle(status) {
@@ -55,7 +55,7 @@ function readinessStyle(r) {
   return {
     READY_NOW:           { label: "READY NOW",     color: "#22c55e" },
     NEEDS_INVESTIGATION: { label: "INVESTIGATE",   color: "#f59e0b" },
-    WAIT_FOR_TRIGGER:    { label: "WAIT: TRIGGER", color: "#3b82f6" },
+    WAIT_FOR_TRIGGER:    { label: "WAIT: TRIGGER", color: "#2D7D95" },
   }[r] || { label: r, color: "#888" };
 }
 
@@ -92,7 +92,7 @@ function LeadCard({ lead, onAddToTracker, onDismiss, onPromoteToKB }) {
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", flex: 1, alignItems: "center" }}>
           {a.classification && <Badge label={a.classification} color={a.classification === "CREATE" ? "#22c55e" : a.classification === "INVESTIGATE" ? "#f59e0b" : "#6b7280"} />}
-          {a.joinOrCreate   && <Badge label={a.joinOrCreate}   color={a.joinOrCreate   === "CREATE" ? "var(--accent)" : "#3b82f6"} />}
+          {a.joinOrCreate   && <Badge label={a.joinOrCreate}   color={a.joinOrCreate   === "CREATE" ? "var(--accent)" : "#2D7D95"} />}
           {a.timeline?.urgencyLevel && a.timeline.urgencyLevel !== "LOW" && <Badge label={a.timeline.urgencyLevel} color={uc} />}
           {a.opportunityStatus && (
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: ops.bg, color: ops.color, border: `1px solid ${ops.border}` }}>
@@ -549,7 +549,7 @@ export default function DailyFeed({ cases, setCases, setTab, kbCases, setKbCases
               { label: "Total Leads",       value: stats.total,  color: "var(--accent)", sub: "in feed" },
               { label: "High Priority",     value: stats.high,   color: "#22c55e", sub: "score 75+" },
               { label: "New Cases",         value: stats.create, color: "#f59e0b", sub: "CREATE opportunities" },
-              { label: "Join Existing MDL", value: stats.join,   color: "#3b82f6", sub: "active cases" },
+              { label: "Join Existing MDL", value: stats.join,   color: "#2D7D95", sub: "active cases" },
             ].map(s => (
               <Card key={s.label} style={{ padding: "14px 16px" }}>
                 <div style={{ fontSize: 26, fontWeight: 700, color: s.color }}>{s.value}</div>

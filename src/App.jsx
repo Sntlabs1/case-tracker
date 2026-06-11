@@ -179,7 +179,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useLocalStorage("tt-sidebar-open", true);
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", display: "flex" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-page)", color: "var(--text-1)", fontFamily: "'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", display: "flex" }}>
 
       {/* ─── Floating reveal button (visible only when sidebar is hidden) ─── */}
       {!sidebarOpen && (
@@ -228,7 +228,7 @@ export default function App() {
               <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.22em", textTransform: "uppercase", marginBottom: 2 }}>
                 Ticket Toro
               </div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: "#ffffff", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
+              <div style={{ fontWeight: 400, fontSize: 15, color: "#ffffff", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
                 Class Action Intel
               </div>
             </div>
