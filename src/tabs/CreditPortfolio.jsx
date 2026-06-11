@@ -1012,6 +1012,11 @@ function CaseDetailBrief({ c, claimants }) {
               <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 5, lineHeight: 1.5 }}>
                 {m.pendingActions != null ? `${m.pendingActions.toLocaleString()} pending actions` : ""}{m.court ? ` · ${m.court} district` : ""} — recovery period open: new claimants can file directly into the MDL or sign with plaintiffs' counsel. This is litigation, not a settlement — no fixed payout exists yet.
               </div>
+              {m.intakeNote && (
+                <div style={{ fontSize: 10, color: m.intakeVerified === "verified-open" ? "#22c55e" : "#f59e0b", marginTop: 4, lineHeight: 1.5 }}>
+                  <span style={{ fontWeight: 800 }}>{m.intakeVerified === "verified-open" ? "INTAKE VERIFIED 2026-06-11: " : "INTAKE (reported): "}</span>{m.intakeNote}
+                </div>
+              )}
               {m.url && (
                 <a href={m.url} target="_blank" rel="noopener noreferrer"
                    style={{ display: "inline-block", marginTop: 6, fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 700, textDecoration: "none" }}>
