@@ -2546,7 +2546,9 @@ export default function CreditPortfolio() {
                       <th style={{ textAlign: "left", padding: "6px 8px" }}>State</th>
                       <th style={{ textAlign: "left", padding: "6px 8px" }}>Match Basis</th>
                       <th style={{ textAlign: "right", padding: "6px 8px" }}>Score</th>
-                      <th style={{ textAlign: "right", padding: "6px 8px" }}>Recovery</th>
+                      <th style={{ textAlign: "right", padding: "6px 8px" }}>
+                        {fixedTermsSettlement(selectedCase.claimPath) ? "Settlement Pays" : "Recovery (statutory)"}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2579,7 +2581,18 @@ export default function CreditPortfolio() {
                             {lead.score}
                           </td>
                           <td style={{ textAlign: "right", padding: "8px 8px", color: "#22c55e", fontWeight: 600 }}>
-                            {fmt$(lead.recovery?.mid)}
+                            {(() => {
+                              // Settlement-route case: the administrator's terms
+                              // ARE the money. The per-person statutory mid-sum
+                              // is litigation theory and must not be shown here.
+                              const stl = fixedTermsSettlement(selectedCase.claimPath);
+                              if (stl) return (
+                                <span title={stl.perClaimant || undefined}>
+                                  {settlementMoneyShort(stl.perClaimant) || "per terms"}
+                                </span>
+                              );
+                              return fmt$(lead.recovery?.mid);
+                            })()}
                           </td>
                         </tr>
                       );
