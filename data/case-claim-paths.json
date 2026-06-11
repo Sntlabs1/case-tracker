@@ -1,12 +1,12 @@
 {
  "_meta": {
   "built": "2026-06-11",
-  "tokens": 610,
+  "tokens": 668,
   "statusCounts": {
-   "claim_window": 78,
+   "claim_window": 133,
    "joinable_litigation": 368,
-   "monitor_only": 15,
-   "none": 149
+   "monitor_only": 16,
+   "none": 151
   },
   "caseTypePaths": {
    "DischargeViolation": {
@@ -162,6 +162,40 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "aetna": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2M Aetna infertility treatments class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-28",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.californiainfertilitysettlement.com/berton-v-aetna-claim-form-login",
+     "fund": "$2M",
+     "perClaimant": "$1,408 or more.",
+     "classDefinition": "California residents who were covered by an Aetna commercial plan that offered coverage for infertility treatments between April 17, 2019, and Dec. 31, 2024, and who were denied coverage for intrauterine insemination (IUI), intracervical insemination (ICI) or in vitro fertilization (IVF) or those who were denied but later approved within 90 days",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-28",
+      "optOutDeadline": "2026-06-29",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-11-12",
+      "paymentDate": null
+     },
+     "whatToProvide": "Aetna member ID number, if known; documentation of out-of-pocket costs incurred for IUI or ICI procedures during the class period",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2m-aetna-infertility-treatments-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "affirm": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -269,6 +303,40 @@
    "expiredSettlements": [],
    "openClassCandidates": 76,
    "openDockets": 37,
+   "tcpaOpenDockets": 0
+  },
+  "alpha baking co": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$1.05M Alpha Baking Co. data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-22",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://alphabakingsettlement.com/form/claim",
+     "fund": "$1.05M",
+     "perClaimant": "Up to $4,000 in documented losses, or a pro rata $75 cash payment",
+     "classDefinition": "The settlement benefits individuals who received a data breach notification from Alpha Baking informing them their information may have been compromised in a January 2025 data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-22",
+      "optOutDeadline": "2026-06-22",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-21",
+      "paymentDate": null
+     },
+     "whatToProvide": "Claimants must provide documentation of losses, such as a bank statement showing fraudulent charges, a credit report showing identity theft or a receipt for credit monitoring services.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/1-05m-alpha-baking-co-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "amazon com prime": {
@@ -460,6 +528,51 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "anne arundel dermatology": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.4M Anne Arundel Dermatology data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-08",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://annearundelprivacysettlement.pnclassaction.com",
+     "fund": "$2.4M",
+     "perClaimant": "Up to $5,000 in documented losses, or an alternative payout estimated at $100.",
+     "classDefinition": "All persons in the United States who provided personal information, including but not limited to PII or PHI, to AAD, or about whom AAD otherwise collected, received, or possessed personal information, including but not limited to PII or PHI, on or before Dec. 9, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-08",
+      "optOutDeadline": "2026-06-09",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-16",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation other than the claim form that is needed in order for a class member to submit a claim such as receipts, work orders and credit card statements.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-4m-anne-arundel-dermatology-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "anthem": {
+   "status": "monitor_only",
+   "liveSettlements": [],
+   "monitorSettlements": [
+    "Anthem microprocessor-controlled prosthesis coverage class action settlement"
+   ],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "applicant insight": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -504,6 +617,39 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 2
+  },
+  "ashley furniture fiberglass": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$9M Ashley Furniture fiberglass class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-17",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://mattressclassactionsettlement.com/Home/FAQ#faq28",
+     "fund": "$9M",
+     "perClaimant": "One store voucher per mattress purchased.",
+     "classDefinition": "The Ashley Furniture class action settlement benefits consumers who purchased an affected Ashley, Nectar, DreamCloud or Siena mattress that contained fiberglass as a fire-retardant material between Oct. 1, 2017, and June 30, 2024.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-17",
+      "optOutDeadline": "2026-07-17",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-09-24",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/9m-ashley-furniture-fiberglass-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "associated credit services": {
    "status": "joinable_litigation",
@@ -684,6 +830,40 @@
    "openDockets": 13,
    "tcpaOpenDockets": 0
   },
+  "barefoot dreams": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$1.9M Barefoot Dreams website tracking class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://barefootdreamsclasssettlement.com/Login",
+     "fund": "$1.9M",
+     "perClaimant": "$8 cash payment",
+     "classDefinition": "The Barefoot Dreams class action settlement benefits consumers who purchased a product from barefootdreams.com or any of Barefoot Dreams\u2019 associated URLs between Oct. 14, 2023, and June 1, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-31",
+      "optOutDeadline": "2026-07-31",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-17",
+      "paymentDate": null
+     },
+     "whatToProvide": "Unique ID and PIN from the class notice",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/1-9m-barefoot-dreams-website-tracking-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "baxter credit union": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -749,6 +929,40 @@
      "whatToProvide": "Claim form online or postmarked by 6/30; state of purchase; no receipts needed.",
      "documentsUrl": "https://www.overchargedforbeef.com/",
      "notes": "DEFENDANTS ARE TYSON/CARGILL (beef packers) \u2014 population-overlap play: anyone who bought qualifying beef in the 27 listed states. No receipts required."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "bell ambulance": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2M Bell Ambulance data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-29",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://belldataincidentsettlement.com/form/claim",
+     "fund": "$2M",
+     "perClaimant": "Up to $5,000 in documented losses or an estimated $90 cash payment",
+     "classDefinition": "The class action settlement benefits individuals whose private information was accessed in the February 2025 Bell Ambulance data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-29",
+      "optOutDeadline": "2026-06-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-14",
+      "paymentDate": null
+     },
+     "whatToProvide": "Receipts, bills, account statements or other documentation",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2m-bell-ambulance-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
     }
    ],
    "monitorSettlements": [],
@@ -979,6 +1193,39 @@
    "openDockets": 5,
    "tcpaOpenDockets": 0
   },
+  "cardiovascular consultants": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$3.85M Cardiovascular Consultants data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-01",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://forms.ksacms.com/efiling/fr/eform/CVCDataSettlement_claimform/new",
+     "fund": "$3.85M",
+     "perClaimant": "Up to $5,000 in documented losses or a pro rata payment of $75",
+     "classDefinition": "The class action settlement benefits i ndividuals residing in the United States whose personal information was potentially compromised in the Cardiovascular Consultants data breach discovered in September 2023, including those who received notice of the data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-01",
+      "optOutDeadline": "2026-06-01",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-18",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/3-85m-cardiovascular-consultants-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "carmax auto superstores": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -1076,6 +1323,39 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 8,
+   "tcpaOpenDockets": 0
+  },
+  "certainteed": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "CertainTeed Horizon shingles class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2030-03-02",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://angeion-public.s3.amazonaws.com/www.FiberglassHorizonSettlement.com/docs/CertainTeed%20Claim%20Form%20Final.pdf",
+     "perClaimant": "Varies",
+     "classDefinition": "Individuals or entities who own a building that had Horizon brand asphalt fiberglass roofing shingles manufactured by CertainTeed installed between 1995 and 2010.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2030-03-02",
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": "2022-12-22",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of qualifying damage.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/certainteed-horizon-shingles-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Long-tail warranty-style window to 2030-03-02."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "chapter aesthetic studio": {
@@ -1379,6 +1659,40 @@
    "openDockets": 3,
    "tcpaOpenDockets": 0
   },
+  "colgate": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.9M Colgate, Tom\u2019s of Maine contamination class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-06",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.toothpastesettlement.com/",
+     "fund": "$2.9M",
+     "perClaimant": "Cash refund of up to three products",
+     "classDefinition": "The class action settlement benefits consumers who purchased one or more Tom\u2019s of Maine brand toothpaste products between Nov. 21, 2020, and March 6, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-06",
+      "optOutDeadline": "2026-07-06",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-09-10",
+      "paymentDate": null
+     },
+     "whatToProvide": "No proof of purchase is required but providing a sales receipt or other documentation will result in larger payments.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-9m-colgate-toms-of-maine-contamination-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "collection management company": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -1612,6 +1926,38 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "copa america final match access": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$14M Copa America final match access settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-11",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://finalmatchsettlement.com/submit-claim",
+     "fund": "$14M",
+     "perClaimant": "Varies.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-11",
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-05-13",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/14m-copa-america-final-match-access-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "cornerstone": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -1619,6 +1965,39 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 1,
+   "tcpaOpenDockets": 0
+  },
+  "cosequin dog supplements": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$11.5M Cosequin dog supplements class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-21",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://cosequincasettlement.com/Claim",
+     "fund": "$11.5M",
+     "perClaimant": "Up to $150.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-21",
+      "optOutDeadline": "2026-06-22",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-13",
+      "paymentDate": null
+     },
+     "whatToProvide": "No proof of purchase is required for claims of up to $50. Claimants seeking to receive a payment of more than $50 must submit proof of purchase, such as a receipt, invoice or other documentation.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/11-5m-cosequin-dog-supplements-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "country bank for savings": {
@@ -2306,6 +2685,73 @@
    "openDockets": 0,
    "tcpaOpenDockets": 3
   },
+  "ems linq": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "EMS LINQ data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-29",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://linqdataincident.com/form/claim",
+     "perClaimant": "Up to $2,500 in extraordinary losses and $500 in ordinary losses, or a $50 alternative payment",
+     "classDefinition": "The class action settlement benefits i ndividuals who were sent written notification that their personal information was potentially accessed, viewed or obtained as a result of the EMS LINQ data breach between Sept. 12, 2023, and May 13, 2024.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-29",
+      "optOutDeadline": "2026-05-29",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-23",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of losses, such as bank statements, phone bills, postage receipts and gas receipts.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/ems-linq-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "endue software": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$870,000 Endue Software data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-30",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://enduesoftwaredatasettlement.com/form/claim",
+     "fund": "$870,000",
+     "perClaimant": "Up to $2,500 for documented losses or a $65 one-time payment.",
+     "classDefinition": "The class action settlement benefits individuals residing in the United States whose private information may have been impacted in the February 2025 data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-30",
+      "optOutDeadline": "2026-06-30",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-15",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of losses, such as bank statements, credit reports and receipts.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/870000-endue-software-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "enhanced recovery company": {
    "status": "none",
    "liveSettlements": [],
@@ -2422,6 +2868,40 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "esse health": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.5M Esse Health data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-04",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://essehealthsettlement.com/form/claim",
+     "fund": "$2.5M",
+     "perClaimant": "Estimated $50 cash payment",
+     "classDefinition": "The Esse Health settlement benefits all persons who were potentially impacted by a 2025 data incident, including all persons who were sent notice by Esse Health that their private information was potentially compromised during the data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-04",
+      "optOutDeadline": "2026-07-05",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-03",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-5m-esse-health-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "essex property trust": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -2483,6 +2963,40 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 4
+  },
+  "excelsior orthopaedics": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.4M Excelsior Orthopaedics data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-11",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://excelsiordatasettlement.com/Login",
+     "fund": "$2.4M",
+     "perClaimant": "Up to $5,000 in documented losses or a pro rata cash payment.",
+     "classDefinition": "The Excelsior Orthopaedics class action settlement benefits individuals whose personal information was potentially accessed in a data breach at Excelsior Orthopaedics and Buffalo Surgery Center in June 2024.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-11",
+      "optOutDeadline": "2026-05-17",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-08",
+      "paymentDate": null
+     },
+     "whatToProvide": "Claimants must provide documentation of their losses, such as telephone records, correspondence or receipts.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-4m-excelsior-orthopaedics-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "exeter finance": {
    "status": "claim_window",
@@ -2653,6 +3167,73 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "fanatics handling fees": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Fanatics handling fees class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-27",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://handlingfeesettlement.com/claim-form",
+     "perClaimant": "Two $5 vouchers toward a single purchase on the Fanatics.com website.",
+     "classDefinition": "The class action settlement benefits consumers who purchased merchandise through the Fanatics websites between May 6, 2018, and March 30, 2026, and who were assessed and paid a handling fee on their purchase.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-27",
+      "optOutDeadline": "2026-08-27",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-09-16",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/fanatics-handling-fees-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "fandango convenience fee fanclub membership": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$9.4M Fandango convenience fee, fanclub membership class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-17",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://fandangomediasettlement.com/Login",
+     "fund": "$9.4M",
+     "perClaimant": "$3.25 cash payment or voucher and a $7.50 voucher",
+     "classDefinition": "The Fandango class action settlement benefits consumers who paid a convenience fee to purchase tickets through Fandango to California theaters between June 11, 2020, and June 17, 2024, as well as California and Washington consumers who purchased a Fandango FanClub membership between Oct. 7, 2024, and April 16, 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-17",
+      "optOutDeadline": "2026-06-18",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-07",
+      "paymentDate": null
+     },
+     "whatToProvide": "Unique ID and confirmation code received via email",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/9-4m-fandango-convenience-fee-fanclub-membership-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "farmers group": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -2678,6 +3259,62 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 4,
+   "tcpaOpenDockets": 0
+  },
+  "fca us": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$3.8M FCA US unpaid overtime class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.featherstonefcasettlement.com/",
+     "fund": "$3.8M",
+     "perClaimant": "Varies",
+     "classDefinition": "The FCA class action settlement benefits current and former hourly employees who worked for FCA US in the United States between Feb. 10, 2020, and May 12, 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": "2026-06-22",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-25",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/3-8m-fca-us-unpaid-overtime-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Employee unpaid-overtime class; opt-out 2026-06-22; claim deadline not published."
+    },
+    {
+     "name": "Jeep steering wheel, front suspension recall class action settlement",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://cptgroupcaseinfo.com/FCAUSSettlement/",
+     "perClaimant": "Varies.",
+     "classDefinition": "Owners and lessees of model year 2018 to 2020 Jeep Wrangler vehicles or 2020 Jeep Gladiator vehicles",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": "2023-03-10",
+      "objectionDeadline": null,
+      "fairnessHearing": "2023-04-19",
+      "paymentDate": null
+     },
+     "whatToProvide": "Records of repairs and amounts paid. Request for Reimbursement Form CLICK HERE TO FILE A REQUEST FOR REIMBURSEMENT \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/jeep-steering-wheel-front-suspension-recall-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Recall-reimbursement: file via Chrysler VIN self-service; CPT Group case page."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 1,
    "tcpaOpenDockets": 0
   },
   "fedchex recovery": {
@@ -3006,6 +3643,40 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "freedom energy": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.6M Freedom Energy Oklahoma earthquake class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-28",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "http://oklahomaearthquakeslawsuits2024.com/",
+     "fund": "$2.6M",
+     "perClaimant": "Varies.",
+     "classDefinition": "The class action settlement benefits all persons, municipalities, county governments and tribal governments who owned or have an interest in real property within the borders of Oklahoma between Jan. 19, 2019, and the effective date of the settlement and who suffered damages from earthquakes, foreshocks and aftershocks within the state of Oklahoma.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-28",
+      "optOutDeadline": "2026-03-30",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-04-09",
+      "paymentDate": null
+     },
+     "whatToProvide": "Evidence of the damages suffered as a result of the Oklahoma earthquakes",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-6m-freedom-energy-oklahoma-earthquake-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "freedom mortgage": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -3014,6 +3685,39 @@
    "openClassCandidates": 0,
    "openDockets": 16,
    "tcpaOpenDockets": 1
+  },
+  "generac pwrcell solar power systems": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$15M Generac PWRcell solar power systems class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-24",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://generacsnapsettlement.eagclaims.com",
+     "fund": "$15M",
+     "perClaimant": "Varies",
+     "classDefinition": "The class action settlement benefits current owners and primary users of Generac PWRcell systems who purchased their systems before Jan. 9, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-24",
+      "optOutDeadline": "2026-07-20",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-10-21",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/15m-generac-pwrcell-solar-power-systems-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "general motors financial company": {
    "status": "joinable_litigation",
@@ -3271,6 +3975,40 @@
    "openDockets": 3,
    "tcpaOpenDockets": 0
   },
+  "grubhub": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$24.75M Grubhub driver misclassification class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-18",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://grubhubcalsettlement.com/form/claim",
+     "fund": "$24.75M",
+     "perClaimant": "Varies but a minimum of $25",
+     "classDefinition": "The class action settlement benefits Grubhub delivery drivers who used the Grubhub platform as independent contractors to accept or complete at least one delivery in California between Dec. 3, 2014, and March 13, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-18",
+      "optOutDeadline": "2026-06-18",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-30",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/24-75m-grubhub-driver-misclassification-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. CA delivery-driver misclassification \u2014 worker class, not consumer."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "gurstel law firm p c": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -3333,6 +4071,74 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 3
+  },
+  "hearthside food solutions child labor": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$4.5M Hearthside Food Solutions child labor class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-11-20",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.hearthsidefssettlement.com/il-ag-v-hearthside-claim-form",
+     "fund": "$4.5M",
+     "perClaimant": "TBD Proof of Purchase N/A",
+     "classDefinition": "Individuals who worked at a Hearthside Food Solutions facility in Illinois between March 1, 2020, and Dec. 4, 2024, who were under the age of 16 for some or all of the time they were working at the facility.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-11-20",
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": null,
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/4-5m-hearthside-food-solutions-child-labor-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "hefty": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$212,000 Hefty recyclable bags settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-10-01",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://consumer-complaint.azag.gov/publiccomplaint/begin.aspx",
+     "fund": "$212,000",
+     "perClaimant": "TBD Proof of Purchase N/A",
+     "classDefinition": "Arizona consumers who purchased Reynolds\u2019 \u201cRecycling\u201d bags or transparent blue or clear Hefty bags and who file a complaint with the Attorney General\u2019s Office.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-10-01",
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": null,
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/212000-hefty-recyclable-bags-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. AZ AG settlement \u2014 Arizona purchasers file via AZ AG complaint portal."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "heights fin": {
    "status": "none",
@@ -3459,6 +4265,17 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "hospital sisters health system": {
+   "status": "none",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [
+    "$7.6M Hospital Sisters Health System HSHS data breach Settlement"
+   ],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "hsbc bank": {
    "status": "none",
    "liveSettlements": [],
@@ -3501,6 +4318,37 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 3,
+   "tcpaOpenDockets": 0
+  },
+  "hsn": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "My Little Steamer class action settlement",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.steamerrecallsettlement.com/",
+     "classDefinition": "Anyone who purchased a Joy/JM-branded My Little Steamer between Jan. 1, 2002, and Dec. 31, 2020.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": "2021-09-10",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/consumer-products/household/my-little-steamer-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Recall settlement \u2014 rolling."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "humana": {
@@ -3766,6 +4614,39 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 3,
+   "tcpaOpenDockets": 0
+  },
+  "jeep": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Jeep steering wheel, front suspension recall class action settlement",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://cptgroupcaseinfo.com/FCAUSSettlement/",
+     "perClaimant": "Varies.",
+     "classDefinition": "Owners and lessees of model year 2018 to 2020 Jeep Wrangler vehicles or 2020 Jeep Gladiator vehicles",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": "2023-03-10",
+      "objectionDeadline": null,
+      "fairnessHearing": "2023-04-19",
+      "paymentDate": null
+     },
+     "whatToProvide": "Records of repairs and amounts paid. Request for Reimbursement Form CLICK HERE TO FILE A REQUEST FOR REIMBURSEMENT \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/jeep-steering-wheel-front-suspension-recall-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Recall-reimbursement: file via Chrysler VIN self-service; CPT Group case page."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "jefferson capital systems": {
@@ -4531,6 +5412,40 @@
    "openDockets": 4,
    "tcpaOpenDockets": 2
   },
+  "menards performax and masterforce bonded abrasive wheel": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$775K Menards Performax and Masterforce bonded abrasive wheel class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-07",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.menardbondedabrasivewheelsettlement.com/form/claim",
+     "fund": "$775K",
+     "perClaimant": "Up to $50 in cash or five replacement wheels",
+     "classDefinition": "The class action settlement benefits consumers who purchased Menards Performax or Masterforce bonded abrasive wheels between June 10, 2018, and April 22, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-07",
+      "optOutDeadline": "2026-07-07",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-17",
+      "paymentDate": null
+     },
+     "whatToProvide": "Itemized receipt, credit card statement or electronic statement",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/775k-menards-performax-and-masterforce-bonded-abrasive-wheel-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "mercedes benz financial": {
    "status": "claim_window",
    "liveSettlements": [
@@ -4764,6 +5679,72 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "mitsubishi outlander hood": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Mitsubishi Outlander hood class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-30",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://veritaconnect.com/hoodsettlement",
+     "perClaimant": "Up to $4,595 in repair, replacement and rental reimbursements",
+     "classDefinition": "The Mitsubishi class action settlement benefits current and former owners and lessees of certain 2022 Mitsubishi Outlander vehicles. Consumers can check their vehicle\u2019s eligibility using the VIN lookup tool on the settlement website.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-30",
+      "optOutDeadline": "2026-06-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-03",
+      "paymentDate": null
+     },
+     "whatToProvide": "Repair invoices, bank statements, receipts and/or other documentation",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/mitsubishi-outlander-hood-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "mizuno": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Mizuno data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-15",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.mizunosettlement.com/mizuno-claim-form-login",
+     "perClaimant": "Ordinary losses up to $475, extraordinary losses up to $5,000 or a pro-rata cash payment of $50.",
+     "classDefinition": "The class action settlement benefits individuals who received a data breach notification from Mizuno USA informing them their information was potentially compromised in a November 2024 data breach.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-15",
+      "optOutDeadline": "2026-05-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-04",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of losses, such as bank statements, phone bills, receipts and invoices.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/mizuno-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "molina healthcare": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -4941,6 +5922,37 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 4
+  },
+  "my little steamer": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "My Little Steamer class action settlement",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.steamerrecallsettlement.com/",
+     "classDefinition": "Anyone who purchased a Joy/JM-branded My Little Steamer between Jan. 1, 2002, and Dec. 31, 2020.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": "2021-09-10",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/consumer-products/household/my-little-steamer-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Recall settlement \u2014 rolling."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "national association of realtors re max keller williams anywhere": {
    "status": "none",
@@ -5205,6 +6217,40 @@
    "openDockets": 1,
    "tcpaOpenDockets": 0
   },
+  "oglethorpe": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$350K Oglethorpe data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-08",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://oglethorpe2025dataincident.com/form/claim",
+     "fund": "$350K",
+     "perClaimant": "Up to $2,500",
+     "classDefinition": "The class action settlement benefits individuals who were sent a notice by Oglethorpe Inc. that their personal information may have been impacted by a data breach in June 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-08",
+      "optOutDeadline": "2026-06-08",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-22",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of losses, such as bank statements or receipts",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/350k-oglethorpe-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "oliphant financial": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -5355,6 +6401,17 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 3
+  },
+  "pacer": {
+   "status": "none",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [
+    "PACER record fees $125M class action settlement"
+   ],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "pacific sunwear of california": {
    "status": "joinable_litigation",
@@ -5781,6 +6838,40 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "psea": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.5M PSEA data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-06",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.claimsettlementportal.com/surveys/psea/home.aspx",
+     "fund": "$2.5M",
+     "perClaimant": "Up to $5,000 in out-of-pocket expenses or a $50 cash payout.",
+     "classDefinition": "The PSEA class action settlement benefits individuals whose private information was potentially compromised in the data breach that occurred on July 6, 2024, and was announced on March 18, 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-06",
+      "optOutDeadline": "2026-07-06",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-27",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation of expenses, such as r eceipts, bank statements, bills or invoices.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-5m-psea-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "quicken loans": {
    "status": "none",
    "liveSettlements": [],
@@ -6046,6 +7137,40 @@
    "openDockets": 37,
    "tcpaOpenDockets": 1
   },
+  "reynolds consumer products": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$212,000 Hefty recyclable bags settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-10-01",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://consumer-complaint.azag.gov/publiccomplaint/begin.aspx",
+     "fund": "$212,000",
+     "perClaimant": "TBD Proof of Purchase N/A",
+     "classDefinition": "Arizona consumers who purchased Reynolds\u2019 \u201cRecycling\u201d bags or transparent blue or clear Hefty bags and who file a complaint with the Attorney General\u2019s Office.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-10-01",
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": null,
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/212000-hefty-recyclable-bags-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. AZ AG settlement \u2014 Arizona purchasers file via AZ AG complaint portal."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "rise": {
    "status": "none",
    "liveSettlements": [],
@@ -6098,6 +7223,39 @@
    "openClassCandidates": 0,
    "openDockets": 4,
    "tcpaOpenDockets": 6
+  },
+  "rolling stone": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Rolling Stone Magazine lifetime subscription class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://subscribe.rollingstone.com/RS-Settlement",
+     "perClaimant": "Continued delivery of print editions of Rolling Stone Magazine and two years of free access to RollingStone.com.",
+     "classDefinition": "The Rolling Stone class action settlement benefits individuals who live in the United States and previously purchased a \u201clifetime\u201d subscription to Rolling Stone Magazine.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-07",
+      "paymentDate": null
+     },
+     "whatToProvide": "You only need to provide your name, mailing address and email address to opt in.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/rolling-stone-magazine-lifetime-subscription-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Claim deadline not published; objection deadline 2026-07-11. Lifetime-subscriber relief."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "rubin rothman": {
    "status": "joinable_litigation",
@@ -6207,6 +7365,38 @@
    "openClassCandidates": 78,
    "openDockets": 53,
    "tcpaOpenDockets": 1
+  },
+  "sanyo": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Sanyo solar panels delamination class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2029-12-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "http://www.sanyosolarclaims.com/home/440/DocumentHandler",
+     "perClaimant": "Varies",
+     "classDefinition": "The settlement benefits consumers who purchased and installed Sanyo solar panels (model series HIP-xxxBA2, BA3 and BA5) for residential use or purchased a residential property with these solar panels installed on it.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2029-12-31",
+      "optOutDeadline": "2021-05-28",
+      "objectionDeadline": null,
+      "fairnessHearing": "2021-07-08",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/sanyo-solar-panels-delamination-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Long-tail window to 2029-12-31."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "sarasota memorial": {
    "status": "claim_window",
@@ -6371,6 +7561,39 @@
    "openDockets": 5,
    "tcpaOpenDockets": 0
   },
+  "shimano defective crankset": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Shimano defective crankset class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-04",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.shimanocranksetsettlement.com/Home/SubmitClaim",
+     "perClaimant": "Reimbursement of documented repair expenses, extended warranty and enhanced inspections.",
+     "classDefinition": "Consumers who purchased, received, were given or owned certain Shimano cranksets or bicycles equipped with those cranksets before July 2019.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-04",
+      "optOutDeadline": "2025-12-29",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-02-02",
+      "paymentDate": null
+     },
+     "whatToProvide": "Claimants must provide receipts, work orders, credit card statements or other documentation of the replacement crankset and/or installation.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/shimano-defective-crankset-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "simm associates": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -6436,6 +7659,70 @@
    "openDockets": 7,
    "tcpaOpenDockets": 0
   },
+  "sony": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$7.85M Sony PlayStation Store class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-02",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://psndigitalgamessettlement.com/",
+     "fund": "$7.85M",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-02",
+      "optOutDeadline": "2026-07-02",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-10-15",
+      "paymentDate": null
+     },
+     "whatToProvide": "Consumers with deactivated PlayStation Network accounts will need to provide qualifying purchase information and a current address to receive a settlement payment.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/7-85m-sony-playstation-store-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "sony playstation": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$7.85M Sony PlayStation Store class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-02",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://psndigitalgamessettlement.com/",
+     "fund": "$7.85M",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-02",
+      "optOutDeadline": "2026-07-02",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-10-15",
+      "paymentDate": null
+     },
+     "whatToProvide": "Consumers with deactivated PlayStation Network accounts will need to provide qualifying purchase information and a current address to receive a settlement payment.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/7-85m-sony-playstation-store-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "source receivables managem": {
    "status": "none",
    "liveSettlements": [],
@@ -6472,6 +7759,38 @@
      "whatToProvide": "Nothing \u2014 automatic credit or check.",
      "documentsUrl": "https://johnsonoverdraftclassaction.com/",
      "notes": "NO CLAIM FORM \u2014 automatic. 6/17 is opt-out/objection, not a claim deadline."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "southern illinois healthcare": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Southern Illinois Healthcare tracking pixel class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-15",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://southernillinoishealthpixelsettlement.com/form/claim",
+     "perClaimant": "$17.50 cash payment",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-15",
+      "optOutDeadline": "2026-06-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-24",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/southern-illinois-healthcare-tracking-pixel-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
     }
    ],
    "monitorSettlements": [],
@@ -6569,6 +7888,73 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "splish splash waterpark hidden fees": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$1M Splish Splash waterpark hidden fees class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-10",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://splishsplashticketfeesettlement.com/Login",
+     "fund": "$1M",
+     "perClaimant": "TBD Proof of Purchase Claimants must provide their email address used to purchase tickets, the date of the ticket purchase and the order number, if known.",
+     "classDefinition": "The class action settlement benefits c onsumers who purchased electronic tickets to the Splish Splash waterpark from the defendant\u2019s website between Aug. 29, 2022, and March 5, 2024, and who were charged processing fees.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-10",
+      "optOutDeadline": "2026-05-26",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-25",
+      "paymentDate": null
+     },
+     "whatToProvide": "Claimants must provide their email address used to purchase tickets, the date of the ticket purchase and the order number, if known.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/1m-splish-splash-waterpark-hidden-fees-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "sportsmans warehouse": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Sportsman\u2019s Warehouse data privacy class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-19",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://swufasettlement.com/form/claim",
+     "perClaimant": "$107 Proof of Purchase N/A",
+     "classDefinition": "The class actions settlement benefits Pennsylvania residents who ordered and reserved a firearm online from www.sportsmans.com for purchase to be completed in-store from Jan. 1, 2020, to March 13, 2024.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-19",
+      "optOutDeadline": "2026-06-04",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-31",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/sportsmans-warehouse-data-privacy-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "spring oaks capital": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -6631,6 +8017,63 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "state farm": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$20.93M State Farm New Mexico U Coverage class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-02",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.schwartzuimclasssettlement.com/Login",
+     "fund": "$20.93M",
+     "perClaimant": "Up to 21% of premiums for minimum limits U Coverage and 13% for non-minimum limits U Coverage purchased between 2010 and 2021.",
+     "classDefinition": "The class action settlement benefits individuals who were insured under New Mexico insurance policies issued by State Farm that included U Coverage between Jan. 1, 2010, and Dec. 31, 2021.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-02",
+      "optOutDeadline": "2026-05-18",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-08",
+      "paymentDate": null
+     },
+     "whatToProvide": "State Farm policy number (if known)",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/20-93m-state-farm-new-mexico-u-coverage-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    },
+    {
+     "name": "Alabama State Farm total loss claims class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-15",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://forms.ksacms.com/efiling/fr/eform/total_loss_fees_claimform/new",
+     "perClaimant": "$20.50",
+     "classDefinition": "Alabama policyholders and insureds of an applicable State Farm entity who submitted a covered first-party private passenger auto physical damage claim between Nov. 7, 2018, and Feb. 10, 2026, that resulted in a total loss claim payment that did not include full purchasing fees.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-15",
+      "optOutDeadline": "2026-05-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-15",
+      "paymentDate": null
+     },
+     "whatToProvide": "N/A Claim Form CLICK HERE TO FILE A CLAIM \u00bb",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/alabama-state-farm-total-loss-claims-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "state farm bank": {
    "status": "none",
    "liveSettlements": [],
@@ -6648,6 +8091,39 @@
    "openClassCandidates": 0,
    "openDockets": 3,
    "tcpaOpenDockets": 2
+  },
+  "stellantis": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$3.8M FCA US unpaid overtime class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.featherstonefcasettlement.com/",
+     "fund": "$3.8M",
+     "perClaimant": "Varies",
+     "classDefinition": "The FCA class action settlement benefits current and former hourly employees who worked for FCA US in the United States between Feb. 10, 2020, and May 12, 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": "2026-06-22",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-25",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/3-8m-fca-us-unpaid-overtime-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Employee unpaid-overtime class; opt-out 2026-06-22; claim deadline not published."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "sterling infosystems": {
    "status": "joinable_litigation",
@@ -6693,6 +8169,72 @@
    "openClassCandidates": 0,
    "openDockets": 0,
    "tcpaOpenDockets": 3
+  },
+  "suntrust": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$240M SunTrust overdraft fees class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://suntrustoverdraftclassaction.com/",
+     "fund": "$240M",
+     "perClaimant": "$5 to $1,000",
+     "classDefinition": "Georgia citizens who had one or more accounts with SunTrust Bank that were not closed before June 1, 2010, and who had at least one overdraft of $500 or less resulting from an ATM or debit card transaction between July 12, 2006, and April 15, 2014, paid any of these fees as a result of the transaction and did not receive a refund of those fees.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-31",
+      "optOutDeadline": "2026-04-20",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-05-26",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/240m-suntrust-overdraft-fees-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. HIGH PRIORITY for credit.com base \u2014 SunTrust (now Truist) accountholders charged overdraft fees; $240M fund."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "suntrust bank": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$240M SunTrust overdraft fees class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://suntrustoverdraftclassaction.com/",
+     "fund": "$240M",
+     "perClaimant": "$5 to $1,000",
+     "classDefinition": "Georgia citizens who had one or more accounts with SunTrust Bank that were not closed before June 1, 2010, and who had at least one overdraft of $500 or less resulting from an ATM or debit card transaction between July 12, 2006, and April 15, 2014, paid any of these fees as a result of the transaction and did not receive a refund of those fees.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-31",
+      "optOutDeadline": "2026-04-20",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-05-26",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/240m-suntrust-overdraft-fees-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. HIGH PRIORITY for credit.com base \u2014 SunTrust (now Truist) accountholders charged overdraft fees; $240M fund."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
   },
   "suntrust overdraft": {
    "status": "monitor_only",
@@ -6834,6 +8376,39 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "teva qvar": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$35M QVAR antitrust class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://qvarantitrustsettlement.com/file-a-claim",
+     "fund": "$35M",
+     "perClaimant": "Varies",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-31",
+      "optOutDeadline": "2026-06-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-05",
+      "paymentDate": null
+     },
+     "whatToProvide": "Documentation can include receipts, invoices, pharmacy statements or records, or insurance statements with explanations of benefits.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/35m-qvar-antitrust-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. QVAR inhaler indirect-purchaser antitrust (Teva)."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "the bank of missouri": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -6914,6 +8489,40 @@
    "openDockets": 0,
    "tcpaOpenDockets": 6
   },
+  "toms of maine": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$2.9M Colgate, Tom\u2019s of Maine contamination class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-06",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.toothpastesettlement.com/",
+     "fund": "$2.9M",
+     "perClaimant": "Cash refund of up to three products",
+     "classDefinition": "The class action settlement benefits consumers who purchased one or more Tom\u2019s of Maine brand toothpaste products between Nov. 21, 2020, and March 6, 2026.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-06",
+      "optOutDeadline": "2026-07-06",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-09-10",
+      "paymentDate": null
+     },
+     "whatToProvide": "No proof of purchase is required but providing a sales receipt or other documentation will result in larger payments.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/2-9m-colgate-toms-of-maine-contamination-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "top line reporting": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -6926,6 +8535,40 @@
   "tower loan": {
    "status": "none",
    "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "toyota ic forklift emissions": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$299.5M Toyota IC forklift emissions class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-09-22",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://veritaconnect.com/forkliftsettlement",
+     "fund": "$299.5M",
+     "perClaimant": "Up to $2,500 in cash payments, a free service plan visit and a new parts warranty in the event of a recall.",
+     "classDefinition": "The class action settlement benefits those who purchased or leased certain Toyota forklifts with internal combustion engines built between 2007 and 2021, including those sold with the following engines: 2014-2021 1KD, 2014-2021 1ZS, 2013-2021 1FS and 2007-2021 4Y.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-09-22",
+      "optOutDeadline": "2026-06-01",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-09",
+      "paymentDate": null
+     },
+     "whatToProvide": "Model and serial number of the forklift, proof of ownership or lease",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/299-5m-toyota-ic-forklift-emissions-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
    "monitorSettlements": [],
    "expiredSettlements": [],
    "openClassCandidates": 0,
@@ -7039,6 +8682,72 @@
    "openDockets": 23,
    "tcpaOpenDockets": 3
   },
+  "travelers": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Travelers personal injury protection class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-16",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://njpipsettlement.com/Login",
+     "perClaimant": "Varies",
+     "classDefinition": "The class action settlement benefits individuals who were paid PIP benefits by Travelers under a New Jersey automobile insurance policy where the final payment was made between April 14, 2017, and April 1, 2023, and who were paid within $3,000 of their PIP policy limit but less than the full PIP policy limit.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-16",
+      "optOutDeadline": "2026-03-18",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-04-17",
+      "paymentDate": null
+     },
+     "whatToProvide": "Travelers policy number, if known, and the claim number associated with the Travelers claim for which they are seeking benefits",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/travelers-personal-injury-protection-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "travelers insurance": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Travelers personal injury protection class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-06-16",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://njpipsettlement.com/Login",
+     "perClaimant": "Varies",
+     "classDefinition": "The class action settlement benefits individuals who were paid PIP benefits by Travelers under a New Jersey automobile insurance policy where the final payment was made between April 14, 2017, and April 1, 2023, and who were paid within $3,000 of their PIP policy limit but less than the full PIP policy limit.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-06-16",
+      "optOutDeadline": "2026-03-18",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-04-17",
+      "paymentDate": null
+     },
+     "whatToProvide": "Travelers policy number, if known, and the claim number associated with the Travelers claim for which they are seeking benefits",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/travelers-personal-injury-protection-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "trident asset manageme": {
    "status": "none",
    "liveSettlements": [],
@@ -7055,6 +8764,50 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 2,
+   "tcpaOpenDockets": 0
+  },
+  "trinity industries": {
+   "status": "none",
+   "liveSettlements": [],
+   "monitorSettlements": [],
+   "expiredSettlements": [
+    "Trinity Industries ET-Plus guardrails $6M class action settlement"
+   ],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
+  "tristar insurance group": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$1M TRISTAR Insurance Group data breach class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-15",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://tristardatasettlement.pnclassaction.com",
+     "fund": "$1M",
+     "classDefinition": "The class action settlement benefits individuals residing in the United States whose personally identifiable information was compromised in the November 2022 TRISTAR data breach and to whom TRISTAR sent a notice of data incident on or around Feb. 1, 2024.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-15",
+      "optOutDeadline": "2026-06-15",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-06-23",
+      "paymentDate": null
+     },
+     "whatToProvide": "Receipts, work orders or credit card statements.",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/1m-tristar-insurance-group-data-breach-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "tromberg miller morris partners": {
@@ -7076,8 +8829,32 @@
    "tcpaOpenDockets": 1
   },
   "truist": {
-   "status": "none",
-   "liveSettlements": [],
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "$240M SunTrust overdraft fees class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-08-31",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://suntrustoverdraftclassaction.com/",
+     "fund": "$240M",
+     "perClaimant": "$5 to $1,000",
+     "classDefinition": "Georgia citizens who had one or more accounts with SunTrust Bank that were not closed before June 1, 2010, and who had at least one overdraft of $500 or less resulting from an ATM or debit card transaction between July 12, 2006, and April 15, 2014, paid any of these fees as a result of the transaction and did not receive a refund of those fees.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-08-31",
+      "optOutDeadline": "2026-04-20",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-05-26",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/240m-suntrust-overdraft-fees-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. HIGH PRIORITY for credit.com base \u2014 SunTrust (now Truist) accountholders charged overdraft fees; $240M fund."
+    }
+   ],
    "monitorSettlements": [],
    "expiredSettlements": [],
    "openClassCandidates": 0,
@@ -7551,6 +9328,40 @@
    "openDockets": 35,
    "tcpaOpenDockets": 4
   },
+  "whirlpool": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Whirlpool defective refrigerator class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-11-02",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.refrigeratorsettlement.com/submit-claim",
+     "perClaimant": "Cash payment between 30% and 75% of the costs they paid for repairs or replacements, or a repair for their defective refrigerator.",
+     "classDefinition": "The class action settlement covers consumers who purchased a new Whirlpool, Maytag, KitchenAid or JennAir refrigerator manufactured between 2018 and 2021.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-11-02",
+      "optOutDeadline": "2026-06-02",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-07-09",
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/whirlpool-defective-refrigerator-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [
+    "Whirlpool leaky refrigerator class action settlement"
+   ],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "whittaker ford": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -7613,6 +9424,39 @@
    "openDockets": 0,
    "tcpaOpenDockets": 0
   },
+  "wisp": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "WISP data privacy class action settlement",
+     "windowType": "open_claim_window",
+     "deadline": "2026-07-13",
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://forms.ksacms.com/efiling/fr/eform/wispclasssettlement_claimform/new",
+     "perClaimant": "$18 cash payment",
+     "classDefinition": "The class action settlement benefits c onsumers who purchased a product on hellowisp.com between Feb. 1, 2018, and Sept. 9, 2025.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": "2026-07-13",
+      "optOutDeadline": "2026-07-13",
+      "objectionDeadline": null,
+      "fairnessHearing": "2026-08-05",
+      "paymentDate": null
+     },
+     "whatToProvide": "The unique Class Member ID on the notice received by email",
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/wisp-data-privacy-class-action-settlement/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "world acceptance": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -7649,6 +9493,37 @@
    "openDockets": 4,
    "tcpaOpenDockets": 0
   },
+  "wr grace": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Zonolite vermiculite attic insulation trust",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.zonoliteatticinsulation.com/",
+     "classDefinition": "If Zonolite attic insulation was installed in a structure that you currently own or rent, or that you previously owned or rented, and you incurred expenses associated with the removal, abatement, reinsulation or containing the insulation, you are eligible to submit a claim for reimbursement. The Trust applies to both residential and commercial buildings.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": null,
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/lawsuit-news/zonolite-vermiculite-attic-insulation-trust/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Asbestos property trust \u2014 rolling claims, no deadline."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
+   "tcpaOpenDockets": 0
+  },
   "zions debt holdings": {
    "status": "joinable_litigation",
    "liveSettlements": [],
@@ -7656,6 +9531,37 @@
    "expiredSettlements": [],
    "openClassCandidates": 0,
    "openDockets": 6,
+   "tcpaOpenDockets": 0
+  },
+  "zonolite": {
+   "status": "claim_window",
+   "liveSettlements": [
+    {
+     "name": "Zonolite vermiculite attic insulation trust",
+     "windowType": "rolling",
+     "deadline": null,
+     "verified": true,
+     "source": "admin-sites",
+     "adminVerified": true,
+     "verifiedOn": "2026-06-11",
+     "claimsUrl": "https://www.zonoliteatticinsulation.com/",
+     "classDefinition": "If Zonolite attic insulation was installed in a structure that you currently own or rent, or that you previously owned or rented, and you incurred expenses associated with the removal, abatement, reinsulation or containing the insulation, you are eligible to submit a claim for reimbursement. The Trust applies to both residential and commercial buildings.",
+     "claimFormRequired": true,
+     "importantDates": {
+      "claimDeadline": null,
+      "optOutDeadline": null,
+      "objectionDeadline": null,
+      "fairnessHearing": null,
+      "paymentDate": null
+     },
+     "documentsUrl": "https://topclassactions.com/lawsuit-settlements/lawsuit-news/zonolite-vermiculite-attic-insulation-trust/",
+     "notes": "Source: topclassactions.com full-category sweep 2026-06-11. Asbestos property trust \u2014 rolling claims, no deadline."
+    }
+   ],
+   "monitorSettlements": [],
+   "expiredSettlements": [],
+   "openClassCandidates": 0,
+   "openDockets": 0,
    "tcpaOpenDockets": 0
   },
   "zwicker associates p c": {

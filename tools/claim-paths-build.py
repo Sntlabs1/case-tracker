@@ -174,12 +174,14 @@ ADMIN_FIELDS = ("settlement", "court", "claimsUrl", "administrator", "fund", "pe
                 "classDefinition", "claimFormRequired", "importantDates", "whatToProvide",
                 "documentsUrl", "notes")
 admin_hits = 0
+matched_recs = set()
 for row in settlements:
     rec = admin_record_for(row)
     if not rec:
         row.setdefault("adminVerified", False)
         continue
     admin_hits += 1
+    matched_recs.add(id(rec))
     row["adminVerified"] = bool(rec.get("adminVerified"))
     row["verifiedOn"]    = rec.get("verifiedOn")
     row["verified"]      = True
@@ -190,6 +192,26 @@ for row in settlements:
         if rec.get(k) not in (None, ""):
             row[k] = rec[k]
 print(f"admin-site overlay: {admin_hits} settlement rows matched a verified admin record")
+
+# Admin records with no catalog row (e.g. the topclassactions full-category
+# sweep) are first-class settlements in their own right — synthesize rows so
+# they enter the registry instead of silently dropping.
+synth = 0
+for rec in ADMIN:
+    if id(rec) in matched_recs:
+        continue
+    for tok in rec["tokens"]:
+        row = dict(token=tok, defendant=rec["tokens"][0], name=rec["settlement"][:120],
+                   windowType=rec["windowType"],
+                   deadline=(rec.get("importantDates") or {}).get("claimDeadline"),
+                   verified=True, source="admin-sites",
+                   adminVerified=bool(rec.get("adminVerified")), verifiedOn=rec.get("verifiedOn"))
+        for k in ADMIN_FIELDS:
+            if rec.get(k) not in (None, ""):
+                row[k] = rec[k]
+        settlements.append(row)
+        synth += 1
+print(f"admin-site synthesis: {synth} rows added from records with no catalog match")
 
 # ── 1c. Date-aware expiry + per-token dedupe ─────────────────────────────────
 # An open claim window whose deadline has passed is EXPIRED no matter what any
