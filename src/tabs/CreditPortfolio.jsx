@@ -643,6 +643,11 @@ function caseLifecycle(c) {
   if (c.classSettlement)
     return { stage: 2, label: "Class-settlement activity on the docket", color: "#f59e0b",
              note: "At least one docket against this defendant shows class-settlement filings — a claims window may follow; track it." };
+  if ((cp.activeMdls || []).length) {
+    const m = cp.activeMdls[0];
+    return { stage: 1, label: `Active MDL — ${m.status || "open"}`, color: "#2D7D95",
+             note: `${m.mdl} is consolidated federal litigation with ${m.pendingActions != null ? m.pendingActions.toLocaleString() : "many"} pending actions. The recovery period is open — new claimants join via direct filing or plaintiffs' counsel. No settlement fund exists yet.` };
+  }
   if ((c.openCases || 0) > 0)
     return { stage: 1, label: "Active litigation", color: "#2D7D95",
              note: "Open federal dockets are live now — joinable or usable as the vehicle for your claimants." };
@@ -670,6 +675,16 @@ function filingTrend(c) {
 // invented facts. Who the defendant is, the litigation picture, the live
 // recovery route, and what the credit file holds against them.
 function caseSummaryText(c, n, exposure, trend) {
+  const mdl0 = (c.claimPath?.activeMdls || [])[0];
+  if (c.caseType === "ActiveMDL" && mdl0) {
+    const bits = [];
+    if (mdl0.description) bits.push(mdl0.description);
+    bits.push(`${mdl0.mdl} has ${mdl0.pendingActions != null ? mdl0.pendingActions.toLocaleString() : "an unknown number of"} pending actions${mdl0.court ? ` in the ${mdl0.court} district` : ""}${mdl0.judge ? ` before Judge ${mdl0.judge}` : ""}.`);
+    if (mdl0.stats?.totalSettlements) bits.push(`Settlements to date across the litigation: ${mdl0.stats.totalSettlements}.`);
+    bits.push("This is consolidated federal LITIGATION — claimants join through direct filing or plaintiffs' counsel; recovery comes from future verdicts or settlement, not an existing fund.");
+    if (n) bits.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a signal naming this defendant.`);
+    return bits.join(" ");
+  }
   const kind = c.bureau ? "one of the big-3 national credit bureaus"
     : CATEGORY_LABELS[c.category] || (c.entityType ? `${c.entityType} entity` : "consumer-finance company");
   const parts = [];
@@ -1012,17 +1027,50 @@ function CaseDetailBrief({ c, claimants }) {
               <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 5, lineHeight: 1.5 }}>
                 {m.pendingActions != null ? `${m.pendingActions.toLocaleString()} pending actions` : ""}{m.court ? ` · ${m.court} district` : ""} — recovery period open: new claimants can file directly into the MDL or sign with plaintiffs' counsel. This is litigation, not a settlement — no fixed payout exists yet.
               </div>
+              {m.description && (
+                <div style={{ fontSize: 10.5, color: "var(--text-3)", marginTop: 6, lineHeight: 1.55 }}>{m.description}</div>
+              )}
+              {(m.qualifying || []).length > 0 && (
+                <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 6, lineHeight: 1.5 }}>
+                  <span style={{ color: "var(--text-5)", fontWeight: 700 }}>WHO QUALIFIES: </span>{m.qualifying.join(" · ")}
+                </div>
+              )}
+              {(m.evidence || []).length > 0 && (
+                <div style={{ fontSize: 10, color: "var(--text-4)", marginTop: 4, lineHeight: 1.5 }}>
+                  <span style={{ color: "var(--text-5)", fontWeight: 700 }}>EVIDENCE NEEDED: </span>{m.evidence.join(" · ")}
+                </div>
+              )}
+              {m.stats && (
+                <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 6 }}>
+                  {[["Pending", m.stats.pending], ["Total filed", m.stats.totalFiled], ["Resolved", m.stats.resolutionRate], ["Settlements to date", m.stats.totalSettlements]]
+                    .filter(([, v]) => v)
+                    .map(([label, v]) => (
+                      <span key={label} style={{ fontSize: 10, color: "var(--text-2)" }}>
+                        <span style={{ color: "var(--text-5)" }}>{label}: </span>
+                        <span style={{ fontWeight: 700, color: label === "Settlements to date" ? "#22c55e" : "var(--text-2)" }}>{v}</span>
+                      </span>
+                    ))}
+                </div>
+              )}
               {m.intakeNote && (
-                <div style={{ fontSize: 10, color: m.intakeVerified === "verified-open" ? "#22c55e" : "#f59e0b", marginTop: 4, lineHeight: 1.5 }}>
+                <div style={{ fontSize: 10, color: m.intakeVerified === "verified-open" ? "#22c55e" : "#f59e0b", marginTop: 6, lineHeight: 1.5 }}>
                   <span style={{ fontWeight: 800 }}>{m.intakeVerified === "verified-open" ? "INTAKE VERIFIED 2026-06-11: " : "INTAKE (reported): "}</span>{m.intakeNote}
                 </div>
               )}
-              {m.url && (
-                <a href={m.url} target="_blank" rel="noopener noreferrer"
-                   style={{ display: "inline-block", marginTop: 6, fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 700, textDecoration: "none" }}>
-                  MDL tracker ↗
-                </a>
-              )}
+              <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+                {m.officialUrl && (
+                  <a href={m.officialUrl} target="_blank" rel="noopener noreferrer"
+                     style={{ fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D95", color: "#fff", border: "1px solid #2D7D95", fontWeight: 800, textDecoration: "none" }}>
+                    Official court site ↗
+                  </a>
+                )}
+                {m.url && (
+                  <a href={m.url} target="_blank" rel="noopener noreferrer"
+                     style={{ fontSize: 10, padding: "3px 10px", borderRadius: 4, background: "#2D7D9518", color: "#2D7D95", border: "1px solid #2D7D9540", fontWeight: 700, textDecoration: "none" }}>
+                    MDL tracker ↗
+                  </a>
+                )}
+              </div>
             </div>
           ))}
           {cp.openLitigation > 0 && (
@@ -1050,7 +1098,9 @@ function CaseDetailBrief({ c, claimants }) {
         </Card>
       </div>
 
-      {/* Legal basis + evidence */}
+      {/* Legal basis + evidence — statutory framing doesn't apply to MDL rows;
+          their qualifying/evidence lists render in the Recovery Route card. */}
+      {c.caseType !== "ActiveMDL" && (
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 14 }}>
         <Card style={{ padding: 18 }}>
           <SectionTitle>Legal Basis — {info.statute || CASE_LABELS[c.caseType] || c.caseType}</SectionTitle>
@@ -1090,6 +1140,7 @@ function CaseDetailBrief({ c, claimants }) {
           )}
         </Card>
       </div>
+      )}
     </div>
   );
 }

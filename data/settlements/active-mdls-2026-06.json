@@ -22,7 +22,27 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "J&J talcum powder MDL with 68,029+ pending cases and $7B+ in verdicts. Learn about ovarian cancer and mesothelioma claims, settlement amounts, eligibility, and 2026 updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-2738"
+    ],
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Michael Shipp",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2846",
@@ -35,7 +55,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track hernia mesh litigation with 23,695+ cases against Davol and C.R. Bard. Learn about mesh complications, infections, revision surgeries, settlement updates, and eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2846"
+    ],
+    "stats": {
+     "pending": "23,573+",
+     "totalFiled": "25,171"
+    },
+    "judge": "Hon. Edmund A. Sargus Jr.",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2873",
@@ -48,7 +91,37 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "AFFF firefighting foam contamination lawsuit: 15,220+ cases involving PFAS forever chemicals in drinking water. Learn health effects, settlements, and if you qualify.",
+    "qualifying": [
+     "Kidney cancer",
+     "Testicular cancer",
+     "Thyroid disease",
+     "Ulcerative colitis",
+     "High cholesterol",
+     "Liver damage",
+     "Pregnancy complications",
+     "Immune system disorders"
+    ],
+    "evidence": [
+     "Used AFFF as a firefighter or military personnel",
+     "Lived or worked near a military base, airport, or industrial facility using AFFF",
+     "Drank water from a contaminated municipal supply or private well",
+     "Blood tests showing elevated PFAS levels"
+    ],
+    "stats": {
+     "pending": "15,240+",
+     "totalFiled": "19,815",
+     "resolutionRate": "23%",
+     "totalSettlements": "$11.5"
+    },
+    "officialUrl": "https://www.scd.uscourts.gov/mdl-2873/index.asp",
+    "judge": "Richard Gergel keeps the existing structu",
+    "faqs": [
+     "Were You Exposed to PFAS?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3060",
@@ -61,7 +134,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Hair relaxer cancer lawsuit: 11,400+ cases showing 2.5x higher uterine cancer risk. NIH study evidence, settlement updates, medical criteria, and how to check eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3060"
+    ],
+    "stats": {
+     "pending": "11,723+",
+     "totalFiled": "15,898"
+    },
+    "judge": "Mary Rowland has",
+    "faqs": [
+     "Used Hair Relaxers?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2789",
@@ -74,7 +170,27 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "PPI: $590M paid across makers; 11,322 still in negotiation; new claims still being filed."
+   "intakeNote": "PPI: $590M paid across makers; 11,322 still in negotiation; new claims still being filed.",
+   "detail": {
+    "description": "PPI lawsuit: 11,300+ federal cases alleging Prilosec, Nexium, Prevacid caused chronic kidney disease and kidney failure. JAMA studies, FDA warnings, and eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-2789"
+    ],
+    "stats": {
+     "pending": "11,321",
+     "totalFiled": "18,706"
+    },
+    "judge": "Hon. Claire C. Cecchi"
+   }
   },
   {
    "mdl": "MDL-2666",
@@ -87,7 +203,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Bair Hugger warming device lawsuit: 8,535+ pending surgical infection cases. Hip/knee surgery claims, 3M litigation, settlement eligibility available.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2666"
+    ],
+    "stats": {
+     "pending": "8,422",
+     "totalFiled": "10,711"
+    },
+    "judge": "Joan N. Ericksen this quarter.",
+    "faqs": [
+     "Had Joint Surgery?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3004",
@@ -100,7 +239,31 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Paraquat Parkinson's disease MDL with 6,651 pending cases. Learn about the herbicide-Parkinson's link, eligibility criteria, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Environmental",
+     "MDL-3004"
+    ],
+    "stats": {
+     "totalFiled": "8,443"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Chief Judge Nancy J. Rosenstengel",
+    "faqs": [
+     "Who Uses Paraquat?",
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2570",
@@ -113,7 +276,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Cook IVC: open to new claims; 6,562 pending; partial settlement terms agreed 10/2025, no global deal."
+   "intakeNote": "Cook IVC: open to new claims; 6,562 pending; partial settlement terms agreed 10/2025, no global deal.",
+   "detail": {
+    "description": "Cook IVC filter lawsuit: 6,750+ cases for fracture, migration, perforation. October 2025 settlement terms, $1.2M+ verdicts. Check eligibility today.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2570"
+    ],
+    "stats": {
+     "pending": "6,537",
+     "totalFiled": "11,473"
+    },
+    "judge": "Hon. Richard L. Young",
+    "faqs": [
+     "Have an IVC Filter?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3140",
@@ -126,7 +312,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Depo-Provera meningioma lawsuit: 5,508+ cases (3,790+ plaintiffs) for brain tumors from contraceptive injection. Pfizer litigation. 2025 FDA warning, Daubert hearing June 2026, first trial December 2026.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3140"
+    ],
+    "stats": {
+     "pending": "5,508+",
+     "totalFiled": "5,590"
+    },
+    "judge": "Rodgers",
+    "faqs": [
+     "Used Depo-Provera?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2974",
@@ -139,7 +348,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Paragard IUD lawsuit: 3,926+ cases alleging device breakage during removal. Retained fragments, surgeries, infertility claims. Check eligibility now.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2974"
+    ],
+    "stats": {
+     "pending": "4,071",
+     "totalFiled": "4,366"
+    },
+    "judge": "Hon. Leigh Martin May",
+    "faqs": [
+     "Paragard Broke During Removal?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2741",
@@ -152,7 +384,32 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "$7.25B settlement prelim-approved 3/2026 (final hearing 7/9); MDL still accepting new claims; future diagnoses claimable within 6 yrs."
+   "intakeNote": "$7.25B settlement prelim-approved 3/2026 (final hearing 7/9); MDL still accepting new claims; future diagnoses claimable within 6 yrs.",
+   "detail": {
+    "description": "Roundup weed killer lawsuit: 3,909+ pending cases alleging glyphosate causes non-Hodgkin lymphoma. Bayer has paid $10B+ in settlements. Check eligibility and 2026 updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Environmental",
+     "MDL-2741"
+    ],
+    "stats": {
+     "totalFiled": "5,247"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Hon. Vince Chhabria",
+    "faqs": [
+     "What is Glyphosate?",
+     "What is Roundup?",
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3094",
@@ -165,7 +422,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Ozempic and GLP-1 weight loss drug lawsuit: 3,300+ cases for gastroparesis and intestinal blockages. Novo Nordisk and Eli Lilly claims, settlements, and eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3094"
+    ],
+    "stats": {
+     "pending": "3,763+",
+     "totalFiled": "3,797"
+    },
+    "judge": "Karen S. Marston continues to require",
+    "faqs": [
+     "Took Ozempic or Similar?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3084",
@@ -178,7 +458,37 @@
    "joinable": true,
    "creditRelevant": true,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Uber Passenger Sexual Assault MDL with 3,300+ pending cases. Learn about allegations, Uber's safety record, eligibility, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3084"
+    ],
+    "evidence": [
+     "Helpful",
+     "Police reports, medical records, or other documentation support claims (but may not be required)",
+     "Statute of Limitations",
+     "Claim filed within applicable time limits (varies by state; many states have extended limits for sexual assault claims)",
+     "Arbitration Note:",
+     "Regulatory Environment",
+     "There is",
+     "no comprehensive federal regulatory framework"
+    ],
+    "stats": {
+     "totalFiled": "3,859"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Breyer in the Northern District of Califo"
+   }
   },
   {
    "mdl": "MDL-3081",
@@ -191,7 +501,29 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Bard PowerPort catheter lawsuit: 3,376+ pending cases for fractures, migrations, and infections. Becton Dickinson litigation. Settlement updates and claim eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-3081"
+    ],
+    "stats": {
+     "pending": "3,376"
+    },
+    "judge": "Campbell in the District of Arizona",
+    "faqs": [
+     "Had a PowerPort?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2804",
@@ -217,7 +549,31 @@
    "joinable": true,
    "creditRelevant": true,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "TikTok and Snap settled before the KGM bellwether trial; jury hit Meta and Google with a $6M verdict in March 2026. 2,664 federal cases pending. First school district bellwether trial set for June 15, 2026.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Products",
+     "MDL-3047"
+    ],
+    "stats": {
+     "totalFiled": "2,634"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Yvonne Gonzalez Rogers. Five additional s",
+    "faqs": [
+     "What is Section 230?",
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3029",
@@ -230,7 +586,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Covidien Parietex mesh lawsuit: 2,348+ pending cases alleging mesh failure and infections. Medtronic litigation. FDA recalls, settlement updates, and claim eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-3029"
+    ],
+    "stats": {
+     "pending": "2,408+",
+     "totalFiled": "2,414"
+    },
+    "judge": "Hon. Patti B. Saris",
+    "faqs": [
+     "Had Covidien Mesh Surgery?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3044",
@@ -243,7 +622,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Exactech hip, knee, and ankle implant lawsuit: 1,800+ cases alleging defective packaging caused premature implant failure. Recalled products date back to 2004. Check eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Defective Medical Devices",
+     "MDL-3044"
+    ],
+    "stats": {
+     "totalFiled": "1,847"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Hon. Nicholas G. Garaufis",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3092",
@@ -256,7 +658,29 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Suboxone dental lawsuit: 1,833 pending cases alleging tooth decay, cavities, and tooth loss from sublingual film. FDA warning, settlement updates, and claim eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3092"
+    ],
+    "stats": {
+     "pending": "1,833"
+    },
+    "judge": "Hon. J. Philip Calabrese",
+    "faqs": [
+     "Used Suboxone Film?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2921",
@@ -269,7 +693,34 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Allergan Biocell: accepting; bellwether 10/19/2026; QSF established 12/2025 \u2014 settlement forming."
+   "intakeNote": "Allergan Biocell: accepting; bellwether 10/19/2026; QSF established 12/2025 \u2014 settlement forming.",
+   "detail": {
+    "description": "Track the Allergan Biocell textured breast implant MDL with 1,488+ pending cases. Learn about BIA-ALCL cancer risks, FDA recall, eligibility criteria, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2921"
+    ],
+    "evidence": [
+     "Can obtain surgical records or other documentation identifying your implant type and any complications",
+     "Don't Know Your Implant Type?"
+    ],
+    "stats": {
+     "totalFiled": "1,559"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Hon. Brian R. Martinotti",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2875",
@@ -282,7 +733,31 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Valsartan: still joinable; 1,400+ pending; bellwethers underway; no global settlement yet."
+   "intakeNote": "Valsartan: still joinable; 1,400+ pending; bellwethers underway; no global settlement yet.",
+   "detail": {
+    "description": "Valsartan MDL-2875: Blood pressure medication NDMA/NDEA contamination. 1,418 pending cases in generic ARB litigation. Bellwether trials and FDA recalls.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-2875"
+    ],
+    "stats": {
+     "pending": "1,413+",
+     "totalFiled": "1,622"
+    },
+    "judge": "Kugler in Courtroom",
+    "faqs": [
+     "How Did the Contamination Happen?",
+     "Took Recalled Blood Pressure Medication?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2848",
@@ -308,7 +783,35 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Abbott/Mead Johnson NEC baby formula MDL with 798+ pending cases. Learn about necrotizing enterocolitis in preterm infants, eligibility, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3026"
+    ],
+    "evidence": [
+     "Medical records document the formula feeding and NEC diagnosis",
+     "Wrongful Death Cases:",
+     "Families who lost an infant to NEC complications may also have grounds to file a wrongful death claim."
+    ],
+    "stats": {
+     "totalFiled": "1,002"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov",
+    "judge": "Hon. Rebecca R. Pallmeyer",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3014",
@@ -334,7 +837,26 @@
    "joinable": true,
    "creditRelevant": true,
    "intakeVerified": "verified-open",
-   "intakeNote": "NCAA concussion: 50-year medical monitoring program live (collegeathleteconcussionsettlement.com, updated 4/2026); screening claims ongoing."
+   "intakeNote": "NCAA concussion: 50-year medical monitoring program live (collegeathleteconcussionsettlement.com, updated 4/2026); screening claims ongoing.",
+   "detail": {
+    "description": "Track the National Collegiate Athletic Association Student-Athlete Concussion Injury Litig (MDL-2492). 558 pending actions in Northern District of Illinois.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-2492"
+    ],
+    "judge": "Manish S. Shah",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3101",
@@ -347,7 +869,41 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Baby Food Products MDL with 450 pending cases. Learn about heavy metal contamination allegations, Congressional findings, FDA action, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3101"
+    ],
+    "evidence": [
+     "Medical records documenting diagnosis and treatment",
+     "Causation Burden:",
+     "What Parents Should Know (AAP Guidance)",
+     "Do NOT Stop Feeding Commercial Baby Food",
+     "The FDA and AAP do NOT recommend avoiding commercial baby food. The AAP notes:",
+     "Nutritional benefits remain important.",
+     "AAP Tips for Reducing Exposure",
+     "Variety:"
+    ],
+    "stats": {
+     "totalFiled": "463"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov/sites/jpml/files/Pending_MDL_Dockets_By_Actions_Pending-December-2-2025.pdf",
+    "judge": "Hon. Jacqueline Scott Corley",
+    "faqs": [
+     "Why Heavy Metals in Food?",
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3125",
@@ -360,7 +916,29 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "AngioDynamics SmartPort & Navilyst NMI Port catheter lawsuit: 391+ pending cases for fractures, migrations, and infections. Settlement updates and claim eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-3125"
+    ],
+    "stats": {
+     "pending": "391"
+    },
+    "judge": "Hon. Jinsook Ohta",
+    "faqs": [
+     "Had a SmartPort or NMI Port?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2973",
@@ -373,7 +951,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Elmiron: winding down via confidential settlements; SOME firms still accepting \u2014 firm-dependent."
+   "intakeNote": "Elmiron: winding down via confidential settlements; SOME firms still accepting \u2014 firm-dependent.",
+   "detail": {
+    "description": "Elmiron MDL-2973: Pentosan polysulfate sodium lawsuits for pigmentary maculopathy and vision loss. 293 pending cases. Settlement updates and eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-2973"
+    ],
+    "stats": {
+     "pending": "293+",
+     "totalFiled": "1,988"
+    },
+    "judge": "Martinotti",
+    "faqs": [
+     "Took Elmiron & Experiencing Vision Problems?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3079",
@@ -386,7 +987,27 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Tepezza hearing loss lawsuit: 278+ cases alleging permanent hearing damage from thyroid eye disease drug. Amgen/Horizon litigation. July 2023 FDA warning, scientific evidence, eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3079"
+    ],
+    "stats": {
+     "pending": "278",
+     "totalFiled": "287"
+    },
+    "judge": "Hon. Thomas M. Durkin"
+   }
   },
   {
    "mdl": "MDL-2996",
@@ -412,7 +1033,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Roblox child safety litigation: 132+ cases alleging platform failed to protect children from sexual exploitation. Multiple state AG lawsuits. January 2026 MDL, Section 230 issues.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-3166"
+    ],
+    "stats": {
+     "pending": "162",
+     "totalFiled": "167"
+    },
+    "judge": "Hon. Richard Seeborg",
+    "faqs": [
+     "Was Your Child Harmed?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3087",
@@ -451,7 +1095,30 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Gardasil: open to new filings (129 active) BUT preemption rulings + 4th Cir. dismissals make new claims weak \u2014 screen hard."
+   "intakeNote": "Gardasil: open to new filings (129 active) BUT preemption rulings + 4th Cir. dismissals make new claims weak \u2014 screen hard.",
+   "detail": {
+    "description": "Gardasil HPV vaccine lawsuit MDL-3036: 129 pending cases for POTS and autoimmune claims. Scientific consensus supports safety. Merck litigation updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3036"
+    ],
+    "stats": {
+     "pending": "129",
+     "totalFiled": "258"
+    },
+    "judge": "Bell in the Western District of North Car",
+    "faqs": [
+     "Gardasil Injury Claim?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3163",
@@ -464,7 +1131,29 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Ozempic NAION vision loss lawsuit: New MDL-3163 for sudden blindness from GLP-1 drugs. Harvard study shows 4-7x higher risk. EMA confirmed link. Check eligibility.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3163"
+    ],
+    "stats": {
+     "pending": "110"
+    },
+    "judge": "Karen S. Marston",
+    "faqs": [
+     "Sudden Vision Loss After Ozempic?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3052",
@@ -490,7 +1179,26 @@
    "joinable": true,
    "creditRelevant": true,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Trans Union Data Security Breach Litigation (MDL-3170). 63 pending actions in Northern District of Illinois.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Data Breach",
+     "MDL-3170"
+    ],
+    "judge": "Robert W. Gettleman",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3171",
@@ -503,7 +1211,27 @@
    "joinable": true,
    "creditRelevant": true,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Lyft Passenger Sexual Assault MDL-3171 with 54 pending cases. Learn about allegations, the Ending Forced Arbitration Act, eligibility, and 2026 lawsuit updates.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-3171"
+    ],
+    "stats": {
+     "totalFiled": "58"
+    },
+    "officialUrl": "https://www.jpml.uscourts.gov/sites/jpml/files/Pending_MDL_Dockets_By_Actions_Pending-March-2-2026.pdf",
+    "judge": "Lin has directed the parties to prepare a"
+   }
   },
   {
    "mdl": "MDL-3006",
@@ -516,7 +1244,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Tasigna Litigation (MDL-3006). 36 pending actions in FLM.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3006"
+    ],
+    "judge": "Roy B. Dalton",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2938",
@@ -542,7 +1289,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "ZF-TRW: open \u2014 Toyota/Mitsubishi settlements final, Hyundai-Kia approved 4/2025; claims window runs >= 18mo past final approval (no earlier than 2026-12-16). Pairs with our verified ACU settlement records."
+   "intakeNote": "ZF-TRW: open \u2014 Toyota/Mitsubishi settlements final, Hyundai-Kia approved 4/2025; claims window runs >= 18mo past final approval (no earlier than 2026-12-16). Pairs with our verified ACU settlement records.",
+   "detail": {
+    "description": "Track the ZF-TRW Airbag Control Units Litigation (MDL-2905). 27 pending actions in CAC.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-2905"
+    ],
+    "judge": "John A. Kronstadt",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3051",
@@ -555,7 +1321,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the ARC Airbag Inflators Litigation (MDL-3051). 24 pending actions in GAN.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-3051"
+    ],
+    "judge": "Eleanor L. Ross",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3178",
@@ -568,7 +1353,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the ByHeart Infant Formula Litigation (MDL-3178). 20 pending actions in NYS.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3178"
+    ],
+    "judge": "Arun Subramanian",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3175",
@@ -581,7 +1385,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Shell Eggs Antitrust Litigation (MDL-3175). 19 pending actions in WIW.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Antitrust",
+     "MDL-3175"
+    ],
+    "judge": "James D. Peterson",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3172",
@@ -594,7 +1417,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Cartiva Synthetic Cartilage Implant Litigation (MDL-3172). 18 pending actions in ARE.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Medical Device",
+     "MDL-3172"
+    ],
+    "judge": "Kristine G. Baker",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3050",
@@ -607,7 +1449,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Chantix (nitrosamine): active docket; intake terms unverified \u2014 confirm with counsel."
+   "intakeNote": "Chantix (nitrosamine): active docket; intake terms unverified \u2014 confirm with counsel.",
+   "detail": {
+    "description": "Track the Chantix Litigation (MDL-3050). 17 pending actions in NYS.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Pharmaceutical",
+     "MDL-3050"
+    ],
+    "judge": "Katherine Polk Failla",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3037",
@@ -620,7 +1481,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Recalled Abbott Infant Formula Litigation (MDL-3037). 14 pending actions in Northern District of Illinois.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Consumer Product",
+     "MDL-3037"
+    ],
+    "judge": "Matthew F. Kennelly",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2841",
@@ -633,7 +1513,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "MONAT: active; mediation underway; settlement anticipated 2026."
+   "intakeNote": "MONAT: active; mediation underway; settlement anticipated 2026.",
+   "detail": {
+    "description": "Track the MONAT Hair Care Products Litigation (MDL-2841). 13 pending actions in FLS.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-2841"
+    ],
+    "judge": "Darrin P. Gayles",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3040",
@@ -646,7 +1545,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "verified-open",
-   "intakeNote": "Pacifica fire: litigation ongoing (2017-18 models); 2026 recall repair is free via dealers; no claims program \u2014 counsel intake only."
+   "intakeNote": "Pacifica fire: litigation ongoing (2017-18 models); 2026 recall repair is free via dealers; no claims program \u2014 counsel intake only.",
+   "detail": {
+    "description": "Track the Chrysler Pacifica Fire Recall Litigation (MDL-3040). 11 pending actions in MIE.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-3040"
+    ],
+    "judge": "David M. Lawson",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3078",
@@ -659,7 +1577,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Generac Solar Power Systems Litigation (MDL-3078). 8 pending actions in WIE.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-3078"
+    ],
+    "judge": "Lynn S. Adelman",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-3174",
@@ -672,7 +1609,26 @@
    "joinable": true,
    "creditRelevant": false,
    "intakeVerified": "reported-open",
-   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel."
+   "intakeNote": "Flagship mass-tort intake confirmed open by current (2026) reporting; no court claim deadline \u2014 each claimant's SOL controls. Join via plaintiffs' counsel.",
+   "detail": {
+    "description": "Track the Muan Airport Air Crash Litigation (MDL-3174). 7 pending actions in WAW.",
+    "qualifying": [
+     "Free Check",
+     "All MDLs",
+     "Categories",
+     "Learn",
+     "News",
+     "Check Eligibility",
+     "Home",
+     "All MDLs",
+     "Other",
+     "MDL-3174"
+    ],
+    "judge": "James L. Robart",
+    "faqs": [
+     "Think You Qualify?"
+    ]
+   }
   },
   {
    "mdl": "MDL-2924",
