@@ -2190,6 +2190,34 @@ export default function CreditPortfolio() {
     }));
   const nationalMeta = pacer?.nationalEntityMeta || null;
 
+  // FULL open-settlement catalog from the claim-paths registry — every
+  // defendant with a live claim window, including ones with no PACER docket
+  // history (Krispy Kreme, Avis, SunTrust...). Tokens already shown in the
+  // docket-derived tables are skipped so each defendant appears once.
+  const docketTokens = new Set([
+    ...pacerCases.map(c => c.defendantQ),
+    ...tcpaMarketerCases.map(c => c.defendantQ),
+    ...nationalEntityCases.map(c => c.defendantQ),
+  ]);
+  const openSettlementCases = (pacer?.openSettlements || [])
+    .filter(d => !docketTokens.has(d.defendantQ))
+    .map(d => ({
+      id:              `stl-${d.defendantQ.replace(/\s+/g, "-")}`,
+      caseType:        "OpenSettlement",
+      name:            (d.claimPath?.liveSettlements?.[0]?.name || d.defendant).slice(0, 80),
+      defendant:       d.defendant,
+      defendantQ:      d.defendantQ,
+      caseCount:       d.caseCount,
+      openCases:       d.openCases,
+      consumers:       d.consumers || null,
+      claimPath:       d.claimPath || null,
+      examples:        [],
+      matchByDefendantOnly: true,
+      status:          "Open settlement window — file on the administrator site",
+      admin:           d.claimPath?.liveSettlements?.[0]?.administrator || "Settlement administrator",
+      info:            CASE_TYPE_INFO.OpenSettlement,
+    }));
+
   const pacerCaseTypes = [...new Set(pacerCases.map(c => c.caseType))]
     .sort((a, b) => pacerCases.filter(c => c.caseType === b).length - pacerCases.filter(c => c.caseType === a).length);
   if (tcpaMarketerCases.length && !pacerCaseTypes.includes("TCPA")) pacerCaseTypes.push("TCPA");
@@ -2211,8 +2239,10 @@ export default function CreditPortfolio() {
   const visibleTcpaMarketerCases = maybeSortByDeadline(tcpaMarketerCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
   const showTcpaMarketers = visibleTcpaMarketerCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "TCPA");
   const showNationalEntities = visibleNationalCases.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "FCRA");
-  // Route counts across all three catalogs (a defendant can appear in one only).
-  const allCaseRows = [...pacerCases, ...nationalEntityCases, ...tcpaMarketerCases];
+  const visibleOpenSettlements = maybeSortByDeadline(openSettlementCases.filter(c => caseMatchesQ(c) && routeMatches(c)));
+  const showOpenSettlements = visibleOpenSettlements.length > 0 && (caseTypeFilter === "all" || caseTypeFilter === "OpenSettlement");
+  // Route counts across all catalogs (a defendant can appear in one only).
+  const allCaseRows = [...pacerCases, ...nationalEntityCases, ...tcpaMarketerCases, ...openSettlementCases];
   const claimableCount = allCaseRows.filter(c => filableSettlements(c.claimPath).length > 0).length;
   const automaticCount = allCaseRows.filter(c => settlementsOfType(c.claimPath, "automatic_payment").length > 0).length;
   const rollingCount   = allCaseRows.filter(c => settlementsOfType(c.claimPath, "rolling").length > 0).length;
@@ -2334,14 +2364,34 @@ export default function CreditPortfolio() {
             </div>
           )}
 
-          {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !pacerLoading && (
+          {cq && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !pacerLoading && (
             <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
               No defendants match "{caseQ.trim()}".
             </div>
           )}
-          {!cq && routeFilter !== "all" && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !pacerLoading && (
+          {!cq && routeFilter !== "all" && visiblePacerCases.length === 0 && !showNationalEntities && !showTcpaMarketers && !showOpenSettlements && !pacerLoading && (
             <div style={{ padding: 20, color: "var(--text-5)", fontSize: 13 }}>
               No defendants with {routeFilter === "claimable" ? "an open claim window" : routeFilter === "automatic" ? "an automatic-payment settlement" : "a rolling mass-arb sign-up"} under the current case-type filter.
+            </div>
+          )}
+
+          {/* Full open-settlement catalog — settled cases claimable TODAY,
+              independent of PACER docket history. Leads the view because it
+              is the credit.com pitch list. */}
+          {showOpenSettlements && (
+            <div style={{ marginBottom: 36 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 4 }}>
+                Open Settlements — Full Catalog ({fmtN(visibleOpenSettlements.length)})
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-5)", marginBottom: 18, lineHeight: 1.6, maxWidth: 820 }}>
+                Every verified settlement with a live claim window or automatic payout, sourced from administrator sites and the full topclassactions.com sweep — including defendants with no docket history in our PACER index. Each row links straight to the administrator's claim form.
+              </div>
+              <CaseTable
+                rows={visibleOpenSettlements}
+                countLabel="Open dockets"
+                countSub="vs this defendant"
+                onOpen={openCase}
+              />
             </div>
           )}
 

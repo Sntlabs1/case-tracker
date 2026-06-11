@@ -23,7 +23,7 @@ const N_SHARDS = 16;
 // Eligible-people count per defendant (sum of its casepeople shards), cached
 // in KV — the catalog is ~340 tokens x 16 shards, too many zcards per request.
 // Powers the per-case total-claim estimate column in the Cases table.
-const CASE_TOTALS_KEY   = "portfolio:case_totals";
+const CASE_TOTALS_KEY   = "portfolio:case_totals:v2"; // v2: includes open-settlement catalog tokens
 const CASE_TOTALS_TTL_S = 6 * 60 * 60;
 
 async function casepeopleTotal(token) {
@@ -168,6 +168,24 @@ export default async function handler(req, res) {
         }))
       : [];
 
+    // FULL open-settlement catalog: every registry token with a live claim
+    // window, regardless of whether the defendant appears in any PACER docket
+    // catalog. Without this, settled-but-never-litigated-here defendants
+    // (Krispy Kreme, Avis, SunTrust, ...) are invisible in the Cases view —
+    // exactly the cases credit.com customers can claim TODAY.
+    const titleize = t => t.replace(/\b[a-z]/g, ch => ch.toUpperCase());
+    const openSettlements = Object.entries(pathReg)
+      .filter(([, r]) => r.status === "claim_window" && (r.liveSettlements || []).length)
+      .map(([token, r]) => ({
+        defendant:   titleize(token),
+        defendantQ:  token,
+        caseType:    "OpenSettlement",
+        caseCount:   (r.openDockets || 0),
+        openCases:   (r.openDockets || 0),
+        claimPath:   claimPathOf(token),
+        examples:    [],
+      }));
+
     // Eligible-people count per defendant for the total-claim estimate column.
     // National entities are included (post catalog expansion the casepeople
     // index covers them); bureau entries are skipped — they apply to the whole
@@ -175,11 +193,13 @@ export default async function handler(req, res) {
     const tokenSet = new Set(
       [...defendants.map(d => d.defendantQ),
        ...tcpaMarketers.map(m => m.defendantQ),
+       ...openSettlements.map(s => s.defendantQ),
        ...nationalEntities.filter(d => !d.bureau).map(d => d.defendantQ)].filter(Boolean)
     );
     const totalsByToken = await caseTotals([...tokenSet]);
     for (const d of defendants)    d.consumers = totalsByToken[d.defendantQ] || 0;
     for (const m of tcpaMarketers) m.consumers = totalsByToken[m.defendantQ] || 0;
+    for (const s of openSettlements) s.consumers = totalsByToken[s.defendantQ] || 0;
     for (const n of nationalEntities) {
       if (!n.bureau) n.consumers = totalsByToken[n.defendantQ] || 0;
     }
@@ -194,6 +214,7 @@ export default async function handler(req, res) {
       tcpaMarketerMeta: tcpa
         ? { sourceTotal: tcpa.sourceTotal, defendantCount: tcpa.defendantCount, totals: tcpa.totals }
         : null,
+      openSettlements,
       nationalEntities,
       nationalEntityMeta: national
         ? { indexCases: national.indexCases, matchedCases: national.matchedCases,
