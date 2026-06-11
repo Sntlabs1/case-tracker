@@ -480,6 +480,330 @@ function StatBox({ label, value, sub, color = "var(--accent)" }) {
   );
 }
 
+// ── Case decision brief ─────────────────────────────────────────────────
+// Top of the case detail view. Turns the raw case object (PACER cluster +
+// claim-path registry + CASE_TYPE_INFO) into an actionable brief: exposure
+// math, the live recovery route, ordered next steps, legal basis, and the
+// evidence an intake must collect. Numbers shown are statutory ceilings —
+// labeled as such, never as expected recovery.
+
+function earliestDeadline(claimPath) {
+  return (claimPath?.liveSettlements || []).map(s => s.deadline).filter(Boolean).sort()[0] || null;
+}
+
+function daysUntil(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  return Math.ceil((d - new Date()) / (1000 * 60 * 60 * 24));
+}
+
+// Plain-English label for the defendant cluster category / national-entity
+// type, used in the narrative summary.
+const CATEGORY_LABELS = {
+  "collector":            "third-party debt collector",
+  "debt-buyer":           "debt buyer",
+  "auto-lender":          "auto lender / captive finance arm",
+  "subprime-card":        "subprime credit card issuer",
+  "subprime-installment": "subprime installment lender",
+};
+
+// Litigation lifecycle for a defendant cluster, derived from docket stats +
+// the claim-path registry. Stages run filing → litigation → settlement →
+// claims window → closed; `stage` is the index into LIFECYCLE_STAGES.
+const LIFECYCLE_STAGES = ["Filings", "Active litigation", "Settlement", "Claims window", "Historic"];
+
+function caseLifecycle(c) {
+  const cp = c.claimPath || {};
+  if (cp.status === "claim_window")
+    return { stage: 3, label: "Open claims window", color: "#22c55e",
+             note: "A settlement administrator is accepting claims now — the cheapest recovery route available." };
+  if (cp.status === "monitor_only")
+    return { stage: 2, label: "Settlement pending", color: "#f59e0b",
+             note: "A settlement exists but no claim window is open yet — monitor for preliminary/final approval and the claims start date." };
+  if (c.classSettlement)
+    return { stage: 2, label: "Class-settlement activity on the docket", color: "#f59e0b",
+             note: "At least one docket against this defendant shows class-settlement filings — a claims window may follow; track it." };
+  if ((c.openCases || 0) > 0)
+    return { stage: 1, label: "Active litigation", color: "#2D7D95",
+             note: "Open federal dockets are live now — joinable or usable as the vehicle for your claimants." };
+  if ((c.caseCount || 0) > 0)
+    return { stage: 4, label: "Historic litigation only", color: "#6b7280",
+             note: "Every known docket is closed. Recovery would require new origination, not joining." };
+  return { stage: 0, label: "Pre-litigation", color: "#f59e0b",
+           note: "No federal dockets in the index — claims here would be first filings." };
+}
+
+// Filing-velocity read: average yearly filings over the 2015–2026 index window
+// vs the 2024–26 rate. Only meaningful with enough history.
+function filingTrend(c) {
+  const total = c.caseCount || 0;
+  const recent = c.newCases || 0;
+  if (total < 20) return null;
+  const yearlyAvg = total / 11;          // index covers 2015–2026
+  const recentRate = recent / 2.5;       // 2024 through mid-2026
+  if (recentRate > yearlyAvg * 1.3) return { dir: "accelerating", color: "#22c55e", detail: `~${Math.round(recentRate)}/yr since 2024 vs ~${Math.round(yearlyAvg)}/yr historic` };
+  if (recentRate < yearlyAvg * 0.7) return { dir: "declining", color: "#6b7280", detail: `~${Math.round(recentRate)}/yr since 2024 vs ~${Math.round(yearlyAvg)}/yr historic` };
+  return { dir: "steady", color: "#f59e0b", detail: `~${Math.round(recentRate)}/yr since 2024, in line with ~${Math.round(yearlyAvg)}/yr historic` };
+}
+
+// One-paragraph narrative built strictly from fields we actually have — no
+// invented facts. Who the defendant is, the litigation picture, the live
+// recovery route, and what the credit file holds against them.
+function caseSummaryText(c, n, exposure, trend) {
+  const kind = c.bureau ? "one of the big-3 national credit bureaus"
+    : CATEGORY_LABELS[c.category] || (c.entityType ? `${c.entityType} entity` : "consumer-finance company");
+  const parts = [];
+  parts.push(`${c.name} is a ${kind} named in ${fmtN(c.caseCount || 0)} federal consumer-protection docket${(c.caseCount || 0) === 1 ? "" : "s"} in the 2015–2026 index, ${fmtN(c.openCases || 0)} currently open${c.newCases ? ` and ${fmtN(c.newCases)} filed since 2024` : ""}.`);
+  if (trend) parts.push(`Filing velocity is ${trend.dir} (${trend.detail}) — ${trend.dir === "accelerating" ? "the plaintiffs' bar is actively building cases against this defendant" : trend.dir === "declining" ? "litigation interest is cooling; existing dockets matter more than new filings" : "a stable, recurring litigation target"}.`);
+  const cp = c.claimPath || {};
+  const live = cp.liveSettlements || [];
+  if (cp.status === "claim_window" && live.length) {
+    parts.push(`Recovery route today: an open settlement claim window (${live.map(s => s.name).join("; ")}) — file claims rather than litigate.`);
+  } else if (cp.openLitigation > 0) {
+    parts.push(`Recovery route today: ${fmtN(cp.openLitigation)} joinable open docket${cp.openLitigation > 1 ? "s" : ""}; no settlement window is accepting claims yet.`);
+  } else {
+    parts.push("No live recovery route exists today — value here is origination inventory, not an existing claim.");
+  }
+  if (n) parts.push(`The credit file holds ${fmtN(n)} matched claimant${n === 1 ? "" : "s"} carrying a ${CASE_LABELS[c.caseType] || c.caseType} signal naming this defendant${exposure ? `, a statutory ceiling of ${exposure}` : ""}.`);
+  if (c.bureau) parts.push("Bureau caveat: every person in the base has files at all three bureaus, so matched counts here describe the whole base, not a defendant-specific cohort.");
+  return parts.join(" ");
+}
+
+// Ordered, derived action list. Order: live settlement window first, then
+// joinable litigation, then origination fallback, then the always-on intake
+// screens (SOL/standing, evidence).
+function caseNextSteps(c) {
+  const steps = [];
+  const cp = c.claimPath || {};
+  const live = cp.liveSettlements || [];
+  const dl = earliestDeadline(cp);
+  const unverified = live.some(s => !s.verified);
+  if (cp.status === "claim_window" && live.length) {
+    steps.push({
+      tag: "FILE NOW", color: "#22c55e",
+      title: `Open settlement window${dl ? ` — earliest deadline ${dl}` : ""}`,
+      detail: `${live.map(s => s.name).join(" · ")}. Confirm the class definition and claim form on the administrator site, then file for matched claimants whose tradelines fit.${unverified ? " At least one entry is aggregator-sourced and unverified — confirm the administrator site before any outreach." : ""}`,
+    });
+  }
+  if (cp.openLitigation > 0) {
+    steps.push({
+      tag: cp.status === "claim_window" ? "PARALLEL" : "JOIN", color: "#2D7D95",
+      title: `${cp.openLitigation.toLocaleString()} open federal docket${cp.openLitigation > 1 ? "s" : ""} naming this defendant`,
+      detail: "Route (a): if any putative class action covers these claimants, they are absent class members — monitor for certification and a claims window. Route (b): offer the top-scored claimants to plaintiffs' counsel on the newest filings as named-plaintiff or mass-action inventory.",
+    });
+  }
+  if (!live.length && !cp.openLitigation) {
+    steps.push({
+      tag: "ORIGINATE", color: "#f59e0b",
+      title: "No live claim path — recovery requires origination",
+      detail: "Nothing is claimable today. Paths: intake-verified dispute plus demand letter, individual filing, or mass arbitration if the account agreement compels arb. Do not pitch these matches as an existing case.",
+    });
+  }
+  const screen = [c.info?.solWarning, c.info?.watchOut].filter(Boolean).join(" ");
+  if (screen) {
+    steps.push({
+      tag: "INTAKE", color: "#8b5cf6",
+      title: "Screen SOL and standing before outreach",
+      detail: screen,
+    });
+  }
+  if (c.info?.keyEvidence?.length) {
+    steps.push({
+      tag: "EVIDENCE", color: "#f97316",
+      title: "Collect proof that survives a motion to dismiss",
+      detail: c.info.keyEvidence.slice(0, 3).join("; ") + ".",
+    });
+  }
+  return steps;
+}
+
+function CaseDetailBrief({ c, claimants }) {
+  const info = c.info || {};
+  const range = CASE_TOTAL_RANGE[c.caseType];
+  const n = claimants ?? c.consumers ?? c.consumersInDb ?? null;
+  const exposure = n && range
+    ? (range[0] === range[1]
+        ? fmtDollarsCompact(n * range[0])
+        : `${fmtDollarsCompact(n * range[0])}–${fmtDollarsCompact(n * range[1])}`)
+    : null;
+  const perClaimant = range
+    ? (range[0] === range[1] ? `$${range[0].toLocaleString()}` : `$${range[0].toLocaleString()}–$${range[1].toLocaleString()}`)
+    : null;
+  const cp = c.claimPath || {};
+  const dl = earliestDeadline(cp);
+  const dlDays = dl ? daysUntil(dl) : null;
+  const steps = caseNextSteps(c);
+  const lc = caseLifecycle(c);
+  const trend = filingTrend(c);
+  const summary = caseSummaryText(c, n, exposure, trend);
+  const SectionTitle = ({ children }) => (
+    <div style={{ fontSize: 11, color: "var(--text-5)", textTransform: "uppercase", letterSpacing: 1, fontWeight: 700, marginBottom: 10 }}>{children}</div>
+  );
+  return (
+    <div style={{ marginBottom: 20 }}>
+
+      {/* Case summary + lifecycle */}
+      <Card style={{ padding: 18, marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 12 }}>
+          <SectionTitle>Case Summary</SectionTitle>
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            {trend && (
+              <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 10, background: `${trend.color}18`, color: trend.color, border: `1px solid ${trend.color}40`, fontWeight: 700 }}>
+                Filings {trend.dir}
+              </span>
+            )}
+            <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 10, background: `${lc.color}18`, color: lc.color, border: `1px solid ${lc.color}40`, fontWeight: 700 }}>
+              {lc.label}
+            </span>
+          </div>
+        </div>
+
+        {/* Lifecycle stage tracker */}
+        <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 14 }}>
+          {LIFECYCLE_STAGES.map((s, i) => (
+            <React.Fragment key={s}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, minWidth: 86 }}>
+                <div style={{
+                  width: i === lc.stage ? 14 : 10, height: i === lc.stage ? 14 : 10, borderRadius: "50%",
+                  background: i === lc.stage ? lc.color : i < lc.stage ? `${lc.color}60` : "var(--border)",
+                  border: i === lc.stage ? `2px solid ${lc.color}` : "2px solid transparent",
+                  boxShadow: i === lc.stage ? `0 0 0 4px ${lc.color}22` : "none",
+                }} />
+                <div style={{ fontSize: 10, fontWeight: i === lc.stage ? 800 : 500, color: i === lc.stage ? lc.color : i < lc.stage ? "var(--text-4)" : "var(--text-5)", whiteSpace: "nowrap" }}>
+                  {s}
+                </div>
+              </div>
+              {i < LIFECYCLE_STAGES.length - 1 && (
+                <div style={{ flex: 1, height: 2, background: i < lc.stage ? `${lc.color}50` : "var(--border)", margin: "0 4px 18px" }} />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        <div style={{ fontSize: 11, color: lc.color, marginBottom: 10, lineHeight: 1.5 }}>{lc.note}</div>
+
+        <div style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.65 }}>{summary}</div>
+      </Card>
+
+      {/* Headline numbers */}
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+        <StatBox label="Matched Claimants" value={n != null ? fmtN(n) : "—"} sub="people in the credit file with this defendant" color="#2D7D95" />
+        <StatBox label="Statutory Exposure" value={exposure || "—"} sub="ceiling, not expected recovery — settlements pay a fraction" color="#22c55e" />
+        <StatBox label="Per Claimant" value={perClaimant || "—"} sub={info.statute ? info.statute.split("—")[1]?.trim() || "statutory range" : "statutory range"} color="#f59e0b" />
+        <StatBox label="Open Dockets" value={fmtN(c.openCases || 0)} sub={`of ${fmtN(c.caseCount || 0)} federal filings${c.newCases ? ` — ${fmtN(c.newCases)} filed 2024–26` : ""}`} color="#8b5cf6" />
+        {dl && (
+          <StatBox
+            label="Claim Deadline"
+            value={dlDays != null && dlDays >= 0 ? `${dlDays}d` : dl}
+            sub={dlDays != null && dlDays >= 0 ? `earliest live window closes ${dl}` : "earliest live settlement deadline"}
+            color={dlDays != null && dlDays < 60 ? "#ef4444" : "#22c55e"}
+          />
+        )}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 14, marginBottom: 14 }}>
+
+        {/* Next steps */}
+        <Card style={{ padding: 18 }}>
+          <SectionTitle>Next Steps</SectionTitle>
+          {steps.map((s, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, marginBottom: i < steps.length - 1 ? 14 : 0 }}>
+              <div style={{ flexShrink: 0, width: 78 }}>
+                <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 3, background: `${s.color}18`, color: s.color, border: `1px solid ${s.color}40`, fontWeight: 800, letterSpacing: 0.5, whiteSpace: "nowrap" }}>
+                  {i + 1}. {s.tag}
+                </span>
+              </div>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", marginBottom: 3 }}>{s.title}</div>
+                <div style={{ fontSize: 11, color: "var(--text-4)", lineHeight: 1.5 }}>{s.detail}</div>
+              </div>
+            </div>
+          ))}
+        </Card>
+
+        {/* Recovery route */}
+        <Card style={{ padding: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <SectionTitle>Recovery Route Today</SectionTitle>
+            <ClaimPathBadge claimPath={cp} />
+          </div>
+          {(cp.liveSettlements || []).map((s, i) => (
+            <div key={i} style={{ padding: "8px 10px", background: "var(--bg-surface)", borderRadius: 6, marginBottom: 8, border: "1px solid #22c55e30" }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-1)" }}>{s.name}</div>
+              <div style={{ fontSize: 10, color: "var(--text-5)", marginTop: 2 }}>
+                {s.windowType === "rolling" ? "Rolling claims — no deadline" : s.deadline ? `Deadline ${s.deadline}` : "Deadline unverified"}
+                {" · "}{s.verified ? "verified" : "UNVERIFIED — confirm administrator site"}
+              </div>
+            </div>
+          ))}
+          {cp.openLitigation > 0 && (
+            <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, marginBottom: 8 }}>
+              {cp.openLitigation.toLocaleString()} open federal docket{cp.openLitigation > 1 ? "s" : ""} — joinable / absent-class-member pool.
+            </div>
+          )}
+          {!(cp.liveSettlements || []).length && !cp.openLitigation && (
+            <div style={{ fontSize: 11, color: "var(--text-4)", lineHeight: 1.5 }}>
+              No open settlement window or joinable litigation in the claim-path registry. These matches have origination value only — do not represent them as claimable.
+            </div>
+          )}
+          {(c.examples || []).length > 0 && (
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontSize: 10, color: "var(--text-5)", fontWeight: 700, marginBottom: 6 }}>RECENT DOCKETS (PACER)</div>
+              {(c.examples || []).slice(0, 3).map((ex, i) => (
+                <div key={i} style={{ fontSize: 10, color: "var(--text-4)", marginBottom: 4, lineHeight: 1.4 }}>
+                  <span style={{ color: "var(--text-2)" }}>{ex.title}</span>
+                  {" — "}{ex.court?.toUpperCase()} {ex.docket}{ex.filed ? `, filed ${ex.filed}` : ""}
+                  {ex.status === "open" && <span style={{ color: "#22c55e", fontWeight: 700 }}> · OPEN</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Legal basis + evidence */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 14 }}>
+        <Card style={{ padding: 18 }}>
+          <SectionTitle>Legal Basis — {info.statute || CASE_LABELS[c.caseType] || c.caseType}</SectionTitle>
+          {info.summary && <div style={{ fontSize: 11, color: "var(--text-3)", lineHeight: 1.55, marginBottom: 12 }}>{info.summary}</div>}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", fontSize: 11 }}>
+            <div><span style={{ color: "var(--text-5)" }}>Federal SOL: </span><span style={{ color: "var(--text-2)" }}>{info.solFederal || "—"}</span></div>
+            <div><span style={{ color: "var(--text-5)" }}>State analogs: </span><span style={{ color: "var(--text-2)" }}>{info.solState || "—"}</span></div>
+            <div style={{ gridColumn: "1 / -1" }}><span style={{ color: "var(--text-5)" }}>Damages: </span><span style={{ color: "#22c55e" }}>{info.damages || "—"}</span></div>
+            <div style={{ gridColumn: "1 / -1" }}><span style={{ color: "var(--text-5)" }}>Forum / enforcement: </span><span style={{ color: "var(--text-2)" }}>{info.administrator || c.admin || "—"}</span></div>
+            {info.openedNote && (
+              <div style={{ gridColumn: "1 / -1" }}><span style={{ color: "var(--text-5)" }}>Accrual: </span><span style={{ color: "var(--text-2)" }}>{info.openedNote}</span></div>
+            )}
+          </div>
+          {(info.activeCases || []).length > 0 && (
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontSize: 10, color: "var(--text-5)", fontWeight: 700, marginBottom: 6 }}>RELATED ACTIVE MATTERS / PRECEDENT</div>
+              {(info.activeCases || []).map((a, i) => (
+                <div key={i} style={{ fontSize: 10, color: "var(--text-4)", marginBottom: 4, lineHeight: 1.4 }}>
+                  <span style={{ color: "var(--text-2)" }}>{a.name}</span> — {a.status}
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+        <Card style={{ padding: 18 }}>
+          <SectionTitle>Evidence To Collect At Intake</SectionTitle>
+          {(info.keyEvidence || []).map((e, i) => (
+            <div key={i} style={{ display: "flex", gap: 8, fontSize: 11, color: "var(--text-3)", lineHeight: 1.5, marginBottom: 6 }}>
+              <span style={{ color: "#22c55e", flexShrink: 0 }}>{i + 1}.</span>
+              <span>{e}</span>
+            </div>
+          ))}
+          {info.watchOut && (
+            <div style={{ marginTop: 10, padding: "8px 10px", background: "#ef444410", border: "1px solid #ef444430", borderRadius: 6, fontSize: 11, color: "#fca5a5", lineHeight: 1.5 }}>
+              Watch out: {info.watchOut}
+            </div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
 function CaseTypeBar({ label, count, total, color, recovery }) {
   const width = total ? Math.max(2, (count / total) * 100) : 0;
   return (
@@ -1787,19 +2111,7 @@ export default function CreditPortfolio() {
             </div>
           </div>
 
-          <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 8, padding: "14px 18px", marginBottom: 20 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, fontSize: 12 }}>
-              <div><span style={{ color: "var(--text-5)" }}>Status: </span><span style={{ color: "var(--text-2)" }}>{selectedCase.status}</span></div>
-              <div><span style={{ color: "var(--text-5)" }}>Administrator: </span><span style={{ color: "var(--text-2)" }}>{selectedCase.admin}</span></div>
-              <div><span style={{ color: "var(--text-5)" }}>Damages: </span><span style={{ color: "#22c55e" }}>{selectedCase.info?.damages?.split(".")[0] || "—"}</span></div>
-            </div>
-            {selectedCase.info?.solWarning && (
-              <div style={{ marginTop: 10, fontSize: 11, color: "#f59e0b" }}>{selectedCase.info.solWarning}</div>
-            )}
-            {selectedCase.info?.watchOut && (
-              <div style={{ marginTop: 6, fontSize: 11, color: "#fca5a5" }}>Watch out: {selectedCase.info.watchOut}</div>
-            )}
-          </div>
+          <CaseDetailBrief c={selectedCase} claimants={caseClientsTotal} />
 
           {caseClientsLoading && (
             <div style={{ padding: 40, textAlign: "center", color: "var(--text-4)" }}>Loading eligible people...</div>
