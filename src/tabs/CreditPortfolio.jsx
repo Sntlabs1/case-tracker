@@ -927,6 +927,23 @@ function CaseDetailBrief({ c, claimants }) {
                     {wtLabel}
                   </span>
                 </div>
+                {/* The claim URL is the single most important fact on this
+                    card — full-width, impossible to miss. */}
+                {s.claimsUrl ? (
+                  <a
+                    href={s.claimsUrl} target="_blank" rel="noopener noreferrer"
+                    style={{ display: "block", marginTop: 8, padding: "9px 12px", borderRadius: 6, background: filable ? "#22c55e" : `${wtColor}22`, color: filable ? "#fff" : wtColor, border: `1px solid ${wtColor}`, fontWeight: 800, fontSize: 12, textDecoration: "none", textAlign: "center" }}
+                  >
+                    {filable ? "FILE A CLAIM NOW → " : s.windowType === "automatic_payment" ? "SETTLEMENT SITE → " : "SIGN UP → "}
+                    <span style={{ fontWeight: 600, wordBreak: "break-all" }}>{s.claimsUrl.replace(/^https?:\/\/(www\.)?/, "")}</span>
+                  </a>
+                ) : (
+                  <div style={{ marginTop: 8, padding: "8px 12px", borderRadius: 6, background: "var(--bg-card)", border: "1px dashed var(--border)", fontSize: 11, color: "var(--text-4)", textAlign: "center" }}>
+                    {s.windowType === "automatic_payment"
+                      ? "No sign-up page exists — the administrator pays the fixed class automatically"
+                      : "Claim portal not yet verified — contact the administrator before outreach"}
+                  </div>
+                )}
                 {(s.fund || s.perClaimant) && (
                   <div style={{ fontSize: 11, color: "var(--text-2)", marginTop: 6 }}>
                     {s.fund && <span style={{ color: "#22c55e", fontWeight: 700 }}>{s.fund}</span>}
