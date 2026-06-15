@@ -1,7 +1,6 @@
 # Local analysis artifacts and deliverables — not part of the deployed app.
 # Paths are root-anchored so they don't match src/data, etc.
 /data/
-/tools/
 /docs/
 /dev/
 /Frank Docs/
