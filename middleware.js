@@ -1,16 +1,22 @@
 // Access gate for the live platform.
 //
-// Background: a shareable pitch HTML went out with a link to this deployment
-// (mdl-business.vercel.app). This middleware keeps the site private without a
-// paid Vercel plan: anyone who opens the URL without the key sees a "private"
-// wall; the team enters once via  https://mdl-business.vercel.app/?key=<KEY>
-// which sets a one-year cookie and lets them straight in from then on.
+// Vercel Authentication / Password Protection for the *production* domain is a
+// paid feature, unavailable on this plan, so this middleware is the access
+// gate. It now covers BOTH pages and the API:
+//   - Pages: no key → a "private" wall. Enter once via
+//     https://mdl-business.vercel.app/?key=<ACCESS_KEY> to set a one-year cookie.
+//   - /api/*: allowed only for (a) the authenticated SPA, whose same-origin
+//     fetches carry the access cookie, or (b) Vercel cron jobs, which Vercel
+//     invokes with `Authorization: Bearer <CRON_SECRET>`. Everyone else: 401.
+//   - /_vercel internals are never gated.
 //
-// /api/* and Vercel internals are intentionally NOT gated so the ~20 cron jobs
-// keep running and the authenticated SPA can still fetch its data. To rotate
-// access, change KEY below and redeploy (existing cookies stop working).
+// Secrets live in env vars (not git): ACCESS_KEY (rotate to revoke all access)
+// and CRON_SECRET (must match the Vercel project env so cron jobs pass). The
+// hardcoded ACCESS_KEY fallback is the OLD already-public key, kept only so a
+// missing env var degrades to "old key" rather than locking everyone out.
 
-const KEY = "4c3cc90acd2d5e85f496a82e";
+const KEY = process.env.ACCESS_KEY || "4c3cc90acd2d5e85f496a82e";
+const CRON_SECRET = process.env.CRON_SECRET || "";
 const COOKIE = "mdl_access";
 
 const BLOCK_PAGE = `<!doctype html><html lang="en"><head>
@@ -35,12 +41,26 @@ export default function middleware(req) {
   const url = new URL(req.url);
   const path = url.pathname;
 
-  // Never gate the API (cron jobs + authenticated SPA data) or Vercel internals.
-  if (path.startsWith("/api/") || path.startsWith("/_vercel")) return;
+  // Vercel internals always pass.
+  if (path.startsWith("/_vercel")) return;
 
-  // Already authorized via cookie.
   const cookie = req.headers.get("cookie") || "";
-  if (cookie.split(";").some((c) => c.trim() === COOKIE + "=" + KEY)) return;
+  const hasAccess = cookie.split(";").some((c) => c.trim() === COOKIE + "=" + KEY);
+
+  // API: the authenticated SPA passes via its cookie; Vercel cron jobs pass via
+  // the Bearer secret. Anything else is rejected with a JSON 401.
+  if (path.startsWith("/api/")) {
+    if (hasAccess) return;
+    const auth = req.headers.get("authorization") || "";
+    if (CRON_SECRET && auth === `Bearer ${CRON_SECRET}`) return;
+    return new Response(JSON.stringify({ error: "unauthorized" }), {
+      status: 401,
+      headers: { "content-type": "application/json" },
+    });
+  }
+
+  // Pages — already authorized via cookie.
+  if (hasAccess) return;
 
   // Entering with the key: set the cookie and redirect to a clean URL.
   if (url.searchParams.get("key") === KEY) {
