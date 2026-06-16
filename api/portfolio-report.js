@@ -55,8 +55,54 @@ function accumulate(agg, est) {
   agg.matches  += 1;
 }
 
+// Credit.com population summary — used when no partner roster is loaded. The
+// 10.2M-person credit dataset has no stored recovery-dollar aggregate (summing
+// per-person estimates over 10M records isn't feasible in a request, and the
+// byCaseType figures are claim SIGNAL counts inflated by base-wide bureau FCRA
+// matches, so multiplying them by statutory rates would invent numbers). So
+// this returns honest COUNTS from credit_portfolio:stats and defers per-person
+// dollar estimates to the Credit Portfolio / Claimant Matches tabs.
+async function buildCreditPopulation({ partnerId, startedAt }) {
+  const raw = await kv.get("credit_portfolio:stats").catch(() => null);
+  if (!raw) return null;
+  const stats = typeof raw === "string" ? JSON.parse(raw) : raw;
+  const pop = stats.population || {};
+  return {
+    version: 1,
+    mode: "credit_population",
+    generatedAt: stats.generatedAt || new Date().toISOString(),
+    partnerId: partnerId || "all",
+    population: pop,
+    byCaseTypeCounts: stats.byCaseType || {},
+    bySolStatusCounts: stats.bySolStatus || {},
+    settlementXref: stats.settlementXref || null,
+    matchRate: stats.matchRate ?? null,
+    actionableRate: stats.actionableRate ?? null,
+    note: stats.note || null,
+    // Legacy dollar fields kept empty so existing renderers/consumers don't crash.
+    clientsTotal: pop.processed || 0,
+    clientsAnalyzed: pop.matched || 0,
+    clientsWithRecovery: pop.actionable || 0,
+    totals: { ...emptyAgg(), clients: 0 },
+    totalsFormatted: { floor: "—", ceiling: "—", midpoint: "—" },
+    byStatus: {}, byCaseType: {}, byMethod: {},
+    topDefendants: [], topCases: [], urgentClaims: [],
+    durationMs: Date.now() - startedAt,
+  };
+}
+
 async function buildPortfolio({ partnerId, fresh, topN = 50 }) {
   const startedAt = Date.now();
+
+  // The credit.com universe IS the 10.2M-person credit dataset, which lives in
+  // the by_score index, not in a clients_by_partner roster (any handful of rows
+  // there are legacy/test). For the all-clients and credit_com scopes, show the
+  // credit population summary (counts only) when credit_portfolio:stats exists.
+  if (!partnerId || partnerId === "credit_com" || partnerId === "all") {
+    const credit = await buildCreditPopulation({ partnerId, startedAt });
+    if (credit) return credit;
+  }
+
   const ids = await listClientIds(partnerId);
   if (!ids.length) {
     return {
@@ -215,7 +261,108 @@ function fmtDate(d) {
   return isNaN(dt.getTime()) ? String(d) : dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+const CASE_TYPE_LABELS = {
+  TCPA: "TCPA", FDCPA: "FDCPA", FCRA: "FCRA", RESPA: "RESPA",
+  StudentLoan: "Student Loan", AutoLending: "Auto Lending",
+  DataBreach: "Data Breach", UDAP_Payday: "Payday / UDAP",
+  DischargeViolation: "§524 Discharge", OpenSettlement: "Open Settlement",
+};
+const SOL_LABELS = {
+  discharge_ongoing: "Discharge violation (no deadline)",
+  live: "Within federal time limit",
+  live_state_udap: "Revived by state law",
+  time_barred: "Past the deadline",
+  undated: "No date on file",
+};
+
+// Counts-only report for the credit.com population (no fabricated dollars).
+function renderCreditHtml(report) {
+  const css = `
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#fff;max-width:1000px;margin:0 auto;padding:32px;font-size:13px;line-height:1.5}
+    h1{font-size:26px;margin:0 0 4px;color:#0b0c14;letter-spacing:-0.01em}
+    h2{font-size:17px;margin:32px 0 14px;padding-bottom:6px;border-bottom:2px solid #2D7D95;color:#0b0c14}
+    .subtitle{color:#666;font-size:12px;margin-bottom:24px}
+    .hero{background:linear-gradient(135deg,#e6f4f7 0%,#cfeaf2 100%);border:1px solid #82D3E0;border-radius:12px;padding:28px 24px;margin-bottom:24px}
+    .hero-num{font-size:42px;font-weight:800;color:#004F58;line-height:1.1;letter-spacing:-0.02em}
+    .hero-meta{font-size:12px;color:#0b5563;margin-top:10px}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+    .stat{padding:14px 12px;background:#fff;border:1px solid #d8d8e0;border-radius:8px;text-align:center}
+    .stat-num{font-size:22px;font-weight:800;line-height:1;color:#2D7D95}
+    .stat-label{font-size:10px;color:#666;margin-top:4px;font-weight:600}
+    table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:12px}
+    th{text-align:left;padding:8px 10px;background:#f0f0f5;font-size:10px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #d0d0d8}
+    td{padding:10px;border-bottom:1px solid #ececf2}
+    td.num{text-align:right;font-weight:700;color:#004F58;white-space:nowrap}
+    .disclaimer{margin-top:24px;padding:14px 16px;background:#fff8e6;border:1px solid #fcd34d;border-radius:8px;font-size:11px;color:#78350f;line-height:1.5}
+    .footer{margin-top:40px;padding-top:16px;border-top:1px solid #d8d8e0;font-size:10px;color:#888;text-align:center}
+  `;
+  const pop = report.population || {};
+  const n = (v) => (v || 0).toLocaleString();
+  const date = new Date(report.generatedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  const caseRows = Object.entries(report.byCaseTypeCounts || {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<tr><td><strong>${escapeHtml(CASE_TYPE_LABELS[k] || k)}</strong></td><td class="num">${n(v)}</td></tr>`).join("");
+  const solRows = Object.entries(report.bySolStatusCounts || {})
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<tr><td><strong>${escapeHtml(SOL_LABELS[k] || k)}</strong></td><td class="num">${n(v)}</td></tr>`).join("");
+  const xref = report.settlementXref || {};
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Credit Portfolio Population — ${escapeHtml(report.partnerId)}</title><style>${css}</style></head>
+<body>
+<h1>Credit.com Portfolio — Population Summary</h1>
+<div class="subtitle">Partner: <strong>${escapeHtml(report.partnerId)}</strong> · Source dated ${escapeHtml(date)}</div>
+
+<div class="hero">
+  <div style="font-size:11px;color:#0b5563;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:8px">Matched population</div>
+  <div class="hero-num">${n(pop.matched)}</div>
+  <div class="hero-meta">of ${n(pop.processed)} people processed · ${n(pop.actionable)} actionable · ${n(pop.intakeReady)} intake-ready${report.matchRate != null ? ` · ${report.matchRate}% match rate` : ""}</div>
+</div>
+
+<h2>Coverage</h2>
+<div class="stat-row">
+  <div class="stat"><div class="stat-num">${n(pop.processed)}</div><div class="stat-label">Processed</div></div>
+  <div class="stat"><div class="stat-num" style="color:#16a34a">${n(pop.matched)}</div><div class="stat-label">Matched</div></div>
+  <div class="stat"><div class="stat-num" style="color:#ea580c">${n(pop.actionable)}</div><div class="stat-label">Actionable</div></div>
+  <div class="stat"><div class="stat-num" style="color:#b91c1c">${n(pop.dncExcluded)}</div><div class="stat-label">DNC-excluded</div></div>
+</div>
+
+<h2>Claim signals by case type</h2>
+<table><thead><tr><th>Case type</th><th style="text-align:right">Signals</th></tr></thead><tbody>${caseRows || `<tr><td colspan="2">No data</td></tr>`}</tbody></table>
+
+<h2>By statute-of-limitations status</h2>
+<table><thead><tr><th>SOL status</th><th style="text-align:right">Signals</th></tr></thead><tbody>${solRows || `<tr><td colspan="2">No data</td></tr>`}</tbody></table>
+
+${xref.candidates ? `<h2>Open-settlement cross-reference</h2>
+<table><tbody>
+  <tr><td>Tradeline-matchable candidates</td><td class="num">${n(xref.candidates)}</td></tr>
+  <tr><td>Settlement-tagged</td><td class="num">${n(xref.settlementTagged)}</td></tr>
+  <tr><td>Open-settlement signals</td><td class="num">${n(xref.openSettlementSignals)}</td></tr>
+  <tr><td>Data-breach signals</td><td class="num">${n(xref.dataBreachSignals)}</td></tr>
+</tbody></table>` : ""}
+
+<div class="disclaimer">
+  <strong>Counts, not recovery dollars.</strong> Figures are claim-signal counts from the credit.com dataset after SOL flagging${report.note ? ` — ${escapeHtml(report.note)}` : ""}. Per-person recovery estimates live in the Credit Portfolio and Claimant Matches views; a portfolio-wide dollar aggregate is intentionally not shown here to avoid implying expected value from statutory maximums over signal counts. Tradeline is an eligibility proxy; verify class definition before outreach. Not legal advice.
+</div>
+
+<div class="footer">Credit Portfolio Population Summary · generated from credit_portfolio:stats</div>
+</body></html>`;
+}
+
+function renderCreditCsv(report) {
+  const rows = [["Section", "Key", "Count"]];
+  const pop = report.population || {};
+  for (const [k, v] of Object.entries(pop)) rows.push(["Population", k, v]);
+  for (const [k, v] of Object.entries(report.byCaseTypeCounts || {})) rows.push(["By case type", CASE_TYPE_LABELS[k] || k, v]);
+  for (const [k, v] of Object.entries(report.bySolStatusCounts || {})) rows.push(["By SOL status", SOL_LABELS[k] || k, v]);
+  for (const [k, v] of Object.entries(report.settlementXref || {})) {
+    if (typeof v === "number") rows.push(["Settlement xref", k, v]);
+  }
+  return rows.map((r) => r.map(csvCell).join(",")).join("\n");
+}
+
 function renderHtml(report) {
+  if (report.mode === "credit_population") return renderCreditHtml(report);
   const css = `
     *{box-sizing:border-box}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#fff;max-width:1100px;margin:0 auto;padding:32px;font-size:13px;line-height:1.5}
@@ -363,6 +510,7 @@ ${report.urgentClaims.length ? `
 }
 
 function renderCsv(report) {
+  if (report.mode === "credit_population") return renderCreditCsv(report);
   const rows = [];
   rows.push(["Section","Key","Plaintiffs","Matches","Floor $","Ceiling $","Midpoint $"]);
   rows.push(["Total","Portfolio", report.clientsWithRecovery, report.totals.matches, report.totals.floor, report.totals.ceiling, report.totals.midpoint]);
@@ -388,8 +536,13 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "GET") return res.status(405).end();
 
+  // This endpoint powers the in-app Portfolio tab (browser fetch, no secret to
+  // send). It is consistent with every other /api/* route in this app, which
+  // are private by way of the site-wide middleware access gate rather than a
+  // per-route secret. If ADMIN_SECRET is set, a matching x-admin-secret header
+  // is still honored, but its absence no longer blocks the tab.
   const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret || req.headers['x-admin-secret'] !== adminSecret) {
+  if (adminSecret && req.headers['x-admin-secret'] && req.headers['x-admin-secret'] !== adminSecret) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

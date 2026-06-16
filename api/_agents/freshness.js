@@ -132,7 +132,15 @@ async function aggregateLeads() {
 }
 
 async function aggregateClients() {
-  const total = (await kv.zcard("clients_by_date").catch(() => 0)) || 0;
+  const rosterTotal = (await kv.zcard("clients_by_date").catch(() => 0)) || 0;
+  // The credit.com population lives in the sharded by_score:{0..15} index, not
+  // clients_by_date. Sum its cardinality so the platform reflects the full
+  // matched population (~10.2M) instead of just the roster.
+  const creditCounts = await Promise.all(
+    Array.from({ length: 16 }, (_, s) => kv.zcard(`by_score:${s}`).catch(() => 0))
+  );
+  const creditPopulation = creditCounts.reduce((a, b) => a + (b || 0), 0);
+  const total = Math.max(rosterTotal, creditPopulation);
   // Retainer breakdown is not indexed — quick sample of recent clients only.
   const ids = await kv.zrange("clients_by_date", 0, 999, { rev: true }).catch(() => []);
   const byRetainer = {};
@@ -163,7 +171,7 @@ async function aggregateClients() {
       if (r === "Retained" || r === "Filed") byPartner[pid].retained++;
     }
   }
-  return { total, byRetainer, byPartner };
+  return { total, rosterTotal, creditPopulation, byRetainer, byPartner };
 }
 
 async function aggregateDefendants() {

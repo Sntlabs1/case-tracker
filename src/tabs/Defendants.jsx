@@ -143,7 +143,7 @@ function DefendantDetail({ canonicalId, onClose }) {
 
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, color: "var(--text-1)", marginBottom: 8 }}>
-            Our clients exposed to this defendant ({data.linkedClients.length}{data.linkedClientCapped ? "+" : ""})
+            Our clients exposed to this defendant ({(data.linkedClientTotal ?? data.linkedClients.length).toLocaleString()}{data.linkedClientCapped ? `, showing top ${data.linkedClients.length}` : ""})
           </div>
           <div style={{ maxHeight: 480, overflowY: "auto" }}>
             {data.linkedClients.length === 0 ? (

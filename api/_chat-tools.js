@@ -174,6 +174,37 @@ async function fetchCasesByIds(ids, limit = 25) {
     .map((r) => (typeof r === "string" ? JSON.parse(r) : r));
 }
 
+// Top-N person IDs from the credit.com score index (sharded by_score:{0..15}),
+// k-way merged in global score order. The credit population isn't in
+// clients_by_date, so chat tools seed from this when no roster exists.
+async function creditSeedIds(max = 5000) {
+  const N_SHARDS = 16;
+  const per = Math.ceil(max / N_SHARDS) + 1;
+  const slices = await Promise.all(
+    Array.from({ length: N_SHARDS }, (_, s) =>
+      kv.zrange(`by_score:${s}`, 0, per - 1, { rev: true, withScores: true }).catch(() => [])
+    )
+  );
+  const heads = slices.map((slice) => {
+    const arr = [];
+    for (let i = 0; i < slice.length; i += 2) arr.push([slice[i], Number(slice[i + 1])]);
+    return arr;
+  });
+  const taken = Array(N_SHARDS).fill(0);
+  const ids = [];
+  while (ids.length < max) {
+    let best = -1, bs = -Infinity;
+    for (let s = 0; s < N_SHARDS; s++) {
+      const h = heads[s][taken[s]];
+      if (h && h[1] > bs) { bs = h[1]; best = s; }
+    }
+    if (best === -1) break;
+    ids.push(heads[best][taken[best]][0]);
+    taken[best]++;
+  }
+  return ids;
+}
+
 function compactCase(c) {
   return {
     id: c.id,
@@ -389,9 +420,16 @@ const TOOLS = {
     const max = Math.min(parseInt(limit) || 25, 100);
 
     // Pick a starting set of IDs: per-partner index if specified, else global.
-    const seedIds = partner
+    let seedIds = partner
       ? (await kv.zrange(`clients_by_partner:${partner}`, 0, -1, { rev: true }).catch(() => []))
       : (await kv.zrange("clients_by_date", 0, -1, { rev: true }).catch(() => []));
+    // Fallback: the credit.com population is not in clients_by_date — it lives in
+    // the sharded by_score:{0..15} index. When the roster is empty (and no
+    // specific partner roster was requested), seed from the top of the credit
+    // index so chat can still find matched people by name/state.
+    if (!seedIds?.length && !partner) {
+      seedIds = await creditSeedIds(5000);
+    }
     if (!seedIds?.length) return { total: 0, results: [] };
 
     const nameLower  = (name || "").toLowerCase().trim();
@@ -411,7 +449,7 @@ const TOOLS = {
         const c = typeof r === "string" ? JSON.parse(r) : r;
         if (stateUp && c.state !== stateUp) continue;
         if (nameLower) {
-          const full = `${c.firstName || ""} ${c.lastName || ""}`.toLowerCase();
+          const full = (c.name || `${c.firstName || ""} ${c.lastName || ""}`).toLowerCase();
           if (!full.includes(nameLower)) continue;
         }
         if (emailLower && !(c.email || "").toLowerCase().includes(emailLower)) continue;
@@ -429,7 +467,7 @@ const TOOLS = {
         } catch {}
         results.push({
           id: c.id,
-          name: `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+          name: c.name || `${c.firstName || ""} ${c.lastName || ""}`.trim(),
           state: c.state,
           phone: c.phone,
           email: c.email,
@@ -437,8 +475,8 @@ const TOOLS = {
           city: c.city,
           age: c.age,
           ingestSource: c.ingestSource,
-          collectionsCount: (c.collectionsHistory || []).length,
-          matchedCases: matchedCount,
+          collectionsCount: (c.collectionsHistory || c.cases || []).length,
+          matchedCases: matchedCount || (c.matchedCases || []).length,
           retainerStatus: c.retainerStatus || "Uncontacted",
         });
         if (results.length >= max) break;
