@@ -108,6 +108,9 @@ export default async function handler(req, res) {
           scanned++;
           const id = c.id;
           if (!id) continue;
+          // Dedup-suppressed lex_ twins (supersededBy a cc_ record) must stay out
+          // of the rebuilt per-defendant index so they no longer double-count.
+          if (c.suppressed) continue;
           const score = Number(c.priorityScore) || 0;
           const cases = c.cases || [];
           if (!cases.length) continue;
