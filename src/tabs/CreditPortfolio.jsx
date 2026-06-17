@@ -365,6 +365,19 @@ function signalSol(sig, caseType, ingestedAt) {
   };
 }
 
+// Collapse a lead's per-status signal-count map (solSummary) into one badge:
+// the strongest live status if present, else undated/time-barred. The badge
+// also surfaces the live signal count so a reviewer sees workability at a glance.
+function leadSolBadge(solSummary) {
+  const s = solSummary || {};
+  const order = ["discharge_ongoing", "live", "live_state_udap", "undated", "time_barred"];
+  const top = order.find(k => s[k]);
+  if (!top) return null;
+  const meta = SOL_META[top];
+  const live = (s.live || 0) + (s.live_state_udap || 0) + (s.discharge_ongoing || 0);
+  return { short: meta.short, color: meta.color, title: meta.label, live, barred: s.time_barred || 0 };
+}
+
 // Per-claimant statutory floor/ceiling by case type — mirrors PER_VIOLATION
 // in src/lib/intelligence/recoveryEstimate.js (TCPA 47 USC §227(b)(3), FDCPA
 // 15 USC §1692k, FCRA 15 USC §1681n) and the per-case mids this tab already
@@ -1954,6 +1967,11 @@ export default function CreditPortfolio() {
   const [loading, setLoading]           = useState(true);
   const [error, setError]               = useState(null);
   const [filter, setFilter]             = useState("all");
+  // SOL filter for the People view. Default "live" = lead with the only
+  // workable cohort (within federal SOL, revived by state UDAP, or ongoing
+  // §524). Time-barred-only people are hidden until "all" is selected — they
+  // are not actionable without a fresh, consented pull.
+  const [solFilter, setSolFilter]       = useState("live"); // "live" | "all"
   const [viewMode, setViewMode]         = useState("people"); // "people" | "cases"
 
   // Pagination over the Highest-Priority Matched People table (50 per page).
@@ -2209,9 +2227,16 @@ export default function CreditPortfolio() {
 
   const totalCaseMatches = Object.values(byCaseType).reduce((a, b) => a + b, 0);
   const currentLeads = peopleSearch ? peopleSearch.results : (pageLeads ?? topLeads);
-  const filteredLeads = filter === "all"
-    ? currentLeads
-    : currentLeads.filter(l => l.cases?.includes(filter));
+  // A lead is "live" if any signal is within a federal SOL window, revived by
+  // state UDAP, or an ongoing §524 discharge violation. solSummary is the
+  // per-status signal-count map written at ingest (e.g. {live: 8, time_barred: 2}).
+  const leadIsLive = (l) => {
+    const s = l.solSummary || {};
+    return !!(s.live || s.live_state_udap || s.discharge_ongoing);
+  };
+  const filteredLeads = currentLeads
+    .filter(l => filter === "all" || l.cases?.includes(filter))
+    .filter(l => solFilter === "all" || leadIsLive(l));
 
   const leadsTotal = data.leadsTotal ?? topLeads.length;
   const leadsPageCount = Math.max(1, Math.ceil(leadsTotal / PAGE_SIZE));
@@ -2921,7 +2946,23 @@ export default function CreditPortfolio() {
           <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)" }}>
             {peopleSearch ? `Search Results — "${peopleSearch.q}"` : "Highest-Priority Matched People"}
           </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontSize: 10, color: "var(--text-5)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Status</span>
+            <button
+              onClick={() => setSolFilter("live")}
+              title="Show only people with a live, state-revived, or ongoing §524 signal — the workable cohort"
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, border: "1px solid #22c55e60", background: solFilter === "live" ? "#22c55e" : "var(--bg-surface)", color: solFilter === "live" ? "#0b0b0b" : "var(--text-1)", cursor: "pointer", fontWeight: 700 }}
+            >
+              Live only
+            </button>
+            <button
+              onClick={() => setSolFilter("all")}
+              title="Include time-barred-only people (not workable without a fresh consented pull)"
+              style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, border: "1px solid var(--border)", background: solFilter === "all" ? "#6b7280" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
+            >
+              Incl. time-barred
+            </button>
+            <span style={{ width: 1, alignSelf: "stretch", background: "var(--border)", margin: "0 4px" }} />
             <button
               onClick={() => setFilter("all")}
               style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4, border: "1px solid var(--border)", background: filter === "all" ? "#2D7D95" : "var(--bg-surface)", color: "var(--text-1)", cursor: "pointer" }}
@@ -2948,6 +2989,7 @@ export default function CreditPortfolio() {
                 <th style={{ textAlign: "left", padding: "6px 8px" }}>State</th>
                 <th style={{ textAlign: "left", padding: "6px 8px" }}>Contact</th>
                 <th style={{ textAlign: "left", padding: "6px 8px" }}>Case Types</th>
+                <th style={{ textAlign: "left", padding: "6px 8px" }}>SOL</th>
                 <th style={{ textAlign: "right", padding: "6px 8px" }}>Score</th>
                 <th style={{ textAlign: "right", padding: "6px 8px" }}>Recovery Est.</th>
               </tr>
@@ -2975,6 +3017,17 @@ export default function CreditPortfolio() {
                         </span>
                       ))}
                     </div>
+                  </td>
+                  <td style={{ padding: "8px 8px" }}>
+                    {(() => {
+                      const b = leadSolBadge(lead.solSummary);
+                      if (!b) return <span style={{ color: "var(--text-5)" }}>—</span>;
+                      return (
+                        <span title={b.title} style={{ fontSize: 10, padding: "1px 6px", borderRadius: 3, background: `${b.color}22`, color: b.color, border: `1px solid ${b.color}50`, fontWeight: 700, whiteSpace: "nowrap" }}>
+                          {b.short}{b.live ? ` ·${b.live}` : ""}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td style={{ textAlign: "right", padding: "8px 8px" }}>
                     <span style={{ fontWeight: 700, color: lead.score >= 75 ? "#22c55e" : lead.score >= 50 ? "#f59e0b" : "#ef4444" }}>
@@ -3012,7 +3065,11 @@ export default function CreditPortfolio() {
           )}
           {!peopleSearch && !pageLeadsLoading && !pageLeadsError && filteredLeads.length === 0 && (
             <div style={{ padding: 24, textAlign: "center", color: "var(--text-5)", fontSize: 12 }}>
-              {filter === "all" ? "No people on this page." : `No ${CASE_LABELS[filter] || filter} matches on this page — the filter applies within the current page of ${PAGE_SIZE}.`}
+              {solFilter === "live"
+                ? `No live (within-SOL or ongoing §524) people on this page — switch Status to "Incl. time-barred" to see all. Filters apply within the current page of ${PAGE_SIZE}.`
+                : filter === "all"
+                  ? "No people on this page."
+                  : `No ${CASE_LABELS[filter] || filter} matches on this page — the filter applies within the current page of ${PAGE_SIZE}.`}
             </div>
           )}
         </div>
