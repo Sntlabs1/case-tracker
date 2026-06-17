@@ -1,0 +1,205 @@
+{
+  "generated": "2026-06-17",
+  "reports": [
+    {
+      "token": "lvnv funding",
+      "name": "Lvnv Funding",
+      "file": "svr-lvnv-funding.html",
+      "consumers": 544542,
+      "disputedPct": 69.5,
+      "disputedOwing": 1129085,
+      "live": 88924,
+      "dockets": 3648
+    },
+    {
+      "token": "portfolio recovery associates",
+      "name": "Portfolio Recovery Associates",
+      "file": "svr-portfolio-recovery-associates.html",
+      "consumers": 508389,
+      "disputedPct": 72.2,
+      "disputedOwing": 919964,
+      "live": 37717,
+      "dockets": 4996
+    },
+    {
+      "token": "midland credit management",
+      "name": "Midland Credit Management",
+      "file": "svr-midland-credit-management.html",
+      "consumers": 319304,
+      "disputedPct": 72.4,
+      "disputedOwing": 375663,
+      "live": 47336,
+      "dockets": 5127
+    },
+    {
+      "token": "ad astra recovery services",
+      "name": "Ad Astra Recovery Services",
+      "file": "svr-ad-astra-recovery-services.html",
+      "consumers": 200376,
+      "disputedPct": 69.5,
+      "disputedOwing": 360363,
+      "live": 6,
+      "dockets": 166
+    },
+    {
+      "token": "jefferson capital systems",
+      "name": "Jefferson Capital Systems",
+      "file": "svr-jefferson-capital-systems.html",
+      "consumers": 295036,
+      "disputedPct": 61.2,
+      "disputedOwing": 349157,
+      "live": 47676,
+      "dockets": 1007
+    },
+    {
+      "token": "enhanced recovery company",
+      "name": "Enhanced Recovery Company",
+      "file": "svr-enhanced-recovery-company.html",
+      "consumers": 488611,
+      "disputedPct": 45.7,
+      "disputedOwing": 345718,
+      "live": 41,
+      "dockets": 1370
+    },
+    {
+      "token": "account resolution services",
+      "name": "Account Resolution Services",
+      "file": "svr-account-resolution-services.html",
+      "consumers": 156853,
+      "disputedPct": 54.2,
+      "disputedOwing": 305865,
+      "live": 321,
+      "dockets": 82
+    },
+    {
+      "token": "wakefield associates",
+      "name": "Wakefield Associates",
+      "file": "svr-wakefield-associates.html",
+      "consumers": 171929,
+      "disputedPct": 41.9,
+      "disputedOwing": 292380,
+      "live": 6669,
+      "dockets": 286
+    },
+    {
+      "token": "convergent outsourcing",
+      "name": "Convergent Outsourcing",
+      "file": "svr-convergent-outsourcing.html",
+      "consumers": 253355,
+      "disputedPct": 63.5,
+      "disputedOwing": 289143,
+      "live": 144,
+      "dockets": 1075
+    },
+    {
+      "token": "midland funding",
+      "name": "Midland Funding",
+      "file": "svr-midland-funding.html",
+      "consumers": 220387,
+      "disputedPct": 67.7,
+      "disputedOwing": 272056,
+      "live": 593,
+      "dockets": 3357
+    },
+    {
+      "token": "americollect",
+      "name": "Americollect",
+      "file": "svr-americollect.html",
+      "consumers": 100678,
+      "disputedPct": 47.2,
+      "disputedOwing": 250261,
+      "live": 1595,
+      "dockets": 147
+    },
+    {
+      "token": "ic system",
+      "name": "Ic System",
+      "file": "svr-ic-system.html",
+      "consumers": 286809,
+      "disputedPct": 57.3,
+      "disputedOwing": 203259,
+      "live": 23245,
+      "dockets": 1107
+    },
+    {
+      "token": "transworld systems",
+      "name": "Transworld Systems",
+      "file": "svr-transworld-systems.html",
+      "consumers": 150588,
+      "disputedPct": 54.4,
+      "disputedOwing": 203069,
+      "live": 13469,
+      "dockets": 1170
+    },
+    {
+      "token": "caine weiner",
+      "name": "Caine Weiner",
+      "file": "svr-caine-weiner.html",
+      "consumers": 170766,
+      "disputedPct": 57.9,
+      "disputedOwing": 180640,
+      "live": 21917,
+      "dockets": 189
+    },
+    {
+      "token": "national credit adjusters",
+      "name": "National Credit Adjusters",
+      "file": "svr-national-credit-adjusters.html",
+      "consumers": 140068,
+      "disputedPct": 68.6,
+      "disputedOwing": 158334,
+      "live": 17540,
+      "dockets": 712
+    },
+    {
+      "token": "diversified consultants",
+      "name": "Diversified Consultants",
+      "file": "svr-diversified-consultants.html",
+      "consumers": 158889,
+      "disputedPct": 53.5,
+      "disputedOwing": 146399,
+      "live": 0,
+      "dockets": 835
+    },
+    {
+      "token": "commonwealth financial systems",
+      "name": "Commonwealth Financial Systems",
+      "file": "svr-commonwealth-financial-systems.html",
+      "consumers": 147497,
+      "disputedPct": 40.9,
+      "disputedOwing": 146291,
+      "live": 111,
+      "dockets": 503
+    },
+    {
+      "token": "credit collection services",
+      "name": "Credit Collection Services",
+      "file": "svr-credit-collection-services.html",
+      "consumers": 235874,
+      "disputedPct": 52.3,
+      "disputedOwing": 142725,
+      "live": 27452,
+      "dockets": 827
+    },
+    {
+      "token": "medical data systems",
+      "name": "Medical Data Systems",
+      "file": "svr-medical-data-systems.html",
+      "consumers": 83618,
+      "disputedPct": 44.4,
+      "disputedOwing": 124132,
+      "live": 1153,
+      "dockets": 214
+    },
+    {
+      "token": "united revenue corp",
+      "name": "United Revenue Corp",
+      "file": "svr-united-revenue-corp.html",
+      "consumers": 49276,
+      "disputedPct": 45.6,
+      "disputedOwing": 57739,
+      "live": 1723,
+      "dockets": 54
+    }
+  ]
+}

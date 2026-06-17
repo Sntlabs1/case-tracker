@@ -243,7 +243,7 @@ def main():
                else [canonical_token(a.defendant)])
     seen, outdir = set(), Path(a.out_dir)
     outdir.mkdir(parents=True, exist_ok=True)
-    done = 0
+    manifest = []
     for tok in targets:
         if tok in seen:
             continue
@@ -251,13 +251,23 @@ def main():
         m = compute(con, tok)
         if not m:
             print(f"  SKIP {tok}: no furnisher spellings match"); continue
-        out = Path(a.out) if (a.out and not a.batch) else outdir / f"svr-{tok.replace(' ','-')}.html"
+        fname = f"svr-{tok.replace(' ','-')}.html"
+        out = Path(a.out) if (a.out and not a.batch) else outdir / fname
         out.write_text(render(m))
         dk = m["dockets"]
+        manifest.append({"token": tok, "name": tok.title(), "file": out.name,
+                         "consumers": m["ppl"], "disputedPct": m["disp_pct"],
+                         "disputedOwing": m["disp_owe"], "live": m["live_ppl"],
+                         "dockets": dk["total"] if dk else 0})
         print(f"  {tok:34s} ppl={m['ppl']:>9,} disp={m['disp_pct']:>4}% owe={m['disp_owe']:>9,} "
               f"live={m['live_ppl']:>8,} dockets={dk['total'] if dk else 'n/a'} -> {out.name}", flush=True)
-        done += 1
-    print(f"\nGenerated {done} report(s) in {outdir}")
+    # Manifest drives the platform tab; sort by disputed-still-owing (impact).
+    if a.batch or len(manifest) > 1 or not a.out:
+        manifest.sort(key=lambda r: r["disputedOwing"], reverse=True)
+        (outdir / "index.json").write_text(json.dumps(
+            {"generated": datetime.date.today().isoformat(), "reports": manifest}, indent=2))
+        print(f"  wrote {outdir/'index.json'} ({len(manifest)} reports)")
+    print(f"\nGenerated {len(manifest)} report(s) in {outdir}")
 
 
 if __name__ == "__main__":
