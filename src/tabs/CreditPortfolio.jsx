@@ -1811,7 +1811,7 @@ function ClientProfileModal({ profileId, profile, focusCase, loading, error, onC
               {profile.creditReport && (
                 <div>
                   <div style={{ background: "rgba(245,158,11,0.10)", border: "1px solid rgba(245,158,11,0.45)", borderLeft: "3px solid #f59e0b", borderRadius: 6, padding: "10px 14px", marginBottom: 16, fontSize: 12, color: "var(--text-2)", lineHeight: 1.5 }}>
-                    <strong style={{ color: "#d97706" }}>Note —</strong> Data vintage ~2019. Balances and statuses are not current; use for case signal identification only.
+                    <strong style={{ color: "#d97706" }}>Note —</strong> Each balance and status below is a snapshot as of that tradeline's last-reported date (shown per row){profile.dataVintage?.newestReported ? `; most recent report on file ${fmtYYYYMM(profile.dataVintage.newestReported)}` : ""}. Confirm current status at intake.
                   </div>
 
                   {/* Tradelines */}
