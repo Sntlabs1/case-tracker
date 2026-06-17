@@ -10,6 +10,7 @@ export default function ViolationReports() {
   const [reports, setReports] = useState(null);
   const [error, setError] = useState(null);
   const [active, setActive] = useState(null); // file currently shown
+  const [showAbout, setShowAbout] = useState(true);
 
   useEffect(() => {
     fetch("/svr/index.json")
@@ -32,13 +33,63 @@ export default function ViolationReports() {
   return (
     <div style={{ padding: "8px 0 0" }}>
       <div style={{ padding: "0 4px 14px" }}>
-        <h2 style={{ margin: "0 0 4px", color: "var(--text-1)", fontSize: 20 }}>
-          Systemic Violation Reports
-        </h2>
-        <div style={{ fontSize: 12, color: "var(--text-5)" }}>
-          Aggregate FCRA § 1681i furnisher analysis — {reports.length} defendants. Click a
-          defendant to view the full report. Aggregate-only, no PII.
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <h2 style={{ margin: "0 0 4px", color: "var(--text-1)", fontSize: 20 }}>
+            Systemic Violation Reports
+          </h2>
+          <button
+            onClick={() => setShowAbout((s) => !s)}
+            style={{ fontSize: 11, color: "var(--accent)", background: "none", border: "none", cursor: "pointer" }}
+          >
+            {showAbout ? "Hide overview" : "What is this?"}
+          </button>
         </div>
+        <div style={{ fontSize: 12, color: "var(--text-5)" }}>
+          Aggregate FCRA furnisher analysis — {reports.length} defendants. Click a defendant to view
+          the full report. Aggregate-only, no PII.
+        </div>
+
+        {showAbout && (
+          <div style={{ marginTop: 12, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 10, padding: "16px 18px", lineHeight: 1.55, maxWidth: 980 }}>
+            <div style={{ fontWeight: 700, color: "var(--text-1)", fontSize: 14, marginBottom: 8 }}>
+              What this is — please read before sharing
+            </div>
+            <p style={{ margin: "0 0 10px", fontSize: 13, color: "var(--text-2)" }}>
+              Each report analyzes one debt collector / furnisher across a <b>~5.5 million-consumer
+              credit panel</b> — statistics only, no personal data. It measures how many consumers
+              <b> disputed</b> that furnisher's account and had it <b>continue to report</b>, then sizes
+              that population (numerosity) and surfaces the pattern (commonality). This is analysis no
+              single law firm can run, because a firm only sees its own clients.
+            </p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.35)", borderRadius: 8, padding: "10px 12px" }}>
+                <div style={{ fontWeight: 700, fontSize: 12, color: "#15803d", marginBottom: 4 }}>What it proves</div>
+                <div style={{ fontSize: 12, color: "var(--text-3)" }}>
+                  A verifiable fact and a class-size signal: how many people disputed this furnisher's
+                  tradelines and they kept reporting — plus where they live and how many are still being
+                  reported today. It identifies and sizes the opportunity.
+                </div>
+              </div>
+              <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.45)", borderRadius: 8, padding: "10px 12px" }}>
+                <div style={{ fontWeight: 700, fontSize: 12, color: "#b45309", marginBottom: 4 }}>What it does NOT prove</div>
+                <div style={{ fontSize: 12, color: "var(--text-3)" }}>
+                  It is a <b>screening tool, not a liability finding</b>. The dispute flag shows a dispute
+                  was filed and reporting continued — it does <b>not</b> by itself establish the
+                  information was inaccurate or that the reinvestigation was unreasonable. Those elements
+                  require merits work: test disputes, discovery into the furnisher's dispute procedures,
+                  and accuracy sampling.
+                </div>
+              </div>
+            </div>
+
+            <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--text-4)" }}>
+              <b>Strongest objective signals</b> (closer to provable inaccuracy than the dispute rate
+              alone): <b>double-sold / duplicate reporting</b> (the same debt reported by two collectors)
+              and <b>obsolete reporting</b>. Treat the dispute rate as a reason to investigate, not a verdict.
+            </p>
+          </div>
+        )}
       </div>
 
       <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
