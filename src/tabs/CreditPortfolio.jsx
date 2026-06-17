@@ -355,6 +355,14 @@ function signalSol(sig, caseType, ingestedAt) {
   const meta = sig && typeof sig === "object" ? SOL_META[sig.solStatus] : null;
   if (meta) {
     const when = sig.lastReported ? ` (last reported ${fmtYYYYMM(sig.lastReported)})` : "";
+    // §524 "no SOL" only holds while the line is STILL reporting. Downgrade
+    // discharge signals last reported before 2024 to a verify-state caution —
+    // they are historical, not live.
+    if (sig.solStatus === "discharge_ongoing" && (sig.lastReported || "") < "2024-01") {
+      return { status: "caution", color: "#f59e0b", short: "§524 STALE",
+               label: "Historical §524 discharge violation" + when +
+                      " — verify it is still being reported (no SOL only while reporting)" };
+    }
     return { status: meta.status, color: meta.color, short: meta.short, label: meta.label + when };
   }
   const legacy = solStatus(caseType, ingestedAt);
@@ -2231,6 +2239,9 @@ export default function CreditPortfolio() {
   // state UDAP, or an ongoing §524 discharge violation. solSummary is the
   // per-status signal-count map written at ingest (e.g. {live: 8, time_barred: 2}).
   const leadIsLive = (l) => {
+    // Prefer the API's recency-aware flag (stale §524 excluded); fall back to
+    // the solSummary heuristic for older payloads that predate liveNow.
+    if (typeof l.liveNow === "boolean") return l.liveNow;
     const s = l.solSummary || {};
     return !!(s.live || s.live_state_udap || s.discharge_ongoing);
   };

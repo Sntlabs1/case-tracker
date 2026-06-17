@@ -52,9 +52,28 @@ async function pageByScore(cursor, limit) {
   return { ids, nextCursor };
 }
 
+// A §524 discharge violation is only "ongoing" (no SOL) while the line is still
+// being reported. Many records carry solStatus "discharge_ongoing" on tradelines
+// last reported years ago — those are historical, not live. Treat discharge as
+// live only if reported on/after this cutoff (YYYY-MM string compare is valid).
+const DISCHARGE_LIVE_CUTOFF = "2024-01";
+
+function signalIsLiveNow(s) {
+  if (s.solStatus === "live" || s.solStatus === "live_state_udap") return true;
+  if (s.solStatus === "discharge_ongoing") return (s.lastReported || "") >= DISCHARGE_LIVE_CUTOFF;
+  return false;
+}
+
 // Public lead shape for one stored client record.
 function toLead(r) {
   const c = typeof r === "string" ? JSON.parse(r) : r;
+  const signals = (c.cases || []).map(s => ({
+    caseType:     s.caseType,
+    defendant:    s.defendant,
+    strength:     s.strength,
+    solStatus:    s.solStatus,
+    lastReported: s.lastReported || null,
+  }));
   return {
     id:             c.id,
     name:           c.name,
@@ -64,12 +83,9 @@ function toLead(r) {
     score:          c.priorityScore,
     actionable:     c.actionable ?? null,
     cases:          c.matchedCases || [],
-    signals:        (c.cases || []).map(s => ({
-      caseType:   s.caseType,
-      defendant:  s.defendant,
-      strength:   s.strength,
-      solStatus:  s.solStatus,
-    })),
+    signals,
+    // Recency-aware: any signal live right now (stale §524 does NOT count).
+    liveNow:        signals.some(signalIsLiveNow),
     solSummary:     c.solSummary || null,
     recovery:       c.recoveryEstimate || {},
     intakeReady:    c.intakeReady,
