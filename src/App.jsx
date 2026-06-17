@@ -219,20 +219,13 @@ export default function App() {
       }}>
         {/* Brand */}
         <div style={{ padding: "22px 20px 18px", borderBottom: "1px solid rgba(255,255,255,0.12)", position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingRight: 28 }}>
-            <div style={{
-              width: 38, height: 38, background: "rgba(255,255,255,0.18)", borderRadius: 3,
-              display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-            }}>
-              <BullIcon />
+          {/* EVERBYTE | SNT LABS wordmark — matches the report deliverables (Syncopate) */}
+          <div style={{ paddingRight: 28 }}>
+            <div style={{ fontFamily: "'Syncopate', 'DM Sans', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.2em", color: "#ffffff", lineHeight: 1.1 }}>
+              EVERBYTE
             </div>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", letterSpacing: "0.22em", textTransform: "uppercase", marginBottom: 2 }}>
-                Ticket Toro
-              </div>
-              <div style={{ fontWeight: 400, fontSize: 15, color: "#ffffff", letterSpacing: "0.005em", lineHeight: 1.1, fontFamily: "'Playfair Display', Georgia, serif" }}>
-                Class Action Intel
-              </div>
+            <div style={{ fontFamily: "'Syncopate', 'DM Sans', sans-serif", fontWeight: 400, fontSize: 9.5, letterSpacing: "0.32em", color: "rgba(255,255,255,0.55)", marginTop: 6 }}>
+              SNT&nbsp;LABS
             </div>
           </div>
           {/* Collapse button */}
