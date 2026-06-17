@@ -25,6 +25,7 @@ import SourceMonitor from "./tabs/SourceMonitor.jsx";
 import CreditPortfolio from "./tabs/CreditPortfolio.jsx";
 import ClaimantMatches from "./tabs/ClaimantMatches.jsx";
 import ViolationReports from "./tabs/ViolationReports.jsx";
+import Opportunities from "./tabs/Opportunities.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 
 const TABS = [
@@ -38,6 +39,7 @@ const TABS = [
   { id: "outreach",     label: "Pending Outreach" },
   { id: "portfolio",    label: "Portfolio" },
   { id: "creditportfolio", label: "Credit Portfolio" },
+  { id: "opportunities", label: "Opportunities" },
   { id: "violationreports", label: "Violation Reports" },
   { id: "claimantmatches", label: "Claimant Matches" },
   { id: "campaigns",    label: "Campaigns" },
@@ -347,6 +349,7 @@ export default function App() {
             {tab === "sources"      && <Sources />}
             {tab === "sourcemonitor"    && <SourceMonitor />}
             {tab === "creditportfolio" && <CreditPortfolio />}
+            {tab === "opportunities" && <Opportunities />}
             {tab === "violationreports" && <ViolationReports />}
             {tab === "claimantmatches" && <ClaimantMatches />}
             {tab === "agents"          && <Agents />}
