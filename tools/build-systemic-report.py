@@ -2,21 +2,21 @@
 """
 Systemic Furnisher-Violation Report generator (business direction #1).
 
-Produces a single, self-contained, presentable HTML report for ONE defendant —
-the aggregate, class-cert-grade statistics no plaintiff firm can compute without
-the full population: numerosity, §1681i dispute-ignored rate, disputed-still-
-owing, live (current) harm, account composition, geographic distribution, and
-double-sold-debt (chain-of-title) detection. Aggregate-only, NO PII.
+Per-defendant, self-contained HTML report from the DuckDB engine — the
+aggregate, class-cert-grade statistics no plaintiff firm can compute without the
+full population: numerosity, §1681i dispute-ignored rate, disputed-still-owing,
+live (current) harm, account composition, geographic distribution, double-sold
+chain-of-title, the federal docket landscape, and FCRA §1681n recovery sizing.
+Aggregate-only, NO PII.
 
-DuckDB over the LEX tradeline parquets (no cr_db.db needed). Grouping is by the
-canonical defendant token so spelling variants collapse to one defendant.
+  python3 tools/build-systemic-report.py --defendant "LVNV"
+  python3 tools/build-systemic-report.py --batch            # top debt buyers
+  python3 tools/build-systemic-report.py --batch --out-dir data/credit-com-report/svr
 
-  /usr/bin/python3 tools/build-systemic-report.py --defendant "LVNV"
-  /usr/bin/python3 tools/build-systemic-report.py --defendant "Portfolio Recovery" --out data/credit-com-report/svr-portfolio.html
-
-Data: LEX tradelines (224.7M rows / 5.53M people), last_reported through 2026-05.
+DuckDB over LEX tradeline parquets (224.7M rows, through 2026-05). Docket data
+from the per-defendant files in data/pacer-cases/.
 """
-import duckdb, sys, html, argparse, datetime
+import duckdb, sys, html, argparse, datetime, json, re
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -25,60 +25,86 @@ from defendant_token import canonical_token
 SRC = Path("/Users/stef/credit-data-src")
 TL  = str(SRC / "LEX_EV_Tradelines_*.parquet")
 IDF = str(SRC / "LEX_EV_Identity_*.parquet")
-FCRA_LOW, FCRA_HIGH = 100, 1000  # 15 USC 1681n statutory damages per willful violation
+PACER_DIR = Path(__file__).parent.parent / "data" / "pacer-cases"
+PANEL = 5528402          # distinct people in the LEX panel
+FCRA_LOW, FCRA_HIGH = 100, 1000
 RECENT_CUTOFF = "2024-01-01"
+
+# Top debt buyers / collectors for batch mode (display names -> canonicalized).
+BATCH_DEFENDANTS = [
+    "LVNV Funding", "Portfolio Recovery Associates", "Midland Credit Management",
+    "Midland Funding", "Jefferson Capital Systems", "Convergent Outsourcing",
+    "I.C. System", "Enhanced Recovery Company", "Account Resolution Services",
+    "AD Astra Recovery Services", "Wakefield & Associates", "Transworld Systems",
+    "Diversified Consultants", "National Credit Adjusters", "Commonwealth Financial Systems",
+    "Credit Collection Services", "Americollect", "Medical Data Systems",
+    "Caine & Weiner", "United Revenue Corp",
+]
 
 MMYY = lambda c: (f"TRY(make_date(CASE WHEN CAST(substr({c},3,2) AS INT)<=30 THEN 2000 ELSE 1900 END"
                   f"+CAST(substr({c},3,2) AS INT), CAST(substr({c},1,2) AS INT), 1))")
 
 
+# ---- docket landscape (PACER per-defendant files) ----------------------------
+_pacer_map = None
+def pacer_index():
+    global _pacer_map
+    if _pacer_map is None:
+        _pacer_map = {}
+        for p in PACER_DIR.glob("*.json"):
+            if p.name.startswith("_"):
+                continue
+            name = re.sub(r"\([^)]*\)", "", p.stem).replace("_", " ").strip()
+            _pacer_map.setdefault(canonical_token(name), p)
+    return _pacer_map
+
+
+def dockets(target):
+    p = pacer_index().get(target)
+    if not p:
+        return None
+    d = json.loads(p.read_text())
+    cases = d.get("cases", [])
+    recent = sorted([c for c in cases if (c.get("dateFiled") or "") >= "2024-01-01"],
+                    key=lambda c: c.get("dateFiled", ""), reverse=True)
+    examples = recent[:6] if recent else sorted(cases, key=lambda c: c.get("dateFiled", ""), reverse=True)[:6]
+    return dict(total=d.get("caseCount", len(cases)), open=d.get("openCases", 0),
+                closed=d.get("closedCases", 0), recent24=len(recent), examples=examples)
+
+
+# ---- per-defendant metrics ---------------------------------------------------
 def compute(con, target):
-    # restrict to the canonical defendant via a raw->keep map (named cols only;
-    # the EX parquets name the bureau col differently so SELECT * would fail).
-    raws = [r[0] for r in con.execute(
-        f"SELECT DISTINCT creditor_name_raw FROM read_parquet('{TL}') WHERE creditor_name_raw IS NOT NULL").fetchall()]
-    keep = [r for r in raws if canonical_token(r) == target]
-    if not keep:
-        sys.exit(f"No furnisher spellings map to canonical token '{target}'")
-    con.execute("CREATE TEMP TABLE keep(raw VARCHAR)")
-    con.executemany("INSERT INTO keep VALUES (?)", [(r,) for r in keep])
-    con.execute(f"""CREATE TEMP TABLE d AS SELECT t.internal_user_id uid, t.account_status status,
+    con.execute("CREATE OR REPLACE TEMP TABLE keep AS SELECT raw FROM allmap WHERE canon = ?", [target])
+    if con.execute("SELECT count(*) FROM keep").fetchone()[0] == 0:
+        return None
+    con.execute(f"""CREATE OR REPLACE TEMP TABLE d AS SELECT t.internal_user_id uid, t.account_status status,
         t.open_date, t.last_reported_date lrd, t.dispute_flag disp, t.current_balance_cents bal,
         lower(trim(t.original_creditor_name)) oc
         FROM read_parquet('{TL}') t JOIN keep k ON k.raw=t.creditor_name_raw""")
-
-    base = con.execute("""SELECT count(*) tl, count(DISTINCT uid) ppl, sum(disp) disp,
+    base = con.execute(f"""SELECT count(*) tl, count(DISTINCT uid) ppl, sum(disp) disp,
         sum(CASE WHEN disp=1 AND bal>0 THEN 1 ELSE 0 END) disp_owe,
         count(DISTINCT CASE WHEN disp=1 THEN uid END) disp_ppl,
         round(avg(CASE WHEN bal>0 THEN bal END)/100.0,0) avg_bal,
         min(lrd) first_rep, max(lrd) last_rep,
-        count(DISTINCT CASE WHEN lrd>=DATE '%s' THEN uid END) live_ppl,
-        sum(CASE WHEN lrd>=DATE '%s' THEN 1 ELSE 0 END) live_tl
-        FROM d""" % (RECENT_CUTOFF, RECENT_CUTOFF)).fetchone()
+        count(DISTINCT CASE WHEN lrd>=DATE '{RECENT_CUTOFF}' THEN uid END) live_ppl,
+        sum(CASE WHEN lrd>=DATE '{RECENT_CUTOFF}' THEN 1 ELSE 0 END) live_tl
+        FROM d""").fetchone()
     status = con.execute("SELECT status,count(*) c FROM d GROUP BY 1 ORDER BY 2 DESC LIMIT 8").fetchall()
     states = con.execute(f"""SELECT i.current_address_state st, count(DISTINCT d.uid) c
-        FROM d JOIN read_parquet('{IDF}') i ON i.internal_user_id=d.uid WHERE i.current_address_state IS NOT NULL
-        GROUP BY 1 ORDER BY 2 DESC LIMIT 12""").fetchall()
-    # double-sold: this defendant's (uid, original_creditor) also furnished by a
-    # DIFFERENT furnisher = the same debt reported by multiple buyers.
-    con.execute("CREATE TEMP TABLE dp AS SELECT DISTINCT uid, oc FROM d WHERE oc IS NOT NULL AND length(oc)>2")
-    # double-sold: this defendant's (consumer, original_creditor) pairs that also
-    # appear under a furnisher whose canonical token is a DIFFERENT defendant.
-    con.execute("CREATE TEMP TABLE allmap(raw VARCHAR, canon VARCHAR)")
-    con.executemany("INSERT INTO allmap VALUES (?,?)", [(r, canonical_token(r)) for r in raws])
-    double_sold = con.execute(f"""
-        SELECT count(*) FROM (
-          SELECT DISTINCT dp.uid, dp.oc
-          FROM dp
-          JOIN read_parquet('{TL}') t ON t.internal_user_id=dp.uid
-               AND lower(trim(t.original_creditor_name))=dp.oc
+        FROM d JOIN read_parquet('{IDF}') i ON i.internal_user_id=d.uid
+        WHERE i.current_address_state IS NOT NULL GROUP BY 1 ORDER BY 2 DESC LIMIT 12""").fetchall()
+    con.execute("CREATE OR REPLACE TEMP TABLE dp AS SELECT DISTINCT uid, oc FROM d WHERE oc IS NOT NULL AND length(oc)>2")
+    double_sold = con.execute(f"""SELECT count(*) FROM (
+          SELECT DISTINCT dp.uid, dp.oc FROM dp
+          JOIN read_parquet('{TL}') t ON t.internal_user_id=dp.uid AND lower(trim(t.original_creditor_name))=dp.oc
           JOIN allmap m ON m.raw=t.creditor_name_raw
-          WHERE m.canon <> '{target}' AND m.canon <> '' )""").fetchone()[0]
-    return dict(target=target, spellings=len(keep), tl=base[0], ppl=base[1], disp=base[2],
-                disp_owe=base[3], disp_ppl=base[4], avg_bal=base[5], first_rep=str(base[6]),
-                last_rep=str(base[7]), live_ppl=base[8], live_tl=base[9],
+          WHERE m.canon <> ? AND m.canon <> '' )""", [target]).fetchone()[0]
+    return dict(target=target, spellings=con.execute("SELECT count(*) FROM keep").fetchone()[0],
+                tl=base[0], ppl=base[1], disp=base[2], disp_owe=base[3], disp_ppl=base[4],
+                avg_bal=base[5], first_rep=str(base[6]), last_rep=str(base[7]),
+                live_ppl=base[8], live_tl=base[9],
                 disp_pct=round(100.0*base[2]/base[0], 1) if base[0] else 0,
-                status=status, states=states, double_sold=double_sold)
+                status=status, states=states, double_sold=double_sold, dockets=dockets(target))
 
 
 def fmt(n): return f"{n:,}" if isinstance(n, int) else (f"{n:,.0f}" if n else "0")
@@ -91,14 +117,31 @@ def render(m):
     rows_states = "".join(f"<tr><td>{html.escape(str(s[0]))}</td><td class=n>{fmt(s[1])}</td></tr>" for s in m["states"])
     rec_lo, rec_hi = m["disp_ppl"]*FCRA_LOW, m["disp_ppl"]*FCRA_HIGH
     today = datetime.date.today().isoformat()
+
+    dk = m["dockets"]
+    if dk:
+        ex = "".join(
+            f"<tr><td>{html.escape((c.get('caseTitle') or '')[:60])}</td>"
+            f"<td>{html.escape((c.get('courtId') or '').upper())}</td>"
+            f"<td>{html.escape(c.get('dateFiled') or '')}</td>"
+            f"<td>{html.escape(c.get('status') or '')}</td></tr>" for c in dk["examples"])
+        docket_section = f"""
+<h2>Federal docket landscape</h2>
+<p>{html.escape(title)} is named in <b>{fmt(dk['total'])}</b> federal consumer-protection dockets
+({fmt(dk['open'])} open, {fmt(dk['recent24'])} filed since 2024) — the theory is actively litigated and
+the plaintiffs' bar is engaged. Recent filings:</p>
+<table><tr><th>Case</th><th>Court</th><th>Filed</th><th>Status</th></tr>{ex}</table>
+<p style="font-size:11px;color:var(--muted);margin-top:6px">Federal dockets naming this defendant (NOS 480/485/890), enumerated via PACER.</p>"""
+    else:
+        docket_section = ""
+
     return f"""<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>Systemic Violation Report — {html.escape(title)}</title>
 <style>
 :root{{--ink:#1a1a1a;--muted:#6b6b6b;--accent:#2D7D95;--line:#e6e2d8;--cream:#faf8f3}}
 *{{box-sizing:border-box}}body{{margin:0;font-family:'DM Sans',-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--cream);line-height:1.55}}
 .wrap{{max-width:880px;margin:0 auto;padding:0 28px 64px}}
-header{{background:#262626;color:#f3efe6;padding:36px 28px;margin-bottom:0}}
-header .wrap{{padding-bottom:0;padding-top:0}}
+header{{background:#262626;color:#f3efe6;padding:36px 28px}}
 h1{{font-family:Georgia,serif;font-size:30px;margin:0 0 6px}}
 .sub{{color:#b9b2a3;font-size:13px}}
 h2{{font-family:Georgia,serif;font-size:19px;margin:34px 0 12px;border-bottom:2px solid var(--accent);padding-bottom:6px}}
@@ -116,12 +159,12 @@ p{{font-size:14px}}.lead{{font-size:15px}}
 .note{{background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:14px 16px;font-size:12px;color:var(--muted);margin-top:30px}}
 .big{{font-size:15px;background:#fbf3f0;border:1px solid #e8c9c0;border-left:3px solid #c0392b;border-radius:8px;padding:16px 18px;margin:18px 0}}
 </style></head><body>
-<header><div class=wrap><h1>Systemic Violation Report</h1>
-<div class=sub>{html.escape(title)} &nbsp;·&nbsp; FCRA § 1681i furnisher analysis &nbsp;·&nbsp; prepared {today}</div></div></header>
+<header><h1>Systemic Violation Report</h1>
+<div class=sub>{html.escape(title)} &nbsp;·&nbsp; FCRA § 1681i furnisher analysis &nbsp;·&nbsp; prepared {today}</div></header>
 <div class=wrap>
 
 <h2>Executive summary</h2>
-<p class=lead>Across a {fmt(5528402)}-consumer national credit panel, <b>{html.escape(title)}</b> furnished
+<p class=lead>Across a {fmt(PANEL)}-consumer national credit panel, <b>{html.escape(title)}</b> furnished
 <b>{fmt(m['tl'])}</b> tradelines to <b>{fmt(m['ppl'])}</b> distinct consumers. Of those tradelines,
 <b>{m['disp_pct']}%</b> were marked disputed yet continued to report — a population-wide pattern of
 furnishing after dispute that no single-plaintiff record set can establish.</p>
@@ -141,7 +184,7 @@ the violation is current, not historical.</div>
 <p>All natural persons in the United States as to whom {html.escape(title)} furnished a consumer-account
 tradeline to a nationwide credit reporting agency that the consumer disputed and which {html.escape(title)}
 thereafter continued to report, during the applicable limitations period. Panel evidence shows a class of
-at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common questions of law and fact as to
+at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common questions as to
 {html.escape(title)}'s reinvestigation and furnishing practices (commonality / predominance).</p>
 
 <h2>Numerosity &amp; commonality</h2>
@@ -160,6 +203,7 @@ at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common qu
 <div><h2>Account composition</h2><table><tr><th>Status</th><th>Tradelines</th></tr>{rows_status}</table></div>
 <div><h2>Geographic distribution</h2><table><tr><th>State</th><th>Consumers</th></tr>{rows_states}</table></div>
 </div>
+{docket_section}
 
 <h2>Recovery exposure (illustrative ceiling)</h2>
 <p>FCRA § 1681n provides statutory damages of $100–$1,000 per willful violation. Applied to the
@@ -167,31 +211,53 @@ at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common qu
 <b>{dollars(rec_lo)} – {dollars(rec_hi)}</b>, before actual or punitive damages and fees. A ceiling for
 scoping, not an expected recovery.</p>
 
-<div class=note><b>Methodology &amp; provenance.</b> Aggregate analysis of a {fmt(5528402)}-consumer national
+<div class=note><b>Methodology &amp; provenance.</b> Aggregate analysis of a {fmt(PANEL)}-consumer national
 credit panel (tradeline-level, last reported through May 2026). Furnisher spellings collapsed to one
 defendant via canonical normalization ({m['spellings']} source spellings). "Disputed" = the bureau dispute
-flag on the furnished tradeline. No personally identifying information is contained in this report.
-Statistics describe a systemic furnishing pattern; individual claims require individual verification.
-Not legal advice. Prepared {today}.</div>
+flag on the furnished tradeline. Docket counts from PACER. No personally identifying information is
+contained in this report. Statistics describe a systemic furnishing pattern; individual claims require
+individual verification. Not legal advice. Prepared {today}.</div>
 </div></body></html>"""
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--defendant", required=True)
+    ap.add_argument("--defendant")
+    ap.add_argument("--batch", action="store_true")
     ap.add_argument("--out")
+    ap.add_argument("--out-dir", default="data/credit-com-report")
     a = ap.parse_args()
-    target = canonical_token(a.defendant)
+    if not (a.defendant or a.batch):
+        ap.error("pass --defendant NAME or --batch")
+
     con = duckdb.connect(); con.execute("PRAGMA threads=6"); con.execute("SET memory_limit='8GB'")
     con.execute(f"SET temp_directory='{SRC/'_duckspill'}'")
-    print(f"computing Systemic Violation Report for '{a.defendant}' (token: {target}) ...")
-    m = compute(con, target)
-    out = Path(a.out) if a.out else Path(f"data/credit-com-report/svr-{target.replace(' ','-')}.html")
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(render(m))
-    print(f"  consumers={m['ppl']:,}  disputed={m['disp_pct']}%  disp_owe={m['disp_owe']:,}  "
-          f"live={m['live_ppl']:,}  double_sold={m['double_sold']:,}")
-    print(f"  wrote {out}")
+    # canonical map computed ONCE (reused across all defendants in batch mode)
+    print("building canonical furnisher map ...", flush=True)
+    raws = [r[0] for r in con.execute(
+        f"SELECT DISTINCT creditor_name_raw FROM read_parquet('{TL}') WHERE creditor_name_raw IS NOT NULL").fetchall()]
+    con.execute("CREATE TEMP TABLE allmap(raw VARCHAR, canon VARCHAR)")
+    con.executemany("INSERT INTO allmap VALUES (?,?)", [(r, canonical_token(r)) for r in raws])
+
+    targets = ([canonical_token(d) for d in BATCH_DEFENDANTS] if a.batch
+               else [canonical_token(a.defendant)])
+    seen, outdir = set(), Path(a.out_dir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    done = 0
+    for tok in targets:
+        if tok in seen:
+            continue
+        seen.add(tok)
+        m = compute(con, tok)
+        if not m:
+            print(f"  SKIP {tok}: no furnisher spellings match"); continue
+        out = Path(a.out) if (a.out and not a.batch) else outdir / f"svr-{tok.replace(' ','-')}.html"
+        out.write_text(render(m))
+        dk = m["dockets"]
+        print(f"  {tok:34s} ppl={m['ppl']:>9,} disp={m['disp_pct']:>4}% owe={m['disp_owe']:>9,} "
+              f"live={m['live_ppl']:>8,} dockets={dk['total'] if dk else 'n/a'} -> {out.name}", flush=True)
+        done += 1
+    print(f"\nGenerated {done} report(s) in {outdir}")
 
 
 if __name__ == "__main__":
