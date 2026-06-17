@@ -158,20 +158,28 @@ p{{font-size:14px}}.lead{{font-size:15px}}
 .cols{{display:grid;grid-template-columns:1fr 1fr;gap:24px}}
 .note{{background:#fff;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:14px 16px;font-size:12px;color:var(--muted);margin-top:30px}}
 .big{{font-size:15px;background:#fbf3f0;border:1px solid #e8c9c0;border-left:3px solid #c0392b;border-radius:8px;padding:16px 18px;margin:18px 0}}
+.caveat{{font-size:12.5px;background:#fff8ec;border:1px solid #e8d9b5;border-left:3px solid #d4a72c;border-radius:8px;padding:13px 16px;margin:22px 0 4px;color:#5c5238}}
 </style></head><body>
 <header><h1>Systemic Violation Report</h1>
-<div class=sub>{html.escape(title)} &nbsp;·&nbsp; FCRA § 1681i furnisher analysis &nbsp;·&nbsp; prepared {today}</div></header>
+<div class=sub>{html.escape(title)} &nbsp;·&nbsp; FCRA furnisher dispute-pattern screening &nbsp;·&nbsp; prepared {today}</div></header>
 <div class=wrap>
+
+<div class=caveat><b>Screening analysis — not a liability finding.</b> This report identifies and sizes a
+consumer population and a dispute pattern worth investigating. It does <b>not</b> establish that any
+account was inaccurately reported or that {html.escape(title)} failed to reasonably reinvestigate — the
+elements of an FCRA claim, which require individual merits verification (test disputes, discovery into
+dispute-handling procedures, accuracy sampling). The dispute figures are a screening signal, not proof.</div>
 
 <h2>Executive summary</h2>
 <p class=lead>Across a {fmt(PANEL)}-consumer national credit panel, <b>{html.escape(title)}</b> furnished
 <b>{fmt(m['tl'])}</b> tradelines to <b>{fmt(m['ppl'])}</b> distinct consumers. Of those tradelines,
-<b>{m['disp_pct']}%</b> were marked disputed yet continued to report — a population-wide pattern of
-furnishing after dispute that no single-plaintiff record set can establish.</p>
-<div class=big><b>The systemic signal:</b> {fmt(m['disp_ppl'])} consumers disputed a {html.escape(title)}
-tradeline; {fmt(m['disp_owe'])} of those disputed tradelines were still reporting a positive balance.
-{fmt(m['live_ppl'])} consumers have a {html.escape(title)} tradeline reported on/after {RECENT_CUTOFF[:4]} —
-the violation is current, not historical.</div>
+<b>{m['disp_pct']}%</b> were marked disputed yet continued to report — a population-wide dispute
+pattern that no single-firm client set can observe.</p>
+<div class=big><b>The pattern to investigate:</b> {fmt(m['disp_ppl'])} consumers disputed a {html.escape(title)}
+tradeline that continued to report; {fmt(m['disp_owe'])} of those disputed tradelines were still reporting
+a positive balance. {fmt(m['live_ppl'])} consumers have a {html.escape(title)} tradeline reported on/after
+{RECENT_CUTOFF[:4]} — the reporting is current, so claims arising from it would be timely. Whether this
+pattern reflects inadequate reinvestigation is the merits question to test.</div>
 
 <div class=kpis>
 <div class=kpi><div class=v>{fmt(m['ppl'])}</div><div class=l>Consumers (numerosity)</div></div>
@@ -180,14 +188,16 @@ the violation is current, not historical.</div>
 <div class=kpi><div class=v>{fmt(m['live_ppl'])}</div><div class=l>Live since {RECENT_CUTOFF[:4]}</div></div>
 </div>
 
-<h2>Proposed class definition</h2>
-<p>All natural persons in the United States as to whom {html.escape(title)} furnished a consumer-account
-tradeline to a nationwide credit reporting agency that the consumer disputed and which {html.escape(title)}
-thereafter continued to report, during the applicable limitations period. Panel evidence shows a class of
-at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common questions as to
-{html.escape(title)}'s reinvestigation and furnishing practices (commonality / predominance).</p>
+<h2>Candidate class (for investigation)</h2>
+<p>Should the disputes reflect inaccurate reporting or inadequate reinvestigation — which requires merits
+verification — the candidate class would be: all natural persons in the United States as to whom
+{html.escape(title)} furnished a consumer-account tradeline that the consumer disputed and which
+{html.escape(title)} thereafter continued to report, during the applicable limitations period. The panel
+identifies at least <b>{fmt(m['disp_ppl'])}</b> consumers fitting this screen — a numerosity indicator;
+whether common questions as to {html.escape(title)}'s reinvestigation practices predominate is the merits
+question to be tested.</p>
 
-<h2>Numerosity &amp; commonality</h2>
+<h2>Population &amp; dispute pattern</h2>
 <table><tr><th>Metric</th><th>Value</th></tr>
 <tr><td>Distinct consumers furnished</td><td class=n>{fmt(m['ppl'])}</td></tr>
 <tr><td>Total tradelines furnished</td><td class=n>{fmt(m['tl'])}</td></tr>
@@ -205,18 +215,21 @@ at least <b>{fmt(m['disp_ppl'])}</b> such consumers (numerosity), with common qu
 </div>
 {docket_section}
 
-<h2>Recovery exposure (illustrative ceiling)</h2>
-<p>FCRA § 1681n provides statutory damages of $100–$1,000 per willful violation. Applied to the
-{fmt(m['disp_ppl'])} consumers with a disputed {html.escape(title)} tradeline, statutory exposure ranges
-<b>{dollars(rec_lo)} – {dollars(rec_hi)}</b>, before actual or punitive damages and fees. A ceiling for
-scoping, not an expected recovery.</p>
+<h2>Recovery exposure (illustrative ceiling — if liability is established)</h2>
+<p>FCRA § 1681n provides statutory damages of $100–$1,000 per willful violation. <b>If</b> liability were
+established across the {fmt(m['disp_ppl'])} consumers in this screen, statutory exposure would range
+<b>{dollars(rec_lo)} – {dollars(rec_hi)}</b>, before actual or punitive damages and fees. This is an
+upper-bound scoping figure — not a prediction of liability or an expected recovery.</p>
 
 <div class=note><b>Methodology &amp; provenance.</b> Aggregate analysis of a {fmt(PANEL)}-consumer national
 credit panel (tradeline-level, last reported through May 2026). Furnisher spellings collapsed to one
-defendant via canonical normalization ({m['spellings']} source spellings). "Disputed" = the bureau dispute
-flag on the furnished tradeline. Docket counts from PACER. No personally identifying information is
-contained in this report. Statistics describe a systemic furnishing pattern; individual claims require
-individual verification. Not legal advice. Prepared {today}.</div>
+defendant via canonical normalization ({m['spellings']} source spellings). <b>"Disputed" = the bureau
+dispute compliance indicator on the tradeline</b> — evidence a dispute was filed and the item continued
+to report. It is a <b>screening signal, not proof</b> that the information was inaccurate or that
+reinvestigation was unreasonable; establishing an FCRA violation requires individual merits verification
+(test disputes, discovery into dispute-handling procedures, accuracy sampling). The double-sold and
+obsolete-reporting figures are closer to objective, record-based inaccuracy. Docket counts from PACER.
+No personally identifying information is contained in this report. Not legal advice. Prepared {today}.</div>
 </div></body></html>"""
 
 
