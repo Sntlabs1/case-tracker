@@ -23,6 +23,9 @@ Nothing writes unless --apply is passed. Use --limit N to sample (dedup).
 import os, sys, csv, json, argparse, urllib.request, time
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+from defendant_token import canonical_token
+
 CORR = Path("/Users/stef/credit-data-src/corrections")
 N_SHARDS = 16
 # Corrected §524 figures (from tools/credit-correction-export.py + signal compute)
@@ -131,21 +134,72 @@ def fix_dedup(apply, limit):
         print("  [dry-run] no writes")
 
 
+# ---- casepeople surgical removal of suppressed twins -------------------------
+def fix_casepeople(apply, limit):
+    rows = list(csv.DictReader(open(CORR / "dedup_suppress.csv")))
+    if limit:
+        rows = rows[:limit]
+    print(f"\n=== CASEPEOPLE CLEANUP ({len(rows):,} candidate twins{' [SAMPLE]' if limit else ''}) ===")
+    ck = CORR / "casepeople_checkpoint.json"
+    start = json.loads(ck.read_text())["next"] if (apply and ck.exists()) else 0
+    tally = dict(not_suppressed=0, processed=0, zrem_ops=0, removed=0)
+    B = 256
+    for i in range(start, len(rows), B):
+        batch = rows[i:i + B]
+        got = pipeline([["GET", f"client:lex_{r['lex_uid']}"] for r in batch])
+        zrems = []
+        for r, lx in zip(batch, got):
+            if not lx:
+                continue
+            d = json.loads(lx)
+            if not d.get("suppressed"):
+                tally["not_suppressed"] += 1
+                continue
+            tally["processed"] += 1
+            pid = f"lex_{r['lex_uid']}"
+            shard = shard_of(pid)
+            toks = set()
+            for sig in (d.get("cases") or []):
+                if sig.get("defendantToken"):
+                    toks.add(sig["defendantToken"])
+                ct = canonical_token(sig.get("defendant") or "")
+                if ct:
+                    toks.add(ct)
+            for tok in toks:
+                zrems.append(["ZREM", f"casepeople:{tok}:{shard}", pid])
+        tally["zrem_ops"] += len(zrems)
+        if apply and zrems:
+            res = pipeline(zrems)
+            tally["removed"] += sum(1 for x in res if x == 1)
+            ck.write_text(json.dumps({"next": i + B}))
+        if (i // B) % 20 == 0:
+            print(f"  ...{i+len(batch):,}/{len(rows):,}  suppressed_processed={tally['processed']:,} "
+                  f"zrem_ops={tally['zrem_ops']:,} removed={tally['removed']:,}", flush=True)
+    print(f"  RESULT: suppressed twins processed={tally['processed']:,}  "
+          f"ZREM ops={tally['zrem_ops']:,}  members removed={tally['removed']:,}")
+    if apply:
+        ck.unlink(missing_ok=True); print("  APPLIED.")
+    else:
+        print("  [dry-run] no writes")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--stats", action="store_true")
     ap.add_argument("--dedup", action="store_true")
+    ap.add_argument("--casepeople", action="store_true")
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args()
-    if not (a.stats or a.dedup):
-        ap.error("pass --stats and/or --dedup")
+    if not (a.stats or a.dedup or a.casepeople):
+        ap.error("pass --stats and/or --dedup and/or --casepeople")
     load_env()
     global URL, TOK
     URL, TOK = os.environ["KV_REST_API_URL"], os.environ["KV_REST_API_TOKEN"]
     print(f"MODE: {'APPLY (writes)' if a.apply else 'DRY-RUN (no writes)'}")
     if a.stats: fix_stats(a.apply)
     if a.dedup: fix_dedup(a.apply, a.limit)
+    if a.casepeople: fix_casepeople(a.apply, a.limit)
 
 
 if __name__ == "__main__":
