@@ -7,6 +7,10 @@ import INSIGHTS from "../data/creditInsights.json";
 // the app. Data is a precomputed aggregate snapshot (src/data/creditInsights.json)
 // extracted from the DuckDB pass over the 9.87GB raw corpus, so this tab is
 // self-contained and never depends on a live scan.
+//
+// Colors come from the theme variables (--text-*, --bg-surface, --border,
+// --accent-*) so the tab is legible in both light and dark mode. Saturated
+// status hues (green/amber/red) are kept literal because they carry meaning.
 
 // ─── FORMAT HELPERS ───────────────────────────────────────────────────────────
 
@@ -27,8 +31,8 @@ function StatCard({ label, value, sub, color = "var(--accent)" }) {
   return (
     <Card style={{ padding: "14px 16px" }}>
       <div style={{ fontSize: 26, fontWeight: 800, color, lineHeight: 1.05 }}>{value ?? "—"}</div>
-      <div style={{ fontSize: 12, color: "#e0e0f0", marginTop: 5 }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{sub}</div>}
+      <div style={{ fontSize: 12, color: "var(--text-2)", marginTop: 5 }}>{label}</div>
+      {sub && <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 2 }}>{sub}</div>}
     </Card>
   );
 }
@@ -36,11 +40,11 @@ function StatCard({ label, value, sub, color = "var(--accent)" }) {
 function SectionTitle({ n, title, note }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: "#e0e0f0", display: "flex", alignItems: "baseline", gap: 8 }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", display: "flex", alignItems: "baseline", gap: 8 }}>
         {n != null && <span style={{ color: "var(--accent)", fontSize: 12 }}>{n}</span>}
         <span>{title}</span>
       </div>
-      {note && <div style={{ fontSize: 11, color: "#666", marginTop: 3 }}>{note}</div>}
+      {note && <div style={{ fontSize: 11, color: "var(--text-5)", marginTop: 3 }}>{note}</div>}
     </div>
   );
 }
@@ -53,10 +57,10 @@ function HBars({ rows, fmt = fmtN, max }) {
       {rows.map((r, i) => (
         <div key={i} style={{ marginBottom: 9 }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3, fontSize: 11 }}>
-            <span style={{ color: "#c8c8e0" }}>{r.label}</span>
-            <span style={{ color: "#888" }}>{r.sub ?? fmt(r.value)}</span>
+            <span style={{ color: "var(--text-3)" }}>{r.label}</span>
+            <span style={{ color: "var(--text-5)" }}>{r.sub ?? fmt(r.value)}</span>
           </div>
-          <div style={{ height: 7, borderRadius: 4, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+          <div style={{ height: 7, borderRadius: 4, background: "var(--bg-surface)", overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${Math.max((r.value / top) * 100, r.value > 0 ? 1.5 : 0)}%`, background: r.color || "var(--accent)", borderRadius: 4, transition: "width .4s ease" }} />
           </div>
         </div>
@@ -81,7 +85,7 @@ function Histogram({ hist, height = 130, color = "var(--accent)", marker }) {
             <g key={i}>
               <rect x={px} y={height - h} width={bw} height={h} fill={color} opacity={0.85} rx={1} />
               {i % Math.ceil(n / 12) === 0 && (
-                <text x={px + bw / 2} y={height + 16} textAnchor="middle" fill="#555" fontSize={9}>{x}</text>
+                <text x={px + bw / 2} y={height + 16} textAnchor="middle" fill="var(--text-6)" fontSize={9}>{x}</text>
               )}
             </g>
           );
@@ -91,7 +95,7 @@ function Histogram({ hist, height = 130, color = "var(--accent)", marker }) {
           const mx = (idx < 0 ? n - 1 : idx) * (bw + 1);
           return <line x1={mx} y1={0} x2={mx} y2={height} stroke="#ef4444" strokeWidth={1} strokeDasharray="3 3" />;
         })()}
-        <line x1={0} y1={height} x2={n * (bw + 1)} y2={height} stroke="#333" strokeWidth={1} />
+        <line x1={0} y1={height} x2={n * (bw + 1)} y2={height} stroke="var(--border-md)" strokeWidth={1} />
       </svg>
     </div>
   );
@@ -107,13 +111,13 @@ function Funnel({ rows, fmt = fmtN }) {
         return (
           <div key={i} style={{ marginBottom: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 3 }}>
-              <span style={{ color: "#c8c8e0" }}>{label}</span>
-              <span style={{ color: "#888" }}>{fmt(val)}{i > 0 && top ? ` · ${Math.round((val / top) * 100)}%` : ""}</span>
+              <span style={{ color: "var(--text-3)" }}>{label}</span>
+              <span style={{ color: "var(--text-5)" }}>{fmt(val)}{i > 0 && top ? ` · ${Math.round((val / top) * 100)}%` : ""}</span>
             </div>
-            <div style={{ height: 22, borderRadius: 4, background: "rgba(255,255,255,0.04)", overflow: "hidden", position: "relative" }}>
-              <div style={{ height: "100%", width: `${w}%`, background: `linear-gradient(90deg, var(--accent), rgba(45,125,149,0.5))`, borderRadius: 4 }} />
+            <div style={{ height: 22, borderRadius: 4, background: "var(--bg-surface2)", overflow: "hidden", position: "relative" }}>
+              <div style={{ height: "100%", width: `${w}%`, background: `linear-gradient(90deg, var(--accent), var(--accent-dim))`, borderRadius: 4 }} />
             </div>
-            {note && <div style={{ fontSize: 10, color: "#555", marginTop: 2 }}>{note}</div>}
+            {note && <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 2 }}>{note}</div>}
           </div>
         );
       })}
@@ -130,17 +134,17 @@ function IndexBars({ rows }) {
         const w = Math.min(Math.abs(r.index - 1) * 100, 100);
         return (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "120px 1fr 50px", gap: 8, alignItems: "center", marginBottom: 7 }}>
-            <span style={{ fontSize: 11, color: "#c8c8e0" }}>{r.label}<span style={{ color: "#555", marginLeft: 5 }}>{r.ages}</span></span>
+            <span style={{ fontSize: 11, color: "var(--text-3)" }}>{r.label}<span style={{ color: "var(--text-6)", marginLeft: 5 }}>{r.ages}</span></span>
             <div style={{ display: "flex", alignItems: "center", height: 14 }}>
               <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
                 {!over && <div style={{ height: 10, width: `${w}%`, background: "#B83E2C", borderRadius: "3px 0 0 3px" }} />}
               </div>
-              <div style={{ width: 1, height: 14, background: "#555" }} />
+              <div style={{ width: 1, height: 14, background: "var(--border-md)" }} />
               <div style={{ flex: 1 }}>
-                {over && <div style={{ height: 10, width: `${w}%`, background: "#22c55e", borderRadius: "0 3px 3px 0" }} />}
+                {over && <div style={{ height: 10, width: `${w}%`, background: "#1f9e54", borderRadius: "0 3px 3px 0" }} />}
               </div>
             </div>
-            <span style={{ fontSize: 11, fontWeight: 700, color: over ? "#22c55e" : "#B83E2C", textAlign: "right" }}>{r.index.toFixed(2)}×</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: over ? "#1f9e54" : "#B83E2C", textAlign: "right" }}>{r.index.toFixed(2)}×</span>
           </div>
         );
       })}
@@ -148,7 +152,7 @@ function IndexBars({ rows }) {
   );
 }
 
-const BAND_COLORS = ["#B83E2C", "#f97316", "#f59e0b", "#2D7D95", "#22c55e"];
+const BAND_COLORS = ["#B83E2C", "#e07b39", "#d9a300", "#2D7D95", "#1f9e54"];
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 
@@ -167,11 +171,22 @@ export default function Trends() {
   const userKey = pop === "lex" ? "lex_users" : "ccom_users";
   const topStates = [...d.states].sort((a, b) => b[idxKey] - a[idxKey]).slice(0, 12);
 
+  const tabStyle = (active) => ({
+    fontSize: 12, padding: "6px 14px", borderRadius: 7, border: "none", cursor: "pointer", fontWeight: 600,
+    background: active ? "var(--accent-soft)" : "var(--bg-surface2)",
+    color: active ? "var(--accent-strong)" : "var(--text-5)",
+  });
+  const miniTabStyle = (active) => ({
+    fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer",
+    background: active ? "var(--accent-soft)" : "var(--bg-surface2)",
+    color: active ? "var(--accent-strong)" : "var(--text-5)",
+  });
+
   return (
     <div>
       <div style={{ marginBottom: 18 }}>
-        <h2 style={{ margin: "0 0 4px", fontSize: 20 }}>Data Trends &amp; Insights</h2>
-        <p style={{ color: "#888", fontSize: 13, margin: 0 }}>
+        <h2 style={{ margin: "0 0 4px", fontSize: 20, color: "var(--text-1)" }}>Data Trends &amp; Insights</h2>
+        <p style={{ color: "var(--text-4)", fontSize: 13, margin: 0 }}>
           Deep-dive analytics on the credit.com / Lexington Law corpus — coverage, score distribution, geography,
           generations, creditors, distress signals, contactability, and monetization. Snapshot generated {d.meta.generated}.
         </p>
@@ -183,23 +198,18 @@ export default function Trends() {
           { k: "lex", label: `Lexington Law — ${fmtCompact(d.coverage.lex.total)} people` },
           { k: "ccom", label: `Credit.com — ${fmtCompact(d.coverage.ccom.total)} people` },
         ].map(({ k, label }) => (
-          <button key={k} onClick={() => setPop(k)}
-            style={{ fontSize: 12, padding: "6px 14px", borderRadius: 7, border: "none", cursor: "pointer", fontWeight: 600,
-              background: pop === k ? "rgba(45,125,149,0.25)" : "rgba(255,255,255,0.04)",
-              color: pop === k ? "var(--accent)" : "#777" }}>
-            {label}
-          </button>
+          <button key={k} onClick={() => setPop(k)} style={tabStyle(pop === k)}>{label}</button>
         ))}
       </div>
 
       {/* ── Headline stats ── */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12, marginBottom: 24 }}>
         <StatCard label="People in file" value={fmtCompact(cov.total)} sub={pop.toUpperCase()} />
-        <StatCard label="Scored / has tradelines" value={fmtCompact(cov.scored)} color="#22c55e" sub={`${Math.round((cov.scored / cov.total) * 100)}% coverage`} />
+        <StatCard label="Scored / has tradelines" value={fmtCompact(cov.scored)} color="#1f9e54" sub={`${Math.round((cov.scored / cov.total) * 100)}% coverage`} />
         <StatCard label="Named-defendant union" value={fmtCompact(d.monetize.defendant_union)} color="#B83E2C" sub="distinct consumers" />
-        <StatCard label="Call-ready (TCPA)" value={fmtCompact(d.monetize.call_ready)} color="#f59e0b" sub="consent + phone" />
+        <StatCard label="Call-ready (TCPA)" value={fmtCompact(d.monetize.call_ready)} color="#c77800" sub="consent + phone" />
         <StatCard label="Charge-off / collection" value={pct(dist.chargeoff_collection)} color="#ef4444" sub="of scored file" />
-        <StatCard label="Unique accounts" value={fmtCompact(d.creditor.summary.unique_accounts)} color="#2D7D95" sub={`${fmtCompact(d.creditor.summary.entities)} creditor entities`} />
+        <StatCard label="Unique accounts" value={fmtCompact(d.creditor.summary.unique_accounts)} color="var(--accent)" sub={`${fmtCompact(d.creditor.summary.entities)} creditor entities`} />
       </div>
 
       {/* ── Coverage funnel + Score distribution ── */}
@@ -227,10 +237,7 @@ export default function Trends() {
             <SectionTitle n="2" title="Credit-score distribution" note={`${scoreMode === "calib" ? "Calibrated proxy score" : "Raw proxy score"} · ${pct(sc.pct_below_580)} below 580 (subprime).`} />
             <div style={{ display: "flex", gap: 6 }}>
               {[["calib", "Calibrated"], ["raw", "Raw"]].map(([k, l]) => (
-                <button key={k} onClick={() => setScoreMode(k)}
-                  style={{ fontSize: 11, padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer",
-                    background: scoreMode === k ? "rgba(45,125,149,0.2)" : "rgba(255,255,255,0.04)",
-                    color: scoreMode === k ? "var(--accent)" : "#666" }}>{l}</button>
+                <button key={k} onClick={() => setScoreMode(k)} style={miniTabStyle(scoreMode === k)}>{l}</button>
               ))}
             </div>
           </div>
@@ -238,8 +245,8 @@ export default function Trends() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 8, marginTop: 12 }}>
             {[["p10", "p10"], ["p25", "p25"], ["median", "Median"], ["p75", "p75"], ["p90", "p90"]].map(([k, l]) => (
               <div key={k} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#e0e0f0" }}>{sc[k]}</div>
-                <div style={{ fontSize: 10, color: "#666" }}>{l}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "var(--text-1)" }}>{sc[k]}</div>
+                <div style={{ fontSize: 10, color: "var(--text-5)" }}>{l}</div>
               </div>
             ))}
           </div>
@@ -256,7 +263,7 @@ export default function Trends() {
           {sc.bands && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 8 }}>
               {sc.bands.map((b, i) => (
-                <span key={i} style={{ fontSize: 10, color: "#888", display: "flex", alignItems: "center", gap: 4 }}>
+                <span key={i} style={{ fontSize: 10, color: "var(--text-5)", display: "flex", alignItems: "center", gap: 4 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 2, background: BAND_COLORS[i] }} />
                   {b[0]} ({b[3]}–{b[4]})
                 </span>
@@ -275,7 +282,7 @@ export default function Trends() {
             label: s.state,
             value: s[idxKey],
             sub: `${s[idxKey].toFixed(2)}× · ${fmtCompact(s[userKey])} users`,
-            color: s[idxKey] >= 1 ? "#22c55e" : "#B83E2C",
+            color: s[idxKey] >= 1 ? "#1f9e54" : "#B83E2C",
           }))} fmt={(v) => `${v.toFixed(2)}×`} max={Math.max(...topStates.map((s) => s[idxKey]))} />
         </Card>
 
@@ -283,7 +290,7 @@ export default function Trends() {
           <SectionTitle n="4" title="Generations — representation index"
             note="Share of the LEX file vs US adult population. Green = over-indexed." />
           <IndexBars rows={d.gens.map((g) => ({ label: g.cohort, ages: g.ages, index: g.index }))} />
-          <div style={{ fontSize: 10, color: "#555", marginTop: 8 }}>
+          <div style={{ fontSize: 10, color: "var(--text-6)", marginTop: 8 }}>
             Millennials &amp; Gen X dominate (1.4–1.5×); Gen Z and Silent are sharply under-represented.
           </div>
         </Card>
@@ -296,22 +303,22 @@ export default function Trends() {
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["#", "Creditor", "Type", "Consumers", "Accounts", "Derog.", "Derog. rate"].map((h, i) => (
-                  <th key={h} style={{ padding: "6px 8px", textAlign: i >= 3 ? "right" : "left", fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "6px 8px", textAlign: i >= 3 ? "right" : "left", fontSize: 10, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {d.creditor.top_entities.map((e) => (
-                <tr key={e.rank} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <td style={{ padding: "6px 8px", color: "#555" }}>{e.rank}</td>
-                  <td style={{ padding: "6px 8px", color: "#e0e0f0", fontWeight: 600 }}>{e.name}</td>
-                  <td style={{ padding: "6px 8px", color: "#888" }}>{e.type}</td>
-                  <td style={{ padding: "6px 8px", color: "#c8c8e0", textAlign: "right" }}>{fmtCompact(e.consumers)}</td>
-                  <td style={{ padding: "6px 8px", color: "#888", textAlign: "right" }}>{fmtCompact(e.accounts)}</td>
-                  <td style={{ padding: "6px 8px", color: "#888", textAlign: "right" }}>{fmtCompact(e.derogatory)}</td>
-                  <td style={{ padding: "6px 8px", textAlign: "right", fontWeight: 700, color: e.derog_rate >= 30 ? "#ef4444" : e.derog_rate >= 15 ? "#f59e0b" : "#22c55e" }}>{e.derog_rate}%</td>
+                <tr key={e.rank} style={{ borderBottom: "1px solid var(--border)" }}>
+                  <td style={{ padding: "6px 8px", color: "var(--text-6)" }}>{e.rank}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-1)", fontWeight: 600 }}>{e.name}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-5)" }}>{e.type}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-3)", textAlign: "right" }}>{fmtCompact(e.consumers)}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-5)", textAlign: "right" }}>{fmtCompact(e.accounts)}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-5)", textAlign: "right" }}>{fmtCompact(e.derogatory)}</td>
+                  <td style={{ padding: "6px 8px", textAlign: "right", fontWeight: 700, color: e.derog_rate >= 30 ? "#ef4444" : e.derog_rate >= 15 ? "#c77800" : "#1f9e54" }}>{e.derog_rate}%</td>
                 </tr>
               ))}
             </tbody>
@@ -327,7 +334,7 @@ export default function Trends() {
             label: t.type,
             value: t.pct,
             sub: `${t.pct}% · ${t.derog_rate}% derog`,
-            color: t.derog_rate >= 25 ? "#ef4444" : t.derog_rate >= 15 ? "#f59e0b" : "var(--accent)",
+            color: t.derog_rate >= 25 ? "#ef4444" : t.derog_rate >= 15 ? "#c77800" : "var(--accent)",
           }))} fmt={(v) => `${v}%`} max={Math.max(...types.map((t) => t.pct))} />
         </Card>
 
@@ -349,8 +356,8 @@ export default function Trends() {
           <SectionTitle n="6" title="Distress signals" note={`Share of the ${fmtCompact(dist.n)} scored ${pop.toUpperCase()} consumers carrying each signal.`} />
           <HBars rows={[
             { label: "Charge-off / in collection", value: dist.chargeoff_collection, color: "#ef4444" },
-            { label: "120+ day late", value: dist.late120, color: "#f97316" },
-            { label: "Repossession / foreclosure", value: dist.repo_foreclosure, color: "#f59e0b" },
+            { label: "120+ day late", value: dist.late120, color: "#e07b39" },
+            { label: "Repossession / foreclosure", value: dist.repo_foreclosure, color: "#c77800" },
             { label: "Bankruptcy on file", value: dist.bankruptcy, color: "#B83E2C" },
           ].filter((r) => r.value != null)} fmt={(v) => `${v}%`} max={100} />
         </Card>
@@ -383,21 +390,21 @@ export default function Trends() {
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["Segment", "Definition", "Consumers", "Play", "Partners", "CPL"].map((h, i) => (
-                  <th key={h} style={{ padding: "6px 8px", textAlign: i === 2 ? "right" : "left", fontSize: 10, color: "#555", textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
+                  <th key={h} style={{ padding: "6px 8px", textAlign: i === 2 ? "right" : "left", fontSize: 10, color: "var(--text-6)", textTransform: "uppercase", letterSpacing: ".05em", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {d.monetize.segments.map((s, i) => (
-                <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <td style={{ padding: "6px 8px", color: "#e0e0f0", fontWeight: 600, whiteSpace: "nowrap" }}>{s[0]}</td>
-                  <td style={{ padding: "6px 8px", color: "#888", maxWidth: 220 }}>{s[1]}</td>
+                <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+                  <td style={{ padding: "6px 8px", color: "var(--text-1)", fontWeight: 600, whiteSpace: "nowrap" }}>{s[0]}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-5)", maxWidth: 220 }}>{s[1]}</td>
                   <td style={{ padding: "6px 8px", color: "var(--accent)", textAlign: "right", fontWeight: 700 }}>{fmtCompact(s[2])}</td>
-                  <td style={{ padding: "6px 8px", color: "#c8c8e0" }}>{s[3]}</td>
-                  <td style={{ padding: "6px 8px", color: "#888" }}>{s[4]}</td>
-                  <td style={{ padding: "6px 8px", color: "#22c55e", whiteSpace: "nowrap" }}>{s[5]}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-3)" }}>{s[3]}</td>
+                  <td style={{ padding: "6px 8px", color: "var(--text-5)" }}>{s[4]}</td>
+                  <td style={{ padding: "6px 8px", color: "#1f9e54", whiteSpace: "nowrap" }}>{s[5]}</td>
                 </tr>
               ))}
             </tbody>
@@ -412,7 +419,7 @@ export default function Trends() {
         <Funnel rows={d.monetize.funnel.map((f) => [f[0], f[1], f[2]])} fmt={fmtN} />
       </Card>
 
-      <div style={{ fontSize: 11, color: "#555", marginTop: 8, lineHeight: 1.5 }}>
+      <div style={{ fontSize: 11, color: "var(--text-6)", marginTop: 8, lineHeight: 1.5 }}>
         Source: precomputed aggregate from the DuckDB pass over the raw credit.com / Lexington Law corpus (vintage 2017–2024).
         Score is a modeled proxy, not a bureau FICO. Recovery figures are statutory maximums over actionable claims, not expected value.
         Snapshot generated {d.meta.generated}.
