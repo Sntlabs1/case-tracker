@@ -18,7 +18,7 @@ import { TOOL_SCHEMAS, executeTool } from "./_chat-tools.js";
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const MAX_TOOL_TURNS = 6;
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "claude-opus-4-8";
 
 function emitSse(res, event, data) {
   if (event) res.write(`event: ${event}\n`);

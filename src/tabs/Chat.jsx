@@ -62,7 +62,7 @@ CASE / DEFENDANT TOOLS:
 - get_source_health — see which of the 38 external data sources are up/degraded/down right now
 
 PLAINTIFF / CLIENT TOOLS — use these when the user names a PERSON (one of OUR clients):
-- search_clients — find a plaintiff by name / phone / email / state / partner
+- search_clients — find a plaintiff by name / phone / email / state / partner. NOTE: an exact phone or email looks the person up across the ENTIRE ingested population (millions); a name/state query only scans the top ~5,000 records, so a name miss is not proof the person is absent — ask for their phone or email.
 - get_client — full profile including their creditor / debt-buyer history
 - get_client_matches — every TCPA case this plaintiff qualifies for, with score, claim deadline, and dollar recovery estimate per case
 - estimate_client_recovery — just the dollar summary (total floor / ceiling / midpoint, breakdown by case type, top 5 matches)
@@ -95,7 +95,7 @@ When answering:
 - If asked "how many cases against X" or "what's our biggest settlement" or "is X feed working" — call a tool, do not guess
 - If asked to compare a lead to the KB, do it with specific case analogies and scores
 - If asked about plaintiff targeting, give specific channels, demographics, and hooks
-- If a plaintiff query returns nothing, suggest checking the Clients tab for the partner / state / name spelling expected
+- If a plaintiff NAME query returns nothing, do NOT conclude the person isn't in the data — the name scan only covers the top ~5,000 records. Ask the user for the person's phone number or email, which matches across the entire population, before saying they're absent.
 
 ---
 SCORING RUBRIC:
@@ -483,7 +483,7 @@ export default function Chat({ cases }) {
             <span>·</span>
             <span>{leads.length} feed leads</span>
             <span>·</span>
-            <span style={{ color: "#444" }}>claude-sonnet-4-20250514 · streaming</span>
+            <span style={{ color: "#444" }}>claude-opus-4-8 · streaming</span>
           </div>
         </div>
         {messages.length > 0 && (

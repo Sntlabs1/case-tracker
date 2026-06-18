@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
   try {
     const body = {
-      model: "claude-sonnet-4-20250514",
+      model: "claude-opus-4-8",
       max_tokens: safeMaxTokens,
       messages: [{ role: "user", content: prompt }],
     };

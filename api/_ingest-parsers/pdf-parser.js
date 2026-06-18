@@ -134,7 +134,7 @@ export async function parseCreditReportPdfBase64(base64, filename = "report.pdf"
   try {
     // Sonnet with slim schema — targets ~800-1200 output tokens → 10-20s
     const raw = await callClaude(
-      "claude-sonnet-4-20250514",
+      "claude-opus-4-8",
       4000,
       [{
         role: "user",

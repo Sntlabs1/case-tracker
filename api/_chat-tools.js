@@ -7,7 +7,24 @@
 // that reads from KV and returns a compact JSON result.
 
 import { kv } from "@vercel/kv";
+import { createHash } from "node:crypto";
 import { KEYS } from "../src/lib/ingest/tcpaSchema.js";
+
+// ── Identity hashing — MUST match api/ingest-credit-report-bulk.js exactly, or
+// direct lookups silently miss. (sha256 hex of the normalized value.) ─────────
+function sha256(s) {
+  return createHash("sha256").update(String(s)).digest("hex");
+}
+function normPhone(raw) {
+  if (!raw) return "";
+  const d = String(raw).replace(/\D/g, "");
+  if (d.length === 10) return `+1${d}`;
+  if (d.length === 11 && d.startsWith("1")) return `+${d}`;
+  return d ? `+${d}` : "";
+}
+function normEmail(raw) {
+  return String(raw || "").trim().toLowerCase();
+}
 
 // ── Schemas (sent to Anthropic with the request) ────────────────────────────
 
@@ -100,13 +117,17 @@ export const TOOL_SCHEMAS = [
     description:
       "Find a plaintiff/client in the database by name, phone, email, or state. Returns up to 25 hits with id, name, " +
       "state, phone, email, partnerId, and a count of qualifying matched cases. Use this when the user names a person " +
-      "('look up Mary Smith', 'find John Doe', 'who's our Capital One plaintiff in Florida').",
+      "('look up Mary Smith', 'find John Doe', 'who's our Capital One plaintiff in Florida'). " +
+      "IMPORTANT — coverage differs by field: an EXACT phone or email matches against the ENTIRE ingested population " +
+      "(millions of people) instantly — prefer these when the user gives a phone/email. A NAME or state-only query " +
+      "scans only the top ~5,000 highest-priority records, so a name miss does NOT mean the person isn't in the data — " +
+      "ask for their phone or email to look them up across everyone. Results include matchType:'exact' on a direct hit.",
     input_schema: {
       type: "object",
       properties: {
-        name:    { type: "string", description: "First and/or last name (substring, case-insensitive)" },
-        phone:   { type: "string", description: "Phone number — digits in any format" },
-        email:   { type: "string", description: "Email (substring, case-insensitive)" },
+        name:    { type: "string", description: "First and/or last name (substring, scans top ~5,000 only)" },
+        phone:   { type: "string", description: "Phone number, any format — EXACT match across the full population" },
+        email:   { type: "string", description: "Email — EXACT match across the full population" },
         state:   { type: "string", description: "Two-letter state code, e.g. 'FL'" },
         partner: { type: "string", description: "Partner ID, e.g. 'credit_com'" },
         limit:   { type: "integer", description: "Max results (default 25, max 100)" },
@@ -419,6 +440,60 @@ const TOOLS = {
   async search_clients({ name, phone, email, state, partner, limit = 25 }) {
     const max = Math.min(parseInt(limit) || 25, 100);
 
+    const nameLower  = (name || "").toLowerCase().trim();
+    const emailLower = (email || "").toLowerCase().trim();
+    const phoneDigits = (phone || "").replace(/\D/g, "");
+    const stateUp = (state || "").toUpperCase().slice(0, 2);
+
+    // Format one client record into a compact summary (matches scan output).
+    const summarize = async (c) => {
+      let matchedCount = 0;
+      try { matchedCount = (await kv.zcard(`tcpa:client_matches:${c.id}`).catch(() => 0)) || 0; } catch {}
+      return {
+        id: c.id,
+        name: c.name || `${c.firstName || ""} ${c.lastName || ""}`.trim(),
+        state: c.state,
+        phone: c.phone,
+        email: c.email,
+        partnerId: c.partnerId || "manual",
+        city: c.city,
+        age: c.age,
+        ingestSource: c.ingestSource,
+        collectionsCount: (c.collectionsHistory || c.cases || []).length,
+        matchedCases: matchedCount || (c.matchedCases || []).length,
+        retainerStatus: c.retainerStatus || "Uncontacted",
+      };
+    };
+
+    // ── Fast path: exact phone / email hits a direct index that covers the
+    // ENTIRE ingested population, not just the scanned seed set. The ingest
+    // writes client_by_phonehash / client_by_emailhash for every record. ──
+    const exactIds = [];
+    if (phone) {
+      const p = normPhone(phone);
+      if (p) { const id = await kv.get(`client_by_phonehash:${sha256(p)}`).catch(() => null); if (id) exactIds.push(id); }
+    }
+    if (email) {
+      const e = normEmail(email);
+      if (e) { const id = await kv.get(`client_by_emailhash:${sha256(e)}`).catch(() => null); if (id) exactIds.push(id); }
+    }
+    if (exactIds.length) {
+      const seen = new Set();
+      const results = [];
+      for (const id of exactIds) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const raw = await kv.get(`client:${id}`).catch(() => null);
+        if (!raw) continue;
+        const c = typeof raw === "string" ? JSON.parse(raw) : raw;
+        if (stateUp && c.state !== stateUp) continue;
+        results.push(await summarize(c));
+        if (results.length >= max) break;
+      }
+      // Exact contact match is the answer — return without the capped scan.
+      if (results.length) return { total: results.length, matchType: "exact", results };
+    }
+
     // Pick a starting set of IDs: per-partner index if specified, else global.
     let seedIds = partner
       ? (await kv.zrange(`clients_by_partner:${partner}`, 0, -1, { rev: true }).catch(() => []))
@@ -431,11 +506,6 @@ const TOOLS = {
       seedIds = await creditSeedIds(5000);
     }
     if (!seedIds?.length) return { total: 0, results: [] };
-
-    const nameLower  = (name || "").toLowerCase().trim();
-    const emailLower = (email || "").toLowerCase().trim();
-    const phoneDigits = (phone || "").replace(/\D/g, "");
-    const stateUp = (state || "").toUpperCase().slice(0, 2);
 
     const results = [];
     const BATCH = 200;
@@ -460,25 +530,7 @@ const TOOLS = {
             .join(" ");
           if (!digits.includes(phoneDigits)) continue;
         }
-        // Count cached matched cases (if any)
-        let matchedCount = 0;
-        try {
-          matchedCount = (await kv.zcard(`tcpa:client_matches:${c.id}`).catch(() => 0)) || 0;
-        } catch {}
-        results.push({
-          id: c.id,
-          name: c.name || `${c.firstName || ""} ${c.lastName || ""}`.trim(),
-          state: c.state,
-          phone: c.phone,
-          email: c.email,
-          partnerId: c.partnerId || "manual",
-          city: c.city,
-          age: c.age,
-          ingestSource: c.ingestSource,
-          collectionsCount: (c.collectionsHistory || c.cases || []).length,
-          matchedCases: matchedCount || (c.matchedCases || []).length,
-          retainerStatus: c.retainerStatus || "Uncontacted",
-        });
+        results.push(await summarize(c));
         if (results.length >= max) break;
       }
     }

@@ -143,7 +143,7 @@ Keep the total briefing to ~400 words. Use plain markdown (##, -, numbers). No H
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-opus-4-8",
         max_tokens: 1200,
         messages: [{ role: "user", content: prompt }],
       }),
