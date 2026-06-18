@@ -35,16 +35,19 @@ export default function Opportunities() {
   const [view, setView] = useState("board"); // board | tracked
   const [stageFilter, setStageFilter] = useState("all");
   const [selected, setSelected] = useState(null); // token in detail
+  const [q, setQ] = useState("");
+
+  const TABLE_LIMIT = 200, SCATTER_LIMIT = 100;
 
   const loadWatch = () =>
     fetch("/api/watchlist").then((r) => r.json()).then((d) => setWatch(d.items || [])).catch(() => {});
 
   useEffect(() => {
     Promise.all([
-      fetch("/svr/index.json").then((r) => r.json()),
+      fetch("/opportunities.json").then((r) => r.json()),
       fetch("/api/portfolio-cases").then((r) => r.json()),
     ])
-      .then(([s, p]) => { setSvr(s.reports || []); setPacer(p); })
+      .then(([s, p]) => { setSvr(s.defendants || []); setPacer(p); })
       .catch((e) => setErr(e.message));
     loadWatch();
   }, []);
@@ -62,11 +65,10 @@ export default function Opportunities() {
       const p = map[r.token] || {};
       const status = p.claimPath?.status || (p.classSettlement ? "claim_window" : "unknown");
       const o = {
-        token: r.token, name: r.name, file: r.file,
+        token: r.token, name: r.name, file: r.reportFile || null,
         consumers: r.consumers, disputedPct: r.disputedPct,
         disputedOwing: r.disputedOwing, live: r.live,
-        dockets: r.dockets, openCases: p.openCases || 0,
-        caseCount: p.caseCount || r.dockets || 0, status,
+        openCases: p.openCases || 0, caseCount: p.caseCount || 0, status,
         settled: stageOf(status).group === "settled",
       };
       o.score = score(o);
@@ -79,6 +81,10 @@ export default function Opportunities() {
 
   const watchSet = new Set(watch.map((w) => w.token));
   const filtered = stageFilter === "all" ? opps : opps.filter((o) => stageOf(o.status).group === stageFilter);
+  const ql = q.trim().toLowerCase();
+  const searched = ql ? filtered.filter((o) => o.name.toLowerCase().includes(ql)) : filtered;
+  const shownRows = ql ? searched : searched.slice(0, TABLE_LIMIT);
+  const scatterData = filtered.slice(0, SCATTER_LIMIT);
   const sel = selected ? opps.find((o) => o.token === selected) : null;
 
   async function track(o) {
@@ -127,8 +133,8 @@ export default function Opportunities() {
 
       {view === "board" && (
         <>
-          <Scatter opps={filtered} onPick={setSelected} />
-          <div style={{ display: "flex", gap: 6, margin: "16px 0 10px", flexWrap: "wrap" }}>
+          <Scatter opps={scatterData} onPick={setSelected} />
+          <div style={{ display: "flex", gap: 6, margin: "16px 0 10px", flexWrap: "wrap", alignItems: "center" }}>
             {["all", "open", "settled", "monitor", "dead"].map((g) => (
               <button key={g} onClick={() => setStageFilter(g)} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 4,
                 border: "1px solid var(--border)", cursor: "pointer",
@@ -136,8 +142,11 @@ export default function Opportunities() {
                 {g === "all" ? "All" : g === "open" ? "Open — no settlement" : g[0].toUpperCase() + g.slice(1)}
               </button>
             ))}
-            <span style={{ fontSize: 11, color: "var(--text-5)", alignSelf: "center", marginLeft: 6 }}>
-              {filtered.length} defendants · sorted by opportunity score
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search defendant…"
+              style={{ fontSize: 12, padding: "5px 10px", borderRadius: 6, border: "1px solid var(--border)",
+                background: "var(--bg-surface)", color: "var(--text-1)", marginLeft: 8, minWidth: 180 }} />
+            <span style={{ fontSize: 11, color: "var(--text-5)", marginLeft: 4 }}>
+              showing {fmt(shownRows.length)} of {fmt(filtered.length)} defendants · sorted by opportunity score
             </span>
           </div>
 
@@ -148,7 +157,7 @@ export default function Opportunities() {
               <th style={thR}>Open dockets</th><th style={thR}></th>
             </tr></thead>
             <tbody>
-              {filtered.map((o) => (
+              {shownRows.map((o) => (
                 <tr key={o.token} onClick={() => setSelected(o.token)} style={{ borderBottom: "1px solid var(--border)", cursor: "pointer" }}>
                   <td style={{ ...td, fontWeight: 700, color: "var(--text-1)" }}>{o.name}</td>
                   <td style={td}><StageBadge status={o.status} /></td>
@@ -241,7 +250,11 @@ function Detail({ o, tracked, onClose, onTrack, onUntrack, StageBadge }) {
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
-          <a href={`/svr/${o.file}`} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: "center", fontSize: 12, padding: "9px 0", borderRadius: 6, background: "#2D7D95", color: "#fff", textDecoration: "none" }}>View violation report ↗</a>
+          {o.file ? (
+            <a href={`/svr/${o.file}`} target="_blank" rel="noopener noreferrer" style={{ flex: 1, textAlign: "center", fontSize: 12, padding: "9px 0", borderRadius: 6, background: "#2D7D95", color: "#fff", textDecoration: "none" }}>View violation report ↗</a>
+          ) : (
+            <span style={{ flex: 1, textAlign: "center", fontSize: 11, padding: "9px 0", borderRadius: 6, background: "var(--bg-surface)", color: "var(--text-5)", border: "1px dashed var(--border)" }}>No report generated yet</span>
+          )}
           <button onClick={tracked ? onUntrack : onTrack} style={{ flex: 1, fontSize: 12, padding: "9px 0", borderRadius: 6, cursor: "pointer",
             border: `1px solid ${tracked ? "#22c55e" : "var(--border)"}`, background: tracked ? "#22c55e22" : "var(--bg-surface)", color: tracked ? "#15803d" : "var(--text-1)" }}>
             {tracked ? "✓ Tracked" : "+ Track this"}
