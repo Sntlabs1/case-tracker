@@ -237,11 +237,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--defendant")
     ap.add_argument("--batch", action="store_true")
+    ap.add_argument("--top", type=int, help="generate the top-N defendants from public/opportunities.json")
     ap.add_argument("--out")
     ap.add_argument("--out-dir", default="data/credit-com-report")
     a = ap.parse_args()
-    if not (a.defendant or a.batch):
-        ap.error("pass --defendant NAME or --batch")
+    if not (a.defendant or a.batch or a.top):
+        ap.error("pass --defendant NAME, --batch, or --top N")
 
     con = duckdb.connect(); con.execute("PRAGMA threads=6"); con.execute("SET memory_limit='8GB'")
     con.execute(f"SET temp_directory='{SRC/'_duckspill'}'")
@@ -252,8 +253,20 @@ def main():
     con.execute("CREATE TEMP TABLE allmap(raw VARCHAR, canon VARCHAR)")
     con.executemany("INSERT INTO allmap VALUES (?,?)", [(r, canonical_token(r)) for r in raws])
 
-    targets = ([canonical_token(d) for d in BATCH_DEFENDANTS] if a.batch
-               else [canonical_token(a.defendant)])
+    if a.top:
+        man = json.loads((Path(__file__).parent.parent / "public" / "opportunities.json").read_text())
+        defs = man.get("defendants", [])
+        for d in defs:
+            d["_s"] = (min(1, (d.get("consumers") or 0) / 400000) * 40
+                       + (d.get("disputedPct") or 0) / 100 * 35
+                       + min(1, (d.get("live") or 0) / 40000) * 15
+                       + min(1, (d.get("disputedOwing") or 0) / 1_000_000) * 10)
+        defs.sort(key=lambda x: x["_s"], reverse=True)
+        targets = [d["token"] for d in defs[:a.top]]
+    elif a.batch:
+        targets = [canonical_token(d) for d in BATCH_DEFENDANTS]
+    else:
+        targets = [canonical_token(a.defendant)]
     seen, outdir = set(), Path(a.out_dir)
     outdir.mkdir(parents=True, exist_ok=True)
     manifest = []

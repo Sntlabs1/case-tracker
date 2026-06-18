@@ -2,7 +2,7 @@
   "generated": "2026-06-18",
   "minConsumers": 2500,
   "count": 3174,
-  "withReport": 20,
+  "withReport": 100,
   "defendants": [
     {
       "token": "capital one",
@@ -12,7 +12,7 @@
       "disputedPct": 20.4,
       "disputedOwing": 1673507,
       "live": 263708,
-      "reportFile": null
+      "reportFile": "svr-capital-one.html"
     },
     {
       "token": "synchrony",
@@ -22,7 +22,7 @@
       "disputedPct": 9.3,
       "disputedOwing": 355260,
       "live": 171730,
-      "reportFile": null
+      "reportFile": "svr-synchrony.html"
     },
     {
       "token": "credit one bank",
@@ -32,7 +32,7 @@
       "disputedPct": 17.7,
       "disputedOwing": 331079,
       "live": 125044,
-      "reportFile": null
+      "reportFile": "svr-credit-one-bank.html"
     },
     {
       "token": "comenity",
@@ -42,7 +42,7 @@
       "disputedPct": 14.4,
       "disputedOwing": 222975,
       "live": 109938,
-      "reportFile": null
+      "reportFile": "svr-comenity.html"
     },
     {
       "token": "citibank",
@@ -52,7 +52,7 @@
       "disputedPct": 10.6,
       "disputedOwing": 254213,
       "live": 132644,
-      "reportFile": null
+      "reportFile": "svr-citibank.html"
     },
     {
       "token": "first premier bank",
@@ -62,7 +62,7 @@
       "disputedPct": 30.2,
       "disputedOwing": 651474,
       "live": 83503,
-      "reportFile": null
+      "reportFile": "svr-first-premier-bank.html"
     },
     {
       "token": "chase",
@@ -72,7 +72,7 @@
       "disputedPct": 16.3,
       "disputedOwing": 341377,
       "live": 108658,
-      "reportFile": null
+      "reportFile": "svr-chase.html"
     },
     {
       "token": "webbank fingerhut",
@@ -82,7 +82,7 @@
       "disputedPct": 19.3,
       "disputedOwing": 67101,
       "live": 62459,
-      "reportFile": null
+      "reportFile": "svr-webbank-fingerhut.html"
     },
     {
       "token": "wells fargo",
@@ -92,7 +92,7 @@
       "disputedPct": 20.0,
       "disputedOwing": 229431,
       "live": 35839,
-      "reportFile": null
+      "reportFile": "svr-wells-fargo.html"
     },
     {
       "token": "fst premier",
@@ -102,7 +102,7 @@
       "disputedPct": 34.3,
       "disputedOwing": 245268,
       "live": 88396,
-      "reportFile": null
+      "reportFile": "svr-fst-premier.html"
     },
     {
       "token": "bank of america",
@@ -112,7 +112,7 @@
       "disputedPct": 19.0,
       "disputedOwing": 230076,
       "live": 63839,
-      "reportFile": null
+      "reportFile": "svr-bank-of-america.html"
     },
     {
       "token": "discover",
@@ -122,7 +122,7 @@
       "disputedPct": 15.5,
       "disputedOwing": 195698,
       "live": 83048,
-      "reportFile": null
+      "reportFile": "svr-discover.html"
     },
     {
       "token": "lvnv funding",
@@ -142,7 +142,7 @@
       "disputedPct": 17.1,
       "disputedOwing": 676194,
       "live": 66592,
-      "reportFile": null
+      "reportFile": "svr-nelnet.html"
     },
     {
       "token": "portfolio recovery associates",
@@ -162,7 +162,7 @@
       "disputedPct": 19.8,
       "disputedOwing": 673083,
       "live": 17872,
-      "reportFile": null
+      "reportFile": "svr-navient.html"
     },
     {
       "token": "enhanced recovery company",
@@ -182,7 +182,7 @@
       "disputedPct": 26.0,
       "disputedOwing": 203305,
       "live": 35998,
-      "reportFile": null
+      "reportFile": "svr-santander-consumer-usa.html"
     },
     {
       "token": "american express",
@@ -192,7 +192,7 @@
       "disputedPct": 12.7,
       "disputedOwing": 134315,
       "live": 69453,
-      "reportFile": null
+      "reportFile": "svr-american-express.html"
     },
     {
       "token": "credit acceptance",
@@ -202,7 +202,7 @@
       "disputedPct": 26.2,
       "disputedOwing": 166230,
       "live": 25982,
-      "reportFile": null
+      "reportFile": "svr-credit-acceptance.html"
     },
     {
       "token": "onemain financial",
@@ -212,7 +212,7 @@
       "disputedPct": 8.2,
       "disputedOwing": 84857,
       "live": 49052,
-      "reportFile": null
+      "reportFile": "svr-onemain-financial.html"
     },
     {
       "token": "webbnk fhut",
@@ -222,7 +222,7 @@
       "disputedPct": 24.0,
       "disputedOwing": 17640,
       "live": 45762,
-      "reportFile": null
+      "reportFile": "svr-webbnk-fhut.html"
     },
     {
       "token": "great lakes",
@@ -232,7 +232,7 @@
       "disputedPct": 10.1,
       "disputedOwing": 29650,
       "live": 31330,
-      "reportFile": null
+      "reportFile": "svr-great-lakes.html"
     },
     {
       "token": "fedloan",
@@ -242,7 +242,7 @@
       "disputedPct": 21.6,
       "disputedOwing": 515308,
       "live": 7700,
-      "reportFile": null
+      "reportFile": "svr-fedloan.html"
     },
     {
       "token": "ally financial",
@@ -252,7 +252,7 @@
       "disputedPct": 20.3,
       "disputedOwing": 148532,
       "live": 52420,
-      "reportFile": null
+      "reportFile": "svr-ally-financial.html"
     },
     {
       "token": "i c system",
@@ -262,7 +262,7 @@
       "disputedPct": 55.1,
       "disputedOwing": 261946,
       "live": 26378,
-      "reportFile": null
+      "reportFile": "svr-i-c-system.html"
     },
     {
       "token": "world acceptance",
@@ -272,7 +272,7 @@
       "disputedPct": 6.9,
       "disputedOwing": 142696,
       "live": 23781,
-      "reportFile": null
+      "reportFile": "svr-world-acceptance.html"
     },
     {
       "token": "macys dsnb",
@@ -282,7 +282,7 @@
       "disputedPct": 19.4,
       "disputedOwing": 60508,
       "live": 14249,
-      "reportFile": null
+      "reportFile": "svr-macys-dsnb.html"
     },
     {
       "token": "verizon wireless",
@@ -292,7 +292,7 @@
       "disputedPct": 67.3,
       "disputedOwing": 337984,
       "live": 40909,
-      "reportFile": null
+      "reportFile": "svr-verizon-wireless.html"
     },
     {
       "token": "merrick bank",
@@ -302,7 +302,7 @@
       "disputedPct": 25.2,
       "disputedOwing": 188643,
       "live": 42637,
-      "reportFile": null
+      "reportFile": "svr-merrick-bank.html"
     },
     {
       "token": "us department of education",
@@ -312,7 +312,7 @@
       "disputedPct": 61.6,
       "disputedOwing": 573554,
       "live": 2919,
-      "reportFile": null
+      "reportFile": "svr-us-department-of-education.html"
     },
     {
       "token": "midland credit management",
@@ -332,7 +332,7 @@
       "disputedPct": 69.5,
       "disputedOwing": 309195,
       "live": 39860,
-      "reportFile": null
+      "reportFile": "svr-portfolio-rc.html"
     },
     {
       "token": "u s dept of ed gsl atl",
@@ -342,7 +342,7 @@
       "disputedPct": 39.6,
       "disputedOwing": 357896,
       "live": 6360,
-      "reportFile": null
+      "reportFile": "svr-u-s-dept-of-ed-gsl-atl.html"
     },
     {
       "token": "verizon",
@@ -352,7 +352,7 @@
       "disputedPct": 64.1,
       "disputedOwing": 215113,
       "live": 47196,
-      "reportFile": null
+      "reportFile": "svr-verizon.html"
     },
     {
       "token": "jefferson capital systems",
@@ -372,7 +372,7 @@
       "disputedPct": 6.6,
       "disputedOwing": 37032,
       "live": 95319,
-      "reportFile": null
+      "reportFile": "svr-affirm.html"
     },
     {
       "token": "aaron s",
@@ -382,7 +382,7 @@
       "disputedPct": 0.3,
       "disputedOwing": 1482,
       "live": 3915,
-      "reportFile": null
+      "reportFile": "svr-aaron-s.html"
     },
     {
       "token": "ic system",
@@ -402,7 +402,7 @@
       "disputedPct": 25.4,
       "disputedOwing": 45238,
       "live": 27334,
-      "reportFile": null
+      "reportFile": "svr-cb-indigo.html"
     },
     {
       "token": "barclays bank delaware",
@@ -412,7 +412,7 @@
       "disputedPct": 18.6,
       "disputedOwing": 58666,
       "live": 30810,
-      "reportFile": null
+      "reportFile": "svr-barclays-bank-delaware.html"
     },
     {
       "token": "gm financial",
@@ -422,7 +422,7 @@
       "disputedPct": 23.8,
       "disputedOwing": 104477,
       "live": 27181,
-      "reportFile": null
+      "reportFile": "svr-gm-financial.html"
     },
     {
       "token": "convergent outsourcing",
@@ -442,7 +442,7 @@
       "disputedPct": 64.1,
       "disputedOwing": 171450,
       "live": 45030,
-      "reportFile": null
+      "reportFile": "svr-credit-coll.html"
     },
     {
       "token": "cb vicscrt",
@@ -452,7 +452,7 @@
       "disputedPct": 23.5,
       "disputedOwing": 16488,
       "live": 34243,
-      "reportFile": null
+      "reportFile": "svr-cb-vicscrt.html"
     },
     {
       "token": "navy federal cr union",
@@ -462,7 +462,7 @@
       "disputedPct": 8.6,
       "disputedOwing": 34333,
       "live": 34455,
-      "reportFile": null
+      "reportFile": "svr-navy-federal-cr-union.html"
     },
     {
       "token": "acceptance now",
@@ -472,7 +472,7 @@
       "disputedPct": 12.6,
       "disputedOwing": 44264,
       "live": 9756,
-      "reportFile": null
+      "reportFile": "svr-acceptance-now.html"
     },
     {
       "token": "credit collection services",
@@ -502,7 +502,7 @@
       "disputedPct": 33.6,
       "disputedOwing": 56703,
       "live": 23314,
-      "reportFile": null
+      "reportFile": "svr-creditacpt.html"
     },
     {
       "token": "td bank usa targetcred",
@@ -512,7 +512,7 @@
       "disputedPct": 18.9,
       "disputedOwing": 30118,
       "live": 21527,
-      "reportFile": null
+      "reportFile": "svr-td-bank-usa-targetcred.html"
     },
     {
       "token": "security finance",
@@ -542,7 +542,7 @@
       "disputedPct": 24.0,
       "disputedOwing": 31169,
       "live": 2,
-      "reportFile": null
+      "reportFile": "svr-dsnb-macys.html"
     },
     {
       "token": "navy federal credit union",
@@ -552,7 +552,7 @@
       "disputedPct": 12.9,
       "disputedOwing": 46854,
       "live": 11171,
-      "reportFile": null
+      "reportFile": "svr-navy-federal-credit-union.html"
     },
     {
       "token": "td bank usa target credit",
@@ -562,7 +562,7 @@
       "disputedPct": 31.9,
       "disputedOwing": 55088,
       "live": 8182,
-      "reportFile": null
+      "reportFile": "svr-td-bank-usa-target-credit.html"
     },
     {
       "token": "toyota motor credit",
@@ -572,7 +572,7 @@
       "disputedPct": 16.7,
       "disputedOwing": 61664,
       "live": 26017,
-      "reportFile": null
+      "reportFile": "svr-toyota-motor-credit.html"
     },
     {
       "token": "kay jewelers",
@@ -592,7 +592,7 @@
       "disputedPct": 0.6,
       "disputedOwing": 1198,
       "live": 69291,
-      "reportFile": null
+      "reportFile": "svr-chime-stride.html"
     },
     {
       "token": "chime stride bank",
@@ -602,7 +602,7 @@
       "disputedPct": 0.4,
       "disputedOwing": 609,
       "live": 66567,
-      "reportFile": null
+      "reportFile": "svr-chime-stride-bank.html"
     },
     {
       "token": "midland funding",
@@ -652,7 +652,7 @@
       "disputedPct": 35.7,
       "disputedOwing": 207472,
       "live": 9419,
-      "reportFile": null
+      "reportFile": "svr-us-dept-ed.html"
     },
     {
       "token": "westlake financial",
@@ -662,7 +662,7 @@
       "disputedPct": 19.8,
       "disputedOwing": 66475,
       "live": 22465,
-      "reportFile": null
+      "reportFile": "svr-westlake-financial.html"
     },
     {
       "token": "ccs collections",
@@ -672,7 +672,7 @@
       "disputedPct": 72.6,
       "disputedOwing": 131317,
       "live": 0,
-      "reportFile": null
+      "reportFile": "svr-ccs-collections.html"
     },
     {
       "token": "navy fcu",
@@ -682,7 +682,7 @@
       "disputedPct": 10.0,
       "disputedOwing": 29511,
       "live": 38029,
-      "reportFile": null
+      "reportFile": "svr-navy-fcu.html"
     },
     {
       "token": "jeffcapsys",
@@ -692,7 +692,7 @@
       "disputedPct": 58.4,
       "disputedOwing": 134398,
       "live": 53614,
-      "reportFile": null
+      "reportFile": "svr-jeffcapsys.html"
     },
     {
       "token": "chimefin stride bank",
@@ -762,7 +762,7 @@
       "disputedPct": 19.9,
       "disputedOwing": 3073,
       "live": 16899,
-      "reportFile": null
+      "reportFile": "svr-webbnk-fstr.html"
     },
     {
       "token": "milestone genesis",
@@ -772,7 +772,7 @@
       "disputedPct": 17.1,
       "disputedOwing": 18068,
       "live": 23121,
-      "reportFile": null
+      "reportFile": "svr-milestone-genesis.html"
     },
     {
       "token": "target td",
@@ -782,7 +782,7 @@
       "disputedPct": 28.2,
       "disputedOwing": 32976,
       "live": 23957,
-      "reportFile": null
+      "reportFile": "svr-target-td.html"
     },
     {
       "token": "diversified consultants",
@@ -822,7 +822,7 @@
       "disputedPct": 21.8,
       "disputedOwing": 19435,
       "live": 30198,
-      "reportFile": null
+      "reportFile": "svr-brclysbankde.html"
     },
     {
       "token": "wf crd",
@@ -872,7 +872,7 @@
       "disputedPct": 53.9,
       "disputedOwing": 133741,
       "live": 8,
-      "reportFile": null
+      "reportFile": "svr-afni.html"
     },
     {
       "token": "commonwealth financial systems",
@@ -922,7 +922,7 @@
       "disputedPct": 25.8,
       "disputedOwing": 56350,
       "live": 18082,
-      "reportFile": null
+      "reportFile": "svr-exeter-finance.html"
     },
     {
       "token": "american honda finance",
@@ -982,7 +982,7 @@
       "disputedPct": 68.6,
       "disputedOwing": 148643,
       "live": 50121,
-      "reportFile": null
+      "reportFile": "svr-midland-cred.html"
     },
     {
       "token": "horizon card services",
@@ -1012,7 +1012,7 @@
       "disputedPct": 11.4,
       "disputedOwing": 19643,
       "live": 56713,
-      "reportFile": null
+      "reportFile": "svr-kikoff-lending.html"
     },
     {
       "token": "tbom milstne",
@@ -1022,7 +1022,7 @@
       "disputedPct": 21.4,
       "disputedOwing": 13076,
       "live": 26590,
-      "reportFile": null
+      "reportFile": "svr-tbom-milstne.html"
     },
     {
       "token": "nca",
@@ -1032,7 +1032,7 @@
       "disputedPct": 66.1,
       "disputedOwing": 95418,
       "live": 19210,
-      "reportFile": null
+      "reportFile": "svr-nca.html"
     },
     {
       "token": "us dept of education",
@@ -1042,7 +1042,7 @@
       "disputedPct": 52.8,
       "disputedOwing": 198672,
       "live": 0,
-      "reportFile": null
+      "reportFile": "svr-us-dept-of-education.html"
     },
     {
       "token": "self lead",
@@ -1052,7 +1052,7 @@
       "disputedPct": 21.4,
       "disputedOwing": 3034,
       "live": 41452,
-      "reportFile": null
+      "reportFile": "svr-self-lead.html"
     },
     {
       "token": "bridgecrest",
@@ -1092,7 +1092,7 @@
       "disputedPct": 10.5,
       "disputedOwing": 87979,
       "live": 38111,
-      "reportFile": null
+      "reportFile": "svr-aidvantage.html"
     },
     {
       "token": "nissan motor acceptance",
@@ -1192,7 +1192,7 @@
       "disputedPct": 11.8,
       "disputedOwing": 63608,
       "live": 41111,
-      "reportFile": null
+      "reportFile": "svr-dpt-ed-aidv.html"
     },
     {
       "token": "chryslercap",
@@ -1262,7 +1262,7 @@
       "disputedPct": 47.2,
       "disputedOwing": 250261,
       "live": 1595,
-      "reportFile": "svr-americollect.html"
+      "reportFile": null
     },
     {
       "token": "celtic bank",
@@ -1282,7 +1282,7 @@
       "disputedPct": 58.2,
       "disputedOwing": 61497,
       "live": 9388,
-      "reportFile": null
+      "reportFile": "svr-national-credit-system.html"
     },
     {
       "token": "midland fund",
@@ -1292,7 +1292,7 @@
       "disputedPct": 62.7,
       "disputedOwing": 76007,
       "live": 910,
-      "reportFile": null
+      "reportFile": "svr-midland-fund.html"
     },
     {
       "token": "lending club",
@@ -1352,7 +1352,7 @@
       "disputedPct": 67.7,
       "disputedOwing": 85794,
       "live": 1997,
-      "reportFile": null
+      "reportFile": "svr-national-credit-systems.html"
     },
     {
       "token": "montgomery ward",
@@ -1532,7 +1532,7 @@
       "disputedPct": 44.4,
       "disputedOwing": 124132,
       "live": 1153,
-      "reportFile": "svr-medical-data-systems.html"
+      "reportFile": null
     },
     {
       "token": "mcydsnb",
@@ -1592,7 +1592,7 @@
       "disputedPct": 53.9,
       "disputedOwing": 109330,
       "live": 6906,
-      "reportFile": null
+      "reportFile": "svr-amsher-collection.html"
     },
     {
       "token": "carmax auto finance",
@@ -1782,7 +1782,7 @@
       "disputedPct": 74.6,
       "disputedOwing": 63687,
       "live": 9920,
-      "reportFile": null
+      "reportFile": "svr-credit-collections.html"
     },
     {
       "token": "online collections grvl",
@@ -1912,7 +1912,7 @@
       "disputedPct": 61.5,
       "disputedOwing": 47226,
       "live": 10667,
-      "reportFile": null
+      "reportFile": "svr-natlcrsys.html"
     },
     {
       "token": "american credit acceptance",
@@ -1932,7 +1932,7 @@
       "disputedPct": 55.5,
       "disputedOwing": 40785,
       "live": 18459,
-      "reportFile": null
+      "reportFile": "svr-credence-rm.html"
     },
     {
       "token": "tbom total crd",
@@ -2005,16 +2005,6 @@
       "reportFile": null
     },
     {
-      "token": "ccb chldplce",
-      "name": "Ccb Chldplce",
-      "consumers": 64128,
-      "tradelines": 70748,
-      "disputedPct": 26.3,
-      "disputedOwing": 4629,
-      "live": 9922,
-      "reportFile": null
-    },
-    {
       "token": "cavalry portfolio services",
       "name": "Cavalry Portfolio Services",
       "consumers": 64128,
@@ -2022,6 +2012,16 @@
       "disputedPct": 70.1,
       "disputedOwing": 118957,
       "live": 5273,
+      "reportFile": "svr-cavalry-portfolio-services.html"
+    },
+    {
+      "token": "ccb chldplce",
+      "name": "Ccb Chldplce",
+      "consumers": 64128,
+      "tradelines": 70748,
+      "disputedPct": 26.3,
+      "disputedOwing": 4629,
+      "live": 9922,
       "reportFile": null
     },
     {
@@ -2602,7 +2602,7 @@
       "disputedPct": 73.6,
       "disputedOwing": 33031,
       "live": 1773,
-      "reportFile": null
+      "reportFile": "svr-ncb-management-services-i.html"
     },
     {
       "token": "esb harley davidson cr",
@@ -2622,7 +2622,7 @@
       "disputedPct": 45.6,
       "disputedOwing": 57739,
       "live": 1723,
-      "reportFile": "svr-united-revenue-corp.html"
+      "reportFile": null
     },
     {
       "token": "avant credit",
@@ -2912,7 +2912,7 @@
       "disputedPct": 65.5,
       "disputedOwing": 31736,
       "live": 7961,
-      "reportFile": null
+      "reportFile": "svr-tsi-940.html"
     },
     {
       "token": "sw crdt sys",
@@ -2952,7 +2952,7 @@
       "disputedPct": 69.6,
       "disputedOwing": 41589,
       "live": 17772,
-      "reportFile": null
+      "reportFile": "svr-springoakcap.html"
     },
     {
       "token": "united consumer finl s",
@@ -3152,7 +3152,7 @@
       "disputedPct": 72.8,
       "disputedOwing": 87122,
       "live": 2863,
-      "reportFile": null
+      "reportFile": "svr-the-bureaus.html"
     },
     {
       "token": "pennymac loan services",
@@ -3212,7 +3212,7 @@
       "disputedPct": 65.8,
       "disputedOwing": 27469,
       "live": 7507,
-      "reportFile": null
+      "reportFile": "svr-ncb.html"
     },
     {
       "token": "tbom vt",
@@ -4622,7 +4622,7 @@
       "disputedPct": 79.4,
       "disputedOwing": 21358,
       "live": 189,
-      "reportFile": null
+      "reportFile": "svr-receivables-management-sys.html"
     },
     {
       "token": "awa collections",
@@ -4675,16 +4675,6 @@
       "reportFile": null
     },
     {
-      "token": "financial data systems",
-      "name": "Financial Data Systems",
-      "consumers": 27426,
-      "tradelines": 101950,
-      "disputedPct": 48.2,
-      "disputedOwing": 48536,
-      "live": 7,
-      "reportFile": null
-    },
-    {
       "token": "prosper marketplace in",
       "name": "Prosper Marketplace In",
       "consumers": 27426,
@@ -4692,6 +4682,16 @@
       "disputedPct": 8.9,
       "disputedOwing": 537,
       "live": 3805,
+      "reportFile": null
+    },
+    {
+      "token": "financial data systems",
+      "name": "Financial Data Systems",
+      "consumers": 27426,
+      "tradelines": 101950,
+      "disputedPct": 48.2,
+      "disputedOwing": 48536,
+      "live": 7,
       "reportFile": null
     },
     {
@@ -6385,16 +6385,6 @@
       "reportFile": null
     },
     {
-      "token": "cap1 saks",
-      "name": "Cap1 Saks",
-      "consumers": 19975,
-      "tradelines": 33456,
-      "disputedPct": 7.0,
-      "disputedOwing": 1087,
-      "live": 1944,
-      "reportFile": null
-    },
-    {
       "token": "prosper",
       "name": "Prosper",
       "consumers": 19975,
@@ -6402,6 +6392,16 @@
       "disputedPct": 12.9,
       "disputedOwing": 811,
       "live": 4341,
+      "reportFile": null
+    },
+    {
+      "token": "cap1 saks",
+      "name": "Cap1 Saks",
+      "consumers": 19975,
+      "tradelines": 33456,
+      "disputedPct": 7.0,
+      "disputedOwing": 1087,
+      "live": 1944,
       "reportFile": null
     },
     {
@@ -6515,16 +6515,6 @@
       "reportFile": null
     },
     {
-      "token": "lj ross",
-      "name": "Lj Ross",
-      "consumers": 19718,
-      "tradelines": 24797,
-      "disputedPct": 61.7,
-      "disputedOwing": 11656,
-      "live": 2715,
-      "reportFile": null
-    },
-    {
       "token": "synerprise consulting svs",
       "name": "Synerprise Consulting Svs",
       "consumers": 19718,
@@ -6532,6 +6522,16 @@
       "disputedPct": 48.3,
       "disputedOwing": 15783,
       "live": 101,
+      "reportFile": null
+    },
+    {
+      "token": "lj ross",
+      "name": "Lj Ross",
+      "consumers": 19718,
+      "tradelines": 24797,
+      "disputedPct": 61.7,
+      "disputedOwing": 11656,
+      "live": 2715,
       "reportFile": null
     },
     {
@@ -7485,16 +7485,6 @@
       "reportFile": null
     },
     {
-      "token": "jh portfolio debt equities",
-      "name": "Jh Portfolio Debt Equities",
-      "consumers": 16879,
-      "tradelines": 20568,
-      "disputedPct": 77.3,
-      "disputedOwing": 15205,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "sun loans",
       "name": "Sun Loans",
       "consumers": 16879,
@@ -7502,6 +7492,16 @@
       "disputedPct": 29.5,
       "disputedOwing": 4160,
       "live": 790,
+      "reportFile": null
+    },
+    {
+      "token": "jh portfolio debt equities",
+      "name": "Jh Portfolio Debt Equities",
+      "consumers": 16879,
+      "tradelines": 20568,
+      "disputedPct": 77.3,
+      "disputedOwing": 15205,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -7895,16 +7895,6 @@
       "reportFile": null
     },
     {
-      "token": "continental credit",
-      "name": "Continental Credit",
-      "consumers": 15557,
-      "tradelines": 115676,
-      "disputedPct": 2.4,
-      "disputedOwing": 1291,
-      "live": 256,
-      "reportFile": null
-    },
-    {
       "token": "bk of mo fa",
       "name": "Bk Of Mo Fa",
       "consumers": 15557,
@@ -7912,6 +7902,16 @@
       "disputedPct": 27.0,
       "disputedOwing": 2231,
       "live": 3162,
+      "reportFile": null
+    },
+    {
+      "token": "continental credit",
+      "name": "Continental Credit",
+      "consumers": 15557,
+      "tradelines": 115676,
+      "disputedPct": 2.4,
+      "disputedOwing": 1291,
+      "live": 256,
       "reportFile": null
     },
     {
@@ -10205,16 +10205,6 @@
       "reportFile": null
     },
     {
-      "token": "gfs 11",
-      "name": "Gfs 11",
-      "consumers": 11079,
-      "tradelines": 12132,
-      "disputedPct": 29.5,
-      "disputedOwing": 2673,
-      "live": 172,
-      "reportFile": null
-    },
-    {
       "token": "sunrise credit services",
       "name": "Sunrise Credit Services",
       "consumers": 11079,
@@ -10222,6 +10212,16 @@
       "disputedPct": 60.6,
       "disputedOwing": 6431,
       "live": 705,
+      "reportFile": null
+    },
+    {
+      "token": "gfs 11",
+      "name": "Gfs 11",
+      "consumers": 11079,
+      "tradelines": 12132,
+      "disputedPct": 29.5,
+      "disputedOwing": 2673,
+      "live": 172,
       "reportFile": null
     },
     {
@@ -11685,16 +11685,6 @@
       "reportFile": null
     },
     {
-      "token": "puget sound collections",
-      "name": "Puget Sound Collections",
-      "consumers": 9244,
-      "tradelines": 16809,
-      "disputedPct": 74.0,
-      "disputedOwing": 12347,
-      "live": 138,
-      "reportFile": null
-    },
-    {
       "token": "harris",
       "name": "Harris",
       "consumers": 9244,
@@ -11702,6 +11692,16 @@
       "disputedPct": 41.3,
       "disputedOwing": 5840,
       "live": 3781,
+      "reportFile": null
+    },
+    {
+      "token": "puget sound collections",
+      "name": "Puget Sound Collections",
+      "consumers": 9244,
+      "tradelines": 16809,
+      "disputedPct": 74.0,
+      "disputedOwing": 12347,
+      "live": 138,
       "reportFile": null
     },
     {
@@ -11725,16 +11725,6 @@
       "reportFile": null
     },
     {
-      "token": "aes nct",
-      "name": "Aes Nct",
-      "consumers": 9226,
-      "tradelines": 25442,
-      "disputedPct": 23.4,
-      "disputedOwing": 2267,
-      "live": 699,
-      "reportFile": null
-    },
-    {
       "token": "credit sesame",
       "name": "Credit Sesame",
       "consumers": 9226,
@@ -11742,6 +11732,16 @@
       "disputedPct": 0.2,
       "disputedOwing": 5,
       "live": 3595,
+      "reportFile": null
+    },
+    {
+      "token": "aes nct",
+      "name": "Aes Nct",
+      "consumers": 9226,
+      "tradelines": 25442,
+      "disputedPct": 23.4,
+      "disputedOwing": 2267,
+      "live": 699,
       "reportFile": null
     },
     {
@@ -12935,16 +12935,6 @@
       "reportFile": null
     },
     {
-      "token": "ncb management services",
-      "name": "Ncb Management Services",
-      "consumers": 8038,
-      "tradelines": 8091,
-      "disputedPct": 73.8,
-      "disputedOwing": 5575,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "alliance collection agenci",
       "name": "Alliance Collection Agenci",
       "consumers": 8038,
@@ -12955,13 +12945,13 @@
       "reportFile": null
     },
     {
-      "token": "armed forces bank",
-      "name": "Armed Forces Bank",
-      "consumers": 8035,
-      "tradelines": 16353,
-      "disputedPct": 17.8,
-      "disputedOwing": 1055,
-      "live": 131,
+      "token": "ncb management services",
+      "name": "Ncb Management Services",
+      "consumers": 8038,
+      "tradelines": 8091,
+      "disputedPct": 73.8,
+      "disputedOwing": 5575,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -12972,6 +12962,16 @@
       "disputedPct": 13.1,
       "disputedOwing": 432,
       "live": 203,
+      "reportFile": null
+    },
+    {
+      "token": "armed forces bank",
+      "name": "Armed Forces Bank",
+      "consumers": 8035,
+      "tradelines": 16353,
+      "disputedPct": 17.8,
+      "disputedOwing": 1055,
+      "live": 131,
       "reportFile": null
     },
     {
@@ -13565,16 +13565,6 @@
       "reportFile": null
     },
     {
-      "token": "grt amer fin",
-      "name": "Grt Amer Fin",
-      "consumers": 7635,
-      "tradelines": 9113,
-      "disputedPct": 21.2,
-      "disputedOwing": 685,
-      "live": 1278,
-      "reportFile": null
-    },
-    {
       "token": "tidewater motor credit",
       "name": "Tidewater Motor Credit",
       "consumers": 7635,
@@ -13582,6 +13572,16 @@
       "disputedPct": 19.2,
       "disputedOwing": 1654,
       "live": 325,
+      "reportFile": null
+    },
+    {
+      "token": "grt amer fin",
+      "name": "Grt Amer Fin",
+      "consumers": 7635,
+      "tradelines": 9113,
+      "disputedPct": 21.2,
+      "disputedOwing": 685,
+      "live": 1278,
       "reportFile": null
     },
     {
@@ -13605,16 +13605,6 @@
       "reportFile": null
     },
     {
-      "token": "cap1 bass",
-      "name": "Cap1 Bass",
-      "consumers": 7606,
-      "tradelines": 7853,
-      "disputedPct": 4.5,
-      "disputedOwing": 227,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "consumer collection mgmt",
       "name": "Consumer Collection Mgmt",
       "consumers": 7606,
@@ -13622,6 +13612,16 @@
       "disputedPct": 58.3,
       "disputedOwing": 8168,
       "live": 38,
+      "reportFile": null
+    },
+    {
+      "token": "cap1 bass",
+      "name": "Cap1 Bass",
+      "consumers": 7606,
+      "tradelines": 7853,
+      "disputedPct": 4.5,
+      "disputedOwing": 227,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -13785,16 +13785,6 @@
       "reportFile": null
     },
     {
-      "token": "professional adjustment",
-      "name": "Professional Adjustment",
-      "consumers": 7446,
-      "tradelines": 16017,
-      "disputedPct": 70.6,
-      "disputedOwing": 10855,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "mercantile adjmnt bur",
       "name": "Mercantile Adjmnt Bur",
       "consumers": 7446,
@@ -13802,6 +13792,16 @@
       "disputedPct": 23.5,
       "disputedOwing": 1865,
       "live": 111,
+      "reportFile": null
+    },
+    {
+      "token": "professional adjustment",
+      "name": "Professional Adjustment",
+      "consumers": 7446,
+      "tradelines": 16017,
+      "disputedPct": 70.6,
+      "disputedOwing": 10855,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -14065,16 +14065,6 @@
       "reportFile": null
     },
     {
-      "token": "the bank of missouri total v",
-      "name": "The Bank Of Missouri Total V",
-      "consumers": 7192,
-      "tradelines": 9402,
-      "disputedPct": 26.3,
-      "disputedOwing": 264,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "cortrust bank",
       "name": "Cortrust Bank",
       "consumers": 7192,
@@ -14082,6 +14072,16 @@
       "disputedPct": 24.0,
       "disputedOwing": 2862,
       "live": 789,
+      "reportFile": null
+    },
+    {
+      "token": "the bank of missouri total v",
+      "name": "The Bank Of Missouri Total V",
+      "consumers": 7192,
+      "tradelines": 9402,
+      "disputedPct": 26.3,
+      "disputedOwing": 264,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -14115,16 +14115,6 @@
       "reportFile": null
     },
     {
-      "token": "state farm bank fin cards",
-      "name": "State Farm Bank Fin Cards",
-      "consumers": 7171,
-      "tradelines": 7334,
-      "disputedPct": 27.6,
-      "disputedOwing": 1111,
-      "live": 91,
-      "reportFile": null
-    },
-    {
       "token": "professional adjmnt",
       "name": "Professional Adjmnt",
       "consumers": 7171,
@@ -14132,6 +14122,16 @@
       "disputedPct": 51.3,
       "disputedOwing": 7689,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "state farm bank fin cards",
+      "name": "State Farm Bank Fin Cards",
+      "consumers": 7171,
+      "tradelines": 7334,
+      "disputedPct": 27.6,
+      "disputedOwing": 1111,
+      "live": 91,
       "reportFile": null
     },
     {
@@ -14155,22 +14155,22 @@
       "reportFile": null
     },
     {
-      "token": "first fed credit control",
-      "name": "First Fed Credit Control",
-      "consumers": 7154,
-      "tradelines": 12246,
-      "disputedPct": 47.1,
-      "disputedOwing": 5286,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "america first cu",
       "name": "America First Cu",
       "consumers": 7154,
       "tradelines": 18154,
       "disputedPct": 16.0,
       "disputedOwing": 1356,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "first fed credit control",
+      "name": "First Fed Credit Control",
+      "consumers": 7154,
+      "tradelines": 12246,
+      "disputedPct": 47.1,
+      "disputedOwing": 5286,
       "live": 0,
       "reportFile": null
     },
@@ -14345,16 +14345,6 @@
       "reportFile": null
     },
     {
-      "token": "pacific union financial l",
-      "name": "Pacific Union Financial L",
-      "consumers": 7066,
-      "tradelines": 7833,
-      "disputedPct": 17.8,
-      "disputedOwing": 172,
-      "live": 335,
-      "reportFile": null
-    },
-    {
       "token": "tdrcs samsung",
       "name": "Tdrcs Samsung",
       "consumers": 7066,
@@ -14372,6 +14362,16 @@
       "disputedPct": 27.3,
       "disputedOwing": 1795,
       "live": 408,
+      "reportFile": null
+    },
+    {
+      "token": "pacific union financial l",
+      "name": "Pacific Union Financial L",
+      "consumers": 7066,
+      "tradelines": 7833,
+      "disputedPct": 17.8,
+      "disputedOwing": 172,
+      "live": 335,
       "reportFile": null
     },
     {
@@ -14415,16 +14415,6 @@
       "reportFile": null
     },
     {
-      "token": "personal fin",
-      "name": "Personal Fin",
-      "consumers": 7031,
-      "tradelines": 17253,
-      "disputedPct": 0.9,
-      "disputedOwing": 1,
-      "live": 394,
-      "reportFile": null
-    },
-    {
       "token": "robins fcu",
       "name": "Robins Fcu",
       "consumers": 7031,
@@ -14432,6 +14422,16 @@
       "disputedPct": 26.1,
       "disputedOwing": 1681,
       "live": 622,
+      "reportFile": null
+    },
+    {
+      "token": "personal fin",
+      "name": "Personal Fin",
+      "consumers": 7031,
+      "tradelines": 17253,
+      "disputedPct": 0.9,
+      "disputedOwing": 1,
+      "live": 394,
       "reportFile": null
     },
     {
@@ -14765,16 +14765,6 @@
       "reportFile": null
     },
     {
-      "token": "united whsle mort",
-      "name": "United Whsle Mort",
-      "consumers": 6853,
-      "tradelines": 7842,
-      "disputedPct": 1.7,
-      "disputedOwing": 96,
-      "live": 2403,
-      "reportFile": null
-    },
-    {
       "token": "guild mortgage company",
       "name": "Guild Mortgage Company",
       "consumers": 6853,
@@ -14782,6 +14772,16 @@
       "disputedPct": 8.4,
       "disputedOwing": 413,
       "live": 1043,
+      "reportFile": null
+    },
+    {
+      "token": "united whsle mort",
+      "name": "United Whsle Mort",
+      "consumers": 6853,
+      "tradelines": 7842,
+      "disputedPct": 1.7,
+      "disputedOwing": 96,
+      "live": 2403,
       "reportFile": null
     },
     {
@@ -14865,16 +14865,6 @@
       "reportFile": null
     },
     {
-      "token": "allied interstate",
-      "name": "Allied Interstate",
-      "consumers": 6783,
-      "tradelines": 8829,
-      "disputedPct": 41.9,
-      "disputedOwing": 3414,
-      "live": 242,
-      "reportFile": null
-    },
-    {
       "token": "account services colls",
       "name": "Account Services Colls",
       "consumers": 6783,
@@ -14882,6 +14872,16 @@
       "disputedPct": 23.6,
       "disputedOwing": 2544,
       "live": 97,
+      "reportFile": null
+    },
+    {
+      "token": "allied interstate",
+      "name": "Allied Interstate",
+      "consumers": 6783,
+      "tradelines": 8829,
+      "disputedPct": 41.9,
+      "disputedOwing": 3414,
+      "live": 242,
       "reportFile": null
     },
     {
@@ -14905,22 +14905,22 @@
       "reportFile": null
     },
     {
-      "token": "genesis feb retail",
-      "name": "Genesis Feb Retail",
-      "consumers": 6780,
-      "tradelines": 7012,
-      "disputedPct": 21.3,
-      "disputedOwing": 383,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "zale deleware genesis",
       "name": "Zale Deleware Genesis",
       "consumers": 6780,
       "tradelines": 6821,
       "disputedPct": 13.3,
       "disputedOwing": 176,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "genesis feb retail",
+      "name": "Genesis Feb Retail",
+      "consumers": 6780,
+      "tradelines": 7012,
+      "disputedPct": 21.3,
+      "disputedOwing": 383,
       "live": 0,
       "reportFile": null
     },
@@ -16005,16 +16005,6 @@
       "reportFile": null
     },
     {
-      "token": "child support enf la",
-      "name": "Child Support Enf La",
-      "consumers": 6145,
-      "tradelines": 7732,
-      "disputedPct": 24.8,
-      "disputedOwing": 1491,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "boeing ecu",
       "name": "Boeing Ecu",
       "consumers": 6145,
@@ -16022,6 +16012,16 @@
       "disputedPct": 15.1,
       "disputedOwing": 976,
       "live": 1234,
+      "reportFile": null
+    },
+    {
+      "token": "child support enf la",
+      "name": "Child Support Enf La",
+      "consumers": 6145,
+      "tradelines": 7732,
+      "disputedPct": 24.8,
+      "disputedOwing": 1491,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -16065,16 +16065,6 @@
       "reportFile": null
     },
     {
-      "token": "resurgerecve",
-      "name": "Resurgerecve",
-      "consumers": 6119,
-      "tradelines": 7375,
-      "disputedPct": 69.4,
-      "disputedOwing": 5112,
-      "live": 1595,
-      "reportFile": null
-    },
-    {
       "token": "emoneyusa",
       "name": "Emoneyusa",
       "consumers": 6119,
@@ -16082,6 +16072,16 @@
       "disputedPct": 5.7,
       "disputedOwing": 579,
       "live": 909,
+      "reportFile": null
+    },
+    {
+      "token": "resurgerecve",
+      "name": "Resurgerecve",
+      "consumers": 6119,
+      "tradelines": 7375,
+      "disputedPct": 69.4,
+      "disputedOwing": 5112,
+      "live": 1595,
       "reportFile": null
     },
     {
@@ -16975,16 +16975,6 @@
       "reportFile": null
     },
     {
-      "token": "southern financial systems",
-      "name": "Southern Financial Systems",
-      "consumers": 5717,
-      "tradelines": 12641,
-      "disputedPct": 51.3,
-      "disputedOwing": 6434,
-      "live": 23,
-      "reportFile": null
-    },
-    {
       "token": "ncd financial",
       "name": "Ncd Financial",
       "consumers": 5717,
@@ -16992,6 +16982,16 @@
       "disputedPct": 7.4,
       "disputedOwing": 402,
       "live": 639,
+      "reportFile": null
+    },
+    {
+      "token": "southern financial systems",
+      "name": "Southern Financial Systems",
+      "consumers": 5717,
+      "tradelines": 12641,
+      "disputedPct": 51.3,
+      "disputedOwing": 6434,
+      "live": 23,
       "reportFile": null
     },
     {
@@ -17105,16 +17105,6 @@
       "reportFile": null
     },
     {
-      "token": "collection associates",
-      "name": "Collection Associates",
-      "consumers": 5649,
-      "tradelines": 11524,
-      "disputedPct": 53.4,
-      "disputedOwing": 5848,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "entergy ar",
       "name": "Entergy Ar",
       "consumers": 5649,
@@ -17122,6 +17112,16 @@
       "disputedPct": 46.5,
       "disputedOwing": 2329,
       "live": 12,
+      "reportFile": null
+    },
+    {
+      "token": "collection associates",
+      "name": "Collection Associates",
+      "consumers": 5649,
+      "tradelines": 11524,
+      "disputedPct": 53.4,
+      "disputedOwing": 5848,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -17255,16 +17255,6 @@
       "reportFile": null
     },
     {
-      "token": "automax",
-      "name": "Automax",
-      "consumers": 5557,
-      "tradelines": 10098,
-      "disputedPct": 17.2,
-      "disputedOwing": 1364,
-      "live": 621,
-      "reportFile": null
-    },
-    {
       "token": "first coll",
       "name": "First Coll",
       "consumers": 5557,
@@ -17272,6 +17262,16 @@
       "disputedPct": 66.4,
       "disputedOwing": 3347,
       "live": 79,
+      "reportFile": null
+    },
+    {
+      "token": "automax",
+      "name": "Automax",
+      "consumers": 5557,
+      "tradelines": 10098,
+      "disputedPct": 17.2,
+      "disputedOwing": 1364,
+      "live": 621,
       "reportFile": null
     },
     {
@@ -17775,16 +17775,6 @@
       "reportFile": null
     },
     {
-      "token": "ccbank cng",
-      "name": "Ccbank Cng",
-      "consumers": 5312,
-      "tradelines": 6337,
-      "disputedPct": 11.6,
-      "disputedOwing": 239,
-      "live": 1394,
-      "reportFile": null
-    },
-    {
       "token": "cda pontiac",
       "name": "Cda Pontiac",
       "consumers": 5312,
@@ -17792,6 +17782,16 @@
       "disputedPct": 56.9,
       "disputedOwing": 4315,
       "live": 43,
+      "reportFile": null
+    },
+    {
+      "token": "ccbank cng",
+      "name": "Ccbank Cng",
+      "consumers": 5312,
+      "tradelines": 6337,
+      "disputedPct": 11.6,
+      "disputedOwing": 239,
+      "live": 1394,
       "reportFile": null
     },
     {
@@ -17815,16 +17815,6 @@
       "reportFile": null
     },
     {
-      "token": "direc management",
-      "name": "Direc Management",
-      "consumers": 5300,
-      "tradelines": 10024,
-      "disputedPct": 63.3,
-      "disputedOwing": 6193,
-      "live": 12,
-      "reportFile": null
-    },
-    {
       "token": "miramedrg",
       "name": "Miramedrg",
       "consumers": 5300,
@@ -17832,6 +17822,16 @@
       "disputedPct": 29.0,
       "disputedOwing": 2193,
       "live": 9,
+      "reportFile": null
+    },
+    {
+      "token": "direc management",
+      "name": "Direc Management",
+      "consumers": 5300,
+      "tradelines": 10024,
+      "disputedPct": 63.3,
+      "disputedOwing": 6193,
+      "live": 12,
       "reportFile": null
     },
     {
@@ -17985,16 +17985,6 @@
       "reportFile": null
     },
     {
-      "token": "cap1",
-      "name": "Cap1",
-      "consumers": 5244,
-      "tradelines": 5541,
-      "disputedPct": 4.2,
-      "disputedOwing": 140,
-      "live": 3102,
-      "reportFile": null
-    },
-    {
       "token": "sf lead bank",
       "name": "Sf Lead Bank",
       "consumers": 5244,
@@ -18002,6 +17992,16 @@
       "disputedPct": 5.2,
       "disputedOwing": 149,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "cap1",
+      "name": "Cap1",
+      "consumers": 5244,
+      "tradelines": 5541,
+      "disputedPct": 4.2,
+      "disputedOwing": 140,
+      "live": 3102,
       "reportFile": null
     },
     {
@@ -18025,16 +18025,6 @@
       "reportFile": null
     },
     {
-      "token": "bay area credit service",
-      "name": "Bay Area Credit Service",
-      "consumers": 5222,
-      "tradelines": 6999,
-      "disputedPct": 51.7,
-      "disputedOwing": 3465,
-      "live": 32,
-      "reportFile": null
-    },
-    {
       "token": "phoenix recovery group",
       "name": "Phoenix Recovery Group",
       "consumers": 5222,
@@ -18045,13 +18035,13 @@
       "reportFile": null
     },
     {
-      "token": "financial recoveries",
-      "name": "Financial Recoveries",
-      "consumers": 5221,
-      "tradelines": 13475,
-      "disputedPct": 37.1,
-      "disputedOwing": 4640,
-      "live": 0,
+      "token": "bay area credit service",
+      "name": "Bay Area Credit Service",
+      "consumers": 5222,
+      "tradelines": 6999,
+      "disputedPct": 51.7,
+      "disputedOwing": 3465,
+      "live": 32,
       "reportFile": null
     },
     {
@@ -18062,6 +18052,16 @@
       "disputedPct": 0.5,
       "disputedOwing": 17,
       "live": 1506,
+      "reportFile": null
+    },
+    {
+      "token": "financial recoveries",
+      "name": "Financial Recoveries",
+      "consumers": 5221,
+      "tradelines": 13475,
+      "disputedPct": 37.1,
+      "disputedOwing": 4640,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -18275,16 +18275,6 @@
       "reportFile": null
     },
     {
-      "token": "collection management",
-      "name": "Collection Management",
-      "consumers": 5127,
-      "tradelines": 7540,
-      "disputedPct": 29.5,
-      "disputedOwing": 2199,
-      "live": 2265,
-      "reportFile": null
-    },
-    {
       "token": "wfhe",
       "name": "Wfhe",
       "consumers": 5127,
@@ -18292,6 +18282,16 @@
       "disputedPct": 15.8,
       "disputedOwing": 354,
       "live": 147,
+      "reportFile": null
+    },
+    {
+      "token": "collection management",
+      "name": "Collection Management",
+      "consumers": 5127,
+      "tradelines": 7540,
+      "disputedPct": 29.5,
+      "disputedOwing": 2199,
+      "live": 2265,
       "reportFile": null
     },
     {
@@ -18325,16 +18325,6 @@
       "reportFile": null
     },
     {
-      "token": "lendingusa",
-      "name": "Lendingusa",
-      "consumers": 5120,
-      "tradelines": 5582,
-      "disputedPct": 23.1,
-      "disputedOwing": 233,
-      "live": 824,
-      "reportFile": null
-    },
-    {
       "token": "prof debt mediation",
       "name": "Prof Debt Mediation",
       "consumers": 5120,
@@ -18342,6 +18332,16 @@
       "disputedPct": 67.7,
       "disputedOwing": 3619,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "lendingusa",
+      "name": "Lendingusa",
+      "consumers": 5120,
+      "tradelines": 5582,
+      "disputedPct": 23.1,
+      "disputedOwing": 233,
+      "live": 824,
       "reportFile": null
     },
     {
@@ -18455,16 +18455,6 @@
       "reportFile": null
     },
     {
-      "token": "dignifi",
-      "name": "Dignifi",
-      "consumers": 5081,
-      "tradelines": 11066,
-      "disputedPct": 14.4,
-      "disputedOwing": 743,
-      "live": 1014,
-      "reportFile": null
-    },
-    {
       "token": "ncb managment services",
       "name": "Ncb Managment Services",
       "consumers": 5081,
@@ -18472,6 +18462,16 @@
       "disputedPct": 59.0,
       "disputedOwing": 2630,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "dignifi",
+      "name": "Dignifi",
+      "consumers": 5081,
+      "tradelines": 11066,
+      "disputedPct": 14.4,
+      "disputedOwing": 743,
+      "live": 1014,
       "reportFile": null
     },
     {
@@ -18665,16 +18665,6 @@
       "reportFile": null
     },
     {
-      "token": "cb talbots",
-      "name": "Cb Talbots",
-      "consumers": 5040,
-      "tradelines": 5820,
-      "disputedPct": 10.0,
-      "disputedOwing": 130,
-      "live": 831,
-      "reportFile": null
-    },
-    {
       "token": "dhi mortgage",
       "name": "Dhi Mortgage",
       "consumers": 5040,
@@ -18682,6 +18672,16 @@
       "disputedPct": 0.4,
       "disputedOwing": 2,
       "live": 1130,
+      "reportFile": null
+    },
+    {
+      "token": "cb talbots",
+      "name": "Cb Talbots",
+      "consumers": 5040,
+      "tradelines": 5820,
+      "disputedPct": 10.0,
+      "disputedOwing": 130,
+      "live": 831,
       "reportFile": null
     },
     {
@@ -18915,16 +18915,6 @@
       "reportFile": null
     },
     {
-      "token": "conn s serv",
-      "name": "Conn S Serv",
-      "consumers": 4931,
-      "tradelines": 11303,
-      "disputedPct": 15.2,
-      "disputedOwing": 878,
-      "live": 4931,
-      "reportFile": null
-    },
-    {
       "token": "elevate reco",
       "name": "Elevate Reco",
       "consumers": 4931,
@@ -18932,6 +18922,16 @@
       "disputedPct": 43.7,
       "disputedOwing": 2850,
       "live": 477,
+      "reportFile": null
+    },
+    {
+      "token": "conn s serv",
+      "name": "Conn S Serv",
+      "consumers": 4931,
+      "tradelines": 11303,
+      "disputedPct": 15.2,
+      "disputedOwing": 878,
+      "live": 4931,
       "reportFile": null
     },
     {
@@ -19275,16 +19275,6 @@
       "reportFile": null
     },
     {
-      "token": "mi first cu",
-      "name": "Mi First Cu",
-      "consumers": 4811,
-      "tradelines": 15437,
-      "disputedPct": 13.4,
-      "disputedOwing": 873,
-      "live": 470,
-      "reportFile": null
-    },
-    {
       "token": "hlthcare col",
       "name": "Hlthcare Col",
       "consumers": 4811,
@@ -19292,6 +19282,16 @@
       "disputedPct": 59.7,
       "disputedOwing": 4762,
       "live": 26,
+      "reportFile": null
+    },
+    {
+      "token": "mi first cu",
+      "name": "Mi First Cu",
+      "consumers": 4811,
+      "tradelines": 15437,
+      "disputedPct": 13.4,
+      "disputedOwing": 873,
+      "live": 470,
       "reportFile": null
     },
     {
@@ -19605,16 +19605,6 @@
       "reportFile": null
     },
     {
-      "token": "cb fshbug",
-      "name": "Cb Fshbug",
-      "consumers": 4711,
-      "tradelines": 4768,
-      "disputedPct": 3.5,
-      "disputedOwing": 9,
-      "live": 62,
-      "reportFile": null
-    },
-    {
       "token": "moutainrunso",
       "name": "Moutainrunso",
       "consumers": 4711,
@@ -19622,6 +19612,16 @@
       "disputedPct": 67.1,
       "disputedOwing": 3241,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "cb fshbug",
+      "name": "Cb Fshbug",
+      "consumers": 4711,
+      "tradelines": 4768,
+      "disputedPct": 3.5,
+      "disputedOwing": 9,
+      "live": 62,
       "reportFile": null
     },
     {
@@ -19675,16 +19675,6 @@
       "reportFile": null
     },
     {
-      "token": "carolina finance",
-      "name": "Carolina Finance",
-      "consumers": 4689,
-      "tradelines": 9076,
-      "disputedPct": 18.7,
-      "disputedOwing": 1128,
-      "live": 328,
-      "reportFile": null
-    },
-    {
       "token": "cbs col padu",
       "name": "Cbs Col Padu",
       "consumers": 4689,
@@ -19692,6 +19682,16 @@
       "disputedPct": 49.4,
       "disputedOwing": 4311,
       "live": 309,
+      "reportFile": null
+    },
+    {
+      "token": "carolina finance",
+      "name": "Carolina Finance",
+      "consumers": 4689,
+      "tradelines": 9076,
+      "disputedPct": 18.7,
+      "disputedOwing": 1128,
+      "live": 328,
       "reportFile": null
     },
     {
@@ -19825,6 +19825,16 @@
       "reportFile": null
     },
     {
+      "token": "mars",
+      "name": "Mars",
+      "consumers": 4637,
+      "tradelines": 4947,
+      "disputedPct": 69.3,
+      "disputedOwing": 2809,
+      "live": 58,
+      "reportFile": null
+    },
+    {
       "token": "goldman sachs bank",
       "name": "Goldman Sachs Bank",
       "consumers": 4637,
@@ -19842,16 +19852,6 @@
       "disputedPct": 20.3,
       "disputedOwing": 891,
       "live": 89,
-      "reportFile": null
-    },
-    {
-      "token": "mars",
-      "name": "Mars",
-      "consumers": 4637,
-      "tradelines": 4947,
-      "disputedPct": 69.3,
-      "disputedOwing": 2809,
-      "live": 58,
       "reportFile": null
     },
     {
@@ -19875,16 +19875,6 @@
       "reportFile": null
     },
     {
-      "token": "credit human",
-      "name": "Credit Human",
-      "consumers": 4630,
-      "tradelines": 9287,
-      "disputedPct": 9.9,
-      "disputedOwing": 463,
-      "live": 520,
-      "reportFile": null
-    },
-    {
       "token": "roadrunner",
       "name": "Roadrunner",
       "consumers": 4630,
@@ -19892,6 +19882,16 @@
       "disputedPct": 10.6,
       "disputedOwing": 482,
       "live": 1956,
+      "reportFile": null
+    },
+    {
+      "token": "credit human",
+      "name": "Credit Human",
+      "consumers": 4630,
+      "tradelines": 9287,
+      "disputedPct": 9.9,
+      "disputedOwing": 463,
+      "live": 520,
       "reportFile": null
     },
     {
@@ -19905,16 +19905,6 @@
       "reportFile": null
     },
     {
-      "token": "personalfin",
-      "name": "Personalfin",
-      "consumers": 4622,
-      "tradelines": 6642,
-      "disputedPct": 15.0,
-      "disputedOwing": 37,
-      "live": 328,
-      "reportFile": null
-    },
-    {
       "token": "sable ccb",
       "name": "Sable Ccb",
       "consumers": 4622,
@@ -19922,6 +19912,16 @@
       "disputedPct": 6.6,
       "disputedOwing": 67,
       "live": 1414,
+      "reportFile": null
+    },
+    {
+      "token": "personalfin",
+      "name": "Personalfin",
+      "consumers": 4622,
+      "tradelines": 6642,
+      "disputedPct": 15.0,
+      "disputedOwing": 37,
+      "live": 328,
       "reportFile": null
     },
     {
@@ -20045,16 +20045,6 @@
       "reportFile": null
     },
     {
-      "token": "citiznpayloc",
-      "name": "Citiznpayloc",
-      "consumers": 4569,
-      "tradelines": 5604,
-      "disputedPct": 17.9,
-      "disputedOwing": 817,
-      "live": 2626,
-      "reportFile": null
-    },
-    {
       "token": "infinity motor acceptance",
       "name": "Infinity Motor Acceptance",
       "consumers": 4569,
@@ -20062,6 +20052,16 @@
       "disputedPct": 19.1,
       "disputedOwing": 466,
       "live": 299,
+      "reportFile": null
+    },
+    {
+      "token": "citiznpayloc",
+      "name": "Citiznpayloc",
+      "consumers": 4569,
+      "tradelines": 5604,
+      "disputedPct": 17.9,
+      "disputedOwing": 817,
+      "live": 2626,
       "reportFile": null
     },
     {
@@ -20085,16 +20085,6 @@
       "reportFile": null
     },
     {
-      "token": "veteran s admn",
-      "name": "Veteran S Admn",
-      "consumers": 4560,
-      "tradelines": 7113,
-      "disputedPct": 81.5,
-      "disputedOwing": 1020,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "wf nation",
       "name": "Wf Nation",
       "consumers": 4560,
@@ -20102,6 +20092,16 @@
       "disputedPct": 17.0,
       "disputedOwing": 853,
       "live": 218,
+      "reportFile": null
+    },
+    {
+      "token": "veteran s admn",
+      "name": "Veteran S Admn",
+      "consumers": 4560,
+      "tradelines": 7113,
+      "disputedPct": 81.5,
+      "disputedOwing": 1020,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -20265,16 +20265,6 @@
       "reportFile": null
     },
     {
-      "token": "cortrust bk",
-      "name": "Cortrust Bk",
-      "consumers": 4500,
-      "tradelines": 5531,
-      "disputedPct": 28.3,
-      "disputedOwing": 1270,
-      "live": 807,
-      "reportFile": null
-    },
-    {
       "token": "communitywide fcu",
       "name": "Communitywide Fcu",
       "consumers": 4500,
@@ -20282,6 +20272,16 @@
       "disputedPct": 14.6,
       "disputedOwing": 633,
       "live": 288,
+      "reportFile": null
+    },
+    {
+      "token": "cortrust bk",
+      "name": "Cortrust Bk",
+      "consumers": 4500,
+      "tradelines": 5531,
+      "disputedPct": 28.3,
+      "disputedOwing": 1270,
+      "live": 807,
       "reportFile": null
     },
     {
@@ -20535,16 +20535,6 @@
       "reportFile": null
     },
     {
-      "token": "kinum",
-      "name": "Kinum",
-      "consumers": 4406,
-      "tradelines": 5075,
-      "disputedPct": 55.9,
-      "disputedOwing": 2621,
-      "live": 773,
-      "reportFile": null
-    },
-    {
       "token": "nbt bank",
       "name": "Nbt Bank",
       "consumers": 4406,
@@ -20552,6 +20542,16 @@
       "disputedPct": 12.6,
       "disputedOwing": 431,
       "live": 391,
+      "reportFile": null
+    },
+    {
+      "token": "kinum",
+      "name": "Kinum",
+      "consumers": 4406,
+      "tradelines": 5075,
+      "disputedPct": 55.9,
+      "disputedOwing": 2621,
+      "live": 773,
       "reportFile": null
     },
     {
@@ -20575,16 +20575,6 @@
       "reportFile": null
     },
     {
-      "token": "trueaccord c",
-      "name": "Trueaccord C",
-      "consumers": 4395,
-      "tradelines": 6134,
-      "disputedPct": 49.7,
-      "disputedOwing": 2954,
-      "live": 4395,
-      "reportFile": null
-    },
-    {
       "token": "state of md ccu",
       "name": "State Of Md Ccu",
       "consumers": 4395,
@@ -20592,6 +20582,16 @@
       "disputedPct": 53.5,
       "disputedOwing": 1681,
       "live": 367,
+      "reportFile": null
+    },
+    {
+      "token": "trueaccord c",
+      "name": "Trueaccord C",
+      "consumers": 4395,
+      "tradelines": 6134,
+      "disputedPct": 49.7,
+      "disputedOwing": 2954,
+      "live": 4395,
       "reportFile": null
     },
     {
@@ -20615,16 +20615,6 @@
       "reportFile": null
     },
     {
-      "token": "nordstrom fsb",
-      "name": "Nordstrom Fsb",
-      "consumers": 4388,
-      "tradelines": 4790,
-      "disputedPct": 14.8,
-      "disputedOwing": 474,
-      "live": 58,
-      "reportFile": null
-    },
-    {
       "token": "first community credit",
       "name": "First Community Credit",
       "consumers": 4388,
@@ -20632,6 +20622,16 @@
       "disputedPct": 13.8,
       "disputedOwing": 495,
       "live": 203,
+      "reportFile": null
+    },
+    {
+      "token": "nordstrom fsb",
+      "name": "Nordstrom Fsb",
+      "consumers": 4388,
+      "tradelines": 4790,
+      "disputedPct": 14.8,
+      "disputedOwing": 474,
+      "live": 58,
       "reportFile": null
     },
     {
@@ -20655,16 +20655,6 @@
       "reportFile": null
     },
     {
-      "token": "sc state federal cu",
-      "name": "Sc State Federal Cu",
-      "consumers": 4376,
-      "tradelines": 11414,
-      "disputedPct": 10.7,
-      "disputedOwing": 826,
-      "live": 474,
-      "reportFile": null
-    },
-    {
       "token": "sc studntln",
       "name": "Sc Studntln",
       "consumers": 4376,
@@ -20675,13 +20665,13 @@
       "reportFile": null
     },
     {
-      "token": "feb retail cci",
-      "name": "Feb Retail Cci",
-      "consumers": 4375,
-      "tradelines": 4671,
-      "disputedPct": 3.8,
-      "disputedOwing": 46,
-      "live": 4229,
+      "token": "sc state federal cu",
+      "name": "Sc State Federal Cu",
+      "consumers": 4376,
+      "tradelines": 11414,
+      "disputedPct": 10.7,
+      "disputedOwing": 826,
+      "live": 474,
       "reportFile": null
     },
     {
@@ -20692,6 +20682,16 @@
       "disputedPct": 11.7,
       "disputedOwing": 164,
       "live": 321,
+      "reportFile": null
+    },
+    {
+      "token": "feb retail cci",
+      "name": "Feb Retail Cci",
+      "consumers": 4375,
+      "tradelines": 4671,
+      "disputedPct": 3.8,
+      "disputedOwing": 46,
+      "live": 4229,
       "reportFile": null
     },
     {
@@ -21155,16 +21155,6 @@
       "reportFile": null
     },
     {
-      "token": "mrchnt accpt",
-      "name": "Mrchnt Accpt",
-      "consumers": 4242,
-      "tradelines": 4487,
-      "disputedPct": 31.1,
-      "disputedOwing": 1190,
-      "live": 439,
-      "reportFile": null
-    },
-    {
       "token": "cb fairfield coll dept",
       "name": "Cb Fairfield Coll Dept",
       "consumers": 4242,
@@ -21172,6 +21162,16 @@
       "disputedPct": 74.1,
       "disputedOwing": 4101,
       "live": 18,
+      "reportFile": null
+    },
+    {
+      "token": "mrchnt accpt",
+      "name": "Mrchnt Accpt",
+      "consumers": 4242,
+      "tradelines": 4487,
+      "disputedPct": 31.1,
+      "disputedOwing": 1190,
+      "live": 439,
       "reportFile": null
     },
     {
@@ -21285,16 +21285,6 @@
       "reportFile": null
     },
     {
-      "token": "ms services",
-      "name": "Ms Services",
-      "consumers": 4208,
-      "tradelines": 7353,
-      "disputedPct": 61.3,
-      "disputedOwing": 4108,
-      "live": 27,
-      "reportFile": null
-    },
-    {
       "token": "guardian cu",
       "name": "Guardian Cu",
       "consumers": 4208,
@@ -21302,6 +21292,16 @@
       "disputedPct": 20.7,
       "disputedOwing": 1088,
       "live": 540,
+      "reportFile": null
+    },
+    {
+      "token": "ms services",
+      "name": "Ms Services",
+      "consumers": 4208,
+      "tradelines": 7353,
+      "disputedPct": 61.3,
+      "disputedOwing": 4108,
+      "live": 27,
       "reportFile": null
     },
     {
@@ -21395,16 +21395,6 @@
       "reportFile": null
     },
     {
-      "token": "amerimark",
-      "name": "Amerimark",
-      "consumers": 4183,
-      "tradelines": 4249,
-      "disputedPct": 18.5,
-      "disputedOwing": 646,
-      "live": 20,
-      "reportFile": null
-    },
-    {
       "token": "ccb petlnd",
       "name": "Ccb Petlnd",
       "consumers": 4183,
@@ -21415,6 +21405,16 @@
       "reportFile": null
     },
     {
+      "token": "amerimark",
+      "name": "Amerimark",
+      "consumers": 4183,
+      "tradelines": 4249,
+      "disputedPct": 18.5,
+      "disputedOwing": 646,
+      "live": 20,
+      "reportFile": null
+    },
+    {
       "token": "retail mercht assoc in",
       "name": "Retail Mercht Assoc In",
       "consumers": 4182,
@@ -21422,6 +21422,16 @@
       "disputedPct": 41.2,
       "disputedOwing": 3245,
       "live": 63,
+      "reportFile": null
+    },
+    {
+      "token": "huntington mortgage",
+      "name": "Huntington Mortgage",
+      "consumers": 4177,
+      "tradelines": 5591,
+      "disputedPct": 7.9,
+      "disputedOwing": 222,
+      "live": 774,
       "reportFile": null
     },
     {
@@ -21442,16 +21452,6 @@
       "disputedPct": 2.0,
       "disputedOwing": 45,
       "live": 360,
-      "reportFile": null
-    },
-    {
-      "token": "huntington mortgage",
-      "name": "Huntington Mortgage",
-      "consumers": 4177,
-      "tradelines": 5591,
-      "disputedPct": 7.9,
-      "disputedOwing": 222,
-      "live": 774,
       "reportFile": null
     },
     {
@@ -21605,16 +21605,6 @@
       "reportFile": null
     },
     {
-      "token": "southern finance company",
-      "name": "Southern Finance Company",
-      "consumers": 4143,
-      "tradelines": 20209,
-      "disputedPct": 8.7,
-      "disputedOwing": 770,
-      "live": 143,
-      "reportFile": null
-    },
-    {
       "token": "impact receivables managem",
       "name": "Impact Receivables Managem",
       "consumers": 4143,
@@ -21622,6 +21612,16 @@
       "disputedPct": 65.8,
       "disputedOwing": 2615,
       "live": 84,
+      "reportFile": null
+    },
+    {
+      "token": "southern finance company",
+      "name": "Southern Finance Company",
+      "consumers": 4143,
+      "tradelines": 20209,
+      "disputedPct": 8.7,
+      "disputedOwing": 770,
+      "live": 143,
       "reportFile": null
     },
     {
@@ -21785,16 +21785,6 @@
       "reportFile": null
     },
     {
-      "token": "wsfsunicorn",
-      "name": "Wsfsunicorn",
-      "consumers": 4110,
-      "tradelines": 4770,
-      "disputedPct": 0.0,
-      "disputedOwing": 0,
-      "live": 1642,
-      "reportFile": null
-    },
-    {
       "token": "business prof coll",
       "name": "Business Prof Coll",
       "consumers": 4110,
@@ -21802,6 +21792,16 @@
       "disputedPct": 69.0,
       "disputedOwing": 4098,
       "live": 13,
+      "reportFile": null
+    },
+    {
+      "token": "wsfsunicorn",
+      "name": "Wsfsunicorn",
+      "consumers": 4110,
+      "tradelines": 4770,
+      "disputedPct": 0.0,
+      "disputedOwing": 0,
+      "live": 1642,
       "reportFile": null
     },
     {
@@ -21885,16 +21885,6 @@
       "reportFile": null
     },
     {
-      "token": "truist grnsky gsloan s",
-      "name": "Truist Grnsky Gsloan S",
-      "consumers": 4079,
-      "tradelines": 4215,
-      "disputedPct": 13.2,
-      "disputedOwing": 342,
-      "live": 665,
-      "reportFile": null
-    },
-    {
       "token": "meridian financial mgmt",
       "name": "Meridian Financial Mgmt",
       "consumers": 4079,
@@ -21925,6 +21915,16 @@
       "reportFile": null
     },
     {
+      "token": "truist grnsky gsloan s",
+      "name": "Truist Grnsky Gsloan S",
+      "consumers": 4079,
+      "tradelines": 4215,
+      "disputedPct": 13.2,
+      "disputedOwing": 342,
+      "live": 665,
+      "reportFile": null
+    },
+    {
       "token": "alabama gas company",
       "name": "Alabama Gas Company",
       "consumers": 4069,
@@ -21945,13 +21945,13 @@
       "reportFile": null
     },
     {
-      "token": "alchildsupt",
-      "name": "Alchildsupt",
+      "token": "united collection serv",
+      "name": "United Collection Serv",
       "consumers": 4062,
-      "tradelines": 4289,
-      "disputedPct": 40.5,
-      "disputedOwing": 1565,
-      "live": 345,
+      "tradelines": 5897,
+      "disputedPct": 37.7,
+      "disputedOwing": 2185,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -21965,13 +21965,13 @@
       "reportFile": null
     },
     {
-      "token": "united collection serv",
-      "name": "United Collection Serv",
+      "token": "alchildsupt",
+      "name": "Alchildsupt",
       "consumers": 4062,
-      "tradelines": 5897,
-      "disputedPct": 37.7,
-      "disputedOwing": 2185,
-      "live": 0,
+      "tradelines": 4289,
+      "disputedPct": 40.5,
+      "disputedOwing": 1565,
+      "live": 345,
       "reportFile": null
     },
     {
@@ -22275,16 +22275,6 @@
       "reportFile": null
     },
     {
-      "token": "srp federal credit uni",
-      "name": "Srp Federal Credit Uni",
-      "consumers": 3961,
-      "tradelines": 9280,
-      "disputedPct": 11.2,
-      "disputedOwing": 467,
-      "live": 440,
-      "reportFile": null
-    },
-    {
       "token": "first investors servicing",
       "name": "First Investors Servicing",
       "consumers": 3961,
@@ -22292,6 +22282,16 @@
       "disputedPct": 17.2,
       "disputedOwing": 273,
       "live": 50,
+      "reportFile": null
+    },
+    {
+      "token": "srp federal credit uni",
+      "name": "Srp Federal Credit Uni",
+      "consumers": 3961,
+      "tradelines": 9280,
+      "disputedPct": 11.2,
+      "disputedOwing": 467,
+      "live": 440,
       "reportFile": null
     },
     {
@@ -22335,16 +22335,6 @@
       "reportFile": null
     },
     {
-      "token": "gte fcu",
-      "name": "Gte Fcu",
-      "consumers": 3944,
-      "tradelines": 6618,
-      "disputedPct": 12.0,
-      "disputedOwing": 445,
-      "live": 442,
-      "reportFile": null
-    },
-    {
       "token": "first savings bank blaze",
       "name": "First Savings Bank Blaze",
       "consumers": 3944,
@@ -22352,6 +22342,16 @@
       "disputedPct": 12.6,
       "disputedOwing": 470,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "gte fcu",
+      "name": "Gte Fcu",
+      "consumers": 3944,
+      "tradelines": 6618,
+      "disputedPct": 12.0,
+      "disputedOwing": 445,
+      "live": 442,
       "reportFile": null
     },
     {
@@ -22495,16 +22495,6 @@
       "reportFile": null
     },
     {
-      "token": "syn fstprog",
-      "name": "Syn Fstprog",
-      "consumers": 3904,
-      "tradelines": 6446,
-      "disputedPct": 14.1,
-      "disputedOwing": 353,
-      "live": 3904,
-      "reportFile": null
-    },
-    {
       "token": "justice finance compan",
       "name": "Justice Finance Compan",
       "consumers": 3904,
@@ -22512,6 +22502,16 @@
       "disputedPct": 6.7,
       "disputedOwing": 503,
       "live": 283,
+      "reportFile": null
+    },
+    {
+      "token": "syn fstprog",
+      "name": "Syn Fstprog",
+      "consumers": 3904,
+      "tradelines": 6446,
+      "disputedPct": 14.1,
+      "disputedOwing": 353,
+      "live": 3904,
       "reportFile": null
     },
     {
@@ -22865,16 +22865,6 @@
       "reportFile": null
     },
     {
-      "token": "gold car lending",
-      "name": "Gold Car Lending",
-      "consumers": 3827,
-      "tradelines": 6076,
-      "disputedPct": 20.7,
-      "disputedOwing": 793,
-      "live": 59,
-      "reportFile": null
-    },
-    {
       "token": "sthrn mgmt",
       "name": "Sthrn Mgmt",
       "consumers": 3827,
@@ -22882,6 +22872,16 @@
       "disputedPct": 58.4,
       "disputedOwing": 2447,
       "live": 479,
+      "reportFile": null
+    },
+    {
+      "token": "gold car lending",
+      "name": "Gold Car Lending",
+      "consumers": 3827,
+      "tradelines": 6076,
+      "disputedPct": 20.7,
+      "disputedOwing": 793,
+      "live": 59,
       "reportFile": null
     },
     {
@@ -22905,6 +22905,16 @@
       "reportFile": null
     },
     {
+      "token": "mufg union bank",
+      "name": "Mufg Union Bank",
+      "consumers": 3821,
+      "tradelines": 6782,
+      "disputedPct": 10.5,
+      "disputedOwing": 454,
+      "live": 0,
+      "reportFile": null
+    },
+    {
       "token": "dept of education osla",
       "name": "Dept Of Education Osla",
       "consumers": 3821,
@@ -22922,16 +22932,6 @@
       "disputedPct": 63.6,
       "disputedOwing": 5209,
       "live": 4,
-      "reportFile": null
-    },
-    {
-      "token": "mufg union bank",
-      "name": "Mufg Union Bank",
-      "consumers": 3821,
-      "tradelines": 6782,
-      "disputedPct": 10.5,
-      "disputedOwing": 454,
-      "live": 0,
       "reportFile": null
     },
     {
@@ -22965,16 +22965,6 @@
       "reportFile": null
     },
     {
-      "token": "gesa federal credit union",
-      "name": "Gesa Federal Credit Union",
-      "consumers": 3807,
-      "tradelines": 5982,
-      "disputedPct": 17.6,
-      "disputedOwing": 372,
-      "live": 197,
-      "reportFile": null
-    },
-    {
       "token": "dsrm national bank",
       "name": "Dsrm National Bank",
       "consumers": 3807,
@@ -22982,6 +22972,16 @@
       "disputedPct": 26.2,
       "disputedOwing": 641,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "gesa federal credit union",
+      "name": "Gesa Federal Credit Union",
+      "consumers": 3807,
+      "tradelines": 5982,
+      "disputedPct": 17.6,
+      "disputedOwing": 372,
+      "live": 197,
       "reportFile": null
     },
     {
@@ -23075,16 +23075,6 @@
       "reportFile": null
     },
     {
-      "token": "local government ecu",
-      "name": "Local Government Ecu",
-      "consumers": 3784,
-      "tradelines": 9660,
-      "disputedPct": 11.3,
-      "disputedOwing": 663,
-      "live": 155,
-      "reportFile": null
-    },
-    {
       "token": "delta ccu",
       "name": "Delta Ccu",
       "consumers": 3784,
@@ -23095,13 +23085,13 @@
       "reportFile": null
     },
     {
-      "token": "collins asset group",
-      "name": "Collins Asset Group",
-      "consumers": 3783,
-      "tradelines": 4880,
-      "disputedPct": 62.8,
-      "disputedOwing": 2887,
-      "live": 0,
+      "token": "local government ecu",
+      "name": "Local Government Ecu",
+      "consumers": 3784,
+      "tradelines": 9660,
+      "disputedPct": 11.3,
+      "disputedOwing": 663,
+      "live": 155,
       "reportFile": null
     },
     {
@@ -23112,6 +23102,16 @@
       "disputedPct": 58.6,
       "disputedOwing": 5374,
       "live": 11,
+      "reportFile": null
+    },
+    {
+      "token": "collins asset group",
+      "name": "Collins Asset Group",
+      "consumers": 3783,
+      "tradelines": 4880,
+      "disputedPct": 62.8,
+      "disputedOwing": 2887,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -23265,16 +23265,6 @@
       "reportFile": null
     },
     {
-      "token": "savannah river plant c u",
-      "name": "Savannah River Plant C U",
-      "consumers": 3748,
-      "tradelines": 8796,
-      "disputedPct": 20.9,
-      "disputedOwing": 838,
-      "live": 177,
-      "reportFile": null
-    },
-    {
       "token": "pssf",
       "name": "Pssf",
       "consumers": 3748,
@@ -23282,6 +23272,16 @@
       "disputedPct": 8.6,
       "disputedOwing": 313,
       "live": 30,
+      "reportFile": null
+    },
+    {
+      "token": "savannah river plant c u",
+      "name": "Savannah River Plant C U",
+      "consumers": 3748,
+      "tradelines": 8796,
+      "disputedPct": 20.9,
+      "disputedOwing": 838,
+      "live": 177,
       "reportFile": null
     },
     {
@@ -23305,16 +23305,6 @@
       "reportFile": null
     },
     {
-      "token": "st louis community cu",
-      "name": "St Louis Community Cu",
-      "consumers": 3742,
-      "tradelines": 9817,
-      "disputedPct": 8.6,
-      "disputedOwing": 498,
-      "live": 185,
-      "reportFile": null
-    },
-    {
       "token": "professional collection se",
       "name": "Professional Collection Se",
       "consumers": 3742,
@@ -23322,6 +23312,16 @@
       "disputedPct": 73.7,
       "disputedOwing": 3005,
       "live": 29,
+      "reportFile": null
+    },
+    {
+      "token": "st louis community cu",
+      "name": "St Louis Community Cu",
+      "consumers": 3742,
+      "tradelines": 9817,
+      "disputedPct": 8.6,
+      "disputedOwing": 498,
+      "live": 185,
       "reportFile": null
     },
     {
@@ -23405,13 +23405,13 @@
       "reportFile": null
     },
     {
-      "token": "first fed credit coll agen",
-      "name": "First Fed Credit Coll Agen",
+      "token": "apple fcu",
+      "name": "Apple Fcu",
       "consumers": 3725,
-      "tradelines": 6062,
-      "disputedPct": 70.7,
-      "disputedOwing": 4258,
-      "live": 0,
+      "tradelines": 11608,
+      "disputedPct": 22.7,
+      "disputedOwing": 1457,
+      "live": 424,
       "reportFile": null
     },
     {
@@ -23425,13 +23425,13 @@
       "reportFile": null
     },
     {
-      "token": "apple fcu",
-      "name": "Apple Fcu",
+      "token": "first fed credit coll agen",
+      "name": "First Fed Credit Coll Agen",
       "consumers": 3725,
-      "tradelines": 11608,
-      "disputedPct": 22.7,
-      "disputedOwing": 1457,
-      "live": 424,
+      "tradelines": 6062,
+      "disputedPct": 70.7,
+      "disputedOwing": 4258,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -23625,16 +23625,6 @@
       "reportFile": null
     },
     {
-      "token": "works and lentz",
-      "name": "Works And Lentz",
-      "consumers": 3686,
-      "tradelines": 9724,
-      "disputedPct": 57.4,
-      "disputedOwing": 5142,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "general electric credi",
       "name": "General Electric Credi",
       "consumers": 3686,
@@ -23642,6 +23632,16 @@
       "disputedPct": 9.5,
       "disputedOwing": 218,
       "live": 392,
+      "reportFile": null
+    },
+    {
+      "token": "works and lentz",
+      "name": "Works And Lentz",
+      "consumers": 3686,
+      "tradelines": 9724,
+      "disputedPct": 57.4,
+      "disputedOwing": 5142,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -23705,16 +23705,6 @@
       "reportFile": null
     },
     {
-      "token": "cb eddiebau",
-      "name": "Cb Eddiebau",
-      "consumers": 3664,
-      "tradelines": 4086,
-      "disputedPct": 10.2,
-      "disputedOwing": 65,
-      "live": 548,
-      "reportFile": null
-    },
-    {
       "token": "univ fcu",
       "name": "Univ Fcu",
       "consumers": 3664,
@@ -23722,6 +23712,16 @@
       "disputedPct": 11.5,
       "disputedOwing": 860,
       "live": 588,
+      "reportFile": null
+    },
+    {
+      "token": "cb eddiebau",
+      "name": "Cb Eddiebau",
+      "consumers": 3664,
+      "tradelines": 4086,
+      "disputedPct": 10.2,
+      "disputedOwing": 65,
+      "live": 548,
       "reportFile": null
     },
     {
@@ -23825,16 +23825,6 @@
       "reportFile": null
     },
     {
-      "token": "fst fin mgmt",
-      "name": "Fst Fin Mgmt",
-      "consumers": 3629,
-      "tradelines": 7001,
-      "disputedPct": 53.1,
-      "disputedOwing": 2729,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "carfinance com",
       "name": "Carfinance Com",
       "consumers": 3629,
@@ -23842,6 +23832,16 @@
       "disputedPct": 4.8,
       "disputedOwing": 25,
       "live": 188,
+      "reportFile": null
+    },
+    {
+      "token": "fst fin mgmt",
+      "name": "Fst Fin Mgmt",
+      "consumers": 3629,
+      "tradelines": 7001,
+      "disputedPct": 53.1,
+      "disputedOwing": 2729,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -23875,16 +23875,6 @@
       "reportFile": null
     },
     {
-      "token": "central states",
-      "name": "Central States",
-      "consumers": 3621,
-      "tradelines": 7836,
-      "disputedPct": 40.6,
-      "disputedOwing": 2833,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "bank services",
       "name": "Bank Services",
       "consumers": 3621,
@@ -23892,6 +23882,16 @@
       "disputedPct": 33.1,
       "disputedOwing": 337,
       "live": 270,
+      "reportFile": null
+    },
+    {
+      "token": "central states",
+      "name": "Central States",
+      "consumers": 3621,
+      "tradelines": 7836,
+      "disputedPct": 40.6,
+      "disputedOwing": 2833,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -23905,16 +23905,6 @@
       "reportFile": null
     },
     {
-      "token": "neighborhood credit un",
-      "name": "Neighborhood Credit Un",
-      "consumers": 3620,
-      "tradelines": 8066,
-      "disputedPct": 11.7,
-      "disputedOwing": 750,
-      "live": 427,
-      "reportFile": null
-    },
-    {
       "token": "colonial finance compa",
       "name": "Colonial Finance Compa",
       "consumers": 3620,
@@ -23922,6 +23912,16 @@
       "disputedPct": 3.4,
       "disputedOwing": 247,
       "live": 18,
+      "reportFile": null
+    },
+    {
+      "token": "neighborhood credit un",
+      "name": "Neighborhood Credit Un",
+      "consumers": 3620,
+      "tradelines": 8066,
+      "disputedPct": 11.7,
+      "disputedOwing": 750,
+      "live": 427,
       "reportFile": null
     },
     {
@@ -23995,16 +23995,6 @@
       "reportFile": null
     },
     {
-      "token": "prof credit",
-      "name": "Prof Credit",
-      "consumers": 3607,
-      "tradelines": 4417,
-      "disputedPct": 51.8,
-      "disputedOwing": 2110,
-      "live": 228,
-      "reportFile": null
-    },
-    {
       "token": "harvard coll",
       "name": "Harvard Coll",
       "consumers": 3607,
@@ -24012,6 +24002,16 @@
       "disputedPct": 34.6,
       "disputedOwing": 1490,
       "live": 158,
+      "reportFile": null
+    },
+    {
+      "token": "prof credit",
+      "name": "Prof Credit",
+      "consumers": 3607,
+      "tradelines": 4417,
+      "disputedPct": 51.8,
+      "disputedOwing": 2110,
+      "live": 228,
       "reportFile": null
     },
     {
@@ -24285,16 +24285,6 @@
       "reportFile": null
     },
     {
-      "token": "ar child support enf",
-      "name": "Ar Child Support Enf",
-      "consumers": 3557,
-      "tradelines": 4071,
-      "disputedPct": 53.9,
-      "disputedOwing": 1980,
-      "live": 244,
-      "reportFile": null
-    },
-    {
       "token": "fabco",
       "name": "Fabco",
       "consumers": 3557,
@@ -24302,6 +24292,16 @@
       "disputedPct": 59.5,
       "disputedOwing": 2270,
       "live": 150,
+      "reportFile": null
+    },
+    {
+      "token": "ar child support enf",
+      "name": "Ar Child Support Enf",
+      "consumers": 3557,
+      "tradelines": 4071,
+      "disputedPct": 53.9,
+      "disputedOwing": 1980,
+      "live": 244,
       "reportFile": null
     },
     {
@@ -24435,16 +24435,6 @@
       "reportFile": null
     },
     {
-      "token": "leaders financial company",
-      "name": "Leaders Financial Company",
-      "consumers": 3525,
-      "tradelines": 4112,
-      "disputedPct": 17.3,
-      "disputedOwing": 378,
-      "live": 95,
-      "reportFile": null
-    },
-    {
       "token": "collctr wyom",
       "name": "Collctr Wyom",
       "consumers": 3525,
@@ -24452,6 +24442,16 @@
       "disputedPct": 46.0,
       "disputedOwing": 3490,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "leaders financial company",
+      "name": "Leaders Financial Company",
+      "consumers": 3525,
+      "tradelines": 4112,
+      "disputedPct": 17.3,
+      "disputedOwing": 378,
+      "live": 95,
       "reportFile": null
     },
     {
@@ -24505,16 +24505,6 @@
       "reportFile": null
     },
     {
-      "token": "ccb jdwill",
-      "name": "Ccb Jdwill",
-      "consumers": 3509,
-      "tradelines": 3696,
-      "disputedPct": 22.4,
-      "disputedOwing": 115,
-      "live": 285,
-      "reportFile": null
-    },
-    {
       "token": "oprtunmetabk",
       "name": "Oprtunmetabk",
       "consumers": 3509,
@@ -24522,6 +24512,16 @@
       "disputedPct": 20.2,
       "disputedOwing": 475,
       "live": 1690,
+      "reportFile": null
+    },
+    {
+      "token": "ccb jdwill",
+      "name": "Ccb Jdwill",
+      "consumers": 3509,
+      "tradelines": 3696,
+      "disputedPct": 22.4,
+      "disputedOwing": 115,
+      "live": 285,
       "reportFile": null
     },
     {
@@ -24565,16 +24565,6 @@
       "reportFile": null
     },
     {
-      "token": "skopos fin",
-      "name": "Skopos Fin",
-      "consumers": 3502,
-      "tradelines": 3666,
-      "disputedPct": 32.4,
-      "disputedOwing": 812,
-      "live": 303,
-      "reportFile": null
-    },
-    {
       "token": "republic bank build",
       "name": "Republic Bank Build",
       "consumers": 3502,
@@ -24582,6 +24572,16 @@
       "disputedPct": 17.9,
       "disputedOwing": 571,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "skopos fin",
+      "name": "Skopos Fin",
+      "consumers": 3502,
+      "tradelines": 3666,
+      "disputedPct": 32.4,
+      "disputedOwing": 812,
+      "live": 303,
       "reportFile": null
     },
     {
@@ -24615,16 +24615,6 @@
       "reportFile": null
     },
     {
-      "token": "mattress frm",
-      "name": "Mattress Frm",
-      "consumers": 3493,
-      "tradelines": 3541,
-      "disputedPct": 6.4,
-      "disputedOwing": 1,
-      "live": 108,
-      "reportFile": null
-    },
-    {
       "token": "community loan servici",
       "name": "Community Loan Servici",
       "consumers": 3493,
@@ -24635,16 +24625,6 @@
       "reportFile": null
     },
     {
-      "token": "randolph brks cu",
-      "name": "Randolph Brks Cu",
-      "consumers": 3493,
-      "tradelines": 5345,
-      "disputedPct": 21.2,
-      "disputedOwing": 823,
-      "live": 183,
-      "reportFile": null
-    },
-    {
       "token": "peoples bank",
       "name": "Peoples Bank",
       "consumers": 3493,
@@ -24652,6 +24632,26 @@
       "disputedPct": 10.4,
       "disputedOwing": 358,
       "live": 288,
+      "reportFile": null
+    },
+    {
+      "token": "mattress frm",
+      "name": "Mattress Frm",
+      "consumers": 3493,
+      "tradelines": 3541,
+      "disputedPct": 6.4,
+      "disputedOwing": 1,
+      "live": 108,
+      "reportFile": null
+    },
+    {
+      "token": "randolph brks cu",
+      "name": "Randolph Brks Cu",
+      "consumers": 3493,
+      "tradelines": 5345,
+      "disputedPct": 21.2,
+      "disputedOwing": 823,
+      "live": 183,
       "reportFile": null
     },
     {
@@ -24715,16 +24715,6 @@
       "reportFile": null
     },
     {
-      "token": "ccb one finance",
-      "name": "Ccb One Finance",
-      "consumers": 3477,
-      "tradelines": 4882,
-      "disputedPct": 0.0,
-      "disputedOwing": 0,
-      "live": 1117,
-      "reportFile": null
-    },
-    {
       "token": "truliant federal cu",
       "name": "Truliant Federal Cu",
       "consumers": 3477,
@@ -24732,6 +24722,16 @@
       "disputedPct": 13.8,
       "disputedOwing": 944,
       "live": 602,
+      "reportFile": null
+    },
+    {
+      "token": "ccb one finance",
+      "name": "Ccb One Finance",
+      "consumers": 3477,
+      "tradelines": 4882,
+      "disputedPct": 0.0,
+      "disputedOwing": 0,
+      "live": 1117,
       "reportFile": null
     },
     {
@@ -24745,16 +24745,6 @@
       "reportFile": null
     },
     {
-      "token": "omega rms",
-      "name": "Omega Rms",
-      "consumers": 3472,
-      "tradelines": 3735,
-      "disputedPct": 67.5,
-      "disputedOwing": 2500,
-      "live": 291,
-      "reportFile": null
-    },
-    {
       "token": "georgia s own cu",
       "name": "Georgia S Own Cu",
       "consumers": 3472,
@@ -24762,6 +24752,16 @@
       "disputedPct": 17.5,
       "disputedOwing": 681,
       "live": 148,
+      "reportFile": null
+    },
+    {
+      "token": "omega rms",
+      "name": "Omega Rms",
+      "consumers": 3472,
+      "tradelines": 3735,
+      "disputedPct": 67.5,
+      "disputedOwing": 2500,
+      "live": 291,
       "reportFile": null
     },
     {
@@ -24985,12 +24985,12 @@
       "reportFile": null
     },
     {
-      "token": "rash curtis associates",
-      "name": "Rash Curtis Associates",
+      "token": "fa lending usa",
+      "name": "Fa Lending Usa",
       "consumers": 3443,
-      "tradelines": 7097,
-      "disputedPct": 67.8,
-      "disputedOwing": 4588,
+      "tradelines": 3526,
+      "disputedPct": 24.9,
+      "disputedOwing": 192,
       "live": 0,
       "reportFile": null
     },
@@ -25005,12 +25005,12 @@
       "reportFile": null
     },
     {
-      "token": "fa lending usa",
-      "name": "Fa Lending Usa",
+      "token": "rash curtis associates",
+      "name": "Rash Curtis Associates",
       "consumers": 3443,
-      "tradelines": 3526,
-      "disputedPct": 24.9,
-      "disputedOwing": 192,
+      "tradelines": 7097,
+      "disputedPct": 67.8,
+      "disputedOwing": 4588,
       "live": 0,
       "reportFile": null
     },
@@ -25135,16 +25135,6 @@
       "reportFile": null
     },
     {
-      "token": "general rev",
-      "name": "General Rev",
-      "consumers": 3412,
-      "tradelines": 3774,
-      "disputedPct": 60.0,
-      "disputedOwing": 1767,
-      "live": 677,
-      "reportFile": null
-    },
-    {
       "token": "cr coll usa",
       "name": "Cr Coll Usa",
       "consumers": 3412,
@@ -25155,13 +25145,13 @@
       "reportFile": null
     },
     {
-      "token": "acs",
-      "name": "Acs",
-      "consumers": 3410,
-      "tradelines": 3743,
-      "disputedPct": 2.8,
-      "disputedOwing": 44,
-      "live": 0,
+      "token": "general rev",
+      "name": "General Rev",
+      "consumers": 3412,
+      "tradelines": 3774,
+      "disputedPct": 60.0,
+      "disputedOwing": 1767,
+      "live": 677,
       "reportFile": null
     },
     {
@@ -25172,6 +25162,16 @@
       "disputedPct": 13.5,
       "disputedOwing": 1349,
       "live": 302,
+      "reportFile": null
+    },
+    {
+      "token": "acs",
+      "name": "Acs",
+      "consumers": 3410,
+      "tradelines": 3743,
+      "disputedPct": 2.8,
+      "disputedOwing": 44,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -25195,16 +25195,6 @@
       "reportFile": null
     },
     {
-      "token": "ok dept of human services",
-      "name": "Ok Dept Of Human Services",
-      "consumers": 3406,
-      "tradelines": 3798,
-      "disputedPct": 9.8,
-      "disputedOwing": 23,
-      "live": 18,
-      "reportFile": null
-    },
-    {
       "token": "zale deleware",
       "name": "Zale Deleware",
       "consumers": 3406,
@@ -25212,6 +25202,16 @@
       "disputedPct": 23.9,
       "disputedOwing": 53,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "ok dept of human services",
+      "name": "Ok Dept Of Human Services",
+      "consumers": 3406,
+      "tradelines": 3798,
+      "disputedPct": 9.8,
+      "disputedOwing": 23,
+      "live": 18,
       "reportFile": null
     },
     {
@@ -25235,16 +25235,6 @@
       "reportFile": null
     },
     {
-      "token": "professional finance ser",
-      "name": "Professional Finance Ser",
-      "consumers": 3399,
-      "tradelines": 3942,
-      "disputedPct": 7.2,
-      "disputedOwing": 179,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "firstmerit",
       "name": "Firstmerit",
       "consumers": 3399,
@@ -25255,13 +25245,13 @@
       "reportFile": null
     },
     {
-      "token": "hillcrest credit agency",
-      "name": "Hillcrest Credit Agency",
-      "consumers": 3398,
-      "tradelines": 9987,
-      "disputedPct": 53.8,
-      "disputedOwing": 5229,
-      "live": 13,
+      "token": "professional finance ser",
+      "name": "Professional Finance Ser",
+      "consumers": 3399,
+      "tradelines": 3942,
+      "disputedPct": 7.2,
+      "disputedOwing": 179,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -25275,6 +25265,16 @@
       "reportFile": null
     },
     {
+      "token": "hillcrest credit agency",
+      "name": "Hillcrest Credit Agency",
+      "consumers": 3398,
+      "tradelines": 9987,
+      "disputedPct": 53.8,
+      "disputedOwing": 5229,
+      "live": 13,
+      "reportFile": null
+    },
+    {
       "token": "tower loans",
       "name": "Tower Loans",
       "consumers": 3398,
@@ -25285,22 +25285,22 @@
       "reportFile": null
     },
     {
-      "token": "one advantage",
-      "name": "One Advantage",
-      "consumers": 3395,
-      "tradelines": 5784,
-      "disputedPct": 39.6,
-      "disputedOwing": 1956,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "dollar loan center",
       "name": "Dollar Loan Center",
       "consumers": 3395,
       "tradelines": 14467,
       "disputedPct": 1.5,
       "disputedOwing": 52,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "one advantage",
+      "name": "One Advantage",
+      "consumers": 3395,
+      "tradelines": 5784,
+      "disputedPct": 39.6,
+      "disputedOwing": 1956,
       "live": 0,
       "reportFile": null
     },
@@ -25355,16 +25355,6 @@
       "reportFile": null
     },
     {
-      "token": "first citizens bank trus",
-      "name": "First Citizens Bank Trus",
-      "consumers": 3373,
-      "tradelines": 4491,
-      "disputedPct": 16.4,
-      "disputedOwing": 287,
-      "live": 244,
-      "reportFile": null
-    },
-    {
       "token": "northwest fcu",
       "name": "Northwest Fcu",
       "consumers": 3373,
@@ -25372,6 +25362,16 @@
       "disputedPct": 17.3,
       "disputedOwing": 457,
       "live": 410,
+      "reportFile": null
+    },
+    {
+      "token": "first citizens bank trus",
+      "name": "First Citizens Bank Trus",
+      "consumers": 3373,
+      "tradelines": 4491,
+      "disputedPct": 16.4,
+      "disputedOwing": 287,
+      "live": 244,
       "reportFile": null
     },
     {
@@ -25655,6 +25655,16 @@
       "reportFile": null
     },
     {
+      "token": "receivable solutions l",
+      "name": "Receivable Solutions L",
+      "consumers": 3313,
+      "tradelines": 7367,
+      "disputedPct": 52.2,
+      "disputedOwing": 3847,
+      "live": 1,
+      "reportFile": null
+    },
+    {
       "token": "jared galleria of jwlr",
       "name": "Jared Galleria Of Jwlr",
       "consumers": 3313,
@@ -25672,16 +25682,6 @@
       "disputedPct": 15.5,
       "disputedOwing": 419,
       "live": 763,
-      "reportFile": null
-    },
-    {
-      "token": "receivable solutions l",
-      "name": "Receivable Solutions L",
-      "consumers": 3313,
-      "tradelines": 7367,
-      "disputedPct": 52.2,
-      "disputedOwing": 3847,
-      "live": 1,
       "reportFile": null
     },
     {
@@ -25915,22 +25915,22 @@
       "reportFile": null
     },
     {
-      "token": "service credit union",
-      "name": "Service Credit Union",
-      "consumers": 3283,
-      "tradelines": 8943,
-      "disputedPct": 18.3,
-      "disputedOwing": 854,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "credit management cntrl",
       "name": "Credit Management Cntrl",
       "consumers": 3283,
       "tradelines": 4041,
       "disputedPct": 41.2,
       "disputedOwing": 1600,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "service credit union",
+      "name": "Service Credit Union",
+      "consumers": 3283,
+      "tradelines": 8943,
+      "disputedPct": 18.3,
+      "disputedOwing": 854,
       "live": 0,
       "reportFile": null
     },
@@ -26095,16 +26095,6 @@
       "reportFile": null
     },
     {
-      "token": "philadelphia fed cr un",
-      "name": "Philadelphia Fed Cr Un",
-      "consumers": 3255,
-      "tradelines": 5962,
-      "disputedPct": 11.6,
-      "disputedOwing": 483,
-      "live": 271,
-      "reportFile": null
-    },
-    {
       "token": "money recovery nationw",
       "name": "Money Recovery Nationw",
       "consumers": 3255,
@@ -26135,13 +26125,13 @@
       "reportFile": null
     },
     {
-      "token": "cbv collections",
-      "name": "Cbv Collections",
-      "consumers": 3251,
-      "tradelines": 10092,
-      "disputedPct": 37.0,
-      "disputedOwing": 3722,
-      "live": 34,
+      "token": "philadelphia fed cr un",
+      "name": "Philadelphia Fed Cr Un",
+      "consumers": 3255,
+      "tradelines": 5962,
+      "disputedPct": 11.6,
+      "disputedOwing": 483,
+      "live": 271,
       "reportFile": null
     },
     {
@@ -26152,6 +26142,16 @@
       "disputedPct": 25.8,
       "disputedOwing": 886,
       "live": 1102,
+      "reportFile": null
+    },
+    {
+      "token": "cbv collections",
+      "name": "Cbv Collections",
+      "consumers": 3251,
+      "tradelines": 10092,
+      "disputedPct": 37.0,
+      "disputedOwing": 3722,
+      "live": 34,
       "reportFile": null
     },
     {
@@ -26275,16 +26275,6 @@
       "reportFile": null
     },
     {
-      "token": "first interstate bank",
-      "name": "First Interstate Bank",
-      "consumers": 3228,
-      "tradelines": 9407,
-      "disputedPct": 13.1,
-      "disputedOwing": 579,
-      "live": 277,
-      "reportFile": null
-    },
-    {
       "token": "medical",
       "name": "Medical",
       "consumers": 3228,
@@ -26292,6 +26282,16 @@
       "disputedPct": 0.5,
       "disputedOwing": 13,
       "live": 145,
+      "reportFile": null
+    },
+    {
+      "token": "first interstate bank",
+      "name": "First Interstate Bank",
+      "consumers": 3228,
+      "tradelines": 9407,
+      "disputedPct": 13.1,
+      "disputedOwing": 579,
+      "live": 277,
       "reportFile": null
     },
     {
@@ -26455,16 +26455,6 @@
       "reportFile": null
     },
     {
-      "token": "old national bank",
-      "name": "Old National Bank",
-      "consumers": 3201,
-      "tradelines": 7020,
-      "disputedPct": 8.6,
-      "disputedOwing": 240,
-      "live": 272,
-      "reportFile": null
-    },
-    {
       "token": "f t financial services",
       "name": "F T Financial Services",
       "consumers": 3201,
@@ -26472,6 +26462,16 @@
       "disputedPct": 28.3,
       "disputedOwing": 621,
       "live": 75,
+      "reportFile": null
+    },
+    {
+      "token": "old national bank",
+      "name": "Old National Bank",
+      "consumers": 3201,
+      "tradelines": 7020,
+      "disputedPct": 8.6,
+      "disputedOwing": 240,
+      "live": 272,
       "reportFile": null
     },
     {
@@ -26485,16 +26485,6 @@
       "reportFile": null
     },
     {
-      "token": "bread",
-      "name": "Bread",
-      "consumers": 3198,
-      "tradelines": 4404,
-      "disputedPct": 5.4,
-      "disputedOwing": 125,
-      "live": 904,
-      "reportFile": null
-    },
-    {
       "token": "marine credit union",
       "name": "Marine Credit Union",
       "consumers": 3198,
@@ -26502,6 +26492,16 @@
       "disputedPct": 7.5,
       "disputedOwing": 217,
       "live": 296,
+      "reportFile": null
+    },
+    {
+      "token": "bread",
+      "name": "Bread",
+      "consumers": 3198,
+      "tradelines": 4404,
+      "disputedPct": 5.4,
+      "disputedOwing": 125,
+      "live": 904,
       "reportFile": null
     },
     {
@@ -26545,16 +26545,6 @@
       "reportFile": null
     },
     {
-      "token": "sunoco citi",
-      "name": "Sunoco Citi",
-      "consumers": 3190,
-      "tradelines": 3564,
-      "disputedPct": 10.0,
-      "disputedOwing": 145,
-      "live": 534,
-      "reportFile": null
-    },
-    {
       "token": "northwest savings bank",
       "name": "Northwest Savings Bank",
       "consumers": 3190,
@@ -26562,6 +26552,16 @@
       "disputedPct": 22.4,
       "disputedOwing": 573,
       "live": 151,
+      "reportFile": null
+    },
+    {
+      "token": "sunoco citi",
+      "name": "Sunoco Citi",
+      "consumers": 3190,
+      "tradelines": 3564,
+      "disputedPct": 10.0,
+      "disputedOwing": 145,
+      "live": 534,
       "reportFile": null
     },
     {
@@ -26625,16 +26625,6 @@
       "reportFile": null
     },
     {
-      "token": "first data merchant",
-      "name": "First Data Merchant",
-      "consumers": 3178,
-      "tradelines": 3755,
-      "disputedPct": 24.8,
-      "disputedOwing": 819,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "citadel federal credit un",
       "name": "Citadel Federal Credit Un",
       "consumers": 3178,
@@ -26652,6 +26642,16 @@
       "disputedPct": 9.1,
       "disputedOwing": 362,
       "live": 173,
+      "reportFile": null
+    },
+    {
+      "token": "first data merchant",
+      "name": "First Data Merchant",
+      "consumers": 3178,
+      "tradelines": 3755,
+      "disputedPct": 24.8,
+      "disputedOwing": 819,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -26715,16 +26715,6 @@
       "reportFile": null
     },
     {
-      "token": "regional acceptance 324",
-      "name": "Regional Acceptance 324",
-      "consumers": 3164,
-      "tradelines": 3257,
-      "disputedPct": 19.6,
-      "disputedOwing": 409,
-      "live": 162,
-      "reportFile": null
-    },
-    {
       "token": "ccb moneykey",
       "name": "Ccb Moneykey",
       "consumers": 3164,
@@ -26732,6 +26722,16 @@
       "disputedPct": 23.9,
       "disputedOwing": 216,
       "live": 1445,
+      "reportFile": null
+    },
+    {
+      "token": "ccb lendly",
+      "name": "Ccb Lendly",
+      "consumers": 3164,
+      "tradelines": 4611,
+      "disputedPct": 24.5,
+      "disputedOwing": 36,
+      "live": 1005,
       "reportFile": null
     },
     {
@@ -26745,13 +26745,13 @@
       "reportFile": null
     },
     {
-      "token": "ccb lendly",
-      "name": "Ccb Lendly",
+      "token": "regional acceptance 324",
+      "name": "Regional Acceptance 324",
       "consumers": 3164,
-      "tradelines": 4611,
-      "disputedPct": 24.5,
-      "disputedOwing": 36,
-      "live": 1005,
+      "tradelines": 3257,
+      "disputedPct": 19.6,
+      "disputedOwing": 409,
+      "live": 162,
       "reportFile": null
     },
     {
@@ -27245,16 +27245,6 @@
       "reportFile": null
     },
     {
-      "token": "safe federal credit un",
-      "name": "Safe Federal Credit Un",
-      "consumers": 3074,
-      "tradelines": 5773,
-      "disputedPct": 7.6,
-      "disputedOwing": 187,
-      "live": 449,
-      "reportFile": null
-    },
-    {
       "token": "flexfinance",
       "name": "Flexfinance",
       "consumers": 3074,
@@ -27262,6 +27252,16 @@
       "disputedPct": 7.5,
       "disputedOwing": 220,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "safe federal credit un",
+      "name": "Safe Federal Credit Un",
+      "consumers": 3074,
+      "tradelines": 5773,
+      "disputedPct": 7.6,
+      "disputedOwing": 187,
+      "live": 449,
       "reportFile": null
     },
     {
@@ -27385,16 +27385,6 @@
       "reportFile": null
     },
     {
-      "token": "first choice bank fcb",
-      "name": "First Choice Bank Fcb",
-      "consumers": 3049,
-      "tradelines": 3513,
-      "disputedPct": 14.5,
-      "disputedOwing": 402,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "spiller furniture",
       "name": "Spiller Furniture",
       "consumers": 3049,
@@ -27402,6 +27392,16 @@
       "disputedPct": 14.0,
       "disputedOwing": 530,
       "live": 53,
+      "reportFile": null
+    },
+    {
+      "token": "first choice bank fcb",
+      "name": "First Choice Bank Fcb",
+      "consumers": 3049,
+      "tradelines": 3513,
+      "disputedPct": 14.5,
+      "disputedOwing": 402,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -27595,16 +27595,6 @@
       "reportFile": null
     },
     {
-      "token": "freedom financial asse",
-      "name": "Freedom Financial Asse",
-      "consumers": 3026,
-      "tradelines": 3036,
-      "disputedPct": 6.0,
-      "disputedOwing": 103,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "regional acceptance 678",
       "name": "Regional Acceptance 678",
       "consumers": 3026,
@@ -27615,13 +27605,13 @@
       "reportFile": null
     },
     {
-      "token": "innovative r",
-      "name": "Innovative R",
-      "consumers": 3024,
-      "tradelines": 3218,
-      "disputedPct": 63.4,
-      "disputedOwing": 2034,
-      "live": 243,
+      "token": "freedom financial asse",
+      "name": "Freedom Financial Asse",
+      "consumers": 3026,
+      "tradelines": 3036,
+      "disputedPct": 6.0,
+      "disputedOwing": 103,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -27632,6 +27622,16 @@
       "disputedPct": 10.0,
       "disputedOwing": 379,
       "live": 638,
+      "reportFile": null
+    },
+    {
+      "token": "innovative r",
+      "name": "Innovative R",
+      "consumers": 3024,
+      "tradelines": 3218,
+      "disputedPct": 63.4,
+      "disputedOwing": 2034,
+      "live": 243,
       "reportFile": null
     },
     {
@@ -27695,13 +27695,13 @@
       "reportFile": null
     },
     {
-      "token": "sa vit ent",
-      "name": "Sa Vit Ent",
+      "token": "brite financial servic",
+      "name": "Brite Financial Servic",
       "consumers": 3018,
-      "tradelines": 3532,
-      "disputedPct": 76.5,
-      "disputedOwing": 2687,
-      "live": 29,
+      "tradelines": 3257,
+      "disputedPct": 27.1,
+      "disputedOwing": 567,
+      "live": 102,
       "reportFile": null
     },
     {
@@ -27715,13 +27715,13 @@
       "reportFile": null
     },
     {
-      "token": "brite financial servic",
-      "name": "Brite Financial Servic",
+      "token": "sa vit ent",
+      "name": "Sa Vit Ent",
       "consumers": 3018,
-      "tradelines": 3257,
-      "disputedPct": 27.1,
-      "disputedOwing": 567,
-      "live": 102,
+      "tradelines": 3532,
+      "disputedPct": 76.5,
+      "disputedOwing": 2687,
+      "live": 29,
       "reportFile": null
     },
     {
@@ -27752,7 +27752,7 @@
       "disputedPct": 84.9,
       "disputedOwing": 1761,
       "live": 0,
-      "reportFile": null
+      "reportFile": "svr-central-collection-unit.html"
     },
     {
       "token": "sun trust serviced by vela",
@@ -27785,16 +27785,6 @@
       "reportFile": null
     },
     {
-      "token": "sofi lending",
-      "name": "Sofi Lending",
-      "consumers": 2999,
-      "tradelines": 4884,
-      "disputedPct": 19.9,
-      "disputedOwing": 419,
-      "live": 26,
-      "reportFile": null
-    },
-    {
       "token": "nw bank fka nw savngs",
       "name": "Nw Bank Fka Nw Savngs",
       "consumers": 2999,
@@ -27805,13 +27795,13 @@
       "reportFile": null
     },
     {
-      "token": "automated collections",
-      "name": "Automated Collections",
-      "consumers": 2998,
-      "tradelines": 4300,
-      "disputedPct": 47.7,
-      "disputedOwing": 1953,
-      "live": 164,
+      "token": "sofi lending",
+      "name": "Sofi Lending",
+      "consumers": 2999,
+      "tradelines": 4884,
+      "disputedPct": 19.9,
+      "disputedOwing": 419,
+      "live": 26,
       "reportFile": null
     },
     {
@@ -27825,6 +27815,16 @@
       "reportFile": null
     },
     {
+      "token": "automated collections",
+      "name": "Automated Collections",
+      "consumers": 2998,
+      "tradelines": 4300,
+      "disputedPct": 47.7,
+      "disputedOwing": 1953,
+      "live": 164,
+      "reportFile": null
+    },
+    {
       "token": "j j marshall associate",
       "name": "J J Marshall Associate",
       "consumers": 2995,
@@ -27832,6 +27832,16 @@
       "disputedPct": 51.7,
       "disputedOwing": 1450,
       "live": 133,
+      "reportFile": null
+    },
+    {
+      "token": "acct service",
+      "name": "Acct Service",
+      "consumers": 2994,
+      "tradelines": 4658,
+      "disputedPct": 40.7,
+      "disputedOwing": 1469,
+      "live": 125,
       "reportFile": null
     },
     {
@@ -27852,16 +27862,6 @@
       "disputedPct": 43.8,
       "disputedOwing": 2453,
       "live": 274,
-      "reportFile": null
-    },
-    {
-      "token": "acct service",
-      "name": "Acct Service",
-      "consumers": 2994,
-      "tradelines": 4658,
-      "disputedPct": 40.7,
-      "disputedOwing": 1469,
-      "live": 125,
       "reportFile": null
     },
     {
@@ -27905,16 +27905,6 @@
       "reportFile": null
     },
     {
-      "token": "covington credit of texas",
-      "name": "Covington Credit Of Texas",
-      "consumers": 2983,
-      "tradelines": 12483,
-      "disputedPct": 8.2,
-      "disputedOwing": 542,
-      "live": 61,
-      "reportFile": null
-    },
-    {
       "token": "salute atlanticus",
       "name": "Salute Atlanticus",
       "consumers": 2983,
@@ -27922,6 +27912,16 @@
       "disputedPct": 0.1,
       "disputedOwing": 2,
       "live": 4,
+      "reportFile": null
+    },
+    {
+      "token": "covington credit of texas",
+      "name": "Covington Credit Of Texas",
+      "consumers": 2983,
+      "tradelines": 12483,
+      "disputedPct": 8.2,
+      "disputedOwing": 542,
+      "live": 61,
       "reportFile": null
     },
     {
@@ -27935,16 +27935,6 @@
       "reportFile": null
     },
     {
-      "token": "trustmark national ban",
-      "name": "Trustmark National Ban",
-      "consumers": 2982,
-      "tradelines": 4780,
-      "disputedPct": 9.4,
-      "disputedOwing": 167,
-      "live": 206,
-      "reportFile": null
-    },
-    {
       "token": "family security credit uni",
       "name": "Family Security Credit Uni",
       "consumers": 2982,
@@ -27955,13 +27945,13 @@
       "reportFile": null
     },
     {
-      "token": "firstlight fcu",
-      "name": "Firstlight Fcu",
-      "consumers": 2980,
-      "tradelines": 5426,
-      "disputedPct": 26.7,
-      "disputedOwing": 804,
-      "live": 97,
+      "token": "trustmark national ban",
+      "name": "Trustmark National Ban",
+      "consumers": 2982,
+      "tradelines": 4780,
+      "disputedPct": 9.4,
+      "disputedOwing": 167,
+      "live": 206,
       "reportFile": null
     },
     {
@@ -27972,6 +27962,16 @@
       "disputedPct": 26.3,
       "disputedOwing": 30,
       "live": 36,
+      "reportFile": null
+    },
+    {
+      "token": "firstlight fcu",
+      "name": "Firstlight Fcu",
+      "consumers": 2980,
+      "tradelines": 5426,
+      "disputedPct": 26.7,
+      "disputedOwing": 804,
+      "live": 97,
       "reportFile": null
     },
     {
@@ -28005,16 +28005,6 @@
       "reportFile": null
     },
     {
-      "token": "peoples engy",
-      "name": "Peoples Engy",
-      "consumers": 2972,
-      "tradelines": 3691,
-      "disputedPct": 6.4,
-      "disputedOwing": 0,
-      "live": 5,
-      "reportFile": null
-    },
-    {
       "token": "nbt",
       "name": "Nbt",
       "consumers": 2972,
@@ -28022,6 +28012,16 @@
       "disputedPct": 17.6,
       "disputedOwing": 333,
       "live": 426,
+      "reportFile": null
+    },
+    {
+      "token": "peoples engy",
+      "name": "Peoples Engy",
+      "consumers": 2972,
+      "tradelines": 3691,
+      "disputedPct": 6.4,
+      "disputedOwing": 0,
+      "live": 5,
       "reportFile": null
     },
     {
@@ -28055,16 +28055,6 @@
       "reportFile": null
     },
     {
-      "token": "security collection",
-      "name": "Security Collection",
-      "consumers": 2967,
-      "tradelines": 5193,
-      "disputedPct": 39.9,
-      "disputedOwing": 1802,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "armed forces bank nat",
       "name": "Armed Forces Bank Nat",
       "consumers": 2967,
@@ -28072,6 +28062,16 @@
       "disputedPct": 9.5,
       "disputedOwing": 215,
       "live": 489,
+      "reportFile": null
+    },
+    {
+      "token": "security collection",
+      "name": "Security Collection",
+      "consumers": 2967,
+      "tradelines": 5193,
+      "disputedPct": 39.9,
+      "disputedOwing": 1802,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -28165,22 +28165,22 @@
       "reportFile": null
     },
     {
-      "token": "ms dept of human chi",
-      "name": "Ms Dept Of Human Chi",
-      "consumers": 2945,
-      "tradelines": 2979,
-      "disputedPct": 42.5,
-      "disputedOwing": 678,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "profit services group",
       "name": "Profit Services Group",
       "consumers": 2945,
       "tradelines": 10340,
       "disputedPct": 29.2,
       "disputedOwing": 2816,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "ms dept of human chi",
+      "name": "Ms Dept Of Human Chi",
+      "consumers": 2945,
+      "tradelines": 2979,
+      "disputedPct": 42.5,
+      "disputedOwing": 678,
       "live": 0,
       "reportFile": null
     },
@@ -28275,6 +28275,16 @@
       "reportFile": null
     },
     {
+      "token": "crosscountry mtg doven",
+      "name": "Crosscountry Mtg Doven",
+      "consumers": 2923,
+      "tradelines": 3297,
+      "disputedPct": 3.0,
+      "disputedOwing": 61,
+      "live": 702,
+      "reportFile": null
+    },
+    {
       "token": "cbs col lex",
       "name": "Cbs Col Lex",
       "consumers": 2923,
@@ -28285,13 +28295,13 @@
       "reportFile": null
     },
     {
-      "token": "crosscountry mtg doven",
-      "name": "Crosscountry Mtg Doven",
-      "consumers": 2923,
-      "tradelines": 3297,
-      "disputedPct": 3.0,
-      "disputedOwing": 61,
-      "live": 702,
+      "token": "msb bank gs",
+      "name": "Msb Bank Gs",
+      "consumers": 2921,
+      "tradelines": 3054,
+      "disputedPct": 20.2,
+      "disputedOwing": 455,
+      "live": 307,
       "reportFile": null
     },
     {
@@ -28312,16 +28322,6 @@
       "disputedPct": 0.0,
       "disputedOwing": 0,
       "live": 2353,
-      "reportFile": null
-    },
-    {
-      "token": "msb bank gs",
-      "name": "Msb Bank Gs",
-      "consumers": 2921,
-      "tradelines": 3054,
-      "disputedPct": 20.2,
-      "disputedOwing": 455,
-      "live": 307,
       "reportFile": null
     },
     {
@@ -28355,16 +28355,6 @@
       "reportFile": null
     },
     {
-      "token": "the advantage group",
-      "name": "The Advantage Group",
-      "consumers": 2906,
-      "tradelines": 6634,
-      "disputedPct": 41.1,
-      "disputedOwing": 2490,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "paramount recovery",
       "name": "Paramount Recovery",
       "consumers": 2906,
@@ -28375,13 +28365,23 @@
       "reportFile": null
     },
     {
-      "token": "teachers fcu",
-      "name": "Teachers Fcu",
+      "token": "the advantage group",
+      "name": "The Advantage Group",
+      "consumers": 2906,
+      "tradelines": 6634,
+      "disputedPct": 41.1,
+      "disputedOwing": 2490,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "med 1 solutions",
+      "name": "Med 1 Solutions",
       "consumers": 2903,
-      "tradelines": 5022,
-      "disputedPct": 16.0,
-      "disputedOwing": 490,
-      "live": 669,
+      "tradelines": 11583,
+      "disputedPct": 34.0,
+      "disputedOwing": 3854,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -28395,13 +28395,13 @@
       "reportFile": null
     },
     {
-      "token": "med 1 solutions",
-      "name": "Med 1 Solutions",
+      "token": "teachers fcu",
+      "name": "Teachers Fcu",
       "consumers": 2903,
-      "tradelines": 11583,
-      "disputedPct": 34.0,
-      "disputedOwing": 3854,
-      "live": 0,
+      "tradelines": 5022,
+      "disputedPct": 16.0,
+      "disputedOwing": 490,
+      "live": 669,
       "reportFile": null
     },
     {
@@ -28445,16 +28445,6 @@
       "reportFile": null
     },
     {
-      "token": "freedom road financial",
-      "name": "Freedom Road Financial",
-      "consumers": 2897,
-      "tradelines": 3236,
-      "disputedPct": 10.9,
-      "disputedOwing": 178,
-      "live": 471,
-      "reportFile": null
-    },
-    {
       "token": "ccb sephorav",
       "name": "Ccb Sephorav",
       "consumers": 2897,
@@ -28462,6 +28452,16 @@
       "disputedPct": 11.9,
       "disputedOwing": 150,
       "live": 1308,
+      "reportFile": null
+    },
+    {
+      "token": "freedom road financial",
+      "name": "Freedom Road Financial",
+      "consumers": 2897,
+      "tradelines": 3236,
+      "disputedPct": 10.9,
+      "disputedOwing": 178,
+      "live": 471,
       "reportFile": null
     },
     {
@@ -28605,16 +28605,6 @@
       "reportFile": null
     },
     {
-      "token": "saber acceptance",
-      "name": "Saber Acceptance",
-      "consumers": 2870,
-      "tradelines": 5090,
-      "disputedPct": 10.1,
-      "disputedOwing": 303,
-      "live": 41,
-      "reportFile": null
-    },
-    {
       "token": "gs loan midland state",
       "name": "Gs Loan Midland State",
       "consumers": 2870,
@@ -28625,13 +28615,13 @@
       "reportFile": null
     },
     {
-      "token": "texas trust fed credit uni",
-      "name": "Texas Trust Fed Credit Uni",
-      "consumers": 2867,
-      "tradelines": 4698,
-      "disputedPct": 22.0,
-      "disputedOwing": 751,
-      "live": 47,
+      "token": "saber acceptance",
+      "name": "Saber Acceptance",
+      "consumers": 2870,
+      "tradelines": 5090,
+      "disputedPct": 10.1,
+      "disputedOwing": 303,
+      "live": 41,
       "reportFile": null
     },
     {
@@ -28642,6 +28632,16 @@
       "disputedPct": 63.5,
       "disputedOwing": 2294,
       "live": 25,
+      "reportFile": null
+    },
+    {
+      "token": "texas trust fed credit uni",
+      "name": "Texas Trust Fed Credit Uni",
+      "consumers": 2867,
+      "tradelines": 4698,
+      "disputedPct": 22.0,
+      "disputedOwing": 751,
+      "live": 47,
       "reportFile": null
     },
     {
@@ -28805,16 +28805,6 @@
       "reportFile": null
     },
     {
-      "token": "savannah riv",
-      "name": "Savannah Riv",
-      "consumers": 2845,
-      "tradelines": 6913,
-      "disputedPct": 20.0,
-      "disputedOwing": 633,
-      "live": 466,
-      "reportFile": null
-    },
-    {
       "token": "cmg mortgage",
       "name": "Cmg Mortgage",
       "consumers": 2845,
@@ -28822,6 +28812,16 @@
       "disputedPct": 11.2,
       "disputedOwing": 503,
       "live": 676,
+      "reportFile": null
+    },
+    {
+      "token": "savannah riv",
+      "name": "Savannah Riv",
+      "consumers": 2845,
+      "tradelines": 6913,
+      "disputedPct": 20.0,
+      "disputedOwing": 633,
+      "live": 466,
       "reportFile": null
     },
     {
@@ -29085,6 +29085,16 @@
       "reportFile": null
     },
     {
+      "token": "jackson va federal credit",
+      "name": "Jackson Va Federal Credit",
+      "consumers": 2801,
+      "tradelines": 10540,
+      "disputedPct": 15.0,
+      "disputedOwing": 964,
+      "live": 58,
+      "reportFile": null
+    },
+    {
       "token": "advantage financial se",
       "name": "Advantage Financial Se",
       "consumers": 2801,
@@ -29102,16 +29112,6 @@
       "disputedPct": 0.0,
       "disputedOwing": 0,
       "live": 367,
-      "reportFile": null
-    },
-    {
-      "token": "jackson va federal credit",
-      "name": "Jackson Va Federal Credit",
-      "consumers": 2801,
-      "tradelines": 10540,
-      "disputedPct": 15.0,
-      "disputedOwing": 964,
-      "live": 58,
       "reportFile": null
     },
     {
@@ -29165,16 +29165,6 @@
       "reportFile": null
     },
     {
-      "token": "datcu credit union",
-      "name": "Datcu Credit Union",
-      "consumers": 2791,
-      "tradelines": 4863,
-      "disputedPct": 4.6,
-      "disputedOwing": 123,
-      "live": 364,
-      "reportFile": null
-    },
-    {
       "token": "ces",
       "name": "Ces",
       "consumers": 2791,
@@ -29185,13 +29175,13 @@
       "reportFile": null
     },
     {
-      "token": "msu federal credit uni",
-      "name": "Msu Federal Credit Uni",
-      "consumers": 2789,
-      "tradelines": 6396,
-      "disputedPct": 10.2,
-      "disputedOwing": 396,
-      "live": 311,
+      "token": "datcu credit union",
+      "name": "Datcu Credit Union",
+      "consumers": 2791,
+      "tradelines": 4863,
+      "disputedPct": 4.6,
+      "disputedOwing": 123,
+      "live": 364,
       "reportFile": null
     },
     {
@@ -29202,6 +29192,16 @@
       "disputedPct": 35.4,
       "disputedOwing": 1059,
       "live": 117,
+      "reportFile": null
+    },
+    {
+      "token": "msu federal credit uni",
+      "name": "Msu Federal Credit Uni",
+      "consumers": 2789,
+      "tradelines": 6396,
+      "disputedPct": 10.2,
+      "disputedOwing": 396,
+      "live": 311,
       "reportFile": null
     },
     {
@@ -29245,16 +29245,6 @@
       "reportFile": null
     },
     {
-      "token": "nat l cr mgt",
-      "name": "Nat L Cr Mgt",
-      "consumers": 2777,
-      "tradelines": 3123,
-      "disputedPct": 63.0,
-      "disputedOwing": 1144,
-      "live": 515,
-      "reportFile": null
-    },
-    {
       "token": "efs finance",
       "name": "Efs Finance",
       "consumers": 2777,
@@ -29265,13 +29255,13 @@
       "reportFile": null
     },
     {
-      "token": "r r collection service",
-      "name": "R R Collection Service",
-      "consumers": 2776,
-      "tradelines": 9106,
-      "disputedPct": 58.6,
-      "disputedOwing": 4908,
-      "live": 0,
+      "token": "nat l cr mgt",
+      "name": "Nat L Cr Mgt",
+      "consumers": 2777,
+      "tradelines": 3123,
+      "disputedPct": 63.0,
+      "disputedOwing": 1144,
+      "live": 515,
       "reportFile": null
     },
     {
@@ -29281,6 +29271,16 @@
       "tradelines": 5659,
       "disputedPct": 26.9,
       "disputedOwing": 1462,
+      "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "r r collection service",
+      "name": "R R Collection Service",
+      "consumers": 2776,
+      "tradelines": 9106,
+      "disputedPct": 58.6,
+      "disputedOwing": 4908,
       "live": 0,
       "reportFile": null
     },
@@ -29295,16 +29295,6 @@
       "reportFile": null
     },
     {
-      "token": "ky highr edu",
-      "name": "Ky Highr Edu",
-      "consumers": 2774,
-      "tradelines": 8884,
-      "disputedPct": 25.9,
-      "disputedOwing": 951,
-      "live": 262,
-      "reportFile": null
-    },
-    {
       "token": "tt marketing",
       "name": "Tt Marketing",
       "consumers": 2774,
@@ -29312,6 +29302,16 @@
       "disputedPct": 51.4,
       "disputedOwing": 1345,
       "live": 103,
+      "reportFile": null
+    },
+    {
+      "token": "ky highr edu",
+      "name": "Ky Highr Edu",
+      "consumers": 2774,
+      "tradelines": 8884,
+      "disputedPct": 25.9,
+      "disputedOwing": 951,
+      "live": 262,
       "reportFile": null
     },
     {
@@ -29395,16 +29395,6 @@
       "reportFile": null
     },
     {
-      "token": "mission fcu",
-      "name": "Mission Fcu",
-      "consumers": 2755,
-      "tradelines": 4880,
-      "disputedPct": 23.8,
-      "disputedOwing": 725,
-      "live": 312,
-      "reportFile": null
-    },
-    {
       "token": "nasa federal credit un",
       "name": "Nasa Federal Credit Un",
       "consumers": 2755,
@@ -29412,6 +29402,16 @@
       "disputedPct": 11.6,
       "disputedOwing": 241,
       "live": 380,
+      "reportFile": null
+    },
+    {
+      "token": "mission fcu",
+      "name": "Mission Fcu",
+      "consumers": 2755,
+      "tradelines": 4880,
+      "disputedPct": 23.8,
+      "disputedOwing": 725,
+      "live": 312,
       "reportFile": null
     },
     {
@@ -29515,13 +29515,13 @@
       "reportFile": null
     },
     {
-      "token": "williams rush associ",
-      "name": "Williams Rush Associ",
+      "token": "ccb flrdcr",
+      "name": "Ccb Flrdcr",
       "consumers": 2741,
-      "tradelines": 2852,
-      "disputedPct": 52.0,
-      "disputedOwing": 1450,
-      "live": 338,
+      "tradelines": 3143,
+      "disputedPct": 12.6,
+      "disputedOwing": 139,
+      "live": 845,
       "reportFile": null
     },
     {
@@ -29535,13 +29535,13 @@
       "reportFile": null
     },
     {
-      "token": "ccb flrdcr",
-      "name": "Ccb Flrdcr",
+      "token": "williams rush associ",
+      "name": "Williams Rush Associ",
       "consumers": 2741,
-      "tradelines": 3143,
-      "disputedPct": 12.6,
-      "disputedOwing": 139,
-      "live": 845,
+      "tradelines": 2852,
+      "disputedPct": 52.0,
+      "disputedOwing": 1450,
+      "live": 338,
       "reportFile": null
     },
     {
@@ -29605,16 +29605,6 @@
       "reportFile": null
     },
     {
-      "token": "prmr auto cr",
-      "name": "Prmr Auto Cr",
-      "consumers": 2734,
-      "tradelines": 2985,
-      "disputedPct": 22.5,
-      "disputedOwing": 165,
-      "live": 261,
-      "reportFile": null
-    },
-    {
       "token": "shell fcu",
       "name": "Shell Fcu",
       "consumers": 2734,
@@ -29622,6 +29612,16 @@
       "disputedPct": 13.4,
       "disputedOwing": 578,
       "live": 436,
+      "reportFile": null
+    },
+    {
+      "token": "prmr auto cr",
+      "name": "Prmr Auto Cr",
+      "consumers": 2734,
+      "tradelines": 2985,
+      "disputedPct": 22.5,
+      "disputedOwing": 165,
+      "live": 261,
       "reportFile": null
     },
     {
@@ -29685,16 +29685,6 @@
       "reportFile": null
     },
     {
-      "token": "rozlin financial group",
-      "name": "Rozlin Financial Group",
-      "consumers": 2728,
-      "tradelines": 2865,
-      "disputedPct": 58.5,
-      "disputedOwing": 1608,
-      "live": 232,
-      "reportFile": null
-    },
-    {
       "token": "franklin american mortgage",
       "name": "Franklin American Mortgage",
       "consumers": 2728,
@@ -29702,6 +29692,16 @@
       "disputedPct": 16.2,
       "disputedOwing": 50,
       "live": 142,
+      "reportFile": null
+    },
+    {
+      "token": "rozlin financial group",
+      "name": "Rozlin Financial Group",
+      "consumers": 2728,
+      "tradelines": 2865,
+      "disputedPct": 58.5,
+      "disputedOwing": 1608,
+      "live": 232,
       "reportFile": null
     },
     {
@@ -29735,16 +29735,6 @@
       "reportFile": null
     },
     {
-      "token": "healthcare coll",
-      "name": "Healthcare Coll",
-      "consumers": 2721,
-      "tradelines": 4807,
-      "disputedPct": 55.4,
-      "disputedOwing": 2461,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "action collection",
       "name": "Action Collection",
       "consumers": 2721,
@@ -29752,6 +29742,16 @@
       "disputedPct": 48.6,
       "disputedOwing": 1210,
       "live": 127,
+      "reportFile": null
+    },
+    {
+      "token": "healthcare coll",
+      "name": "Healthcare Coll",
+      "consumers": 2721,
+      "tradelines": 4807,
+      "disputedPct": 55.4,
+      "disputedOwing": 2461,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -29775,6 +29775,16 @@
       "reportFile": null
     },
     {
+      "token": "brookwood loans",
+      "name": "Brookwood Loans",
+      "consumers": 2716,
+      "tradelines": 3134,
+      "disputedPct": 23.2,
+      "disputedOwing": 670,
+      "live": 66,
+      "reportFile": null
+    },
+    {
       "token": "mb financial bank",
       "name": "Mb Financial Bank",
       "consumers": 2716,
@@ -29782,16 +29792,6 @@
       "disputedPct": 15.0,
       "disputedOwing": 284,
       "live": 188,
-      "reportFile": null
-    },
-    {
-      "token": "fidelity national loans",
-      "name": "Fidelity National Loans",
-      "consumers": 2716,
-      "tradelines": 8894,
-      "disputedPct": 10.3,
-      "disputedOwing": 338,
-      "live": 50,
       "reportFile": null
     },
     {
@@ -29805,13 +29805,13 @@
       "reportFile": null
     },
     {
-      "token": "brookwood loans",
-      "name": "Brookwood Loans",
+      "token": "fidelity national loans",
+      "name": "Fidelity National Loans",
       "consumers": 2716,
-      "tradelines": 3134,
-      "disputedPct": 23.2,
-      "disputedOwing": 670,
-      "live": 66,
+      "tradelines": 8894,
+      "disputedPct": 10.3,
+      "disputedOwing": 338,
+      "live": 50,
       "reportFile": null
     },
     {
@@ -29825,16 +29825,6 @@
       "reportFile": null
     },
     {
-      "token": "consumers coop cred un",
-      "name": "Consumers Coop Cred Un",
-      "consumers": 2705,
-      "tradelines": 4559,
-      "disputedPct": 9.8,
-      "disputedOwing": 225,
-      "live": 97,
-      "reportFile": null
-    },
-    {
       "token": "cpm federal credit union",
       "name": "Cpm Federal Credit Union",
       "consumers": 2705,
@@ -29842,6 +29832,16 @@
       "disputedPct": 8.5,
       "disputedOwing": 234,
       "live": 109,
+      "reportFile": null
+    },
+    {
+      "token": "consumers coop cred un",
+      "name": "Consumers Coop Cred Un",
+      "consumers": 2705,
+      "tradelines": 4559,
+      "disputedPct": 9.8,
+      "disputedOwing": 225,
+      "live": 97,
       "reportFile": null
     },
     {
@@ -29895,16 +29895,6 @@
       "reportFile": null
     },
     {
-      "token": "h e stark agency",
-      "name": "H E Stark Agency",
-      "consumers": 2695,
-      "tradelines": 3378,
-      "disputedPct": 63.3,
-      "disputedOwing": 2127,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "brightstar credit unio",
       "name": "Brightstar Credit Unio",
       "consumers": 2695,
@@ -29925,13 +29915,13 @@
       "reportFile": null
     },
     {
-      "token": "national account systems",
-      "name": "National Account Systems",
-      "consumers": 2693,
-      "tradelines": 3484,
-      "disputedPct": 67.4,
-      "disputedOwing": 2321,
-      "live": 25,
+      "token": "h e stark agency",
+      "name": "H E Stark Agency",
+      "consumers": 2695,
+      "tradelines": 3378,
+      "disputedPct": 63.3,
+      "disputedOwing": 2127,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -29942,6 +29932,16 @@
       "disputedPct": 54.6,
       "disputedOwing": 5183,
       "live": 24,
+      "reportFile": null
+    },
+    {
+      "token": "national account systems",
+      "name": "National Account Systems",
+      "consumers": 2693,
+      "tradelines": 3484,
+      "disputedPct": 67.4,
+      "disputedOwing": 2321,
+      "live": 25,
       "reportFile": null
     },
     {
@@ -30005,16 +30005,6 @@
       "reportFile": null
     },
     {
-      "token": "med and pro collection ser",
-      "name": "Med And Pro Collection Ser",
-      "consumers": 2684,
-      "tradelines": 8012,
-      "disputedPct": 54.3,
-      "disputedOwing": 3749,
-      "live": 7,
-      "reportFile": null
-    },
-    {
       "token": "consmr coop cu",
       "name": "Consmr Coop Cu",
       "consumers": 2684,
@@ -30022,6 +30012,16 @@
       "disputedPct": 14.5,
       "disputedOwing": 309,
       "live": 198,
+      "reportFile": null
+    },
+    {
+      "token": "med and pro collection ser",
+      "name": "Med And Pro Collection Ser",
+      "consumers": 2684,
+      "tradelines": 8012,
+      "disputedPct": 54.3,
+      "disputedOwing": 3749,
+      "live": 7,
       "reportFile": null
     },
     {
@@ -30085,16 +30085,6 @@
       "reportFile": null
     },
     {
-      "token": "cardinal fin",
-      "name": "Cardinal Fin",
-      "consumers": 2673,
-      "tradelines": 3347,
-      "disputedPct": 7.6,
-      "disputedOwing": 71,
-      "live": 765,
-      "reportFile": null
-    },
-    {
       "token": "snow sauer",
       "name": "Snow Sauer",
       "consumers": 2673,
@@ -30102,6 +30092,16 @@
       "disputedPct": 47.7,
       "disputedOwing": 1973,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "cardinal fin",
+      "name": "Cardinal Fin",
+      "consumers": 2673,
+      "tradelines": 3347,
+      "disputedPct": 7.6,
+      "disputedOwing": 71,
+      "live": 765,
       "reportFile": null
     },
     {
@@ -30335,16 +30335,6 @@
       "reportFile": null
     },
     {
-      "token": "star loans",
-      "name": "Star Loans",
-      "consumers": 2646,
-      "tradelines": 2820,
-      "disputedPct": 34.2,
-      "disputedOwing": 723,
-      "live": 178,
-      "reportFile": null
-    },
-    {
       "token": "bethpage fcu",
       "name": "Bethpage Fcu",
       "consumers": 2646,
@@ -30352,6 +30342,16 @@
       "disputedPct": 20.2,
       "disputedOwing": 435,
       "live": 252,
+      "reportFile": null
+    },
+    {
+      "token": "star loans",
+      "name": "Star Loans",
+      "consumers": 2646,
+      "tradelines": 2820,
+      "disputedPct": 34.2,
+      "disputedOwing": 723,
+      "live": 178,
       "reportFile": null
     },
     {
@@ -30395,16 +30395,6 @@
       "reportFile": null
     },
     {
-      "token": "kickoff",
-      "name": "Kickoff",
-      "consumers": 2641,
-      "tradelines": 3648,
-      "disputedPct": 15.3,
-      "disputedOwing": 389,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "scratch fncl",
       "name": "Scratch Fncl",
       "consumers": 2641,
@@ -30412,6 +30402,16 @@
       "disputedPct": 14.6,
       "disputedOwing": 356,
       "live": 619,
+      "reportFile": null
+    },
+    {
+      "token": "kickoff",
+      "name": "Kickoff",
+      "consumers": 2641,
+      "tradelines": 3648,
+      "disputedPct": 15.3,
+      "disputedOwing": 389,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -30425,16 +30425,6 @@
       "reportFile": null
     },
     {
-      "token": "hccredit mabtc",
-      "name": "Hccredit Mabtc",
-      "consumers": 2639,
-      "tradelines": 2657,
-      "disputedPct": 7.0,
-      "disputedOwing": 150,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "wasatch property managemen",
       "name": "Wasatch Property Managemen",
       "consumers": 2639,
@@ -30442,6 +30432,16 @@
       "disputedPct": 6.7,
       "disputedOwing": 185,
       "live": 86,
+      "reportFile": null
+    },
+    {
+      "token": "hccredit mabtc",
+      "name": "Hccredit Mabtc",
+      "consumers": 2639,
+      "tradelines": 2657,
+      "disputedPct": 7.0,
+      "disputedOwing": 150,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -30465,13 +30465,13 @@
       "reportFile": null
     },
     {
-      "token": "unify financial credit union",
-      "name": "Unify Financial Credit Union",
+      "token": "landmark cu",
+      "name": "Landmark Cu",
       "consumers": 2634,
-      "tradelines": 4979,
-      "disputedPct": 18.6,
-      "disputedOwing": 563,
-      "live": 166,
+      "tradelines": 4469,
+      "disputedPct": 14.1,
+      "disputedOwing": 285,
+      "live": 465,
       "reportFile": null
     },
     {
@@ -30485,13 +30485,13 @@
       "reportFile": null
     },
     {
-      "token": "landmark cu",
-      "name": "Landmark Cu",
+      "token": "unify financial credit union",
+      "name": "Unify Financial Credit Union",
       "consumers": 2634,
-      "tradelines": 4469,
-      "disputedPct": 14.1,
-      "disputedOwing": 285,
-      "live": 465,
+      "tradelines": 4979,
+      "disputedPct": 18.6,
+      "disputedOwing": 563,
+      "live": 166,
       "reportFile": null
     },
     {
@@ -30525,16 +30525,6 @@
       "reportFile": null
     },
     {
-      "token": "aldous and associates",
-      "name": "Aldous And Associates",
-      "consumers": 2627,
-      "tradelines": 2784,
-      "disputedPct": 55.0,
-      "disputedOwing": 1315,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "mission federal cr un",
       "name": "Mission Federal Cr Un",
       "consumers": 2627,
@@ -30542,6 +30532,16 @@
       "disputedPct": 16.6,
       "disputedOwing": 424,
       "live": 281,
+      "reportFile": null
+    },
+    {
+      "token": "aldous and associates",
+      "name": "Aldous And Associates",
+      "consumers": 2627,
+      "tradelines": 2784,
+      "disputedPct": 55.0,
+      "disputedOwing": 1315,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -30572,7 +30572,7 @@
       "disputedPct": 84.4,
       "disputedOwing": 2065,
       "live": 58,
-      "reportFile": null
+      "reportFile": "svr-horry-telephone-cooperativ.html"
     },
     {
       "token": "hdsn vly cu",
@@ -30645,16 +30645,6 @@
       "reportFile": null
     },
     {
-      "token": "fifth third",
-      "name": "Fifth Third",
-      "consumers": 2611,
-      "tradelines": 3085,
-      "disputedPct": 24.1,
-      "disputedOwing": 198,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "campus usa credit union",
       "name": "Campus Usa Credit Union",
       "consumers": 2611,
@@ -30662,6 +30652,16 @@
       "disputedPct": 19.7,
       "disputedOwing": 565,
       "live": 150,
+      "reportFile": null
+    },
+    {
+      "token": "fifth third",
+      "name": "Fifth Third",
+      "consumers": 2611,
+      "tradelines": 3085,
+      "disputedPct": 24.1,
+      "disputedOwing": 198,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -30685,16 +30685,6 @@
       "reportFile": null
     },
     {
-      "token": "overton russell doerr",
-      "name": "Overton Russell Doerr",
-      "consumers": 2609,
-      "tradelines": 6700,
-      "disputedPct": 29.2,
-      "disputedOwing": 1677,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "amer student assist",
       "name": "Amer Student Assist",
       "consumers": 2609,
@@ -30702,6 +30692,16 @@
       "disputedPct": 70.2,
       "disputedOwing": 1310,
       "live": 20,
+      "reportFile": null
+    },
+    {
+      "token": "overton russell doerr",
+      "name": "Overton Russell Doerr",
+      "consumers": 2609,
+      "tradelines": 6700,
+      "disputedPct": 29.2,
+      "disputedOwing": 1677,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -30875,16 +30875,6 @@
       "reportFile": null
     },
     {
-      "token": "balboa thrift loan",
-      "name": "Balboa Thrift Loan",
-      "consumers": 2590,
-      "tradelines": 5618,
-      "disputedPct": 15.9,
-      "disputedOwing": 377,
-      "live": 214,
-      "reportFile": null
-    },
-    {
       "token": "ccb ikeapc",
       "name": "Ccb Ikeapc",
       "consumers": 2590,
@@ -30892,6 +30882,16 @@
       "disputedPct": 10.8,
       "disputedOwing": 112,
       "live": 972,
+      "reportFile": null
+    },
+    {
+      "token": "balboa thrift loan",
+      "name": "Balboa Thrift Loan",
+      "consumers": 2590,
+      "tradelines": 5618,
+      "disputedPct": 15.9,
+      "disputedOwing": 377,
+      "live": 214,
       "reportFile": null
     },
     {
@@ -30985,16 +30985,6 @@
       "reportFile": null
     },
     {
-      "token": "st of md ccu",
-      "name": "St Of Md Ccu",
-      "consumers": 2578,
-      "tradelines": 3237,
-      "disputedPct": 67.0,
-      "disputedOwing": 1403,
-      "live": 453,
-      "reportFile": null
-    },
-    {
       "token": "selfbillsw",
       "name": "Selfbillsw",
       "consumers": 2578,
@@ -31002,6 +30992,16 @@
       "disputedPct": 0.0,
       "disputedOwing": 0,
       "live": 2383,
+      "reportFile": null
+    },
+    {
+      "token": "st of md ccu",
+      "name": "St Of Md Ccu",
+      "consumers": 2578,
+      "tradelines": 3237,
+      "disputedPct": 67.0,
+      "disputedOwing": 1403,
+      "live": 453,
       "reportFile": null
     },
     {
@@ -31025,16 +31025,6 @@
       "reportFile": null
     },
     {
-      "token": "pcscollectio",
-      "name": "Pcscollectio",
-      "consumers": 2572,
-      "tradelines": 3277,
-      "disputedPct": 63.7,
-      "disputedOwing": 2001,
-      "live": 130,
-      "reportFile": null
-    },
-    {
       "token": "universal american mortgag",
       "name": "Universal American Mortgag",
       "consumers": 2572,
@@ -31042,6 +31032,16 @@
       "disputedPct": 0.2,
       "disputedOwing": 2,
       "live": 221,
+      "reportFile": null
+    },
+    {
+      "token": "pcscollectio",
+      "name": "Pcscollectio",
+      "consumers": 2572,
+      "tradelines": 3277,
+      "disputedPct": 63.7,
+      "disputedOwing": 2001,
+      "live": 130,
       "reportFile": null
     },
     {
@@ -31125,16 +31125,6 @@
       "reportFile": null
     },
     {
-      "token": "integra cred",
-      "name": "Integra Cred",
-      "consumers": 2559,
-      "tradelines": 3379,
-      "disputedPct": 28.0,
-      "disputedOwing": 237,
-      "live": 950,
-      "reportFile": null
-    },
-    {
       "token": "kitsap credit union",
       "name": "Kitsap Credit Union",
       "consumers": 2559,
@@ -31142,6 +31132,16 @@
       "disputedPct": 15.1,
       "disputedOwing": 573,
       "live": 295,
+      "reportFile": null
+    },
+    {
+      "token": "integra cred",
+      "name": "Integra Cred",
+      "consumers": 2559,
+      "tradelines": 3379,
+      "disputedPct": 28.0,
+      "disputedOwing": 237,
+      "live": 950,
       "reportFile": null
     },
     {
@@ -31205,16 +31205,6 @@
       "reportFile": null
     },
     {
-      "token": "mcneilmyers",
-      "name": "Mcneilmyers",
-      "consumers": 2552,
-      "tradelines": 3307,
-      "disputedPct": 59.0,
-      "disputedOwing": 1937,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "trnswrld sys",
       "name": "Trnswrld Sys",
       "consumers": 2552,
@@ -31232,6 +31222,16 @@
       "disputedPct": 16.2,
       "disputedOwing": 576,
       "live": 237,
+      "reportFile": null
+    },
+    {
+      "token": "mcneilmyers",
+      "name": "Mcneilmyers",
+      "consumers": 2552,
+      "tradelines": 3307,
+      "disputedPct": 59.0,
+      "disputedOwing": 1937,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -31255,16 +31255,6 @@
       "reportFile": null
     },
     {
-      "token": "grant mercan",
-      "name": "Grant Mercan",
-      "consumers": 2550,
-      "tradelines": 3412,
-      "disputedPct": 54.3,
-      "disputedOwing": 1632,
-      "live": 132,
-      "reportFile": null
-    },
-    {
       "token": "bloom ava",
       "name": "Bloom Ava",
       "consumers": 2550,
@@ -31282,6 +31272,16 @@
       "disputedPct": 37.8,
       "disputedOwing": 1414,
       "live": 33,
+      "reportFile": null
+    },
+    {
+      "token": "grant mercan",
+      "name": "Grant Mercan",
+      "consumers": 2550,
+      "tradelines": 3412,
+      "disputedPct": 54.3,
+      "disputedOwing": 1632,
+      "live": 132,
       "reportFile": null
     },
     {
@@ -31325,26 +31325,6 @@
       "reportFile": null
     },
     {
-      "token": "national auto finance",
-      "name": "National Auto Finance",
-      "consumers": 2539,
-      "tradelines": 5469,
-      "disputedPct": 25.6,
-      "disputedOwing": 308,
-      "live": 26,
-      "reportFile": null
-    },
-    {
-      "token": "member one federal credit",
-      "name": "Member One Federal Credit",
-      "consumers": 2539,
-      "tradelines": 4726,
-      "disputedPct": 26.1,
-      "disputedOwing": 680,
-      "live": 71,
-      "reportFile": null
-    },
-    {
       "token": "azuma lea",
       "name": "Azuma Lea",
       "consumers": 2539,
@@ -31362,6 +31342,26 @@
       "disputedPct": 7.2,
       "disputedOwing": 186,
       "live": 196,
+      "reportFile": null
+    },
+    {
+      "token": "national auto finance",
+      "name": "National Auto Finance",
+      "consumers": 2539,
+      "tradelines": 5469,
+      "disputedPct": 25.6,
+      "disputedOwing": 308,
+      "live": 26,
+      "reportFile": null
+    },
+    {
+      "token": "member one federal credit",
+      "name": "Member One Federal Credit",
+      "consumers": 2539,
+      "tradelines": 4726,
+      "disputedPct": 26.1,
+      "disputedOwing": 680,
+      "live": 71,
       "reportFile": null
     },
     {
@@ -31395,16 +31395,6 @@
       "reportFile": null
     },
     {
-      "token": "village capital dovnem",
-      "name": "Village Capital Dovnem",
-      "consumers": 2536,
-      "tradelines": 2969,
-      "disputedPct": 10.5,
-      "disputedOwing": 96,
-      "live": 190,
-      "reportFile": null
-    },
-    {
       "token": "ccb alpvis",
       "name": "Ccb Alpvis",
       "consumers": 2536,
@@ -31412,6 +31402,16 @@
       "disputedPct": 19.5,
       "disputedOwing": 252,
       "live": 689,
+      "reportFile": null
+    },
+    {
+      "token": "village capital dovnem",
+      "name": "Village Capital Dovnem",
+      "consumers": 2536,
+      "tradelines": 2969,
+      "disputedPct": 10.5,
+      "disputedOwing": 96,
+      "live": 190,
       "reportFile": null
     },
     {
@@ -31455,16 +31455,6 @@
       "reportFile": null
     },
     {
-      "token": "neghbhd cu",
-      "name": "Neghbhd Cu",
-      "consumers": 2532,
-      "tradelines": 6096,
-      "disputedPct": 17.4,
-      "disputedOwing": 769,
-      "live": 472,
-      "reportFile": null
-    },
-    {
       "token": "selfbillsg",
       "name": "Selfbillsg",
       "consumers": 2532,
@@ -31472,6 +31462,16 @@
       "disputedPct": 0.0,
       "disputedOwing": 0,
       "live": 2322,
+      "reportFile": null
+    },
+    {
+      "token": "neghbhd cu",
+      "name": "Neghbhd Cu",
+      "consumers": 2532,
+      "tradelines": 6096,
+      "disputedPct": 17.4,
+      "disputedOwing": 769,
+      "live": 472,
       "reportFile": null
     },
     {
@@ -31545,16 +31545,6 @@
       "reportFile": null
     },
     {
-      "token": "imortgage loandepot com ll",
-      "name": "Imortgage Loandepot Com Ll",
-      "consumers": 2525,
-      "tradelines": 2647,
-      "disputedPct": 14.9,
-      "disputedOwing": 92,
-      "live": 192,
-      "reportFile": null
-    },
-    {
       "token": "sparrow financial",
       "name": "Sparrow Financial",
       "consumers": 2525,
@@ -31562,6 +31552,16 @@
       "disputedPct": 3.7,
       "disputedOwing": 57,
       "live": 2525,
+      "reportFile": null
+    },
+    {
+      "token": "imortgage loandepot com ll",
+      "name": "Imortgage Loandepot Com Ll",
+      "consumers": 2525,
+      "tradelines": 2647,
+      "disputedPct": 14.9,
+      "disputedOwing": 92,
+      "live": 192,
       "reportFile": null
     },
     {
@@ -31595,16 +31595,6 @@
       "reportFile": null
     },
     {
-      "token": "pbcapigrp",
-      "name": "Pbcapigrp",
-      "consumers": 2523,
-      "tradelines": 2792,
-      "disputedPct": 63.3,
-      "disputedOwing": 1767,
-      "live": 728,
-      "reportFile": null
-    },
-    {
       "token": "scott cu",
       "name": "Scott Cu",
       "consumers": 2523,
@@ -31612,6 +31602,16 @@
       "disputedPct": 23.4,
       "disputedOwing": 493,
       "live": 309,
+      "reportFile": null
+    },
+    {
+      "token": "pbcapigrp",
+      "name": "Pbcapigrp",
+      "consumers": 2523,
+      "tradelines": 2792,
+      "disputedPct": 63.3,
+      "disputedOwing": 1767,
+      "live": 728,
       "reportFile": null
     },
     {
@@ -31655,16 +31655,6 @@
       "reportFile": null
     },
     {
-      "token": "security financial servi",
-      "name": "Security Financial Servi",
-      "consumers": 2511,
-      "tradelines": 8448,
-      "disputedPct": 0.5,
-      "disputedOwing": 13,
-      "live": 0,
-      "reportFile": null
-    },
-    {
       "token": "first data",
       "name": "First Data",
       "consumers": 2511,
@@ -31672,6 +31662,16 @@
       "disputedPct": 1.5,
       "disputedOwing": 28,
       "live": 213,
+      "reportFile": null
+    },
+    {
+      "token": "security financial servi",
+      "name": "Security Financial Servi",
+      "consumers": 2511,
+      "tradelines": 8448,
+      "disputedPct": 0.5,
+      "disputedOwing": 13,
+      "live": 0,
       "reportFile": null
     },
     {
@@ -31705,16 +31705,6 @@
       "reportFile": null
     },
     {
-      "token": "metlife home loans",
-      "name": "Metlife Home Loans",
-      "consumers": 2506,
-      "tradelines": 3726,
-      "disputedPct": 10.9,
-      "disputedOwing": 0,
-      "live": 23,
-      "reportFile": null
-    },
-    {
       "token": "5 3 bank cc",
       "name": "5 3 Bank Cc",
       "consumers": 2506,
@@ -31722,6 +31712,16 @@
       "disputedPct": 17.2,
       "disputedOwing": 131,
       "live": 0,
+      "reportFile": null
+    },
+    {
+      "token": "metlife home loans",
+      "name": "Metlife Home Loans",
+      "consumers": 2506,
+      "tradelines": 3726,
+      "disputedPct": 10.9,
+      "disputedOwing": 0,
+      "live": 23,
       "reportFile": null
     },
     {
